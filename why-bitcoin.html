@@ -1,39 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Why Bitcoin? - The Bitcoiner's Calculators</title>
-  <link rel="stylesheet" href="style.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Bitcoin</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background:#f9fafb;
+    color:#1a1a1a;
+    margin:0;
+  }
+  header {
+    background:#111;
+    color:#f9fafb;
+    padding:1.6rem 1rem;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+  }
+  header h1 { margin:0 0 .25rem; font-size:2.2rem; }
+  header p { margin:0; opacity:.9; }
+
+  main { max-width:1100px; margin:2rem auto; padding:0 20px; }
+
+  .card { background:#fff; padding:22px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:20px; }
+  .highlight { font-weight:700; color:#f7931a; }
+  h2 { margin-top:0; color:#111; }
+  p { line-height:1.6; }
+
+  .stats-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:20px 0;}
+  .stat-box {
+    background:#e9ecef;
+    padding:14px;
+    border-radius:10px;
+    text-align:center;
+    font-size:1.1rem;
+    font-weight:600;
+  }
+  canvas { width:100%!important; height:400px!important; margin-top:20px; }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Why Bitcoin?</h1>
-    <p>Understanding the foundation of sound money and its role in your future.</p>
-  </header>
+<header>
+  <h1>Why Bitcoin?</h1>
+  <p>The strongest asset of the 21st century — unmatched by any other investment.</p>
+</header>
 
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="retire-early.html">Retire Early</a></li>
-      <li><a href="raise-with-bitcoin.html">Give Yourself a Raise</a></li>
-      <li><a href="why-bitcoin-wins.html">Why Bitcoin Wins</a></li>
-    </ul>
-  </nav>
+<main>
+  <div class="card">
+    <h2>The Case for Bitcoin</h2>
+    <p>
+      If you had invested $1 in <span class="highlight">Bitcoin</span> a decade ago, 
+      it would be worth thousands today. Compare that with the <span class="highlight">S&amp;P 500</span>, 
+      <span class="highlight">gold</span>, or even <span class="highlight">real estate</span> — none come close.
+    </p>
+    <p>
+      Over the last 10 years:
+      <ul>
+        <li><span class="highlight">Bitcoin</span>: ~40% CAGR</li>
+        <li><span class="highlight">S&amp;P 500</span>: ~10% CAGR</li>
+        <li><span class="highlight">Gold</span>: ~6% CAGR</li>
+        <li><span class="highlight">Real Estate</span>: ~4% CAGR</li>
+      </ul>
+    </p>
+    <p>
+      Bitcoin isn’t just another asset — it’s <span class="highlight">digital property</span> with a 
+      hard cap of <span class="highlight">21 million</span>. Unlike dollars, stocks, or real estate, 
+      Bitcoin cannot be inflated or seized. It is the <span class="highlight">hardest money ever created</span>.
+    </p>
+  </div>
 
-  <main>
-    <section class="intro">
-      <h2>The Case for Bitcoin</h2>
-      <p>
-        Bitcoin is more than just digital currency — it is a decentralized, borderless, and incorruptible
-        form of money. It resists inflation, government manipulation, and preserves value across generations.
-        This section introduces why Bitcoin is becoming the backbone of financial sovereignty.
-      </p>
-    </section>
-  </main>
+  <div class="card">
+    <h2>Hard Facts That Orange Pill</h2>
+    <div class="stats-grid">
+      <div class="stat-box">🚀 40% Avg CAGR (10yr)</div>
+      <div class="stat-box">💎 21M Supply Cap</div>
+      <div class="stat-box">🌍 Borderless & Permissionless</div>
+      <div class="stat-box">🔥 Outperforms Every Asset</div>
+    </div>
+  </div>
 
-  <footer>
-    <p>&copy; 2025 The Bitcoiner's Calculators</p>
-  </footer>
+  <div class="card">
+    <h2>Bitcoin vs Other Assets</h2>
+    <canvas id="assetChart"></canvas>
+    <p>
+      Bitcoin has crushed every major asset class in returns — while also giving individuals
+      full sovereignty over their wealth. No bank, no government, no middleman.
+    </p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('assetChart');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Bitcoin', 'S&P 500', 'Gold', 'Real Estate'],
+    datasets: [{
+      label: '10-Year CAGR (%)',
+      data: [40, 10, 6, 4],
+      backgroundColor: ['#f7931a','#007bff','#b08d57','#6c757d']
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { display:false }
+    },
+    scales: {
+      y: { beginAtZero:true, title:{display:true,text:'CAGR %'} }
+    }
+  }
+});
+</script>
 </body>
 </html>
