@@ -1,40 +1,152 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Give Yourself a Raise with Bitcoin - The Bitcoiner's Calculators</title>
-  <link rel="stylesheet" href="style.css"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Give Yourself a Raise by Buying Bitcoin</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background:#f9fafb;
+    color:#1a1a1a;
+    margin:0;
+  }
+  header {
+    background:#111;
+    color:#f9fafb;
+    padding:1.6rem 1rem;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+  }
+  header h1 { margin:0 0 .25rem; font-size:2rem; }
+  header p { margin:0; opacity:.9; }
+
+  main { max-width:1100px; margin:2rem auto; padding:0 20px; }
+
+  .calculator { background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08);}
+  .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:14px;}
+  .form-group { display:flex; flex-direction:column; }
+  label { font-weight:600; color:#333; margin-bottom:6px;}
+  input[type="number"], select {
+    padding:10px; border:1px solid #ccc; border-radius:8px; font-size:14px; background:#fff;
+  }
+  .btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  button {
+    border:0; padding:12px 16px; border-radius:8px; cursor:pointer; font-size:15px; font-weight:700;
+  }
+  #calcBtn { background:#f7931a; color:#fff; width:100%; margin-top:8px; }
+  #calcBtn:hover { background:#e07c12; }
+  #resetBtn { background:#6c757d; color:#fff; }
+  #resetBtn:hover { background:#5a6268; }
+
+  #summaryText { display:none; margin-top:16px; background:#e9ecef; padding:14px; border-radius:8px;}
+
+  .highlight { font-weight:700; color:#f7931a; }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Give Yourself a Raise</h1>
-    <p>Protect your income from inflation by saving in Bitcoin.</p>
-  </header>
+<header>
+  <h1>Give Yourself a Raise by Buying Bitcoin</h1>
+  <p>Discover how dollar-cost averaging (DCA) into Bitcoin can boost your income over time.</p>
+</header>
 
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="why-bitcoin.html">Why Bitcoin?</a></li>
-      <li><a href="retire-early.html">Retire Early</a></li>
-      <li><a href="why-bitcoin-wins.html">Why Bitcoin Wins</a></li>
-    </ul>
-  </nav>
+<main>
+  <div class="calculator">
+    <div class="grid">
+      <div class="form-group">
+        <label for="btcPrice">Bitcoin price today ($)</label>
+        <input type="number" id="btcPrice" placeholder="e.g. 60000">
+      </div>
+      <div class="form-group">
+        <label for="dcaAmount">DCA amount ($)</label>
+        <input type="number" id="dcaAmount" placeholder="e.g. 5">
+      </div>
+      <div class="form-group">
+        <label for="dcaFreq">DCA frequency</label>
+        <select id="dcaFreq">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="cagr">Bitcoin CAGR projection (%)</label>
+        <input type="number" id="cagr" value="40">
+      </div>
+      <div class="form-group">
+        <label for="years">DCA & HODL duration (years)</label>
+        <input type="number" id="years" value="15">
+      </div>
+    </div>
 
-  <main>
-    <section class="intro">
-      <h2>Turning Savings into Real Gains</h2>
-      <p>
-        Inflation silently eats away at your paycheck. By storing a portion 
-        of your income in Bitcoin, you effectively give yourself a raise each year. 
-        This calculator demonstrates how even small allocations to Bitcoin 
-        can increase your real purchasing power over time.
-      </p>
-    </section>
-  </main>
+    <div class="btn-row">
+      <button id="calcBtn">Calculate</button>
+      <button id="resetBtn">Reset</button>
+    </div>
 
-  <footer>
-    <p>&copy; 2025 The Bitcoiner's Calculators</p>
-  </footer>
+    <div id="summaryText"></div>
+  </div>
+</main>
+
+<script>
+function fmtMoney(v, digits=2){ return Number(v).toLocaleString(undefined,{minimumFractionDigits:digits,maximumFractionDigits:digits}); }
+
+function simulate(btcPrice0, dcaAmount, dcaFreq, cagrPct, years){
+  const daysPerYear = 365;
+  const rd = Math.pow(1 + cagrPct/100, 1 / daysPerYear) - 1;
+  let buyEveryDays = dcaFreq==='daily'?1:(dcaFreq==='weekly'?7:30);
+  let btcCum=0, totalDays=Math.round(years*daysPerYear), nextBuyDay=0;
+
+  for(let day=0; day<totalDays; day++){
+    const price = btcPrice0 * Math.pow(1+rd, day);
+    if(day>=Math.round(nextBuyDay)){
+      if(!isNaN(dcaAmount)&&dcaAmount>0&&btcPrice0>0){
+        btcCum += dcaAmount / price;
+      }
+      nextBuyDay += buyEveryDays;
+    }
+  }
+
+  const finalBTCPrice = btcPrice0 * Math.pow(1+rd,totalDays-1);
+  const portfolioValue = btcCum*finalBTCPrice;
+  const btcRaisePerYear = portfolioValue/years;
+  const btcRaisePerHour = btcRaisePerYear/(52*40);
+  const btcReached = btcCum>=1?'Yes':'No';
+  return {portfolioValue, btcRaisePerYear, btcRaisePerHour, btcCum, btcReached};
+}
+
+document.getElementById('calcBtn').addEventListener('click', ()=>{
+  const btcPrice=parseFloat(document.getElementById('btcPrice').value);
+  const dcaAmount=parseFloat(document.getElementById('dcaAmount').value);
+  const dcaFreq=document.getElementById('dcaFreq').value;
+  const cagr=parseFloat(document.getElementById('cagr').value);
+  const years=parseInt(document.getElementById('years').value);
+
+  if([btcPrice,dcaAmount,cagr,years].some(v=>isNaN(v)||v<=0)){ alert('Please enter valid positive numbers.'); return; }
+
+  const res = simulate(btcPrice,dcaAmount,dcaFreq,cagr,years);
+  const summary = document.getElementById('summaryText');
+  summary.style.display='block';
+  summary.innerHTML =
+    `<p><strong>Total Bitcoin accumulated:</strong> <span class='highlight'>${fmtMoney(res.btcCum,6)} BTC</span></p>`+
+    `<p><strong>Reached 1 BTC?:</strong> <span class='highlight'>${res.btcReached}</span></p>`+
+    `<p><strong>Portfolio value after ${years} years:</strong> <span class='highlight'>$${fmtMoney(res.portfolioValue)}</span></p>`+
+    `<p><strong>Effective income per year:</strong> <span class='highlight'>$${fmtMoney(res.btcRaisePerYear)}</span></p>`+
+    `<p><strong>Effective income per hour comparable to a dollar per hour raise:</strong> <span class='highlight'>$${fmtMoney(res.btcRaisePerHour)}</span></p>`;
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  document.getElementById('btcPrice').value='';
+  document.getElementById('dcaAmount').value='';
+  document.getElementById('dcaFreq').value='daily';
+  document.getElementById('cagr').value='40';
+  document.getElementById('years').value='15';
+  const summary=document.getElementById('summaryText');
+  summary.style.display='none';
+  summary.innerHTML='';
+});
+</script>
 </body>
 </html>
