@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Real Estate vs Bitcoin — Investment Comparator</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background:#f9fafb;
+    color:#1a1a1a;
+    margin:0;
+  }
+  header {
+    background:#111;
+    color:#f9fafb;
+    padding:1.6rem 1rem;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+  }
+  header h1 { margin:0 0 .25rem; font-size:2rem; }
+  header p { margin:0; opacity:.9; }
+
+  main { max-width:1100px; margin:2rem auto; padding:0 20px; }
+  .calculator { background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08); }
+  .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+  .form-group { display:flex; flex-direction:column; }
+  label { font-weight:600; color:#333; margin-bottom:6px; }
+  input[type="number"], select {
+    padding:10px; border:1px solid #ccc; border-radius:8px; font-size:14px; background:#fff;
+  }
+  .btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  button {
+    border:0; padding:12px 16px; border-radius:8px; cursor:pointer; font-size:15px; font-weight:700;
+  }
+  .btn-primary { background:#f7931a; color:#fff; width:100%; margin-top:8px; }
+  .btn-primary:hover { background:#e07c12; }
+  .btn-secondary { background:#007bff; color:#fff; }
+  .btn-secondary:hover { background:#0056b3; }
+  .btn-muted { background:#6c757d; color:#fff; }
+  .btn-muted:hover { background:#5a6268; }
+
+  #result, #error { margin-top:16px; }
+  #result { display:none; background:#e9ecef; padding:14px; border-radius:8px; }
+  #error { color:#c62828; }
+
+  #chartContainer { display:none; margin-top:20px; }
+  canvas { max-width:100%; }
+
+  table { width:100%; border-collapse:collapse; margin-top:18px; background:#fff; }
+  th, td { text-align:right; padding:8px; border-bottom:1px solid #eee; }
+  th { background:#f8f9fa; position:sticky; top:0; }
+  td:first-child, th:first-child { text-align:left; }
+
+  .note { font-size:13px; color:#666; margin-top:6px; }
+  .small { font-size:12px; color:#666; }
+  footer { text-align:center; padding:1.5rem; color:#666; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Real Estate vs Bitcoin</h1>
+    <p>Compare investing in real estate vs. Bitcoin with the same initial and monthly investments.</p>
+  </header>
+
+  <main>
+    <div class="calculator">
+      <div class="grid">
+        <!-- Real Estate Inputs -->
+        <div class="form-group">
+          <label for="price">Property Price ($)</label>
+          <input type="number" id="price" min="0" step="1000" value="400000">
+        </div>
+        <div class="form-group">
+          <label for="downPct">Down Payment (%)</label>
+          <input type="number" id="downPct" min="0" max="100" step="0.1" value="20">
+        </div>
+        <div class="form-group">
+          <label for="rate">Mortgage Interest Rate (%/yr)</label>
+          <input type="number" id="rate" min="0" step="0.01" value="6">
+        </div>
+        <div class="form-group">
+          <label for="term">Mortgage Term (years)</label>
+          <input type="number" id="term" min="1" step="1" value="30">
+        </div>
+        <div class="form-group">
+          <label for="taxRate">Property Tax Rate (% of value/yr)</label>
+          <input type="number" id="taxRate" min="0" step="0.01" value="1.2">
+          <div class="small">Default ~1.2%/yr</div>
+        </div>
+        <div class="form-group">
+          <label for="insRate">Home Insurance (% of value/yr)</label>
+          <input type="number" id="insRate" min="0" step="0.01" value="0.5">
+          <div class="small">Default ~0.5%/yr</div>
+        </div>
+        <div class="form-group">
+          <label for="maintRate">Maintenance (% of value/yr)</label>
+          <input type="number" id="maintRate" min="0" step="0.1" value="1">
+          <div class="small">Default ~1%/yr</div>
+        </div>
+        <div class="form-group">
+          <label for="rent">Planned Rent ($/mo)</label>
+          <input type="number" id="rent" min="0" step="25" value="2800">
+        </div>
+        <div class="form-group">
+          <label for="inflationRate">Rent Inflation Rate (%/yr)</label>
+          <input type="number" id="inflationRate" min="0" step="0.1" value="2.5">
+          <div class="small">Default ~2.5%/yr</div>
+        </div>
+        <div class="form-group">
+          <label for="appr">Real Estate Appreciation (%/yr)</label>
+          <input type="number" id="appr" min="-20" max="20" step="0.1" value="3">
+        </div>
+        <!-- Bitcoin Inputs -->
+        <div class="form-group">
+          <label for="btcCagr">Bitcoin CAGR (%/yr)</label>
+          <input type="number" id="btcCagr" min="-100" max="500" step="0.1" value="30">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="calcBtn">Calculate & Compare</button>
+        <button class="btn-secondary" id="chartBtn">Show Chart</button>
+        <button class="btn-muted" id="resetBtn">Reset</button>
+      </div>
+
+      <div class="note">
+        Compares two investors: one buys real estate (with mortgage, taxes, insurance, maintenance, and rental income adjusted for inflation),
+        the other invests the same down payment and monthly outlay in Bitcoin (smash buy + DCA).
+        Final net profit and winner shown after calculation.
+      </div>
+
+      <div id="error"></div>
+      <div id="result"></div>
+
+      <div id="chartContainer">
+        <canvas id="compareChart"></canvas>
+      </div>
+
+      <div id="tableContainer"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 The Bitcoiner's Calculators</p>
+  </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+let chartInstance = null;
+
+const el = id => document.getElementById(id);
+const money = v => '$' + Number(v).toLocaleString(undefined,{maximumFractionDigits:0});
+
+function inputs() {
+  return {
+    price: +el('price').value || 0,
+    downPct: (+el('downPct').value || 0) / 100,
+    rate: (+el('rate').value || 0) / 100,
+    term: +el('term').value || 0,
+    taxRate: (+el('taxRate').value || 0) / 100,
+    insRate: (+el('insRate').value || 0) / 100,
+    maintRate: (+el('maintRate').value || 0) / 100,
+    rent: +el('rent').value || 0,
+    inflationRate: (+el('inflationRate').value || 0) / 100,
+    appr: (+el('appr').value || 0) / 100,
+    btcCagr: (+el('btcCagr').value || 0) / 100
+  };
+}
+
+function monthlyMortgage(loan, rate, nMonths) {
+  if (rate <= 0) return loan / nMonths;
+  const r = rate / 12;
+  return loan * r / (1 - Math.pow(1 + r, -nMonths));
+}
+
+function simulate() {
+  const i = inputs();
+
+  // Derived
+  const down = i.price * i.downPct;
+  const loan0 = Math.max(0, i.price - down);
+  const nMonths = i.term * 12;
+  const mort = monthlyMortgage(loan0, i.rate, nMonths);
+
+  // Time horizon: mortgage term + 1 year
+  const totalYears = i.term + 1;
+
+  // Paths
+  const years = [];
+  const reNet = []; // Real estate net position (equity + cumulative cash flow)
+  const btcVal = []; // Bitcoin portfolio value
+  const totalInvestedRE = []; // Cumulative invested in real estate
+  const totalInvestedBTC = []; // Cumulative invested in Bitcoin (should match RE)
+
+  // Real estate state
+  let loanBal = loan0;
+  const r_m = i.rate / 12;
+  let propertyValue = i.price;
+  let cumCashFlow = 0;
+  let totalInvestedRECurrent = down; // Start with down payment
+
+  // Bitcoin state
+  let btcPortfolio = down; // Smash buy with down payment
+  let totalInvestedBTCCurrent = down; // Track total invested in Bitcoin
+  const btcMonthlyRate = Math.pow(1 + i.btcCagr, 1/12) - 1;
+
+  // Rent state
+  let currentRent = i.rent;
+
+  // For output transparency
+  const rows = [];
+
+  for (let m = 1; m <= totalYears * 12; m++) {
+    // Monthly costs (re-priced annually based on property value)
+    const mTaxes = propertyValue * i.taxRate / 12;
+    const mIns = propertyValue * i.insRate / 12;
+    const mMaint = propertyValue * i.maintRate / 12;
+
+    // Amortization
+    const interest = loanBal * r_m;
+    let principal = mort - interest;
+    if (loanBal <= 1e-8) {
+      principal = 0;
+      loanBal = 0;
+    } else {
+      loanBal = Math.max(0, loanBal - principal);
+    }
+
+    // Rent income
+    const rentNet = currentRent;
+
+    // Net monthly outlay
+    const monthlyCosts = mort + mTaxes + mIns + mMaint;
+    const netOutlay = Math.max(0, monthlyCosts - rentNet);
+    const netCashFlow = rentNet - monthlyCosts; // Positive (income) or negative (outlay)
+    cumCashFlow += netCashFlow;
+    totalInvestedRECurrent += netOutlay;
+
+    // Bitcoin DCA (same as real estate net outlay)
+    btcPortfolio += netOutlay;
+    totalInvestedBTCCurrent += netOutlay;
+
+    // Grow Bitcoin
+    btcPortfolio *= (1 + btcMonthlyRate);
+
+    // Year-end tasks
+    if (m % 12 === 0) {
+      // Update property value
+      propertyValue *= (1 + i.appr);
+
+      // Update rent with inflation
+      currentRent *= (1 + i.inflationRate);
+
+      // Compute equity and net position
+      const equity = Math.max(0, propertyValue - loanBal);
+      const netPosition = equity + cumCashFlow;
+
+      const year = m / 12;
+      years.push('Year ' + year);
+      reNet.push(netPosition);
+      btcVal.push(btcPortfolio);
+      totalInvestedRE.push(totalInvestedRECurrent);
+      totalInvestedBTC.push(totalInvestedBTCCurrent);
+
+      rows.push({
+        year,
+        propertyValue: Math.round(propertyValue),
+        loanBalance: Math.round(loanBal),
+        equity: Math.round(equity),
+        cumCashFlow: Math.round(cumCashFlow),
+        reNet: Math.round(netPosition),
+        btcValue: Math.round(btcPortfolio),
+        totalInvestedRE: Math.round(totalInvestedRECurrent),
+        totalInvestedBTC: Math.round(totalInvestedBTCCurrent)
+      });
+    }
+  }
+
+  // Calculate net profits
+  const last = rows[rows.length - 1];
+  const reProfit = last.reNet - last.totalInvestedRE;
+  const btcProfit = last.btcValue - last.totalInvestedBTC;
+
+  return { years, reNet, btcVal, rows, mort, down, reProfit, btcProfit };
+}
+
+function renderSummary(sim, i) {
+  if (!sim) return;
+  const last = sim.rows[sim.rows.length - 1];
+  const yearsTotal = sim.rows.length;
+  const winner = sim.reProfit > sim.btcProfit ? 'Real Estate' : 'Bitcoin';
+  const profitDiff = Math.abs(sim.reProfit - sim.btcProfit);
+
+  const html = `
+    <div><strong>Horizon:</strong> ${yearsTotal} years (mortgage term + 1)</div>
+    <div style="margin-top:8px;"><strong>Real Estate Net Profit:</strong> ${money(sim.reProfit)} (Equity: ${money(last.equity)}, Cash Flow: ${money(last.cumCashFlow)})</div>
+    <div style="margin-top:6px;"><strong>Bitcoin Net Profit:</strong> ${money(sim.btcProfit)} (Portfolio: ${money(last.btcValue)})</div>
+    <div style="margin-top:6px;"><strong>Total Invested:</strong> ${money(last.totalInvestedRE)} (Down: ${money(sim.down)}, Monthly Outlays)</div>
+    <div style="margin-top:6px;"><strong>Winner:</strong> ${winner} (by ${money(profitDiff)})</div>
+    <div class="small" style="margin-top:6px;">
+      Real Estate includes mortgage, taxes, insurance, maintenance, and inflation-adjusted rent.
+      Bitcoin uses the same down payment (smash buy) and monthly outlay (DCA).
+    </div>
+  `;
+  el('result').innerHTML = html;
+  el('result').style.display = 'block';
+}
+
+function renderTable(sim) {
+  const t = sim.rows;
+  if (!t || !t.length) return;
+
+  let html = `
+    <table>
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Property Value ($)</th>
+          <th>Loan Balance ($)</th>
+          <th>Equity ($)</th>
+          <th>Cum. Cash Flow ($)</th>
+          <th>RE Net Position ($)</th>
+          <th>BTC Value ($)</th>
+          <th>Total Invested ($)</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  t.forEach(r => {
+    html += `
+      <tr>
+        <td>${r.year}</td>
+        <td>${money(r.propertyValue)}</td>
+        <td>${money(r.loanBalance)}</td>
+        <td>${money(r.equity)}</td>
+        <td>${money(r.cumCashFlow)}</td>
+        <td>${money(r.reNet)}</td>
+        <td>${money(r.btcValue)}</td>
+        <td>${money(r.totalInvestedRE)}</td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table>`;
+  el('tableContainer').innerHTML = html;
+}
+
+function renderChart(sim) {
+  const ctx = el('compareChart').getContext('2d');
+  el('chartContainer').style.display = 'block';
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: sim.years,
+      datasets: [
+        {
+          label: 'Real Estate — Net Position',
+          data: sim.reNet,
+          borderWidth: 2,
+          borderColor: '#007bff',
+          backgroundColor: 'transparent',
+          fill: false
+        },
+        {
+          label: 'Bitcoin — Portfolio Value',
+          data: sim.btcVal,
+          borderWidth: 2,
+          borderColor: '#f7931a',
+          backgroundColor: 'transparent',
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y: { ticks: { callback: v => '$' + Number(v).toLocaleString() } }
+      },
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: $${Number(ctx.parsed.y).toLocaleString()}`
+          }
+        }
+      }
+    }
+  });
+}
+
+function calculate() {
+  const i = inputs();
+  const errs = [];
+  if (i.price <= 0) errs.push('Property price must be > 0.');
+  if (i.downPct < 0 || i.downPct > 1) errs.push('Down payment must be 0–100%.');
+  if (i.rate < 0) errs.push('Mortgage rate must be ≥ 0.');
+  if (i.term < 1) errs.push('Mortgage term must be ≥ 1 year.');
+  if (i.taxRate < 0) errs.push('Property tax rate must be ≥ 0.');
+  if (i.insRate < 0) errs.push('Insurance rate must be ≥ 0.');
+  if (i.maintRate < 0) errs.push('Maintenance rate must be ≥ 0.');
+  if (i.rent < 0) errs.push('Rent must be ≥ 0.');
+  if (i.inflationRate < 0) errs.push('Inflation rate must be ≥ 0.');
+
+  const errorDiv = el('error');
+  if (errs.length) {
+    errorDiv.textContent = errs.join(' ');
+    el('result').style.display = 'none';
+    el('chartContainer').style.display = 'none';
+    el('tableContainer').innerHTML = '';
+    if (chartInstance) chartInstance.destroy();
+    return;
+  }
+  errorDiv.textContent = '';
+
+  const sim = simulate();
+  renderSummary(sim, i);
+  renderTable(sim);
+  el('chartBtn').style.display = 'inline-block';
+}
+
+function resetAll() {
+  el('price').value = 400000;
+  el('downPct').value = 20;
+  el('rate').value = 6;
+  el('term').value = 30;
+  el('taxRate').value = 1.2;
+  el('insRate').value = 0.5;
+  el('maintRate').value = 1;
+  el('rent').value = 2800;
+  el('inflationRate').value = 2.5;
+  el('appr').value = 3;
+  el('btcCagr').value = 30;
+
+  el('result').innerHTML = '';
+  el('tableContainer').innerHTML = '';
+  el('chartContainer').style.display = 'none';
+  el('error').textContent = '';
+  el('chartBtn').style.display = 'none';
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+}
+
+el('calcBtn').addEventListener('click', (e) => { e.preventDefault(); calculate(); });
+el('chartBtn').addEventListener('click', (e) => { e.preventDefault(); renderChart(simulate()); });
+el('resetBtn').addEventListener('click', (e) => { e.preventDefault(); resetAll(); });
+</script>
+</body>
+</html>
