@@ -57,11 +57,11 @@
     <div class="grid">
       <div class="form-group">
         <label for="btcPrice">Bitcoin price today ($)</label>
-        <input type="number" id="btcPrice" placeholder="e.g. 60000">
+        <input type="number" id="btcPrice" placeholder="e.g. 100,000">
       </div>
       <div class="form-group">
         <label for="dcaAmount">DCA amount ($)</label>
-        <input type="number" id="dcaAmount" placeholder="e.g. 5">
+        <input type="number" id="dcaAmount" placeholder="e.g. 50">
       </div>
       <div class="form-group">
         <label for="dcaFreq">DCA frequency</label>
@@ -73,7 +73,7 @@
       </div>
       <div class="form-group">
         <label for="cagr">Bitcoin CAGR projection (%)</label>
-        <input type="number" id="cagr" value="40">
+        <input type="number" id="cagr" value="30">
       </div>
       <div class="form-group">
         <label for="years">DCA & HODL duration (years)</label>
@@ -133,15 +133,15 @@ document.getElementById('calcBtn').addEventListener('click', ()=>{
     `<p><strong>Total Bitcoin accumulated:</strong> <span class='highlight'>${fmtMoney(res.btcCum,6)} BTC</span></p>`+
     `<p><strong>Reached 1 BTC?:</strong> <span class='highlight'>${res.btcReached}</span></p>`+
     `<p><strong>Portfolio value after ${years} years:</strong> <span class='highlight'>$${fmtMoney(res.portfolioValue)}</span></p>`+
-    `<p><strong>Effective income per year:</strong> <span class='highlight'>$${fmtMoney(res.btcRaisePerYear)}</span></p>`+
-    `<p><strong>Effective income per hour comparable to a dollar per hour raise:</strong> <span class='highlight'>$${fmtMoney(res.btcRaisePerHour)}</span></p>`;
+    `<p><strong>Effective additional income per year:</strong> <span class='highlight'>$${fmtMoney(res.btcRaisePerYear)}</span></p>`+
+    `<p><strong>Effective additional income per hour comparable to a dollar per hour raise(full time employee):</strong> <span class='highlight'>$${fmtMoney(res.btcRaisePerHour)}</span></p>`;
 });
 
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   document.getElementById('btcPrice').value='';
   document.getElementById('dcaAmount').value='';
   document.getElementById('dcaFreq').value='daily';
-  document.getElementById('cagr').value='40';
+  document.getElementById('cagr').value='30';
   document.getElementById('years').value='15';
   const summary=document.getElementById('summaryText');
   summary.style.display='none';
