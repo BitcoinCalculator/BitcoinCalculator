@@ -1,40 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Why Bitcoin Wins - The Bitcoiner's Calculators</title>
-  <link rel="stylesheet" href="style.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Bitcoin Wins</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background:#f9fafb;
+    color:#1a1a1a;
+    margin:0;
+  }
+  header {
+    background:#111;
+    color:#f9fafb;
+    padding:1.6rem 1rem;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+  }
+  header h1 { margin:0 0 .25rem; font-size:2.4rem; }
+  header p { margin:0; opacity:.9; }
+
+  main { max-width:1100px; margin:2rem auto; padding:0 20px; }
+
+  .card { background:#fff; padding:24px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:22px; }
+  .highlight { font-weight:700; color:#f7931a; }
+  h2 { margin-top:0; color:#111; }
+  p { line-height:1.7; font-size:1.05rem; }
+
+  ul { margin-left:18px; line-height:1.6; }
+
+  .stats-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:20px 0;}
+  .stat-box {
+    background:#e9ecef;
+    padding:14px;
+    border-radius:10px;
+    text-align:center;
+    font-size:1.1rem;
+    font-weight:600;
+  }
+  table {
+    width:100%; border-collapse:collapse; margin:20px 0; font-size:1rem;
+  }
+  th, td {
+    border:1px solid #ddd; padding:12px; text-align:center;
+  }
+  th { background:#111; color:#fff; }
+  tr:nth-child(even) { background:#f2f2f2; }
+
+  canvas { width:100%!important; height:400px!important; margin-top:20px; }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Why Bitcoin Wins</h1>
-    <p>The unstoppable advantages that make Bitcoin the global monetary standard.</p>
-  </header>
+<header>
+  <h1>Why Bitcoin Wins</h1>
+  <p>The strongest asset of our lifetime — and the only way out of a broken system.</p>
+</header>
 
-  <nav>
+<main>
+  <div class="card">
+    <h2>The Broken Fiat System</h2>
+    <p>
+      For over 50 years, the world has been trapped in an <span class="highlight">unlimited money printing system</span>.
+      Governments inflate away your savings to fund debt, wars, and bailouts. 
+      <span class="highlight">Fiat currencies lose 99%+ of their value over a century</span>. 
+      This destroys the middle class, fuels inequality, and forces people to work harder for less.
+    </p>
+    <p>
+      Unlimited fiat enables <span class="highlight">endless wars</span>, <span class="highlight">child labor</span> in collapsing economies, 
+      and a constant erosion of freedom. History shows no fiat currency has ever survived long-term — and ours won’t be the first.
+    </p>
+    <canvas id="moneyChart"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Why Bitcoin Cannot Lose</h2>
+    <p>
+      Bitcoin flips the system on its head:
+    </p>
     <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="why-bitcoin.html">Why Bitcoin?</a></li>
-      <li><a href="retire-early.html">Retire Early</a></li>
-      <li><a href="raise-with-bitcoin.html">Give Yourself a Raise</a></li>
+      <li><span class="highlight">21M max supply</span> — absolutely scarce, like digital gold.</li>
+      <li><span class="highlight">Decentralized</span> — no government or corporation controls it.</li>
+      <li><span class="highlight">Global adoption</span> — from El Salvador to Japanese firms like Metaplanet.</li>
+      <li><span class="highlight">Wall Street demand</span> — ETFs from BlackRock, Fidelity, and others are pouring billions in.</li>
+      <li><span class="highlight">Energy-backed security</span> — proof-of-work makes it unforgeable digital property.</li>
     </ul>
-  </nav>
+    <p>
+      While the dollar supply grows forever, Bitcoin’s supply growth is <span class="highlight">zero</span>. 
+      This is why it wins — mathematically, economically, and morally.
+    </p>
+  </div>
 
-  <main>
-    <section class="intro">
-      <h2>The Strengths of Bitcoin</h2>
-      <p>
-        Bitcoin wins because it is open, neutral, borderless, and resistant to censorship. 
-        Unlike fiat currencies or even other crypto projects, Bitcoin’s fixed supply, 
-        decentralization, and adoption curve position it as the future of global money. 
-        This section explores why Bitcoin continues to outlast and outperform alternatives.
-      </p>
-    </section>
-  </main>
+  <div class="card">
+    <h2>Bitcoin vs Fiat</h2>
+    <table>
+      <tr>
+        <th>Property</th>
+        <th>Fiat Money</th>
+        <th>Bitcoin</th>
+      </tr>
+      <tr>
+        <td>Supply</td>
+        <td>Unlimited (inflates endlessly)</td>
+        <td>Fixed at 21M forever</td>
+      </tr>
+      <tr>
+        <td>Control</td>
+        <td>Governments & central banks</td>
+        <td>Decentralized, peer-to-peer</td>
+      </tr>
+      <tr>
+        <td>Inflation</td>
+        <td>2–20%+ yearly</td>
+        <td>0% after final halving</td>
+      </tr>
+      <tr>
+        <td>Accessibility</td>
+        <td>Banks, permissions, borders</td>
+        <td>Borderless, 24/7, censorship-resistant</td>
+      </tr>
+      <tr>
+        <td>Wealth Impact</td>
+        <td>Destroys savings, fuels inequality</td>
+        <td>Protects purchasing power, levels the field</td>
+      </tr>
+    </table>
+  </div>
 
-  <footer>
-    <p>&copy; 2025 The Bitcoiner's Calculators</p>
-  </footer>
+  <div class="card">
+    <h2>The Institutional Flood</h2>
+    <p>
+      In 2024, Bitcoin ETFs opened the floodgates. BlackRock, Fidelity, and other giants are accumulating 
+      faster than miners can produce. Supply shock is inevitable. 
+      Corporations like MicroStrategy already hold over <span class="highlight">200,000 BTC</span>. 
+      Countries are next. This is <span class="highlight">the Amazon moment</span> — once missed, it never comes back.
+    </p>
+    <div class="stats-grid">
+      <div class="stat-box">📈 $1T+ Market Cap</div>
+      <div class="stat-box">💰 21M Max Supply</div>
+      <div class="stat-box">🏦 BlackRock & Fidelity ETFs</div>
+      <div class="stat-box">🌍 Countries Already Adopting</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The Cost of Waiting</h2>
+    <p>
+      Every day you hold fiat, you are losing purchasing power. Every year, inflation silently taxes your savings.  
+      Meanwhile, Bitcoin continues to absorb global demand as the <span class="highlight">hardest asset humanity has ever created</span>.  
+      Those who delay will look back wishing they acted sooner.
+    </p>
+    <p>
+      Missing Bitcoin is missing <span class="highlight">the greatest wealth transfer in history</span>. 
+      Just as the internet changed the world in the 1990s, Bitcoin is reshaping money in the 2020s. 
+      The choice is clear: <span class="highlight">transfer your hard-earned money into Bitcoin now</span> or risk being left behind forever.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>The Moral Case for Bitcoin</h2>
+    <p>
+      Beyond profits, Bitcoin is a moral revolution. It starves corrupt governments of their inflation tax, 
+      cuts off endless funding for war, and empowers individuals in developing nations with stable money 
+      for the first time. It creates a world where <span class="highlight">hard work is rewarded fairly</span>, 
+      not stolen through inflation.
+    </p>
+    <p>
+      A world on Bitcoin is a world with less exploitation, less war, and more freedom.
+    </p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('moneyChart');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['1971','1980','1990','2000','2010','2020','2025'],
+    datasets: [
+      {
+        label: 'US Dollar Supply (M2 Indexed)',
+        data: [100, 250, 400, 600, 1200, 2000, 3000],
+        borderColor: '#dc3545',
+        fill: false,
+        tension: 0.3
+      },
+      {
+        label: 'Bitcoin Supply',
+        data: [0, 0, 0, 5, 10, 18.5, 21],
+        borderColor: '#f7931a',
+        fill: false,
+        tension: 0.3
+      }
+    ]
+  },
+  options: {
+    plugins: { legend: { position:'bottom' }},
+    scales: {
+      y: { beginAtZero:true, title:{display:true, text:'Supply Growth (Indexed)'} }
+    }
+  }
+});
+</script>
 </body>
 </html>
