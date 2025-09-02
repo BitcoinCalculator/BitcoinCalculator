@@ -104,6 +104,28 @@ nav a:hover {
       font-size: 0.9rem;
       color: #666;
     }
+    /* --- Bitcoin price styling --- */
+.price-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.price-row img {
+  width: clamp(64px, 8vw, 90px);
+  height: auto;
+}
+
+#btcPriceHeader {
+  color: #f7931a;                              /* Bitcoin orange */
+  font-weight: 900;                            /* extra bold */
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);     /* responsive size */
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 6px rgba(247,147,26,0.35);  /* subtle glow */
+  line-height: 1;
+}
   </style>
 </head>
 <body>
@@ -112,10 +134,10 @@ nav a:hover {
   <h1 style="text-align:center;">Mark's Bitcoin Calculators</h1>
 
   <!-- Logo and price row below the title -->
-  <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-top:10px;">
-    <img src="Bitcoinlogo.png" alt="Bitcoin Logo" style="width:80px; height:auto;">
-    <span id="btcPriceHeader" style="color:#f7931a; font-weight:bold; font-size:1.5rem;">$--</span>
-  </div>
+<div class="price-row">
+  <img src="Bitcoinlogo.png" alt="Bitcoin Logo">
+  <span id="btcPriceHeader">$--</span>
+</div>
       
       
       <p>A collection of tools to help you project your financial future, understand Bitcoin’s potential, 
