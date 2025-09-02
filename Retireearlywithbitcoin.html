@@ -102,7 +102,7 @@
         </div>
         <div class="form-group">
           <label for="btcPrice">Current BTC Price ($)</label>
-          <input type="number" id="btcPrice" min="0" step="100" value="65000">
+          <input type="number" id="btcPrice" min="0" step="100">         
         </div>
         <div class="form-group">
           <label for="btcCagr">Bitcoin CAGR (%)</label>
@@ -297,9 +297,10 @@ function runFinder() {
     (Retire in <strong>${foundPlan.startIn} year(s)</strong> and your liquid assets never deplete through age ${i.lifeExpectancy}.)`;
 
   lastPath = foundPlan.sim.path; // store for chart/table/export
-  chartBtn.style.display = 'inline-block';
   exportBtn.style.display = 'inline-block';
   renderTable(lastPath, tableContainer);
+    // Auto-show chart
+  drawChart(lastPath);
 }
 
 function simulatePlan(i, startInYears) {
@@ -551,6 +552,20 @@ function exportCSV(path) {
   a.click();
   URL.revokeObjectURL(url);
 }
+  // 🔥 New code to update BTC price
+async function updateBTCPrice() {
+  try {
+    let res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
+    let data = await res.json();
+    let price = data.bitcoin.usd;
+    document.getElementById("btcPrice").value = price;
+  } catch (err) {
+    console.error("BTC price fetch failed:", err);
+  }
+}
+
+// Run once on page load
+updateBTCPrice();
 </script>
 </body>
 </html>
