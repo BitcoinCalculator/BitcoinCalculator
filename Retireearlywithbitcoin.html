@@ -453,12 +453,12 @@ function drawChart(path) {
     data: {
       labels,
       datasets: [
-        { label: 'Net Worth ($)', data: net, borderWidth: 2, fill: false },
-        { label: 'Investments ($)', data: inv, borderWidth: 1, fill: false },
-        { label: 'Other Assets ($)', data: oth, borderWidth: 1, fill: false },
-        { label: '401k ($)', data: k4, borderWidth: 1, fill: false },
+        { label: 'Net Worth ($)', data: net, borderWidth: 2, fill: false, borderColor: 'skyblue'},
+        { label: 'Investments ($)', data: inv, borderWidth: 1, fill: false, borderColor: 'lightcoral'},
+        { label: 'Other Assets ($)', data: oth, borderWidth: 1, fill: false, borderColor: 'mediumseagreen'},
+        { label: '401k ($)', data: k4, borderWidth: 1, fill: false, borderColor: 'mediumpurple'},
         { label: 'Bitcoin ($)', data: btc, borderWidth: 1, fill: false, borderColor: 'orange' },
-        { label: 'Real Estate ($)', data: re, borderWidth: 1, fill: false },
+        { label: 'Real Estate ($)', data: re, borderWidth: 1, fill: false, borderColor: 'peru'},
       ]
     },
     options: {
