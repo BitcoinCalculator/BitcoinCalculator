@@ -313,7 +313,6 @@ totalInvestedBTCCurrent += btcContribution;
 function renderSummary(sim, i) {
   if (!sim) return;
   const last = sim.rows[sim.rows.length - 1];
-  const yearsTotal = sim.rows.length;
   const winner = sim.reProfit > sim.btcProfit ? 'Real Estate' : 'Bitcoin';
   const profitDiff = Math.abs(sim.reProfit - sim.btcProfit);
 
@@ -326,30 +325,37 @@ function renderSummary(sim, i) {
     </p>`;
   }
 
-const html = `
-  <p>Real Estate:</p>
-  <ul>
-    <li>Total cost over ${i.term} years: <strong>${money(sim.totalInvestedRE[sim.totalInvestedRE.length-1])}</strong></li>
-    <li>Total maintenance and taxes: <strong>${money(sim.rows[sim.rows.length-1].cumCashFlow + sim.totalInvestedRE[sim.totalInvestedRE.length-1] - sim.reNet[sim.reNet.length-1])}</strong></li>
-    <li>Net profit: <strong>${money(sim.reProfit)}</strong></li>
-  </ul>
+  const html = `
+    <p>Real Estate:</p>
+    <ul>
+      <li>Total cost over ${i.term} years: <strong>${money(sim.totalInvestedRE[sim.totalInvestedRE.length-1])}</strong></li>
+      <li>Total maintenance and taxes: <strong>${money(sim.rows[sim.rows.length-1].cumCashFlow + sim.totalInvestedRE[sim.totalInvestedRE.length-1] - sim.reNet[sim.reNet.length-1])}</strong></li>
+      <li>Net profit: <strong>${money(sim.reProfit)}</strong></li>
+    </ul>
 
-  <p>Bitcoin:</p>
-  <ul>
-    <li>No maintenance or taxes are required.</li>
-    <li>Total invested: <strong>${money(sim.totalInvestedBTC[sim.totalInvestedBTC.length-1])}</strong></li>
-    <li>Net profit after ${i.term} years: <strong>${money(sim.btcProfit)}</strong></li>
-  </ul>
+    <p>Bitcoin:</p>
+    <ul>
+      <li>No maintenance or taxes are required.</li>
+      <li>Total invested: <strong>${money(sim.totalInvestedBTC[sim.totalInvestedBTC.length-1])}</strong></li>
+      <li>Net profit after ${i.term} years: <strong>${money(sim.btcProfit)}</strong></li>
+    </ul>
 
-  <p class="winner">🏆 The clear winner is <strong>${sim.reProfit > sim.btcProfit ? 'Real Estate' : 'Bitcoin'}</strong>!</p>
+    ${bitcoinNote}
 
-  <p>Why Bitcoin wins:</p>
-  <ul>
-    <li>Real estate costs can exceed rental income, limiting growth.</li>
-    <li>Bitcoin grows exponentially over time, thanks to compounding returns.</li>
-    <li>The longer the investment horizon, the greater the advantage for Bitcoin.</li>
-  </ul>
-`;
+    <p class="winner">🏆 The clear winner is <strong>${winner}</strong>!</p>
+
+    <p>Why Bitcoin wins:</p>
+    <ul>
+      <li>Real estate costs can exceed rental income, limiting growth.</li>
+      <li>Bitcoin grows exponentially over time, thanks to compounding returns.</li>
+      <li>The longer the investment horizon, the greater the advantage for Bitcoin.</li>
+    </ul>
+  `;
+
+  // ✅ THIS LINE WAS MISSING
+  el('result').innerHTML = html;
+  el('result').style.display = 'block';
+}
  function renderTable(sim) {
  const t = sim.rows;
  if (!t || !t.length) return;
