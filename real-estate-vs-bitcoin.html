@@ -313,6 +313,15 @@ function renderSummary(sim, i) {
   const winner = sim.reProfit > sim.btcProfit ? 'Real Estate' : 'Bitcoin';
   const profitDiff = Math.abs(sim.reProfit - sim.btcProfit);
 
+  let bitcoinNote = '';
+  if (winner === 'Bitcoin') {
+    bitcoinNote = `<p class="bitcoin-note">
+      Bitcoin’s outperformance comes from its ability to grow exponentially over time.
+      Unlike real estate, it has <strong>no maintenance costs</strong>, and long-term market exposure
+      allows compounding to create significant gains as the investment horizon extends.
+    </p>`;
+  }
+
   const html = `
     <p>Over a period of <strong>${yearsTotal}</strong> years, both investments were tracked using the same initial down payment and monthly contributions.</p>
 
@@ -324,6 +333,8 @@ function renderSummary(sim, i) {
     The portfolio grew to yield a net profit of <strong>${money(sim.btcProfit)}</strong>.</p>
 
     <p class="winner">🏆 The clear winner is <strong>${winner}</strong>, ahead by <strong>${money(profitDiff)}</strong>.</p>
+
+    ${bitcoinNote}
   `;
 
   el('result').innerHTML = html;
