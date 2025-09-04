@@ -326,24 +326,30 @@ function renderSummary(sim, i) {
     </p>`;
   }
 
-  const html = `
-    <p>Over a period of <strong>${yearsTotal}</strong> years, both investments were tracked using the same initial down payment and monthly contributions.</p>
+const html = `
+  <p>Real Estate:</p>
+  <ul>
+    <li>Total cost over ${i.term} years: <strong>${money(sim.totalInvestedRE[sim.totalInvestedRE.length-1])}</strong></li>
+    <li>Total maintenance and taxes: <strong>${money(sim.rows[sim.rows.length-1].cumCashFlow + sim.totalInvestedRE[sim.totalInvestedRE.length-1] - sim.reNet[sim.reNet.length-1])}</strong></li>
+    <li>Net profit: <strong>${money(sim.reProfit)}</strong></li>
+  </ul>
 
-    <p>For real estate, the total cost included the mortgage, property taxes, insurance, and maintenance.
-    At the end, the property value and rental income produced a net profit of <strong>${money(sim.reProfit)}</strong>.</p>
+  <p>Bitcoin:</p>
+  <ul>
+    <li>No maintenance or taxes are required.</li>
+    <li>Total invested: <strong>${money(sim.totalInvestedBTC[sim.totalInvestedBTC.length-1])}</strong></li>
+    <li>Net profit after ${i.term} years: <strong>${money(sim.btcProfit)}</strong></li>
+  </ul>
 
-    <p>For Bitcoin, the same initial investment and monthly outlays were applied.
-    Unlike real estate, Bitcoin carried <strong>no maintenance cost</strong>.
-    The portfolio grew to yield a net profit of <strong>${money(sim.btcProfit)}</strong>.</p>
+  <p class="winner">🏆 The clear winner is <strong>${sim.reProfit > sim.btcProfit ? 'Real Estate' : 'Bitcoin'}</strong>!</p>
 
-    <p class="winner">🏆 The clear winner is <strong>${winner}</strong>, ahead by <strong>${money(profitDiff)}</strong>.</p>
-
-    ${bitcoinNote}
-  `;
-
-  el('result').innerHTML = html;
-  el('result').style.display = 'block';
-}
+  <p>Why Bitcoin wins:</p>
+  <ul>
+    <li>Real estate costs can exceed rental income, limiting growth.</li>
+    <li>Bitcoin grows exponentially over time, thanks to compounding returns.</li>
+    <li>The longer the investment horizon, the greater the advantage for Bitcoin.</li>
+  </ul>
+`;
  function renderTable(sim) {
  const t = sim.rows;
  if (!t || !t.length) return;
