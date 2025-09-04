@@ -231,17 +231,17 @@ function simulate() {
    // Rent income
    const rentNet = currentRent;
 
-   // Net monthly outlay
-   const monthlyCosts = mort + mTaxes + mIns + mMaint;
-   const netOutlay = Math.max(0, monthlyCosts - rentNet);
-   const netCashFlow = rentNet - monthlyCosts; // Positive (income) or negative (outlay)
-   cumCashFlow += netCashFlow;
-   totalInvestedRECurrent += netOutlay;
+  // Real Estate
+const monthlyCosts = mort + mTaxes + mIns + mMaint;
+const netCashFlow = rentNet - monthlyCosts; // rental income minus expenses
+cumCashFlow += netCashFlow;
+totalInvestedRECurrent += Math.max(0, monthlyCosts - rentNet); // extra out-of-pocket if rent < costs
 
-   // Bitcoin DCA (same as real estate net outlay)
-   btcPortfolio += netOutlay;
-   totalInvestedBTCCurrent += netOutlay;
-
+// Bitcoin
+const btcContribution = monthlyCosts; // Bitcoin investor commits same gross monthly cost as RE investor
+btcPortfolio += btcContribution;
+totalInvestedBTCCurrent += btcContribution;
+  
    // Grow Bitcoin
    btcPortfolio *= (1 + btcMonthlyRate);
 
