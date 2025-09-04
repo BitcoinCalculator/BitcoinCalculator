@@ -101,8 +101,8 @@
        </div>
        <div class="form-group">
          <label for="rent">Planned Rent ($/mo)</label>
-         <input type="number" id="rent" min="0" step="25" value="3600">
-         <div class="small" style="color:blue;">Suggested rent to keep landlord afloat (depends on house price, term, interest, etc.)</div>
+         <input type="number" id="rent" min="0" step="25" value="">
+         <div id="suggestedRent" class="small" style="color:blue;"></div>
        </div>
        <div class="form-group">
          <label for="inflationRate">Rent Inflation Rate (%/yr)</label>
@@ -174,6 +174,23 @@ function monthlyMortgage(loan, rate, nMonths) {
  if (rate <= 0) return loan / nMonths;
  const r = rate / 12;
  return loan * r / (1 - Math.pow(1 + r, -nMonths));
+}
+
+function updateSuggestedRent(setValue = false) {
+  const i = inputs();
+  const down = i.price * i.downPct;
+  const loan = Math.max(0, i.price - down);
+  const nMonths = i.term * 12;
+  const mort = monthlyMortgage(loan, i.rate, nMonths);
+  const mTaxes = i.price * i.taxRate / 12;
+  const mIns = i.price * i.insRate / 12;
+  const mMaint = i.price * i.maintRate / 12;
+  const totalCosts = mort + mTaxes + mIns + mMaint;
+  const suggested = Math.ceil(totalCosts / 25) * 25;
+  if (setValue) {
+    el('rent').value = suggested;
+  }
+  el('suggestedRent').innerHTML = `Suggested rent: ${money(suggested)} to keep landlord afloat (depends on house price, term, interest, etc.)`;
 }
 
 function simulate() {
@@ -443,10 +460,11 @@ function resetAll() {
  el('taxRate').value = 1.2;
  el('insRate').value = 0.5;
  el('maintRate').value = 1;
- el('rent').value = 3600;
  el('inflationRate').value = 2.5;
  el('appr').value = 3;
  el('btcCagr').value = 20;
+
+ updateSuggestedRent(true);
 
  el('result').innerHTML = '';
  el('tableContainer').innerHTML = '';
@@ -459,6 +477,13 @@ function resetAll() {
 el('calcBtn').addEventListener('click', (e) => { e.preventDefault(); calculate(); });
 el('chartBtn').addEventListener('click', (e) => { e.preventDefault(); renderChart(simulate()); });
 el('resetBtn').addEventListener('click', (e) => { e.preventDefault(); resetAll(); });
+
+updateSuggestedRent(true);
+
+const updateInputs = ['price', 'downPct', 'rate', 'term', 'taxRate', 'insRate', 'maintRate'];
+updateInputs.forEach(id => {
+  el(id).addEventListener('input', () => updateSuggestedRent());
+});
 </script>
 </body>
 </html>
