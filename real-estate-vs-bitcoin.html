@@ -4,7 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Real Estate vs Bitcoin — Investment Comparator</title>
-<style>
+
+ <style>
  * { box-sizing: border-box; }
  body {
    font-family: "Helvetica Neue", Arial, sans-serif;
@@ -56,7 +57,23 @@
  .note { font-size:13px; color:#666; margin-top:6px; }
  .small { font-size:12px; color:#666; }
  footer { text-align:center; padding:1.5rem; color:#666; }
-</style>
+  /* Winner highlight */
+.winner {
+  font-size: 200%;          /* 2x bigger text */
+  font-weight: bold;        /* bold */
+  background: yellow;       /* yellow highlight */
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* Bold numbers inside the summary box */
+#result strong {
+  font-weight: bold;
+  color: #111;
+}
+ </style>
 </head>
 <body>
  <header>
@@ -297,23 +314,22 @@ function renderSummary(sim, i) {
   const profitDiff = Math.abs(sim.reProfit - sim.btcProfit);
 
   const html = `
-    <p>Over a period of ${yearsTotal} years, both investments were tracked using the same initial down payment and monthly contributions.</p>
+    <p>Over a period of <strong>${yearsTotal}</strong> years, both investments were tracked using the same initial down payment and monthly contributions.</p>
 
-    <p>For real estate, the total cost included the mortgage, property taxes, insurance, and maintenance.  
-    Across this period, total maintenance and tax expenses were built into the model.  
-    At the end, the property value and rental income produced a net profit of ${money(sim.reProfit)}.</p>
+    <p>For real estate, the total cost included the mortgage, property taxes, insurance, and maintenance.
+    At the end, the property value and rental income produced a net profit of <strong>${money(sim.reProfit)}</strong>.</p>
 
-    <p>For Bitcoin, the same initial investment and monthly outlays were applied.  
-    Unlike real estate, Bitcoin carried no maintenance, tax, or insurance costs.  
-    The portfolio grew to yield a net profit of ${money(sim.btcProfit)}.</p>
+    <p>For Bitcoin, the same initial investment and monthly outlays were applied.
+    Unlike real estate, Bitcoin carried <strong>no maintenance cost</strong>.
+    The portfolio grew to yield a net profit of <strong>${money(sim.btcProfit)}</strong>.</p>
 
-    <p class="winner">🏆 The clear winner is ${winner}, ahead by ${money(profitDiff)}.</p>
+    <p class="winner">🏆 The clear winner is <strong>${winner}</strong>, ahead by <strong>${money(profitDiff)}</strong>.</p>
   `;
 
   el('result').innerHTML = html;
   el('result').style.display = 'block';
 }
-function renderTable(sim) {
+ function renderTable(sim) {
  const t = sim.rows;
  if (!t || !t.length) return;
 
