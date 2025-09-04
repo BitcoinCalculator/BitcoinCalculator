@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lump Sum vs DCA vs Hybrid — Rainbow Anchored Simulator</title>
+<style>
+ * { box-sizing: border-box; }
+ body {
+   font-family: "Helvetica Neue", Arial, sans-serif;
+   background:#f9fafb;
+   color:#1a1a1a;
+   margin:0;
+ }
+ header {
+   background:#111;
+   color:#f9fafb;
+   padding:1.6rem 1rem;
+   text-align:center;
+   box-shadow:0 2px 8px rgba(0,0,0,.3);
+ }
+ header h1 { margin:0 0 .25rem; font-size:2rem; }
+ header p { margin:0; opacity:.9; }
+
+ main { max-width:1100px; margin:2rem auto; padding:0 20px; }
+ .calculator { background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08); }
+ .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+ .form-group { display:flex; flex-direction:column; }
+ label { font-weight:600; color:#333; margin-bottom:6px; }
+ input[type="number"], input[type="text"], select {
+   padding:10px; border:1px solid #ccc; border-radius:8px; font-size:14px; background:#fff;
+ }
+ .btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+ button {
+   border:0; padding:12px 16px; border-radius:8px; cursor:pointer; font-size:15px; font-weight:700;
+ }
+ .btn-primary { background:#f7931a; color:#fff; width:100%; margin-top:8px; }
+ .btn-primary:hover { background:#e07c12; }
+ .btn-secondary { background:#007bff; color:#fff; }
+ .btn-secondary:hover { background:#0056b3; }
+ .btn-muted { background:#6c757d; color:#fff; }
+ .btn-muted:hover { background:#5a6268; }
+ .small { font-size:12px; color:#666; }
+ #result, #error { margin-top:16px; }
+ #result { display:none; background:#e9ecef; padding:14px; border-radius:8px; }
+ #error { color:#c62828; }
+ #chartContainer { display:none; margin-top:20px; }
+ canvas { max-width:100%; }
+ table { width:100%; border-collapse:collapse; margin-top:18px; background:#fff; }
+ th, td { text-align:right; padding:8px; border-bottom:1px solid #eee; }
+ th { background:#f8f9fa; position:sticky; top:0; }
+ td:first-child, th:first-child { text-align:left; }
+ .note { font-size:13px; color:#666; margin-top:6px; }
+ footer { text-align:center; padding:1.5rem; color:#666; margin-top:18px; }
+ .tag { display:inline-block; padding:6px 8px; border-radius:6px; background:#fff3cd; color:#8a6d3b; margin-top:6px; font-weight:600; }
+ .muted-box { background:#f8f9fa; padding:10px; border-radius:8px; margin-top:10px; }
+ .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+ .switch { display:flex; align-items:center; gap:8px; }
+</style>
+</head>
+<body>
+ <header>
+   <h1>Lump Sum vs DCA vs Hybrid — Rainbow Anchored Simulator</h1>
+   <p>Simulation anchored to a clean rainbow (log-log / power-law) baseline + realistic cycles, decreasing volatility, and halving bumps.</p>
+ </header>
+
+ <main>
+   <div class="calculator">
+     <div class="grid">
+       <div class="form-group">
+         <label for="totalInvest">Total Money to Invest (USD)</label>
+         <input type="number" id="totalInvest" min="1" step="1" value="12000">
+         <div class="small">Same capital used for all 3 strategies for fair comparison.</div>
+       </div>
+
+       <div class="form-group">
+         <label for="horizonYears">Investment Horizon (years)</label>
+         <input type="number" id="horizonYears" min="1" max="30" step="1" value="8">
+       </div>
+
+       <div class="form-group">
+         <label for="avgCagr">Average Long-Term CAGR (%)</label>
+         <input type="number" id="avgCagr" min="0" max="200" step="0.1" value="25">
+         <div class="small">Average trend to anchor the rainbow baseline (20–30% recommended).</div>
+       </div>
+
+       <div class="form-group">
+         <label for="cycleAmp">Bull/Bear Cycle Amplitude (%)</label>
+         <input type="number" id="cycleAmp" min="0" max="100" step="1" value="40">
+         <div class="small">How strong cyclical deviations are around baseline (±40% default).</div>
+       </div>
+
+       <div class="form-group">
+         <label for="volStart">Starting Annual Volatility (%)</label>
+         <input type="number" id="volStart" min="1" max="400" step="1" value="120">
+       </div>
+
+       <div class="form-group">
+         <label for="volEnd">Ending Annual Volatility (%)</label>
+         <input type="number" id="volEnd" min="0" max="200" step="1" value="60">
+       </div>
+
+       <div class="form-group">
+         <label for="startPriceOverride">Manual BTC Price Override (optional USD)</label>
+         <input type="number" id="startPriceOverride" min="0" step="0.01" placeholder="Leave blank to use CoinGecko">
+         <div class="small">If blank, current price is fetched from CoinGecko.</div>
+       </div>
+
+       <div class="form-group">
+         <label>Current BTC Price (fetched)</label>
+         <div id="btcPriceDisplay" class="small">Fetching current price…</div>
+       </div>
+     </div>
+
+     <div class="row" style="margin-top:10px;">
+       <div style="flex:1">
+         <div class="btn-row">
+           <button class="btn-primary" id="calcBtn">Run Simulation</button>
+           <button class="btn-muted" id="resetBtn">Reset</button>
+         </div>
+       </div>
+       <div style="min-width:220px; text-align:right;">
+         <div class="switch">
+           <label for="showRainbow" class="small">Show Rainbow Band</label>
+           <input type="checkbox" id="showRainbow" checked>
+         </div>
+       </div>
+     </div>
+
+     <div class="muted-box" style="margin-top:10px;">
+       <div class="tag" id="scenarioTag">Rainbow baseline (log-log) • cycles ±40% • decreasing vol</div>
+       <div class="small" style="margin-top:8px;">
+         Model: baseline price = C * (t + T0)^p (power-law/log-log). We set C so price at t=0 equals current BTC price, and choose p so the baseline approx achieves the requested avg CAGR over the horizon. Monthly simulated returns are baseline drift + cycle + halving bump + noise (decreasing volatility).
+       </div>
+     </div>
+
+     <div id="error"></div>
+     <div id="result"></div>
+
+     <div id="chartContainer">
+       <canvas id="strategyChart"></canvas>
+     </div>
+
+     <div id="tableContainer"></div>
+   </div>
+ </main>
+
+ <footer>
+   <p>&copy; 2025 The Bitcoiner's Calculators</p>
+ </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+/* Rainbow-anchored Lump vs DCA vs Hybrid simulator
+   - Anchors to baseline: price = C * (t + T0)^p
+   - Baseline passes through current price at t=0 and matches avg CAGR over horizon
+   - Simulated monthly path uses baseline log-drift + cycle + halving bump + Gaussian noise
+   - Decreasing volatility over time
+   - Equal total invested across strategies:
+       Lump: all up front
+       DCA: monthly equal installments across horizon
+       Hybrid: half up front, half DCA
+   - Auto-shows chart after run and supports toggling rainbow band
+*/
+
+const el = id => document.getElementById(id);
+const money = v => '$' + Number(v).toLocaleString(undefined,{maximumFractionDigits:0});
+const COINGECKO = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd';
+
+let livePrice = null;
+let lastSim = null;
+let chart = null;
+
+// fetch current price
+function fetchPrice() {
+  el('btcPriceDisplay').textContent = 'Fetching current price…';
+  fetch(COINGECKO).then(r => r.json())
+    .then(data => {
+      if (data && data.bitcoin && data.bitcoin.usd) {
+        livePrice = Number(data.bitcoin.usd);
+        el('btcPriceDisplay').textContent = money(livePrice) + ' per BTC (CoinGecko)';
+      } else {
+        throw new Error('unexpected');
+      }
+    }).catch(err => {
+      console.warn('coin gecko fetch error', err);
+      livePrice = null;
+      el('btcPriceDisplay').textContent = 'Unable to fetch. Enter manual price to proceed.';
+    });
+}
+
+// helper: gaussian
+function randn() {
+  let u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*v);
+}
+
+/*
+ Build baseline power-law parameters:
+ We want baseline price function P(t) = C * (t+T0)^p
+ where t is month index (0..M).
+ Conditions:
+  - P(0) = startPrice  => C * T0^p = startPrice  => C = startPrice / T0^p
+  - We want P(M) / P(0) roughly equal to (1+avgCagr)^horizonYears
+    => ((M+T0)/T0)^p = (1+avgCagr)^{horizonYears}
+    => p = ln((1+avgCagr)^{horizonYears}) / ln((M+T0)/T0)
+ Choose T0 = 1 (month) for stability.
+*/
+function buildBaselineParams(startPrice, months, avgCagr) {
+  const T0 = 1;
+  // avoid zero or negative
+  const M = Math.max(1, months);
+  // limit avgCagr
+  const clamped = Math.max(-0.99, avgCagr);
+  const numerator = Math.log(Math.pow(1 + clamped, M / 12)); // ln((1+cagr)^{years})
+  const denominator = Math.log((M + T0) / T0);
+  // If denominator small (very short horizon), fallback to linearized p
+  let p = denominator === 0 ? 0 : numerator / denominator;
+  // Cap p to reasonable range
+  p = Math.max(-5, Math.min(5, p));
+  const C = startPrice / Math.pow(T0, p);
+  return { C, p, T0 };
+}
+
+// simulate monthly path anchored to baseline
+function simulatePath({
+  startPrice,
+  months,
+  avgCagr,
+  cycleAmp,
+  volStart,
+  volEnd,
+  cyclePeriodMonths = 48
+}) {
+  // build baseline
+  const params = buildBaselineParams(startPrice, months, avgCagr);
+  const { C, p, T0 } = params;
+
+  // baseline price function
+  const baseline = (m) => C * Math.pow(m + T0, p);
+
+  // produce baseline array
+  const basePrices = [];
+  for (let m=0; m<=months; m++) basePrices.push(baseline(m));
+
+  // now simulate monthly returns that anchor to baseline log drift
+  const prices = new Array(months + 1);
+  prices[0] = startPrice;
+
+  // cycle random phase
+  const phase = Math.random() * Math.PI * 2;
+
+  // halving months ~ every 48 months, place them relative to 0 (we assume next halving at ~48)
+  const halvingMonths = [];
+  for (let k=1; k<=Math.ceil(months/48)+1; k++) halvingMonths.push(k*48);
+
+  for (let m=1; m<=months; m++) {
+    // baseline log drift from m-1 to m
+    const baselineDrift = Math.log(Math.max(1e-9, basePrices[m] / basePrices[m-1]));
+
+    // cyclical component (annualized amplitude cycleAmp expressed as proportional effect)
+    // cycleAmp (e.g. 0.4) means a ±40% annual-ish swing; convert to monthly additive log-adjustment
+    const cycleAnnual = cycleAmp * Math.sin(2 * Math.PI * (m / cyclePeriodMonths) + phase);
+    // convert annual percentage to monthly log increment approximation
+    const cycleMonthly = Math.log(1 + cycleAnnual) / 12;
+
+    // halving soft bump: sum small gaussians
+    let halvingBonus = 0;
+    for (const hm of halvingMonths) {
+      const dist = Math.abs(m - hm);
+      if (dist <= 6) {
+        // peak annual uplift ~ +8% at center, smooth
+        const peak = 0.08;
+        const bump = peak * Math.exp(- (dist*dist) / (2 * 3 * 3));
+        halvingBonus += Math.log(1 + bump) / 12;
+      }
+    }
+
+    // decreasing volatility
+    const tFrac = m / Math.max(1, months);
+    const annVol = volStart * (1 - tFrac) + volEnd * tFrac; // decimal
+    const monthlySigma = annVol / Math.sqrt(12);
+
+    // noise
+    const eps = randn() * monthlySigma;
+
+    // final monthly log-return
+    const logRet = baselineDrift + cycleMonthly + halvingBonus + eps;
+
+    // ensure price remains positive
+    prices[m] = Math.max(0.01, prices[m-1] * Math.exp(logRet));
+  }
+
+  return { prices, basePrices, params, halvingMonths };
+}
+
+// strategies calculation
+function calcStrategies(prices, totalInvest, months) {
+  // monthly installments for DCA
+  const monthlyInstall = totalInvest / months;
+  // Lump: invest all now
+  const btcLump = totalInvest / prices[0];
+  // DCA
+  let btcDca = 0;
+  for (let m=0; m<months; m++) btcDca += (monthlyInstall / prices[m]);
+  // Hybrid: half now, half DCA
+  const half = totalInvest / 2;
+  let btcHybrid = half / prices[0];
+  const hybridMonthly = (totalInvest - half) / months;
+  for (let m=0; m<months; m++) btcHybrid += (hybridMonthly / prices[m]);
+
+  // time series values
+  const lumpSeries = prices.map(p => btcLump * p);
+  const dcaSeries = prices.map(p => btcDca * p);
+  const hybridSeries = prices.map(p => btcHybrid * p);
+
+  return {
+    btcLump, btcDca, btcHybrid,
+    lumpSeries, dcaSeries, hybridSeries
+  };
+}
+
+// UI: run simulation
+function runSimulation() {
+  // reset
+  el('error').textContent = '';
+  el('result').style.display = 'none';
+  el('tableContainer').innerHTML = '';
+  if (chart) { chart.destroy(); chart = null; }
+
+  // inputs
+  const totalInvest = Math.max(0, Number(el('totalInvest').value || 0));
+  const horizonYears = Math.max(1, Math.round(Number(el('horizonYears').value || 1)));
+  const avgCagr = Math.max(-0.99, Number(el('avgCagr').value || 25) / 100);
+  const cycleAmp = Math.max(0, Number(el('cycleAmp').value || 40) / 100);
+  const volStart = Math.max(0.001, Number(el('volStart').value || 120) / 100);
+  const volEnd = Math.max(0, Number(el('volEnd').value || 60) / 100);
+  const manual = Number(el('startPriceOverride').value || 0);
+
+  if (totalInvest <= 0) { el('error').textContent = 'Total investment must be > 0.'; return; }
+  const months = horizonYears * 12;
+  if (!livePrice && !manual) { el('error').textContent = 'No current BTC price — allow CoinGecko or enter a manual price.'; return; }
+
+  const startPrice = (manual > 0) ? manual : livePrice;
+
+  // simulate anchored path
+  const { prices, basePrices, params } = simulatePath({
+    startPrice,
+    months,
+    avgCagr,
+    cycleAmp,
+    volStart,
+    volEnd,
+    cyclePeriodMonths: 48
+  });
+
+  // compute strategies
+  const strat = calcStrategies(prices, totalInvest, months);
+
+  // prepare year snapshots
+  const years = [];
+  const yearLump = [];
+  const yearDca = [];
+  const yearHybrid = [];
+  const investedYear = [];
+  for (let y=0; y<=horizonYears; y++) {
+    const m = Math.min(months, y*12);
+    years.push('Year ' + y);
+    yearLump.push(Math.round(strat.lumpSeries[m]));
+    yearDca.push(Math.round(strat.dcaSeries[m]));
+    yearHybrid.push(Math.round(strat.hybridSeries[m]));
+    // invested so far for DCA/hybrid (Lump is totalInvest at t0)
+    const investedSoFar = (y===0) ? 0 : Math.round( (totalInvest / months) * Math.min(months, y*12) );
+    investedYear.push(investedSoFar);
+  }
+
+  lastSim = {
+    inputs: { totalInvest, horizonYears, avgCagr, cycleAmp, volStart, volEnd, startPrice },
+    months,
+    prices, basePrices, params,
+    btcLump: strat.btcLump, btcDca: strat.btcDca, btcHybrid: strat.btcHybrid,
+    lumpSeries: strat.lumpSeries, dcaSeries: strat.dcaSeries, hybridSeries: strat.hybridSeries,
+    years, yearLump, yearDca, yearHybrid, investedYear
+  };
+
+  renderSummary(lastSim);
+  renderTable(lastSim);
+  renderChart(lastSim, document.getElementById('showRainbow').checked);
+  // show chart container automatically
+  el('chartContainer').style.display = 'block';
+}
+
+// render summary
+function renderSummary(sim) {
+  const end = sim.months;
+  const lumpFinal = Math.round(sim.lumpSeries[end]);
+  const dcaFinal = Math.round(sim.dcaSeries[end]);
+  const hybridFinal = Math.round(sim.hybridSeries[end]);
+  const html = `
+    <div><strong>Total Invested (each strategy):</strong> <strong>${money(Math.round(sim.inputs.totalInvest))}</strong></div>
+    <div style="margin-top:8px;"><strong>Final Value — Lump Sum:</strong> <strong>${money(lumpFinal)}</strong> (Holdings: ${sim.btcLump.toFixed(8)} BTC)</div>
+    <div style="margin-top:6px;"><strong>Final Value — DCA:</strong> <strong>${money(dcaFinal)}</strong> (Holdings: ${sim.btcDca.toFixed(8)} BTC)</div>
+    <div style="margin-top:6px;"><strong>Final Value — Hybrid:</strong> <strong>${money(hybridFinal)}</strong> (Holdings: ${sim.btcHybrid.toFixed(8)} BTC)</div>
+    <div style="margin-top:10px; font-weight:bold; font-size:1.05em; background:yellow; padding:8px; border-radius:6px; text-align:center;">
+      Winner: ${determineWinner(sim)}
+    </div>
+    <div class="small" style="margin-top:8px;">Note: baseline is a power-law / log-log fit anchored to the current price and average CAGR. The simulated path follows that baseline with cycles and reducing volatility. This is an educational model, not financial advice.</div>
+  `;
+  el('result').innerHTML = html;
+  el('result').style.display = 'block';
+}
+
+function determineWinner(sim) {
+  const end = sim.months;
+  const arr = [
+    { name:'Lump Sum', val: sim.lumpSeries[end] },
+    { name:'DCA', val: sim.dcaSeries[end] },
+    { name:'Hybrid', val: sim.hybridSeries[end] }
+  ];
+  arr.sort((a,b)=>b.val-a.val);
+  const diff = Math.abs(arr[0].val - arr[1].val);
+  return `${arr[0].name} by ${money(Math.round(diff))}`;
+}
+
+// render table
+function renderTable(sim) {
+  let html = `<table><thead><tr><th>Year</th><th>Lump Value ($)</th><th>DCA Value ($)</th><th>Hybrid Value ($)</th><th>Total Invested by Year ($)</th></tr></thead><tbody>`;
+  for (let i=0; i<sim.years.length; i++) {
+    html += `<tr><td>${sim.years[i]}</td><td>${money(sim.yearLump[i])}</td><td>${money(sim.yearDca[i])}</td><td>${money(sim.yearHybrid[i])}</td><td>${money(sim.investedYear[i])}</td></tr>`;
+  }
+  html += `</tbody></table>`;
+  el('tableContainer').innerHTML = html;
+}
+
+// render chart
+function renderChart(sim, showRainbow=true) {
+  const ctx = document.getElementById('strategyChart').getContext('2d');
+  if (chart) chart.destroy();
+
+  // labels every month; reduce clutter by showing labels every 6 months
+  const labels = sim.prices.map((p, idx) => (idx % 6 === 0 ? `M+${idx}` : ''));
+
+  const datasets = [
+    {
+      label: 'Lump Sum — Portfolio Value',
+      data: sim.lumpSeries,
+      borderWidth: 2,
+      borderColor: '#2b7cff',
+      backgroundColor: 'transparent',
+      tension: 0.2
+    },
+    {
+      label: 'DCA — Portfolio Value',
+      data: sim.dcaSeries,
+      borderWidth: 2,
+      borderColor: '#f7931a',
+      backgroundColor: 'transparent',
+      tension: 0.2
+    },
+    {
+      label: 'Hybrid — Portfolio Value',
+      data: sim.hybridSeries,
+      borderWidth: 2,
+      borderColor: '#28a745',
+      backgroundColor: 'transparent',
+      tension: 0.2
+    },
+    {
+      label: 'BTC Price (simulation) — scale (right)',
+      data: sim.prices,
+      borderWidth: 1,
+      borderColor: '#6c757d',
+      backgroundColor: 'transparent',
+      tension: 0.2,
+      yAxisID: 'y1'
+    }
+  ];
+
+  if (showRainbow) {
+    // baseline and band (upper/lower)
+    const baseline = sim.basePrices;
+    // band factor: e.g., upper = baseline * factor, lower = baseline / factor. Choose factor derived from avgCagr? Use modest factor.
+    const bandFactor = 3; // upper ~3x baseline, lower ~1/3 baseline — adjust for visibility
+    const lower = baseline.map(v => v / bandFactor);
+    const upper = baseline.map(v => v * bandFactor);
+
+    // push upper and lower datasets to create filled band
+    datasets.push({
+      label: 'Rainbow Upper',
+      data: upper,
+      borderWidth: 0,
+      borderColor: 'rgba(0,0,0,0)',
+      backgroundColor: 'rgba(247,147,26,0.08)',
+      fill: '-1' // fill to previous dataset (we'll reorder)
+    });
+    datasets.push({
+      label: 'Rainbow Baseline',
+      data: baseline,
+      borderWidth: 1,
+      borderColor: 'rgba(247,147,26,0.35)',
+      backgroundColor: 'transparent',
+      tension: 0.1,
+      order: 1
+    });
+    datasets.push({
+      label: 'Rainbow Lower',
+      data: lower,
+      borderWidth: 0,
+      borderColor: 'rgba(0,0,0,0)',
+      backgroundColor: 'rgba(43,124,255,0.04)',
+      fill: '-1'
+    });
+
+    // We'll style the fill by setting backgroundColor on the 'upper' dataset and filling to baseline.
+    // Chart.js fill behavior uses dataset indexing; our choice above uses relative fills, which creates banding.
+  }
+
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y: {
+          type: 'linear',
+          position: 'left',
+          ticks: { callback: v => '$' + Number(v).toLocaleString() }
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { callback: v => '$' + Number(v).toLocaleString() }
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const v = ctx.parsed.y;
+              // don't show scientific notation
+              return `${ctx.dataset.label}: $${Number(v).toLocaleString()}`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// wire events
+el('calcBtn').addEventListener('click', (e) => { e.preventDefault(); runSimulation(); });
+el('resetBtn').addEventListener('click', (e) => { e.preventDefault(); resetAll(); });
+el('showRainbow').addEventListener('change', () => {
+  if (lastSim) renderChart(lastSim, el('showRainbow').checked);
+});
+
+// reset defaults
+function resetAll() {
+  el('totalInvest').value = 12000;
+  el('horizonYears').value = 8;
+  el('avgCagr').value = 25;
+  el('cycleAmp').value = 40;
+  el('volStart').value = 120;
+  el('volEnd').value = 60;
+  el('startPriceOverride').value = '';
+  el('result').style.display = 'none';
+  el('tableContainer').innerHTML = '';
+  el('chartContainer').style.display = 'none';
+  el('error').textContent = '';
+  if (chart) { chart.destroy(); chart = null; }
+  lastSim = null;
+}
+
+// initial
+fetchPrice();
+resetAll();
+
+</script>
+</body>
+</html>
