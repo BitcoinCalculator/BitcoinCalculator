@@ -82,7 +82,7 @@
        </div>
        <div class="form-group">
          <label for="term">Mortgage Term (years)</label>
-         <input type="number" id="term" min="1" step="1" value="30">
+         <input type="number" id="term" min="1" step="1" value="15">
        </div>
        <div class="form-group">
          <label for="taxRate">Property Tax Rate (% of value/yr)</label>
@@ -101,7 +101,8 @@
        </div>
        <div class="form-group">
          <label for="rent">Planned Rent ($/mo)</label>
-         <input type="number" id="rent" min="0" step="25" value="2800">
+         <input type="number" id="rent" min="0" step="25" value="3600">
+         <div class="small" style="color:blue;">Suggested rent to keep landlord afloat (depends on house price, term, interest, etc.)</div>
        </div>
        <div class="form-group">
          <label for="inflationRate">Rent Inflation Rate (%/yr)</label>
@@ -115,7 +116,7 @@
        <!-- Bitcoin Inputs -->
        <div class="form-group">
          <label for="btcCagr">Bitcoin CAGR (%/yr)</label>
-         <input type="number" id="btcCagr" min="-100" max="500" step="0.1" value="30">
+         <input type="number" id="btcCagr" min="-100" max="500" step="0.1" value="20">
        </div>
      </div>
 
@@ -295,13 +296,20 @@ function renderSummary(sim) {
  const yearsTotal = sim.rows.length;
  const winner = sim.reProfit > sim.btcProfit ? 'Real Estate' : 'Bitcoin';
  const profitDiff = Math.abs(sim.reProfit - sim.btcProfit);
+ let rationale = '';
+ if (winner === 'Bitcoin') {
+   rationale = 'Bitcoin wins due to its powerful compounding effect over time in the market. Real estate might catch up with increased rent inflation.';
+ } else {
+   rationale = 'Real Estate wins thanks to steady appreciation and reliable rental income. Bitcoin\'s growth couldn\'t keep pace in this scenario.';
+ }
 
  const html = `
-   <div><strong>Horizon:</strong> ${yearsTotal} years (mortgage term + 1)</div>
-   <div style="margin-top:8px;"><strong>Real Estate Net Profit:</strong> ${money(sim.reProfit)} (Equity: ${money(last.equity)}, Cash Flow: ${money(last.cumCashFlow)})</div>
-   <div style="margin-top:6px;"><strong>Bitcoin Net Profit:</strong> ${money(sim.btcProfit)} (Portfolio: ${money(last.btcValue)})</div>
-   <div style="margin-top:6px;"><strong>Total Invested:</strong> ${money(last.totalInvestedRE)} (Down: ${money(sim.down)}, Monthly Outlays)</div>
-   <div style="margin-top:6px;"><strong>Winner:</strong> ${winner} (by ${money(profitDiff)})</div>
+   <div><strong>Investment Horizon:</strong> <strong>${yearsTotal}</strong> years (mortgage term + 1 year).</div>
+   <div style="margin-top:8px;"><strong>Real Estate Net Profit:</strong> <strong>${money(sim.reProfit)}</strong> (Equity: <strong>${money(last.equity)}</strong>, Cumulative Cash Flow: <strong>${money(last.cumCashFlow)}</strong>).</div>
+   <div style="margin-top:6px;"><strong>Bitcoin Net Profit:</strong> <strong>${money(sim.btcProfit)}</strong> (Portfolio Value: <strong>${money(last.btcValue)}</strong>).</div>
+   <div style="margin-top:6px;"><strong>Total Invested:</strong> <strong>${money(last.totalInvestedRE)}</strong> (Down Payment: <strong>${money(sim.down)}</strong> + Monthly Outlays).</div>
+   <div style="font-weight:bold; background-color:yellow; font-size:2em; margin-top:10px; padding:5px; text-align:center;">Winner: ${winner} by ${money(profitDiff)}</div>
+   <div style="margin-top:8px; font-style:italic;">${rationale}</div>
    <div class="small" style="margin-top:6px;">
      Real Estate includes mortgage, taxes, insurance, maintenance, and inflation-adjusted rent.
      Bitcoin uses the same down payment (smash buy) and monthly outlay (DCA).
@@ -431,14 +439,14 @@ function resetAll() {
  el('price').value = 400000;
  el('downPct').value = 20;
  el('rate').value = 6;
- el('term').value = 30;
+ el('term').value = 15;
  el('taxRate').value = 1.2;
  el('insRate').value = 0.5;
  el('maintRate').value = 1;
- el('rent').value = 2800;
+ el('rent').value = 3600;
  el('inflationRate').value = 2.5;
  el('appr').value = 3;
- el('btcCagr').value = 30;
+ el('btcCagr').value = 20;
 
  el('result').innerHTML = '';
  el('tableContainer').innerHTML = '';
