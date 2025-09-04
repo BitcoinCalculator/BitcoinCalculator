@@ -99,11 +99,14 @@
          <input type="number" id="maintRate" min="0" step="0.1" value="1">
          <div class="small">Default ~1%/yr</div>
        </div>
-       <div class="form-group">
-         <label for="rent">Planned Rent ($/mo)</label>
-         <input type="number" id="rent" min="0" step="25" value="2800">
-       </div>
-       <div class="form-group">
+    <div class="form-group">
+  <label for="rent">Planned Rent ($/mo)</label>
+  <input type="number" id="rent" min="0" step="25" value="2800">
+  <div class="small" id="rentAdvice" style="color:#007bff; font-weight:bold; margin-top:6px;">
+    <!-- Rent advice will appear here -->
+  </div>
+</div>
+      <div class="form-group">
          <label for="inflationRate">Rent Inflation Rate (%/yr)</label>
          <input type="number" id="inflationRate" min="0" step="0.1" value="2.5">
          <div class="small">Default ~2.5%/yr</div>
@@ -430,14 +433,14 @@ function resetAll() {
  el('price').value = 400000;
  el('downPct').value = 20;
  el('rate').value = 6;
- el('term').value = 30;
+ el('term').value = 15;
  el('taxRate').value = 1.2;
  el('insRate').value = 0.5;
  el('maintRate').value = 1;
  el('rent').value = 2800;
  el('inflationRate').value = 2.5;
  el('appr').value = 3;
- el('btcCagr').value = 30;
+ el('btcCagr').value = 20;
 
  el('result').innerHTML = '';
  el('tableContainer').innerHTML = '';
@@ -450,6 +453,30 @@ function resetAll() {
 el('calcBtn').addEventListener('click', (e) => { e.preventDefault(); calculate(); });
 el('chartBtn').addEventListener('click', (e) => { e.preventDefault(); renderChart(simulate()); });
 el('resetBtn').addEventListener('click', (e) => { e.preventDefault(); resetAll(); });
+
+ // Update rent advice whenever inputs change
+['price','downPct','rate','term','taxRate','insRate','maintRate']
+  .forEach(id => el(id).addEventListener('input', updateRentAdvice));
+
+// Run once when page first loads
+window.addEventListener('DOMContentLoaded', updateRentAdvice);
+ 
+ function updateRentAdvice() {
+  const i = inputs();
+  const down = i.price * i.downPct;
+  const loan0 = Math.max(0, i.price - down);
+  const nMonths = i.term * 12;
+  const mort = monthlyMortgage(loan0, i.rate, nMonths);
+
+  // Monthly carrying costs
+  const monthlyTaxes = i.price * i.taxRate / 12;
+  const monthlyIns = i.price * i.insRate / 12;
+  const monthlyMaint = i.price * i.maintRate / 12;
+  const totalMonthly = mort + monthlyTaxes + monthlyIns + monthlyMaint;
+
+  el('rentAdvice').textContent =
+    `💡 Suggested minimum rent to cover costs: ${money(totalMonthly)} / month`;
+}
 </script>
 </body>
 </html>
