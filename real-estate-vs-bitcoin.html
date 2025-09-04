@@ -258,7 +258,11 @@ cumCashFlow += netCashFlow;
 totalInvestedRECurrent += Math.max(0, monthlyCosts - rentNet); // extra out-of-pocket if rent < costs
 
 // Bitcoin
-const btcContribution = monthlyCosts; // Bitcoin investor commits same gross monthly cost as RE investor
+// Calculate landlord's true out-of-pocket cost (ignore rent)
+const netOutOfPocket = Math.max(0, monthlyCosts - rentNet);
+
+// Bitcoin: invest only what the landlord truly spends out-of-pocket
+const btcContribution = netOutOfPocket;
 btcPortfolio += btcContribution;
 totalInvestedBTCCurrent += btcContribution;
   
