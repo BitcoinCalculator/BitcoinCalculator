@@ -62,7 +62,7 @@
 <body>
  <header>
    <h1>Bitcoin for Kids — 18 Fund Calculator</h1>
-   <p>Project a Bitcoin fund for a child that grows until their 18th birthday (lump-sum + DCA). Uses current BTC price from CoinGecko.</p>
+   <p>Project a Bitcoin fund for a child that grows until their 18th birthday (lump-sum + DCA).</p>
  </header>
 
  <main>
@@ -158,7 +158,7 @@ function fetchCurrentBtcPrice() {
     .then(data => {
       if (data && data.bitcoin && data.bitcoin.usd) {
         currentBtcPrice = Number(data.bitcoin.usd);
-        el('btcPriceDisplay').textContent = money(currentBtcPrice) + ' per BTC (CoinGecko)';
+        el('btcPriceDisplay').textContent = money(currentBtcPrice) + ' per BTC ';
       } else {
         throw new Error('Unexpected response');
       }
@@ -212,7 +212,7 @@ function simulateTo18() {
   if (!startPrice || startPrice <= 0) {
     // If coinGecko failed, we still allow calculation but require user to have filled price manually.
     // For this implementation we'll error if price not available to avoid nonsense projections.
-    result.error = 'Current BTC price not available from CoinGecko. Please ensure your browser can reach api.coingecko.com or try again.';
+    result.error = 'Current BTC price not available.';
     return result;
   }
 
