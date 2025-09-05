@@ -103,7 +103,7 @@
        <div class="form-group">
          <label for="startPriceOverride">Manual BTC Price Override (optional USD)</label>
          <input type="number" id="startPriceOverride" min="0" step="0.01" placeholder="Leave blank to use CoinGecko">
-         <div class="small">If blank, current price is fetched from CoinGecko.</div>
+         <div class="small">If blank, current price is fetched from CoinGecko (fallback will be used if fetch fails).</div>
        </div>
 
        <div class="form-group">
@@ -151,45 +151,42 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
-/* Rainbow-anchored Lump vs DCA vs Hybrid simulator
-   - Anchors to baseline: price = C * (t + T0)^p
-   - Baseline passes through current price at t=0 and matches avg CAGR over horizon
-   - Simulated monthly path uses baseline log-drift + cycle + halving bump + Gaussian noise
-   - Decreasing volatility over time
-   - Equal total invested across strategies:
-       Lump: all up front
-       DCA: monthly equal installments across horizon
-       Hybrid: half up front, half DCA
-   - Auto-shows chart after run and supports toggling rainbow band
-*/
-
+// === utilities ===
 const el = id => document.getElementById(id);
 const money = v => '$' + Number(v).toLocaleString(undefined,{maximumFractionDigits:0});
 const COINGECKO = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd';
+const COINGECKO_TIMEOUT_MS = 3500; // short timeout to avoid long hangs
+const FALLBACK_PRICE = 50000; // used if fetch fails (inform user)
 
+// state
 let livePrice = null;
 let lastSim = null;
 let chart = null;
 
-// fetch current price
+// fetch current BTC price with timeout + fallback
 function fetchPrice() {
   el('btcPriceDisplay').textContent = 'Fetching current price…';
-  fetch(COINGECKO).then(r => r.json())
+
+  const fetchPromise = fetch(COINGECKO).then(r => r.json());
+  const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), COINGECKO_TIMEOUT_MS));
+
+  Promise.race([fetchPromise, timeout])
     .then(data => {
       if (data && data.bitcoin && data.bitcoin.usd) {
         livePrice = Number(data.bitcoin.usd);
         el('btcPriceDisplay').textContent = money(livePrice) + ' per BTC (CoinGecko)';
       } else {
-        throw new Error('unexpected');
+        throw new Error('unexpected response');
       }
-    }).catch(err => {
-      console.warn('coin gecko fetch error', err);
-      livePrice = null;
-      el('btcPriceDisplay').textContent = 'Unable to fetch. Enter manual price to proceed.';
+    })
+    .catch(err => {
+      console.warn('CoinGecko fetch error:', err);
+      livePrice = FALLBACK_PRICE;
+      el('btcPriceDisplay').textContent = `Unable to fetch (CoinGecko). Using fallback ${money(FALLBACK_PRICE)} — or enter manual price.`;
     });
 }
 
-// helper: gaussian
+// Gaussian random
 function randn() {
   let u=0,v=0;
   while(u===0) u=Math.random();
@@ -197,80 +194,61 @@ function randn() {
   return Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*v);
 }
 
-/*
- Build baseline power-law parameters:
- We want baseline price function P(t) = C * (t+T0)^p
- where t is month index (0..M).
- Conditions:
-  - P(0) = startPrice  => C * T0^p = startPrice  => C = startPrice / T0^p
-  - We want P(M) / P(0) roughly equal to (1+avgCagr)^horizonYears
-    => ((M+T0)/T0)^p = (1+avgCagr)^{horizonYears}
-    => p = ln((1+avgCagr)^{horizonYears}) / ln((M+T0)/T0)
- Choose T0 = 1 (month) for stability.
-*/
+// build baseline
 function buildBaselineParams(startPrice, months, avgCagr) {
   const T0 = 1;
-  // avoid zero or negative
   const M = Math.max(1, months);
-  // limit avgCagr
   const clamped = Math.max(-0.99, avgCagr);
-  const numerator = Math.log(Math.pow(1 + clamped, M / 12)); // ln((1+cagr)^{years})
+  const numerator = Math.log(Math.pow(1 + clamped, M / 12));
   const denominator = Math.log((M + T0) / T0);
-  // If denominator small (very short horizon), fallback to linearized p
   let p = denominator === 0 ? 0 : numerator / denominator;
-  // Cap p to reasonable range
   p = Math.max(-5, Math.min(5, p));
   const C = startPrice / Math.pow(T0, p);
   return { C, p, T0 };
 }
 
-// simulate monthly path anchored to baseline
-// REPLACE the previous simulatePath(...) with this implementation
-function simulatePath({
-  startPrice,
-  months,
-  avgCagr,
-  cycleAmp,
-  volStart,
-  volEnd,
-  cyclePeriodMonths = 48
-}) {
-  // build baseline (same as before)
+/*
+  simulatePath improvements:
+  - operate in log-space with mean reversion toward the baseline
+  - shocks are smoothed into multi-month ramps (rise + fall)
+  - decreasing volatility preserved
+  - halving bumps, cycles preserved
+*/
+function simulatePath({startPrice, months, avgCagr, cycleAmp, volStart, volEnd, cyclePeriodMonths = 48}) {
   const params = buildBaselineParams(startPrice, months, avgCagr);
   const { C, p, T0 } = params;
-  const baseline = (m) => C * Math.pow(m + T0, p);
+  const baseline = m => C * Math.pow(m + T0, p);
   const basePrices = [];
   for (let m=0; m<=months; m++) basePrices.push(baseline(m));
 
-  // define rainbow band factor (keeps the price inside these bands except for brief hits)
-  // you can adjust bandFactor if you want narrower/wider bands
-  const bandFactor = 3; // same conceptual factor as your chart: upper = baseline * bandFactor
+  const bandFactor = 3;
   const bandUpper = basePrices.map(v => v * bandFactor);
   const bandLower = basePrices.map(v => Math.max(0.01, v / bandFactor));
-
-  // we'll operate in log-space for mean reversion stability
-  const ln = Math.log;
-  const exp = Math.exp;
+  const ln = Math.log, exp = Math.exp;
 
   const prices = new Array(months + 1);
   prices[0] = Math.max(0.01, startPrice);
-
-  // initial log price
   let X = ln(prices[0]);
 
-  // OU / mean-reversion params (discrete-time)
-  const baseTheta = 0.35;      // mean reversion speed toward baseline (monthly). Higher => faster pull back.
-  const thetaBoost = 0.9;      // temporary strong pull after shocks (fast return)
-  let activeRevertMonths = 0;  // months left of boosted reversion after a shock
+  // mean reversion base speed
+  const baseTheta = 0.25; // slower monthly pull (so moves take months)
+  const thetaBoost = 0.6; // stronger pull during ramp-down / recovery
+  let activeRevertMonths = 0;
 
-  // cycle random phase
   const phase = Math.random() * Math.PI * 2;
-
-  // halving months ~ every 48 months
-  const halvingMonths = [];
+  const halvingMonths = []; // compute halving months using years aligned to 2024,2028...
+  // assume current month = 0 corresponds to current year/month; halving years occur at Jan of 2024,2028...
+  // For simplicity we will mark halving every 48 months relative to month index 0 but ensure halving years align with calendar in rendering.
   for (let k=1; k<=Math.ceil(months/48)+1; k++) halvingMonths.push(k*48);
 
-  // small helper: clamp to band exactly and optionally nudge (used when we create shocks)
+  // shock smoothing state
+  let shock = null; // {startMonth, peakMonth, endMonth, targetLog}
+  const monthlyShockBaseProb = 0.02; // lower chance to create a shock
+  const minRamp = 6; // months to reach peak (min)
+  const maxRamp = 14; // months to reach peak (max)
+  const avgFall = 9;   // months to fall back on average
+
+  // helper: clamp to band
   function clampToBand(logPrice, m) {
     const up = ln(bandUpper[m]);
     const lo = ln(bandLower[m]);
@@ -279,178 +257,248 @@ function simulatePath({
     return logPrice;
   }
 
-  // shock configuration: rare, brief touches of the band edges
-  const monthlyShockProb = 0.03; // ~3% chance per month of an extreme that touches a band (adjustable)
-  const shockRevertDuration = 6; // months of boosted mean reversion after shock (brief)
-  const shockBias = 0.5; // chance shock is upward (top band) vs downward
-
+  // For each month, produce log-return composed of
+  // baseline drift + cycleMonthly + halvingBonus + OU mean-reversion component + noise + optional shock ramp
   for (let m=1; m<=months; m++) {
-    // baseline log at month m and m-1
-    const lnBase_m   = ln(Math.max(1e-9, basePrices[m]));
-    const lnBase_m1  = ln(Math.max(1e-9, basePrices[m-1]));
-    const baselineDrift = lnBase_m - lnBase_m1; // monthly baseline log drift
+    const lnBase_m = ln(Math.max(1e-9, basePrices[m]));
+    const lnBase_m1 = ln(Math.max(1e-9, basePrices[m-1]));
+    const baselineDrift = lnBase_m - lnBase_m1;
 
-    // cyclical component (keeps the bull / bear rhythm)
+    // cyclical component (smoothed)
     const cycleAnnual = cycleAmp * Math.sin(2 * Math.PI * (m / cyclePeriodMonths) + phase);
-    // convert annual percentage swing to an approximate monthly log increment
     const cycleMonthly = Math.log(Math.max(1e-9, 1 + cycleAnnual)) / 12;
 
-    // halving soft bump: same idea as before (small extra log uplift near halving)
+    // halving soft bump
     let halvingBonus = 0;
     for (const hm of halvingMonths) {
       const dist = Math.abs(m - hm);
-      if (dist <= 6) {
-        const peak = 0.08; // peak annual uplift at center
-        const bump = peak * Math.exp(- (dist*dist) / (2 * 3 * 3));
+      if (dist <= 10) { // widen halving influence a bit for smoother rise/fall
+        const peak = 0.08;
+        const bump = peak * Math.exp(-(dist*dist)/(2 * 5 * 5));
         halvingBonus += Math.log(1 + bump) / 12;
       }
     }
 
-    // volatility that decreases over time (annual decimals -> monthly sigma)
+    // decreasing volatility (annual -> monthly)
     const tFrac = m / Math.max(1, months);
-    const annVol = volStart * (1 - tFrac) + volEnd * tFrac; // decimals (e.g. 1.2 -> 120%)
-    const monthlySigma = annVol / Math.sqrt(12); // sd in same units as log-returns
+    const annVol = volStart * (1 - tFrac) + volEnd * tFrac;
+    const monthlySigma = annVol / Math.sqrt(12);
 
-    // mean reversion speed: normal or boosted if in shock recovery period
+    // mean reversion speed (we will bias toward ln(baseline))
     const theta = activeRevertMonths > 0 ? thetaBoost : baseTheta;
 
-    // Ornstein-Uhlenbeck style step in log-space:
-    // X_{t+1} = X_t + theta*(lnBaseline_t - X_t) + baselineDrift + cycleMonthly + halvingBonus + eps
-    // baselineDrift included so baseline slope is preserved.
+    // noise
     const eps = randn() * monthlySigma;
 
+    // base OU-like update preserving baseline drift:
+    // Xnext_base = X + theta*(lnBase_m - X) + baselineDrift + cycleMonthly + halvingBonus + eps
     let Xnext = X + theta * (lnBase_m - X) + baselineDrift + cycleMonthly + halvingBonus + eps;
 
-    // Occasionally trigger a shock that forces a brief touch of the band edge
-    if (Math.random() < monthlyShockProb) {
-      const pushUp = (Math.random() < shockBias); // whether shock is upward or downward
-      const targetLog = pushUp ? ln(bandUpper[m]) : ln(bandLower[m]);
-      // Force the price to the band edge this month (brief extreme) but not beyond
-      Xnext = targetLog;
-      // start boosted reversion for next shockRevertDuration months so it returns toward baseline smoothly
-      activeRevertMonths = shockRevertDuration;
+    // Possibly start a new shock if none active (rare)
+    if (!shock && Math.random() < monthlyShockBaseProb) {
+      // choose upward or downward shock
+      const up = Math.random() < 0.5;
+      const rampUp = Math.floor(minRamp + Math.random() * (maxRamp - minRamp)); // months to peak
+      const rampDown = Math.floor(Math.max(4, avgFall + (Math.random() * 6 - 3))); // months to fall
+      const peakMonth = m + rampUp;
+      const endMonth = peakMonth + rampDown;
+      const targetLog = up ? ln(bandUpper[Math.min(peakMonth, bandUpper.length-1)]) : ln(bandLower[Math.min(peakMonth, bandLower.length-1)]);
+      shock = { startMonth: m, peakMonth, endMonth, targetLog, up, rampUp, rampDown };
     }
 
-    // If the stochastic step would push us beyond the band, clamp to band edge and set short revert
-    const clamped = clampToBand(Xnext, m);
+    // If shock active, compute a smooth ramp contribution using a logistic/linear blend
+    if (shock) {
+      // ramp progress: before peak -> 0..1, after peak -> 1..0
+      if (m <= shock.peakMonth) {
+        const frac = (m - shock.startMonth) / Math.max(1, shock.rampUp);
+        // ease-in-out using smoothstep
+        const s = 3*frac*frac - 2*frac*frac*frac;
+        // move Xnext toward target by fraction s (additive move in log-space)
+        Xnext = Xnext * 1; // keep base then blend
+        Xnext = X + s * (shock.targetLog - X); // linear blend from current log X to targetLog over rampUp months
+      } else if (m <= shock.endMonth) {
+        const frac = (m - shock.peakMonth) / Math.max(1, shock.rampDown);
+        const s = 1 - (3*frac*frac - 2*frac*frac*frac); // ease back to baseline
+        Xnext = X + s * (shock.targetLog - X);
+      } else {
+        // shock ended
+        shock = null;
+        activeRevertMonths = Math.max(activeRevertMonths, 2); // short boosted reversion
+      }
+    }
+
+    // clamp and update active revert months
+    const clamped = clampToBand(Xnext, Math.min(m, bandUpper.length-1));
     if (clamped !== Xnext) {
       Xnext = clamped;
-      activeRevertMonths = Math.max(activeRevertMonths, 2); // a short revert if we hit a band boundary
+      activeRevertMonths = Math.max(activeRevertMonths, 2);
     }
 
-    // step forward and decrement active revert months
+    // step forward and decay active revert
     X = Xnext;
     if (activeRevertMonths > 0) activeRevertMonths--;
 
-    // convert back to price and ensure positive
     prices[m] = Math.max(0.01, exp(X));
   }
 
-  // final safety: ensure every price sits inside or exactly on the band (tiny numerical noise handled)
+  // final safety clamp
   for (let m=0; m<=months; m++) {
     prices[m] = Math.min(Math.max(prices[m], bandLower[m]), bandUpper[m]);
   }
 
   return { prices, basePrices, params, halvingMonths, bandLower, bandUpper };
 }
- 
- // strategies calculation
+
+// strategies
 function calcStrategies(prices, totalInvest, months) {
-  // monthly installments for DCA
   const monthlyInstall = totalInvest / months;
-  // Lump: invest all now
   const btcLump = totalInvest / prices[0];
-  // DCA
-  let btcDca = 0;
-  for (let m=0; m<months; m++) btcDca += (monthlyInstall / prices[m]);
-  // Hybrid: half now, half DCA
+  let btcDca = 0; for (let m=0; m<months; m++) btcDca += (monthlyInstall / prices[m]);
   const half = totalInvest / 2;
   let btcHybrid = half / prices[0];
   const hybridMonthly = (totalInvest - half) / months;
   for (let m=0; m<months; m++) btcHybrid += (hybridMonthly / prices[m]);
-
-  // time series values
   const lumpSeries = prices.map(p => btcLump * p);
   const dcaSeries = prices.map(p => btcDca * p);
   const hybridSeries = prices.map(p => btcHybrid * p);
-
-  return {
-    btcLump, btcDca, btcHybrid,
-    lumpSeries, dcaSeries, hybridSeries
-  };
+  return { btcLump, btcDca, btcHybrid, lumpSeries, dcaSeries, hybridSeries };
 }
 
-// UI: run simulation
-function runSimulation() {
-  // reset
-  el('error').textContent = '';
-  el('result').style.display = 'none';
-  el('tableContainer').innerHTML = '';
-  if (chart) { chart.destroy(); chart = null; }
+// render chart helper
+function renderChart(sim, showRainbow=true) {
+  const ctx = document.getElementById('strategyChart').getContext('2d');
+  if (chart) chart.destroy();
 
-  // inputs
-  const totalInvest = Math.max(0, Number(el('totalInvest').value || 0));
-  const horizonYears = Math.max(1, Math.round(Number(el('horizonYears').value || 1)));
-  const avgCagr = Math.max(-0.99, Number(el('avgCagr').value || 25) / 100);
-  const cycleAmp = Math.max(0, Number(el('cycleAmp').value || 40) / 100);
-  const volStart = Math.max(0.001, Number(el('volStart').value || 120) / 100);
-  const volEnd = Math.max(0, Number(el('volEnd').value || 60) / 100);
-  const manual = Number(el('startPriceOverride').value || 0);
-
-  if (totalInvest <= 0) { el('error').textContent = 'Total investment must be > 0.'; return; }
-  const months = horizonYears * 12;
-  if (!livePrice && !manual) { el('error').textContent = 'No current BTC price — allow CoinGecko or enter a manual price.'; return; }
-
-  const startPrice = (manual > 0) ? manual : livePrice;
-
-  // simulate anchored path
-  const { prices, basePrices, params } = simulatePath({
-    startPrice,
-    months,
-    avgCagr,
-    cycleAmp,
-    volStart,
-    volEnd,
-    cyclePeriodMonths: 48
-  });
-
-  // compute strategies
-  const strat = calcStrategies(prices, totalInvest, months);
-
-  // prepare year snapshots
-  const years = [];
-  const yearLump = [];
-  const yearDca = [];
-  const yearHybrid = [];
-  const investedYear = [];
-  for (let y=0; y<=horizonYears; y++) {
-    const m = Math.min(months, y*12);
-    years.push('Year ' + y);
-    yearLump.push(Math.round(strat.lumpSeries[m]));
-    yearDca.push(Math.round(strat.dcaSeries[m]));
-    yearHybrid.push(Math.round(strat.hybridSeries[m]));
-    // invested so far for DCA/hybrid (Lump is totalInvest at t0)
-    const investedSoFar = (y===0) ? 0 : Math.round( (totalInvest / months) * Math.min(months, y*12) );
-    investedYear.push(investedSoFar);
+  // Build labels: every month has an entry, but we only display year labels for months that are multiples of 12.
+  const currentYear = sim.currentYear || new Date().getFullYear();
+  const totalMonths = sim.months;
+  const labels = [];
+  for (let m=0; m<=totalMonths; m++) {
+    if (m % 12 === 0) labels.push(String(currentYear + (m/12)));
+    else labels.push('');
   }
 
-  lastSim = {
-    inputs: { totalInvest, horizonYears, avgCagr, cycleAmp, volStart, volEnd, startPrice },
-    months,
-    prices, basePrices, params,
-    btcLump: strat.btcLump, btcDca: strat.btcDca, btcHybrid: strat.btcHybrid,
-    lumpSeries: strat.lumpSeries, dcaSeries: strat.dcaSeries, hybridSeries: strat.hybridSeries,
-    years, yearLump, yearDca, yearHybrid, investedYear
-  };
+  // datasets
+  const datasets = [
+    {
+      label: 'Lump Sum — Portfolio Value',
+      data: sim.lumpSeries,
+      borderWidth: 2,
+      borderColor: '#2b7cff',
+      backgroundColor: 'transparent',
+      tension: 0.25,
+      yAxisID: 'y'
+    },
+    {
+      label: 'DCA — Portfolio Value',
+      data: sim.dcaSeries,
+      borderWidth: 2,
+      borderColor: '#f7931a',
+      backgroundColor: 'transparent',
+      tension: 0.25,
+      yAxisID: 'y'
+    },
+    {
+      label: 'Hybrid — Portfolio Value',
+      data: sim.hybridSeries,
+      borderWidth: 2,
+      borderColor: '#28a745',
+      backgroundColor: 'transparent',
+      tension: 0.25,
+      yAxisID: 'y'
+    },
+    {
+      label: 'BTC Price (simulation)',
+      data: sim.prices,
+      borderWidth: 1,
+      borderColor: '#6c757d',
+      backgroundColor: 'transparent',
+      tension: 0.2,
+      yAxisID: 'y1'
+    }
+  ];
 
-  renderSummary(lastSim);
-  renderTable(lastSim);
-  renderChart(lastSim, document.getElementById('showRainbow').checked);
-  // show chart container automatically
-  el('chartContainer').style.display = 'block';
+  if (showRainbow) {
+    const baseline = sim.basePrices;
+    const bandFactor = 3;
+    const upper = baseline.map(v => v * bandFactor);
+    const lower = baseline.map(v => v / bandFactor);
+
+    datasets.push({
+      label: 'Rainbow Upper',
+      data: upper,
+      borderWidth: 0,
+      borderColor: 'rgba(0,0,0,0)',
+      backgroundColor: 'rgba(247,147,26,0.08)',
+      fill: '+1', // fill downward toward the baseline dataset (ordering matters)
+      yAxisID: 'y1'
+    });
+    datasets.push({
+      label: 'Rainbow Baseline',
+      data: baseline,
+      borderWidth: 1,
+      borderColor: 'rgba(247,147,26,0.35)',
+      backgroundColor: 'transparent',
+      tension: 0.1,
+      yAxisID: 'y1'
+    });
+    datasets.push({
+      label: 'Rainbow Lower',
+      data: lower,
+      borderWidth: 0,
+      borderColor: 'rgba(0,0,0,0)',
+      backgroundColor: 'rgba(43,124,255,0.04)',
+      fill: '-1',
+      yAxisID: 'y1'
+    });
+  }
+
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y: {
+          type: 'linear',
+          position: 'left',
+          ticks: { callback: v => '$' + Number(v).toLocaleString() }
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { callback: v => '$' + Number(v).toLocaleString() }
+        },
+        x: {
+          ticks: {
+            callback: function(val, index) {
+              // only show the tick label if it's a non-empty label (we prepared '' for intermediate months)
+              const label = this.getLabelForValue(index);
+              return label ? label : '';
+            },
+            maxRotation: 0,
+            autoSkip: false
+          }
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const v = ctx.parsed.y;
+              return `${ctx.dataset.label}: $${Number(v).toLocaleString()}`;
+            }
+          }
+        }
+      }
+    }
+  });
 }
 
-// render summary
+// render summary/table
 function renderSummary(sim) {
   const end = sim.months;
   const lumpFinal = Math.round(sim.lumpSeries[end]);
@@ -482,7 +530,6 @@ function determineWinner(sim) {
   return `${arr[0].name} by ${money(Math.round(diff))}`;
 }
 
-// render table
 function renderTable(sim) {
   let html = `<table><thead><tr><th>Year</th><th>Lump Value ($)</th><th>DCA Value ($)</th><th>Hybrid Value ($)</th><th>Total Invested by Year ($)</th></tr></thead><tbody>`;
   for (let i=0; i<sim.years.length; i++) {
@@ -492,122 +539,71 @@ function renderTable(sim) {
   el('tableContainer').innerHTML = html;
 }
 
-// render chart
-function renderChart(sim, showRainbow=true) {
-  const ctx = document.getElementById('strategyChart').getContext('2d');
-  if (chart) chart.destroy();
+// run simulation (UI entry)
+function runSimulation() {
+  el('error').textContent = '';
+  el('result').style.display = 'none';
+  el('tableContainer').innerHTML = '';
+  if (chart) { chart.destroy(); chart = null; }
 
-  // labels every month; reduce clutter by showing labels every 6 months
-  const labels = sim.prices.map((p, idx) => (idx % 6 === 0 ? `M+${idx}` : ''));
+  const totalInvest = Math.max(0, Number(el('totalInvest').value || 0));
+  const horizonYears = Math.max(1, Math.round(Number(el('horizonYears').value || 1)));
+  const avgCagr = Math.max(-0.99, Number(el('avgCagr').value || 25) / 100);
+  const cycleAmp = Math.max(0, Number(el('cycleAmp').value || 40) / 100);
+  const volStart = Math.max(0.001, Number(el('volStart').value || 120) / 100);
+  const volEnd = Math.max(0, Number(el('volEnd').value || 60) / 100);
+  const manual = Number(el('startPriceOverride').value || 0);
 
-  const datasets = [
-    {
-      label: 'Lump Sum — Portfolio Value',
-      data: sim.lumpSeries,
-      borderWidth: 2,
-      borderColor: '#2b7cff',
-      backgroundColor: 'transparent',
-      tension: 0.2
-    },
-    {
-      label: 'DCA — Portfolio Value',
-      data: sim.dcaSeries,
-      borderWidth: 2,
-      borderColor: '#f7931a',
-      backgroundColor: 'transparent',
-      tension: 0.2
-    },
-    {
-      label: 'Hybrid — Portfolio Value',
-      data: sim.hybridSeries,
-      borderWidth: 2,
-      borderColor: '#28a745',
-      backgroundColor: 'transparent',
-      tension: 0.2
-    },
-    {
-      label: 'BTC Price (simulation) — scale (right)',
-      data: sim.prices,
-      borderWidth: 1,
-      borderColor: '#6c757d',
-      backgroundColor: 'transparent',
-      tension: 0.2,
-      yAxisID: 'y1'
-    }
-  ];
+  if (totalInvest <= 0) { el('error').textContent = 'Total investment must be > 0.'; return; }
+  const months = horizonYears * 12;
 
-  if (showRainbow) {
-    // baseline and band (upper/lower)
-    const baseline = sim.basePrices;
-    // band factor: e.g., upper = baseline * factor, lower = baseline / factor. Choose factor derived from avgCagr? Use modest factor.
-    const bandFactor = 3; // upper ~3x baseline, lower ~1/3 baseline — adjust for visibility
-    const lower = baseline.map(v => v / bandFactor);
-    const upper = baseline.map(v => v * bandFactor);
+  // ensure we have a start price
+  if (!livePrice && !manual) { el('error').textContent = 'No current BTC price — allow CoinGecko or enter a manual price.'; return; }
+  const startPrice = (manual > 0) ? manual : livePrice;
 
-    // push upper and lower datasets to create filled band
-    datasets.push({
-      label: 'Rainbow Upper',
-      data: upper,
-      borderWidth: 0,
-      borderColor: 'rgba(0,0,0,0)',
-      backgroundColor: 'rgba(247,147,26,0.08)',
-      fill: '-1' // fill to previous dataset (we'll reorder)
-    });
-    datasets.push({
-      label: 'Rainbow Baseline',
-      data: baseline,
-      borderWidth: 1,
-      borderColor: 'rgba(247,147,26,0.35)',
-      backgroundColor: 'transparent',
-      tension: 0.1,
-      order: 1
-    });
-    datasets.push({
-      label: 'Rainbow Lower',
-      data: lower,
-      borderWidth: 0,
-      borderColor: 'rgba(0,0,0,0)',
-      backgroundColor: 'rgba(43,124,255,0.04)',
-      fill: '-1'
-    });
+  const { prices, basePrices, params } = simulatePath({
+    startPrice,
+    months,
+    avgCagr,
+    cycleAmp,
+    volStart,
+    volEnd,
+    cyclePeriodMonths: 48
+  });
 
-    // We'll style the fill by setting backgroundColor on the 'upper' dataset and filling to baseline.
-    // Chart.js fill behavior uses dataset indexing; our choice above uses relative fills, which creates banding.
+  const strat = calcStrategies(prices, totalInvest, months);
+
+  // build year snapshots and year labels starting from current year at runtime
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  const yearLump = [];
+  const yearDca = [];
+  const yearHybrid = [];
+  const investedYear = [];
+  for (let y=0; y<=horizonYears; y++) {
+    const m = Math.min(months, y*12);
+    years.push(String(currentYear + y));
+    yearLump.push(Math.round(strat.lumpSeries[m]));
+    yearDca.push(Math.round(strat.dcaSeries[m]));
+    yearHybrid.push(Math.round(strat.hybridSeries[m]));
+    const investedSoFar = (y===0) ? 0 : Math.round((totalInvest / months) * Math.min(months, y*12));
+    investedYear.push(investedSoFar);
   }
 
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets },
-    options: {
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        y: {
-          type: 'linear',
-          position: 'left',
-          ticks: { callback: v => '$' + Number(v).toLocaleString() }
-        },
-        y1: {
-          type: 'linear',
-          position: 'right',
-          grid: { drawOnChartArea: false },
-          ticks: { callback: v => '$' + Number(v).toLocaleString() }
-        }
-      },
-      plugins: {
-        legend: { position: 'bottom' },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => {
-              const v = ctx.parsed.y;
-              // don't show scientific notation
-              return `${ctx.dataset.label}: $${Number(v).toLocaleString()}`;
-            }
-          }
-        }
-      }
-    }
-  });
+  lastSim = {
+    inputs: { totalInvest, horizonYears, avgCagr, cycleAmp, volStart, volEnd, startPrice },
+    months,
+    prices, basePrices, params,
+    btcLump: strat.btcLump, btcDca: strat.btcDca, btcHybrid: strat.btcHybrid,
+    lumpSeries: strat.lumpSeries, dcaSeries: strat.dcaSeries, hybridSeries: strat.hybridSeries,
+    years, yearLump, yearDca, yearHybrid, investedYear,
+    currentYear
+  };
+
+  renderSummary(lastSim);
+  renderTable(lastSim);
+  renderChart(lastSim, document.getElementById('showRainbow').checked);
+  el('chartContainer').style.display = 'block';
 }
 
 // wire events
@@ -634,10 +630,9 @@ function resetAll() {
   lastSim = null;
 }
 
-// initial
+// initial fetch + reset
 fetchPrice();
 resetAll();
-
 </script>
 </body>
 </html>
