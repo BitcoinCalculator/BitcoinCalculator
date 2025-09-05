@@ -92,12 +92,12 @@
 
        <div class="form-group">
          <label for="volStart">Starting Annual Volatility (%)</label>
-         <input type="number" id="volStart" min="1" max="400" step="1" value="120">
+         <input type="number" id="volStart" min="1" max="400" step="1" value="80">
        </div>
 
        <div class="form-group">
          <label for="volEnd">Ending Annual Volatility (%)</label>
-         <input type="number" id="volEnd" min="0" max="200" step="1" value="60">
+         <input type="number" id="volEnd" min="0" max="200" step="1" value="20">
        </div>
 
        <div class="form-group">
@@ -554,8 +554,8 @@ function runSimulation() {
   const horizonYears = Math.max(1, Math.round(Number(el('horizonYears').value || 1)));
   const avgCagr = Math.max(-0.99, Number(el('avgCagr').value || 25) / 100);
   const cycleAmp = Math.max(0, Number(el('cycleAmp').value || 40) / 100);
-  const volStart = Math.max(0.001, Number(el('volStart').value || 120) / 100);
-  const volEnd = Math.max(0, Number(el('volEnd').value || 60) / 100);
+  const volStart = Math.max(0.001, Number(el('volStart').value || 80) / 100);
+  const volEnd = Math.max(0, Number(el('volEnd').value || 20) / 100);
   const manual = Number(el('startPriceOverride').value || 0);
 
   if (totalInvest <= 0) { el('error').textContent = 'Total investment must be > 0.'; return; }
@@ -623,8 +623,8 @@ function resetAll() {
   el('horizonYears').value = 8;
   el('avgCagr').value = 25;
   el('cycleAmp').value = 40;
-  el('volStart').value = 120;
-  el('volEnd').value = 60;
+  el('volStart').value = 80;
+  el('volEnd').value = 20;
   el('startPriceOverride').value = '';
   el('result').style.display = 'none';
   el('tableContainer').innerHTML = '';
