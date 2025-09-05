@@ -214,141 +214,111 @@ function buildBaselineParams(startPrice, months, avgCagr) {
   - decreasing volatility preserved
   - halving bumps, cycles preserved
 */
-function simulatePath({startPrice, months, avgCagr, cycleAmp, volStart, volEnd, cyclePeriodMonths = 48}) {
+function simulatePath({startPrice, months, avgCagr, cycleAmp, volStart, volEnd, cyclePeriodMonths=48}) {
   const params = buildBaselineParams(startPrice, months, avgCagr);
   const { C, p, T0 } = params;
   const baseline = m => C * Math.pow(m + T0, p);
-  const basePrices = [];
-  for (let m=0; m<=months; m++) basePrices.push(baseline(m));
 
+  const basePrices = Array.from({length: months+1}, (_,m) => baseline(m));
   const bandFactor = 3;
-  const bandUpper = basePrices.map(v => v * bandFactor);
-  const bandLower = basePrices.map(v => Math.max(0.01, v / bandFactor));
+  const bandUpper = basePrices.map(v => v*bandFactor);
+  const bandLower = basePrices.map(v => Math.max(0.01, v/bandFactor));
   const ln = Math.log, exp = Math.exp;
 
-  const prices = new Array(months + 1);
+  const prices = new Array(months+1);
   prices[0] = Math.max(0.01, startPrice);
   let X = ln(prices[0]);
 
-  // mean reversion base speed
-  const baseTheta = 0.25; // slower monthly pull (so moves take months)
-  const thetaBoost = 0.6; // stronger pull during ramp-down / recovery
+  const baseTheta = 0.25;    // slower pull so rallies last longer
+  const thetaBoost = 0.6;    // boosted reversion after shocks
   let activeRevertMonths = 0;
 
   const phase = Math.random() * Math.PI * 2;
-  const halvingMonths = []; // compute halving months using years aligned to 2024,2028...
-  // assume current month = 0 corresponds to current year/month; halving years occur at Jan of 2024,2028...
-  // For simplicity we will mark halving every 48 months relative to month index 0 but ensure halving years align with calendar in rendering.
+  const halvingMonths = [];
   for (let k=1; k<=Math.ceil(months/48)+1; k++) halvingMonths.push(k*48);
 
-  // shock smoothing state
-  let shock = null; // {startMonth, peakMonth, endMonth, targetLog}
-  const monthlyShockBaseProb = 0.02; // lower chance to create a shock
-  const minRamp = 6; // months to reach peak (min)
-  const maxRamp = 14; // months to reach peak (max)
-  const avgFall = 9;   // months to fall back on average
+  // --- Shock state (ramps instead of instant jumps) ---
+  let shockActive = false;
+  let shockTarget = null;
+  let shockStrength = 0;
+  let shockDirection = 1; // +1 up, -1 down
 
-  // helper: clamp to band
-  function clampToBand(logPrice, m) {
-    const up = ln(bandUpper[m]);
-    const lo = ln(bandLower[m]);
-    if (logPrice > up) return up;
-    if (logPrice < lo) return lo;
-    return logPrice;
+  const monthlyShockProb = 0.02;     // rarer
+  const shockRamp = 3 + Math.floor(Math.random()*4);  // 3–6 months ramp
+  const shockDecay = 4 + Math.floor(Math.random()*5); // 4–8 months decay
+
+  function clampToBand(logPrice,m){
+    const up = ln(bandUpper[m]), lo = ln(bandLower[m]);
+    return Math.max(lo, Math.min(up, logPrice));
   }
 
-  // For each month, produce log-return composed of
-  // baseline drift + cycleMonthly + halvingBonus + OU mean-reversion component + noise + optional shock ramp
   for (let m=1; m<=months; m++) {
     const lnBase_m = ln(Math.max(1e-9, basePrices[m]));
     const lnBase_m1 = ln(Math.max(1e-9, basePrices[m-1]));
     const baselineDrift = lnBase_m - lnBase_m1;
 
-    // cyclical component (smoothed)
-    const cycleAnnual = cycleAmp * Math.sin(2 * Math.PI * (m / cyclePeriodMonths) + phase);
-    const cycleMonthly = Math.log(Math.max(1e-9, 1 + cycleAnnual)) / 12;
+    // Cycle
+    const cycleAnnual = cycleAmp * Math.sin(2*Math.PI*(m/cyclePeriodMonths)+phase);
+    const cycleMonthly = Math.log(1 + cycleAnnual) / 12;
 
-    // halving soft bump
+    // Halving bonus
     let halvingBonus = 0;
     for (const hm of halvingMonths) {
       const dist = Math.abs(m - hm);
-      if (dist <= 10) { // widen halving influence a bit for smoother rise/fall
+      if (dist <= 6) {
         const peak = 0.08;
-        const bump = peak * Math.exp(-(dist*dist)/(2 * 5 * 5));
-        halvingBonus += Math.log(1 + bump) / 12;
+        halvingBonus += Math.log(1 + peak*Math.exp(-dist*dist/18)) / 12;
       }
     }
 
-    // decreasing volatility (annual -> monthly)
+    // Volatility
     const tFrac = m / Math.max(1, months);
-    const annVol = volStart * (1 - tFrac) + volEnd * tFrac;
-    const monthlySigma = annVol / Math.sqrt(12);
+    const annVol = volStart*(1 - tFrac) + volEnd*tFrac;
+    let monthlySigma = annVol / Math.sqrt(12);
 
-    // mean reversion speed (we will bias toward ln(baseline))
-    const theta = activeRevertMonths > 0 ? thetaBoost : baseTheta;
+    // Add **minimum wiggle** (avoid flatline)
+    const minWiggle = 0.05 + Math.random()*0.10; // 5–15%
+    monthlySigma = Math.max(monthlySigma, minWiggle);
 
-    // noise
-    const eps = randn() * monthlySigma;
+    const theta = activeRevertMonths>0 ? thetaBoost : baseTheta;
+    const eps = randn()*monthlySigma;
 
-    // base OU-like update preserving baseline drift:
-    // Xnext_base = X + theta*(lnBase_m - X) + baselineDrift + cycleMonthly + halvingBonus + eps
-    let Xnext = X + theta * (lnBase_m - X) + baselineDrift + cycleMonthly + halvingBonus + eps;
+    let Xnext = X + theta*(lnBase_m - X) + baselineDrift + cycleMonthly + halvingBonus + eps;
 
-    // Possibly start a new shock if none active (rare)
-    if (!shock && Math.random() < monthlyShockBaseProb) {
-      // choose upward or downward shock
-      const up = Math.random() < 0.5;
-      const rampUp = Math.floor(minRamp + Math.random() * (maxRamp - minRamp)); // months to peak
-      const rampDown = Math.floor(Math.max(4, avgFall + (Math.random() * 6 - 3))); // months to fall
-      const peakMonth = m + rampUp;
-      const endMonth = peakMonth + rampDown;
-      const targetLog = up ? ln(bandUpper[Math.min(peakMonth, bandUpper.length-1)]) : ln(bandLower[Math.min(peakMonth, bandLower.length-1)]);
-      shock = { startMonth: m, peakMonth, endMonth, targetLog, up, rampUp, rampDown };
+    // --- Handle shocks (smooth ramp & fall) ---
+    if (!shockActive && Math.random() < monthlyShockProb) {
+      shockActive = true;
+      shockDirection = Math.random() < 0.5 ? -1 : +1;
+      shockStrength = 0.0;
+      shockTarget = shockDirection > 0 ? ln(bandUpper[m]) : ln(bandLower[m]);
+      activeRevertMonths = shockRamp + shockDecay;
     }
 
-    // If shock active, compute a smooth ramp contribution using a logistic/linear blend
-    if (shock) {
-      // ramp progress: before peak -> 0..1, after peak -> 1..0
-      if (m <= shock.peakMonth) {
-        const frac = (m - shock.startMonth) / Math.max(1, shock.rampUp);
-        // ease-in-out using smoothstep
-        const s = 3*frac*frac - 2*frac*frac*frac;
-        // move Xnext toward target by fraction s (additive move in log-space)
-        Xnext = Xnext * 1; // keep base then blend
-        Xnext = X + s * (shock.targetLog - X); // linear blend from current log X to targetLog over rampUp months
-      } else if (m <= shock.endMonth) {
-        const frac = (m - shock.peakMonth) / Math.max(1, shock.rampDown);
-        const s = 1 - (3*frac*frac - 2*frac*frac*frac); // ease back to baseline
-        Xnext = X + s * (shock.targetLog - X);
+    if (shockActive) {
+      if (shockStrength < 1.0) {
+        // ramping up
+        shockStrength += 1.0/shockRamp;
       } else {
-        // shock ended
-        shock = null;
-        activeRevertMonths = Math.max(activeRevertMonths, 2); // short boosted reversion
+        // decaying down
+        shockStrength -= 1.0/shockDecay;
+        if (shockStrength <= 0) {
+          shockActive = false;
+          shockStrength = 0;
+        }
       }
+      // blend baseline + shock target
+      Xnext = (1-shockStrength)*Xnext + shockStrength*shockTarget;
     }
 
-    // clamp and update active revert months
-    const clamped = clampToBand(Xnext, Math.min(m, bandUpper.length-1));
-    if (clamped !== Xnext) {
-      Xnext = clamped;
-      activeRevertMonths = Math.max(activeRevertMonths, 2);
-    }
-
-    // step forward and decay active revert
-    X = Xnext;
-    if (activeRevertMonths > 0) activeRevertMonths--;
+    const clamped = clampToBand(Xnext,m);
+    X = clamped;
+    if (activeRevertMonths>0) activeRevertMonths--;
 
     prices[m] = Math.max(0.01, exp(X));
   }
 
-  // final safety clamp
-  for (let m=0; m<=months; m++) {
-    prices[m] = Math.min(Math.max(prices[m], bandLower[m]), bandUpper[m]);
-  }
-
   return { prices, basePrices, params, halvingMonths, bandLower, bandUpper };
 }
-
 // strategies
 function calcStrategies(prices, totalInvest, months) {
   const monthlyInstall = totalInvest / months;
