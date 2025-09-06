@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BitThreads — Bitcoin T-Shirts & Apparel</title>
+  <meta name="description" content="Premium Bitcoin T-shirts, hoodies and streetwear. Limited drops, quality prints, fast shipping." />
+  <meta name="author" content="BitThreads" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#f59e0b; /* bitcoin gold */
+      --muted:#94a3b8;
+      --glass: rgba(255,255,255,0.03);
+      --radius:14px;
+      --shadow: 0 6px 20px rgba(2,6,23,0.6);
+      --max-width:1200px;
+      --ease:cubic-bezier(.2,.9,.3,1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: linear-gradient(180deg,#071126 0%, #071425 60%, #031021 100%);
+      color: #e6eef8;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+      padding:36px 18px;
+      display:flex;
+      justify-content:center;
+    }
+    .site{
+      width:100%;
+      max-width:var(--max-width);
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      margin-bottom:28px;
+    }
+    .logo{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      text-decoration:none;
+      color:inherit;
+    }
+    .logo svg{width:48px;height:48px;flex:0 0 48px}
+    .brand{
+      line-height:1;
+    }
+    .brand h1{font-family: "Space Grotesk", Inter; font-size:20px; margin:0; letter-spacing:0.6px}
+    .brand p{margin:0;font-size:12px;color:var(--muted)}
+    .nav{
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+    .btn{
+      background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--accent);
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+    }
+    .btn:active{transform:translateY(1px)}
+    .hero{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      padding:28px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,0.03);
+      display:flex;
+      gap:20px;
+      align-items:center;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+    .hero-left{flex:1;min-width:260px}
+    .hero h2{font-size:28px;margin:0 0 8px 0;}
+    .hero p{color:var(--muted); margin:0 0 12px 0}
+    .cta-row{display:flex;gap:12px; align-items:center}
+    .search{
+      display:flex;
+      background:var(--card);
+      border-radius:12px;
+      padding:8px;
+      gap:8px;
+      align-items:center;
+      width:100%;
+      max-width:520px;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .search input{
+      background:transparent;
+      border:0;
+      outline:0;
+      color:inherit;
+      flex:1;
+      padding:8px;
+      font-size:14px;
+    }
+    .hero-right{
+      width:340px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      position:relative;
+    }
+    .product-hero{
+      width:280px;
+      height:280px;
+      border-radius:20px;
+      background:linear-gradient(135deg, rgba(245,158,11,0.12), rgba(255,255,255,0.02));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 12px 40px rgba(245,158,11,0.08);
+      transform:rotate(-6deg);
+    }
+    .product-hero img{width:75%; height:75%; object-fit:contain; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));}
+    main{margin-top:6px}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+      gap:18px;
+      margin:18px 0 28px 0;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border-radius:14px;
+      padding:12px;
+      border:1px solid rgba(255,255,255,0.03);
+      transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+    }
+    .card:hover{transform:translateY(-6px)}
+    .card .thumb{
+      width:100%;
+      height:160px;
+      border-radius:10px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--glass);
+      margin-bottom:10px;
+    }
+    .card .thumb img{width:100%;height:100%;object-fit:cover}
+    .meta{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .meta h3{margin:0;font-size:16px}
+    .price{font-weight:700;color:var(--accent)}
+    .options{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+    .chip{
+      padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);font-size:13px;cursor:pointer
+    }
+    .chip.selected{outline:2px solid rgba(245,158,11,0.12);box-shadow:0 6px 18px rgba(245,158,11,0.06)}
+    .card .actions{display:flex;gap:8px;margin-top:12px}
+    .small{padding:8px 10px;border-radius:10px;font-size:13px}
+    /* Cart drawer */
+    .cart-toggle{position:relative}
+    .cart-count{
+      position:absolute;
+      top:-8px;right:-8px;
+      background:var(--accent);
+      color:#06121a;
+      font-weight:700;
+      font-size:12px;
+      padding:6px 8px;border-radius:999px;border:2px solid rgba(255,255,255,0.03)
+    }
+    .drawer{
+      position:fixed;
+      right:18px;
+      top:84px;
+      width:360px;
+      max-width:calc(100% - 36px);
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border-radius:14px;
+      padding:16px;
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 20px 60px rgba(2,6,23,0.6);
+      transform:translateY(10px);
+      transition:opacity .18s var(--ease), transform .18s var(--ease);
+      z-index:60;
+    }
+    .drawer.hidden{opacity:0;pointer-events:none;transform:translateY(14px) scale(.995)}
+    .cart-list{display:flex;flex-direction:column;gap:12px;max-height:360px;overflow:auto;padding-right:6px}
+    .cart-item{display:flex;gap:10px;align-items:center}
+    .cart-item img{width:64px;height:64px;border-radius:8px;object-fit:cover}
+    .qty{display:flex;gap:6px;align-items:center}
+    .muted{color:var(--muted);font-size:13px}
+    footer{
+      margin-top:18px;padding:20px;border-radius:12px;background:transparent;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:12px
+    }
+    .badge{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:999px;border:1px solid rgba(255,255,255,0.02);font-size:13px;color:var(--muted)}
+    /* responsive */
+    @media (max-width:880px){
+      header{flex-direction:column;align-items:flex-start;gap:12px}
+      .hero{flex-direction:column;align-items:stretch}
+      .hero-right{width:100%;display:flex;justify-content:center}
+      .drawer{right:12px;top:auto;bottom:18px;left:12px;width:auto}
+    }
+    /* checkout modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:80;
+    }
+    .modal{
+      width:560px;max-width:94%;background:linear-gradient(180deg,#071324,#061220);border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);
+    }
+    .row{display:flex;gap:12px;align-items:center}
+    input[type="number"], input[type="text"], input[type="email"], select{
+      width:100%;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);color:inherit
+    }
+    .small-muted{font-size:13px;color:var(--muted)}
+    .hero-badge{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:999px;border:1px solid rgba(255,255,255,0.02);font-weight:600;color:var(--accent)}
+  </style>
+</head>
+<body>
+  <div class="site" role="application" aria-label="BitThreads Bitcoin T-shirt store">
+    <header>
+      <a class="logo" href="#" aria-label="Go to home">
+        <!-- Simple Bitcoin logo -->
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" x2="1">
+              <stop offset="0" stop-color="#ffd27a"/>
+              <stop offset="1" stop-color="#ff9f1c"/>
+            </linearGradient>
+          </defs>
+          <circle cx="32" cy="32" r="30" fill="url(#g)" />
+          <path d="M33.6 18.4c-4.8 0-8.8 2.4-9.6 6.4-1.6 7.2 8 6.8 8.8 9.6.8 3.2-6.4 2.4-5.6 6.4 1.6 6.4 14.4 5.6 17.6 1.6 2.4-3.2-1.6-4.8-3.2-5.6 2.4-.8 4.8-2.4 5.6-5.6 1.6-6.4-5.6-14.4-13.6-14.4z" fill="#0b1220" fill-opacity="0.95"/>
+        </svg>
+        <div class="brand">
+          <h1>BitThreads</h1>
+          <p>Bitcoin apparel — limited drops</p>
+        </div>
+      </a>
+
+      <nav class="nav" aria-label="Primary">
+        <button class="btn" id="collectionsBtn" title="Collections">Collections</button>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="cart-toggle" style="position:relative">
+            <button class="btn" id="openCartBtn" aria-controls="cart-drawer" aria-expanded="false" aria-haspopup="dialog">
+              Cart
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-left:6px">
+                <path d="M3 3h2l.4 2M7 13h10l3-8H6.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                <circle cx="10" cy="20" r="1.6" fill="currentColor"/><circle cx="18" cy="20" r="1.6" fill="currentColor"/>
+              </svg>
+            </button>
+            <div id="cartCount" class="cart-count" aria-hidden="true" style="display:none">0</div>
+          </div>
+
+          <button class="btn" id="accountBtn" title="Account">Sign in</button>
+        </div>
+      </nav>
+    </header>
+
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-left">
+        <div class="hero-badge">Limited Drop • Free shipping over $75</div>
+        <h2 id="heroTitle">Bitcoin shirts crafted for diamond hands</h2>
+        <p>Premium cotton tees and cut-and-sew streetwear for Bitcoin believers. Fast worldwide shipping — secure materials, eco-friendly prints.</p>
+        <div style="margin-top:12px" class="cta-row">
+          <div class="search" role="search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:.9"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <input id="searchInput" placeholder="Search tees, hoodies, drops..." aria-label="Search products" />
+            <button class="btn small" id="searchBtn">Search</button>
+          </div>
+          <button class="btn" id="viewAllBtn">Shop all</button>
+        </div>
+
+        <div style="margin-top:14px">
+          <span class="small-muted">Trustpilot</span>
+          <span style="margin-left:8px" class="badge">4.8 ★★★★★</span>
+        </div>
+      </div>
+
+      <div class="hero-right" aria-hidden="true">
+        <div class="product-hero" title="Featured bitcoin tee">
+          <img src="https://images.unsplash.com/photo-1556909210-2e78a8a9a9f3?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=a1e6c9e3b4fcbdbf8ef4a3f1d6a5d8d9" alt="Featured bitcoin t-shirt mockup">
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <h3 style="margin:8px 0 14px 0">Featured products</h3>
+
+      <div class="grid" id="productGrid" aria-live="polite">
+        <!-- JS injects product cards -->
+      </div>
+
+      <section aria-labelledby="whyTitle" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:12px">
+        <div style="flex:1;min-width:220px;padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.03)">
+          <h4 id="whyTitle">Why BitThreads?</h4>
+          <ul style="margin:6px 0 0 18px;color:var(--muted)">
+            <li>Super-soft ring-spun cotton, ethically sourced</li>
+            <li>Water-based eco inks — vivid but breathable</li>
+            <li>Secure checkout & fast shipping (tracked)</li>
+          </ul>
+        </div>
+
+        <div style="flex:1;min-width:220px;padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.03)">
+          <h4>Limited drops</h4>
+          <p class="small-muted" style="margin:6px 0 0 0">New designs every month — subscribe to get early access to drops and discounts.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="muted">© <span id="year"></span> BitThreads • Crafted with ♥ for the Bitcoin community.</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a class="small-muted" href="#">Privacy</a>
+        <a class="small-muted" href="#">Terms</a>
+        <a class="small-muted" href="#">Contact</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Cart drawer -->
+  <aside id="cart-drawer" class="drawer hidden" role="dialog" aria-modal="false" aria-label="Shopping cart">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <strong>Your cart</strong>
+      <button id="closeCart" class="btn small">Close</button>
+    </div>
+    <div id="cartList" class="cart-list" aria-live="polite">
+      <div class="muted">No items yet — add something awesome.</div>
+    </div>
+
+    <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div class="small-muted">Subtotal</div>
+        <div id="subtotal" style="font-weight:700;margin-top:6px">$0.00</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn small" id="clearCartBtn">Clear</button>
+        <button class="btn small" id="checkoutBtn">Checkout</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Checkout modal (hidden by default) -->
+  <div id="modalRoot" aria-hidden="true"></div>
+
+  <script>
+    // Product data: customize images & descriptions as you like.
+    const PRODUCTS = [
+      {
+        id: 'btc-tee-01',
+        name: 'Diamond Hands Tee — Black',
+        price: 29.00,
+        img: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b5a0fb3c4a2e1d8a4b7f3b3e8f9a7e1',
+        colors:['Black','Charcoal'],
+        sizes:['S','M','L','XL','XXL'],
+        desc:'Ring-spun cotton, direct-to-garment print. Fits true-to-size.'
+      },
+      {
+        id: 'btc-tee-02',
+        name: 'Satoshi Classic — White',
+        price: 27.00,
+        img: 'https://images.unsplash.com/photo-1533227268428-f9ed0900fb3b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=6cb72ab8f9c87e6c7c25f3ff1bd8c7df',
+        colors:['White','Sand'],
+        sizes:['S','M','L','XL'],
+        desc:'Minimal Satoshi symbol chest print. Lightweight.'
+      },
+      {
+        id: 'btc-hoodie-01',
+        name: 'Block Hoodie — Charcoal',
+        price: 58.00,
+        img: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=9b4f44b6a469b9f6c3c3f8f9c5a3d8b1',
+        colors:['Charcoal','Dark Navy'],
+        sizes:['M','L','XL'],
+        desc:'Heavyweight fleece, brushed interior, oversized fit.'
+      },
+      {
+        id: 'btc-tee-03',
+        name: 'Logotype Tee — Olive',
+        price: 31.00,
+        img: 'https://images.unsplash.com/photo-1576831681258-8b09dbb2b05a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2bb1a7b2f9f6a5c8a0a9f3b0b7b6c5c2',
+        colors:['Olive','Sand'],
+        sizes:['S','M','L'],
+        desc:'Modern streetwear cut with embroidered logo.'
+      }
+    ];
+
+    // Utilities
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const format = n => '$' + n.toFixed(2);
+
+    // Render products
+    const grid = $('#productGrid');
+    function renderProducts(list){
+      grid.innerHTML = '';
+      list.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="thumb" aria-hidden="true">
+            <img src="${p.img}" alt="${p.name}">
+          </div>
+          <div class="meta">
+            <h3>${p.name}</h3>
+            <div class="price">${format(p.price)}</div>
+          </div>
+          <div class="small-muted" style="margin-top:6px">${p.desc}</div>
+          <div class="options" aria-hidden="true" style="margin-top:8px">
+            <div class="chip">${p.colors[0]}</div>
+            <div class="chip">${p.sizes[0]}</div>
+          </div>
+          <div class="actions">
+            <button class="btn small" data-action="quick" data-id="${p.id}">Quick view</button>
+            <button class="btn small" data-action="add" data-id="${p.id}">Add to cart</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+    renderProducts(PRODUCTS);
+
+    // Cart (localStorage-backed)
+    const CART_KEY = 'bt_cart_v1';
+    function loadCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch(e){ return []; } }
+    function saveCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+    function findProduct(id){ return PRODUCTS.find(p => p.id === id); }
+
+    function addToCart(id, opts = {size:null,color:null,qty:1}){
+      const cart = loadCart();
+      const idx = cart.findIndex(i => i.id === id && i.size === opts.size && i.color === opts.color);
+      if(idx > -1){
+        cart[idx].qty += opts.qty;
+      } else {
+        cart.push({ id, size: opts.size || findProduct(id).sizes[0], color: opts.color || findProduct(id).colors[0], qty: opts.qty || 1 });
+      }
+      saveCart(cart);
+      renderCart();
+    }
+
+    function removeFromCart(index){
+      const cart = loadCart();
+      cart.splice(index,1);
+      saveCart(cart);
+      renderCart();
+    }
+
+    function updateQty(index, qty){
+      const cart = loadCart();
+      if(!cart[index]) return;
+      cart[index].qty = Math.max(1, Number(qty) || 1);
+      saveCart(cart);
+      renderCart();
+    }
+
+    function clearCart(){ localStorage.removeItem(CART_KEY); renderCart(); }
+
+    // Cart drawer UI
+    const cartDrawer = $('#cart-drawer');
+    const cartCount = $('#cartCount');
+    const openCartBtn = $('#openCartBtn');
+    const closeCartBtn = $('#closeCart');
+    const checkoutBtn = $('#checkoutBtn');
+    const clearCartBtn = $('#clearCartBtn');
+
+    openCartBtn.addEventListener('click', () => {
+      const open = cartDrawer.classList.toggle('hidden');
+      // Toggle expanded state for accessibility
+      const expanded = open ? false : true;
+      openCartBtn.setAttribute('aria-expanded', expanded);
+      renderCart();
+    });
+    closeCartBtn.addEventListener('click', () => {
+      cartDrawer.classList.add('hidden');
+      openCartBtn.setAttribute('aria-expanded', false);
+    });
+    clearCartBtn.addEventListener('click', () => {
+      if(confirm('Clear cart?')) clearCart();
+    });
+
+    function renderCart(){
+      const cartList = $('#cartList');
+      const cart = loadCart();
+      cartList.innerHTML = '';
+      if(cart.length === 0){
+        cartList.innerHTML = '<div class="muted">Your cart is empty — add a tee!</div>';
+        cartCount.style.display = 'none';
+        $('#subtotal').textContent = format(0);
+        return;
+      }
+      cartCount.style.display = 'inline-block';
+      cartCount.textContent = cart.reduce((s,i) => s + i.qty, 0);
+
+      cart.forEach((item, idx) => {
+        const product = findProduct(item.id);
+        const el = document.createElement('div');
+        el.className = 'cart-item';
+        el.innerHTML = `
+          <img src="${product.img}" alt="${product.name}">
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:700">${product.name}</div>
+                <div class="small-muted">${item.size} • ${item.color}</div>
+              </div>
+              <div style="text-align:right">
+                <div class="price">${format(product.price * item.qty)}</div>
+              </div>
+            </div>
+            <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+              <div class="qty">
+                <button class="btn small" data-action="dec" data-idx="${idx}">−</button>
+                <input aria-label="Quantity" data-idx="${idx}" type="number" value="${item.qty}" min="1" style="width:56px;padding:6px;border-radius:8px">
+                <button class="btn small" data-action="inc" data-idx="${idx}">+</button>
+              </div>
+              <div>
+                <button class="btn small" data-action="remove" data-idx="${idx}">Remove</button>
+              </div>
+            </div>
+          </div>
+        `;
+        cartList.appendChild(el);
+      });
+
+      // Events
+      cartList.querySelectorAll('[data-action]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const action = btn.getAttribute('data-action');
+          const idx = Number(btn.getAttribute('data-idx'));
+          if(action === 'remove') removeFromCart(idx);
+          if(action === 'dec') updateQty(idx, Math.max(1, loadCart()[idx].qty - 1));
+          if(action === 'inc') updateQty(idx, loadCart()[idx].qty + 1);
+        });
+      });
+      cartList.querySelectorAll('input[type="number"]').forEach(inp => {
+        inp.addEventListener('change', e => {
+          const idx = Number(inp.getAttribute('data-idx'));
+          updateQty(idx, Number(inp.value));
+        });
+      });
+
+      const subtotalVal = cart.reduce((s,i) => {
+        const p = findProduct(i.id);
+        return s + (p.price * i.qty);
+      }, 0);
+      $('#subtotal').textContent = format(subtotalVal);
+    }
+
+    // Add-to-cart and quick view handlers
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('[data-action]');
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      if(action === 'add' && id){
+        addToCart(id);
+        cartDrawer.classList.remove('hidden');
+        openCartBtn.setAttribute('aria-expanded', true);
+      }
+      if(action === 'quick' && id){
+        openQuickView(id);
+      }
+    });
+
+    // Quick view modal and checkout modal builder
+    const modalRoot = $('#modalRoot');
+
+    function openQuickView(id){
+      const p = findProduct(id);
+      showModal(`
+        <div style="display:flex;gap:16px;align-items:stretch">
+          <div style="flex:1">
+            <img src="${p.img}" alt="${p.name}" style="width:100%;height:300px;object-fit:cover;border-radius:10px">
+          </div>
+          <div style="width:320px">
+            <h3 style="margin-top:0">${p.name}</h3>
+            <div class="price">${format(p.price)}</div>
+            <p class="small-muted">${p.desc}</p>
+            <div style="margin-top:8px">
+              <label class="small-muted">Color</label>
+              <div style="display:flex;gap:8px;margin-top:6px">
+                ${p.colors.map(c => `<button class="chip" data-color="${c}">${c}</button>`).join('')}
+              </div>
+            </div>
+            <div style="margin-top:8px">
+              <label class="small-muted">Size</label>
+              <div style="display:flex;gap:8px;margin-top:6px">
+                ${p.sizes.map(s => `<button class="chip" data-size="${s}">${s}</button>`).join('')}
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button class="btn" id="addQuick">Add to cart</button>
+              <button class="btn" id="buyNow">Buy now</button>
+            </div>
+          </div>
+        </div>
+      `, () => {
+        // open callback: wire up chips
+        let chosenColor = p.colors[0];
+        let chosenSize = p.sizes[0];
+        modalRoot.querySelectorAll('[data-color]').forEach(b => {
+          b.addEventListener('click', () => {
+            chosenColor = b.getAttribute('data-color');
+            modalRoot.querySelectorAll('[data-color]').forEach(x=>x.classList.remove('selected'));
+            b.classList.add('selected');
+          });
+        });
+        modalRoot.querySelectorAll('[data-size]').forEach(b => {
+          b.addEventListener('click', () => {
+            chosenSize = b.getAttribute('data-size');
+            modalRoot.querySelectorAll('[data-size]').forEach(x=>x.classList.remove('selected'));
+            b.classList.add('selected');
+          });
+        });
+        $('#addQuick').addEventListener('click', () => {
+          addToCart(p.id, {size:chosenSize, color:chosenColor, qty:1});
+          closeModal();
+          cartDrawer.classList.remove('hidden');
+        });
+        $('#buyNow').addEventListener('click', () => {
+          addToCart(p.id, {size:chosenSize, color:chosenColor, qty:1});
+          closeModal();
+          openCheckout();
+        });
+      });
+    }
+
+    function showModal(innerHtml, onOpen){
+      modalRoot.innerHTML = `
+        <div class="modal-backdrop" role="presentation">
+          <div class="modal" role="dialog" aria-modal="true">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <strong>Product</strong>
+              <button class="btn small" id="modalClose">Close</button>
+            </div>
+            <div id="modalInner">${innerHtml}</div>
+          </div>
+        </div>
+      `;
+      modalRoot.setAttribute('aria-hidden','false');
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      modalRoot.querySelector('.modal-backdrop').addEventListener('click', (e) => {
+        if(e.target.classList.contains('modal-backdrop')) closeModal();
+      });
+      if(typeof onOpen === 'function') onOpen();
+    }
+    function closeModal(){
+      modalRoot.innerHTML = '';
+      modalRoot.setAttribute('aria-hidden','true');
+    }
+
+    // Checkout flow (mock)
+    function openCheckout(){
+      const cart = loadCart();
+      if(cart.length === 0) return alert('Cart empty.');
+      const subtotal = cart.reduce((s,i) => {
+        const p = findProduct(i.id);
+        return s + (p.price * i.qty);
+      }, 0);
+
+      showModal(`
+        <div style="display:flex;gap:14px;flex-direction:column">
+          <h3 style="margin:0">Checkout</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:220px">
+              <label class="small-muted">Full name</label>
+              <input id="fullName" type="text" placeholder="Satoshi Nakamoto" />
+              <label class="small-muted" style="margin-top:8px">Email</label>
+              <input id="email" type="email" placeholder="you@example.com" />
+              <label class="small-muted" style="margin-top:8px">Shipping address</label>
+              <input id="address" type="text" placeholder="123 Bitcoin Ave" />
+            </div>
+            <div style="width:220px">
+              <div class="small-muted">Order summary</div>
+              <div style="margin-top:8px;border-radius:10px;padding:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)">
+                ${cart.map(i => {
+                  const p = findProduct(i.id);
+                  return `<div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="max-width:140px">${p.name} × ${i.qty}</div><div>${format(p.price * i.qty)}</div></div>`;
+                }).join('')}
+                <hr style="border:none;height:1px;background:rgba(255,255,255,0.03);margin:8px 0">
+                <div style="display:flex;justify-content:space-between;font-weight:700">${format(subtotal)}</div>
+              </div>
+              <div style="margin-top:12px">
+                <div class="small-muted">Payment</div>
+                <select id="paymentMethod" style="margin-top:6px">
+                  <option value="card">Credit / Debit (mock)</option>
+                  <option value="btc">Pay with Bitcoin (mock)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:8px">
+            <button class="btn small" id="cancelCheckout">Cancel</button>
+            <button class="btn" id="confirmCheckout">Place order</button>
+          </div>
+        </div>
+      `, () => {
+        $('#cancelCheckout').addEventListener('click', closeModal);
+        $('#confirmCheckout').addEventListener('click', () => {
+          // Basic validation
+          const name = $('#fullName').value.trim();
+          const email = $('#email').value.trim();
+          const addr = $('#address').value.trim();
+          if(!name || !email || !addr){
+            alert('Please complete name, email and shipping address.');
+            return;
+          }
+          // Mock order processing
+          closeModal();
+          clearCart();
+          alert('Order placed! (This is a demo — integrate a real payment gateway to process payments.)');
+        });
+      });
+    }
+
+    checkoutBtn.addEventListener('click', openCheckout);
+
+    // Search + shop all
+    $('#searchBtn').addEventListener('click', () => {
+      const q = $('#searchInput').value.trim().toLowerCase();
+      if(!q) return renderProducts(PRODUCTS);
+      const filtered = PRODUCTS.filter(p => (p.name + ' ' + p.desc).toLowerCase().includes(q));
+      renderProducts(filtered);
+    });
+    $('#viewAllBtn').addEventListener('click', () => renderProducts(PRODUCTS));
+    $('#collectionsBtn').addEventListener('click', () => alert('Collections coming soon — subscribe for early access :)'));
+
+    // Attach add-to-cart from outside (e.g., product grid)
+    // Initial render of cart
+    renderCart();
+
+    // keyboard accessibility: Esc closes modals and cart
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') {
+        closeModal();
+        cartDrawer.classList.add('hidden');
+        openCartBtn.setAttribute('aria-expanded', false);
+      }
+    });
+
+    // year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Expose for dev console (optional)
+    window.BitThreads = {
+      PRODUCTS, addToCart, loadCart, renderCart, clearCart
+    };
+  </script>
+</body>
+</html>
