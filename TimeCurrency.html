@@ -95,12 +95,38 @@
     border-radius:10px;
     padding:12px;
   }
-  .kpi .card.primary {
-    border:1px solid rgba(0,0,0,.12);
-    box-shadow:0 1px 10px rgba(0,0,0,.06);
+
+  /* Emphasis tuning for Time Currency results */
+  .kpi .card.hero {
+    border: 1px solid rgba(0,0,0,.16);
+    box-shadow: 0 2px 14px rgba(0,0,0,.08);
   }
+  .kpi .card.hero .big {
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.05;
+  }
+  .kpi .card.hero .small {
+    font-size: 14px;
+    color: #333;
+    margin-top: 6px;
+  }
+
+  /* Make “detail” cards feel secondary */
+  .kpi .card.muted {
+    background: #f8f9fa;
+    border: 1px solid rgba(0,0,0,.06);
+  }
+  .kpi .card.muted .big {
+    font-size: 18px;
+    font-weight: 800;
+    color: #666;
+  }
+  .kpi .card.muted .small {
+    color: #777;
+  }
+
   .kpi .card .big { font-size:20px; font-weight:800; }
-  .kpi .card.primary .big { font-size:24px; }
   .kpi .card .small { font-size:13px; color:#666; margin-top:4px; }
 
   .callout {
@@ -121,7 +147,6 @@
     <h1>Time Currency</h1>
     <p>Turn your remaining waking hours into a number you can’t ignore.</p>
 
-    <!-- Home link (mimics index nav link style) -->
     <nav class="page-nav">
       <ul>
         <li><a href="index.html">← Home</a></li>
@@ -445,12 +470,7 @@ function ensureTrailingEmptyRow() {
 
 /**
  * ------------------------------------------------------------
- * Core Calculation
- * ------------------------------------------------------------
- * Owned time is computed ONLY as waking hours.
- * Sleep is excluded by using waking-hours-per-day (16).
- * Output conversions (months/years) are based on standard calendar
- * time units (24h/day), so the “years” and “months” read naturally.
+ * Core Calculation (unchanged math; stronger impact display)
  * ------------------------------------------------------------
  */
 function calculate() {
@@ -496,7 +516,7 @@ function calculate() {
       </div>
 
       <div class="kpi" style="margin-top:10px;">
-        <div class="card primary">
+        <div class="card hero">
           <div class="big">${formatInt(bonusOwnedHours)} hours</div>
           <div class="small">Estimated waking hours already lived beyond this model</div>
         </div>
@@ -537,33 +557,36 @@ function calculate() {
 
   resultDiv.style.display = 'block';
   resultDiv.innerHTML = `
-    <div style="font-weight:900; font-size:18px;">⏳ Your Remaining Owned Time Left</div>
+    <div style="font-weight:900; font-size:18px;">⏳ Your Remaining Owned Time</div>
     <div class="note" style="margin-top:6px;">
       <strong>Owned time = waking hours remaining − work hours remaining</strong>.
       <br/>${retireNote}
     </div>
 
     <div class="kpi">
-      <div class="card primary">
+      <div class="card muted">
         <div class="big">${formatInt(ownedWakingHours)} hours</div>
         <div class="small">Owned waking hours remaining (sleep excluded)</div>
       </div>
-      <div class="card">
-        <div class="big">${ownedMonths.toFixed(1)} months</div>
-        <div class="small">Months of time represented by your owned waking hours</div>
+
+      <div class="card muted">
+        <div class="big">${formatInt(workHoursRemaining)} work hours</div>
+        <div class="small">Remaining work hours until retirement</div>
       </div>
+
       <div class="card">
         <div class="big">${ownedYears.toFixed(1)} years</div>
-        <div class="small">Years of time represented by your owned waking hours</div>
+        <div class="small">Same owned time shown as years</div>
       </div>
-      <div class="card">
-        <div class="big">${formatInt(workHoursRemaining)} hours</div>
-        <div class="small">Work hours remaining until retirement (0 if already retired)</div>
+
+      <div class="card hero">
+        <div class="big">${ownedMonths.toFixed(1)} months remaining</div>
+        <div class="small">Your remaining owned time (waking hours only)</div>
       </div>
     </div>
 
     <div class="callout">
-      <strong>Interpretation:</strong> This number is your real budget — the time you can actually spend awake and free.
+      <strong>Interpretation:</strong> This is your real budget — the time you can actually spend awake and free.
       <div class="divider"></div>
       <div><strong>Challenge:</strong> Pick one thing you’ve been postponing and spend <strong>1 owned hour</strong> on it today.</div>
       <div class="note" style="margin-top:8px;">
@@ -602,9 +625,6 @@ function validate(i) {
   if (!i.countryCode) err.push('Select a country.');
   if (!['male','female'].includes(i.gender)) err.push('Select a gender.');
   if (isNaN(i.retireAge) || i.retireAge < 0 || i.retireAge > 120) err.push('Retirement age must be 0–120.');
-
-  // If retireAge < age, we assume already retired (no error)
-
   if (isNaN(i.workHoursPerWeek) || i.workHoursPerWeek < 0 || i.workHoursPerWeek > 120) err.push('Work hours/week must be 0–120.');
   if (isNaN(i.weeksPerYearWorked) || i.weeksPerYearWorked < 0 || i.weeksPerYearWorked > 52) err.push('Weeks/year must be 0–52.');
   return err;
