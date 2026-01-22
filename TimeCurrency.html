@@ -107,6 +107,7 @@
         <div class="form-group">
           <label for="retireAge">Retirement Age (years)</label>
           <input type="number" id="retireAge" min="0" max="120" step="0.5" value="65" required>
+          <div class="note">If this is lower than your current age, we assume you’re already retired.</div>
         </div>
 
         <div class="form-group">
@@ -162,25 +163,13 @@
   </footer>
 
 <script>
-/**
- * ------------------------------------------------------------
- * Life Expectancy Data (Snapshot ~50+ common countries)
- * Stored locally (no fetch, no JSON file needed)
- * Values are life expectancy at birth (years), male/female.
- * ------------------------------------------------------------
- */
 const LIFE_DATA = {
-  meta: {
-    source: "Snapshot (stored in-page)",
-    note: "Life expectancy values are point-in-time estimates. Update if you want newer numbers."
-  },
+  meta: { source: "Snapshot (stored in-page)", note: "Point-in-time estimates." },
   countries: [
-    // North America
     { name:"United States", code:"USA", male:74.8, female:80.2 },
     { name:"Canada", code:"CAN", male:79.8, female:83.9 },
     { name:"Mexico", code:"MEX", male:70.9, female:76.9 },
 
-    // Central America / Caribbean
     { name:"El Salvador", code:"SLV", male:69.4, female:77.4 },
     { name:"Guatemala", code:"GTM", male:69.1, female:75.5 },
     { name:"Honduras", code:"HND", male:69.6, female:75.6 },
@@ -189,7 +178,6 @@ const LIFE_DATA = {
     { name:"Dominican Republic", code:"DOM", male:70.7, female:77.4 },
     { name:"Jamaica", code:"JAM", male:71.4, female:76.1 },
 
-    // South America
     { name:"Brazil", code:"BRA", male:71.9, female:79.2 },
     { name:"Argentina", code:"ARG", male:72.4, female:79.3 },
     { name:"Chile", code:"CHL", male:77.0, female:82.3 },
@@ -198,7 +186,6 @@ const LIFE_DATA = {
     { name:"Ecuador", code:"ECU", male:73.0, female:79.1 },
     { name:"Uruguay", code:"URY", male:73.9, female:81.4 },
 
-    // Western / Northern Europe
     { name:"United Kingdom", code:"GBR", male:79.1, female:82.8 },
     { name:"Ireland", code:"IRL", male:80.2, female:83.8 },
     { name:"France", code:"FRA", male:79.5, female:85.3 },
@@ -215,7 +202,6 @@ const LIFE_DATA = {
     { name:"Denmark", code:"DNK", male:79.5, female:83.4 },
     { name:"Finland", code:"FIN", male:79.0, female:84.3 },
 
-    // Central / Eastern Europe
     { name:"Poland", code:"POL", male:73.9, female:81.7 },
     { name:"Czechia", code:"CZE", male:75.9, female:81.9 },
     { name:"Hungary", code:"HUN", male:72.7, female:79.4 },
@@ -224,7 +210,6 @@ const LIFE_DATA = {
     { name:"Russia", code:"RUS", male:66.1, female:76.1 },
     { name:"Ukraine", code:"UKR", male:67.0, female:76.7 },
 
-    // Middle East
     { name:"Turkey", code:"TUR", male:75.6, female:81.3 },
     { name:"Israel", code:"ISR", male:81.0, female:84.6 },
     { name:"Saudi Arabia", code:"SAU", male:74.6, female:77.8 },
@@ -232,14 +217,12 @@ const LIFE_DATA = {
     { name:"Qatar", code:"QAT", male:79.2, female:82.1 },
     { name:"Jordan", code:"JOR", male:72.0, female:76.1 },
 
-    // South Asia
     { name:"India", code:"IND", male:67.5, female:70.2 },
     { name:"Pakistan", code:"PAK", male:64.2, female:66.3 },
     { name:"Bangladesh", code:"BGD", male:71.2, female:74.3 },
     { name:"Sri Lanka", code:"LKA", male:73.4, female:79.3 },
     { name:"Nepal", code:"NPL", male:69.3, female:72.5 },
 
-    // East / Southeast Asia
     { name:"China", code:"CHN", male:75.0, female:80.7 },
     { name:"Japan", code:"JPN", male:81.6, female:87.5 },
     { name:"South Korea", code:"KOR", male:81.2, female:86.7 },
@@ -250,11 +233,9 @@ const LIFE_DATA = {
     { name:"Indonesia", code:"IDN", male:68.9, female:73.3 },
     { name:"Malaysia", code:"MYS", male:72.7, female:77.4 },
 
-    // Oceania
     { name:"Australia", code:"AUS", male:81.3, female:85.2 },
     { name:"New Zealand", code:"NZL", male:80.0, female:83.6 },
 
-    // Africa
     { name:"South Africa", code:"ZAF", male:60.7, female:67.3 },
     { name:"Nigeria", code:"NGA", male:53.5, female:55.0 },
     { name:"Egypt", code:"EGY", male:69.1, female:74.2 },
@@ -265,14 +246,8 @@ const LIFE_DATA = {
   ]
 };
 
-/**
- * ------------------------------------------------------------
- * Chronic Conditions (30 common) — ballpark “years subtracted”
- * ------------------------------------------------------------
- */
 const DISEASES = [
   { key:"none", label:"None / Prefer not to say", yearsLost:0 },
-
   { key:"hypertension", label:"Hypertension (high blood pressure)", yearsLost:1.0 },
   { key:"type2diabetes", label:"Type 2 Diabetes", yearsLost:3.5 },
   { key:"type1diabetes", label:"Type 1 Diabetes", yearsLost:6.0 },
@@ -305,14 +280,8 @@ const DISEASES = [
   { key:"other_chronic", label:"Other chronic condition (unspecified)", yearsLost:1.5 }
 ];
 
-// Diminishing-returns weights for multiple conditions (1st counts most)
 const WEIGHTS = [1.0, 0.60, 0.45, 0.35, 0.25, 0.20, 0.15, 0.12, 0.10, 0.08];
 
-/**
- * ------------------------------------------------------------
- * UI Setup
- * ------------------------------------------------------------
- */
 document.getElementById('calcButton').addEventListener('click', (e) => {
   e.preventDefault();
   calculate();
@@ -338,14 +307,13 @@ function populateCountrySelect() {
     sel.appendChild(opt);
   });
 
-  // Default to USA if present
   if (sorted.some(x => x.code === 'USA')) sel.value = 'USA';
 }
 
 function initDiseaseRows() {
   const container = document.getElementById('diseaseContainer');
   container.innerHTML = '';
-  addDiseaseRow(true); // first row, no remove button
+  addDiseaseRow(true);
 }
 
 function addDiseaseRow(isFirst=false) {
@@ -360,11 +328,9 @@ function addDiseaseRow(isFirst=false) {
     opt.textContent = d.label;
     select.appendChild(opt);
   });
-
   select.value = 'none';
 
   select.addEventListener('change', () => {
-    // If this is the last row and user picked something real, auto-add a new row
     const rows = [...container.querySelectorAll('.disease-row')];
     const isLast = rows[rows.length - 1] === row;
     if (isLast && select.value !== 'none') addDiseaseRow(false);
@@ -397,11 +363,6 @@ function ensureTrailingEmptyRow() {
   if (lastSelect && lastSelect.value !== 'none') addDiseaseRow(false);
 }
 
-/**
- * ------------------------------------------------------------
- * Core Calculation
- * ------------------------------------------------------------
- */
 function calculate() {
   const errorDiv = document.getElementById('error');
   const resultDiv = document.getElementById('result');
@@ -416,30 +377,19 @@ function calculate() {
 
   const inputs = getInputs();
   const errs = validate(inputs);
-  if (errs.length) {
-    errorDiv.textContent = errs.join(' ');
-    return;
-  }
+  if (errs.length) { errorDiv.textContent = errs.join(' '); return; }
 
   const baseLE = lookupLifeExpectancy(inputs.countryCode, inputs.gender);
-  if (!baseLE) {
-    errorDiv.textContent = 'Life expectancy data not found for that country.';
-    return;
-  }
+  if (!baseLE) { errorDiv.textContent = 'Life expectancy data not found for that country.'; return; }
 
-  // Condition impact (diminishing returns)
   const conditionYearsLost = computeConditionYearsLost(inputs.diseases);
-
-  // Estimated age at death (simple model)
   const estimatedDeathAge = clamp(baseLE - conditionYearsLost, 30, 130);
 
   const remainingYears = estimatedDeathAge - inputs.age;
-
-  const sleepHours = 8; // fixed
+  const sleepHours = 8;
   const wakingHoursPerDay = 24 - sleepHours;
 
   if (remainingYears <= 0) {
-    // Bonus time page
     const bonusYears = Math.abs(remainingYears);
     const bonusOwnedHours = bonusYears * 365.25 * wakingHoursPerDay;
 
@@ -454,20 +404,15 @@ function calculate() {
     return;
   }
 
-  // Total waking time remaining
   const totalWakingHoursRemaining = remainingYears * 365.25 * wakingHoursPerDay;
 
-  // Work time “not owned” until retirement
+  // ✅ FIX: If current age >= retire age, treat as already retired
   const yearsToRetire = Math.max(0, inputs.retireAge - inputs.age);
   const workHoursRemaining = yearsToRetire * inputs.workHoursPerWeek * inputs.weeksPerYearWorked;
 
-  // Owned waking hours remaining (floor at 0)
   const ownedWakingHoursRemaining = Math.max(0, totalWakingHoursRemaining - workHoursRemaining);
-
-  // Convert owned waking hours into "months of owned life"
   const ownedMonths = ownedWakingHoursRemaining / (wakingHoursPerDay * (365.25/12));
 
-  // Friendly extras
   const ownedDays = ownedWakingHoursRemaining / wakingHoursPerDay;
   const ownedYears = ownedDays / 365.25;
 
@@ -495,7 +440,7 @@ function calculate() {
       </div>
       <div class="card">
         <div class="big">${formatInt(workHoursRemaining)} hours</div>
-        <div class="small">Work hours remaining until retirement (not counted as owned)</div>
+        <div class="small">Work hours remaining until retirement (0 if already retired)</div>
       </div>
     </div>
 
@@ -529,7 +474,10 @@ function validate(i) {
   if (!i.countryCode) err.push('Select a country.');
   if (!['male','female'].includes(i.gender)) err.push('Select a gender.');
   if (isNaN(i.retireAge) || i.retireAge < 0 || i.retireAge > 120) err.push('Retirement age must be 0–120.');
-  if (i.retireAge < i.age) err.push('Retirement age must be ≥ current age.');
+
+  // ✅ FIX: remove the old rule that blocked retireAge < age
+  // If retireAge < age, we assume already retired.
+
   if (isNaN(i.workHoursPerWeek) || i.workHoursPerWeek < 0 || i.workHoursPerWeek > 120) err.push('Work hours/week must be 0–120.');
   if (isNaN(i.weeksPerYearWorked) || i.weeksPerYearWorked < 0 || i.weeksPerYearWorked > 52) err.push('Weeks/year must be 0–52.');
   return err;
@@ -545,7 +493,6 @@ function lookupLifeExpectancy(code, gender) {
 function computeConditionYearsLost(keys) {
   if (!keys || !keys.length) return 0;
 
-  // Get yearsLost values, sort biggest-first
   const values = keys
     .map(k => DISEASES.find(d => d.key === k))
     .filter(Boolean)
@@ -553,22 +500,17 @@ function computeConditionYearsLost(keys) {
     .filter(x => typeof x === 'number' && x > 0)
     .sort((a,b) => b - a);
 
-  // Apply diminishing weights
   let total = 0;
   for (let idx = 0; idx < values.length; idx++) {
     const w = (idx < WEIGHTS.length) ? WEIGHTS[idx] : WEIGHTS[WEIGHTS.length - 1];
     total += values[idx] * w;
   }
-
-  // Cap to avoid absurd results from stacking
   return clamp(total, 0, 25);
 }
 
 function resetAll() {
   document.getElementById('age').value = '';
   document.getElementById('gender').value = 'male';
-
-  // Default to USA if present
   if ([...document.querySelectorAll('#country option')].some(o => o.value === 'USA')) {
     document.getElementById('country').value = 'USA';
   } else {
