@@ -100,7 +100,7 @@
         <div class="form-group">
           <label for="country">Country</label>
           <select id="country">
-            <option value="">Loading countries…</option>
+            <option value="">Select a country…</option>
           </select>
         </div>
 
@@ -139,9 +139,9 @@
 
       <div class="note">
         Data model:
-        <strong>Base life expectancy</strong> comes from your country + sex dataset (recommended: World Bank male/female life expectancy at birth indicators).  [oai_citation:1‡DataBank](https://databank.worldbank.org/metadataglossary/world-development-indicators/series/SP.DYN.LE00.MA.IN?utm_source=chatgpt.com)
-        <br/>
-        Then we subtract estimated impact from selected chronic conditions (ballpark). This is motivational/educational, not medical advice.
+        <strong>Base life expectancy</strong> comes from your country + sex snapshot (stored in this page).
+        Then we subtract estimated impact from selected chronic conditions (ballpark).
+        This is motivational/educational, not medical advice.
         <br/>
         “Owned time” = waking hours remaining − work hours remaining until retirement.
       </div>
@@ -164,27 +164,104 @@
 <script>
 /**
  * ------------------------------------------------------------
- * Life Expectancy Data
+ * Life Expectancy Data (Snapshot ~50+ common countries)
+ * Stored locally (no fetch, no JSON file needed)
+ * Values are life expectancy at birth (years), male/female.
  * ------------------------------------------------------------
- * Expected JSON format at: /data/life_expectancy.json
- * {
- *   "meta": {"source":"World Bank WDI","year":2022},
- *   "countries": [
- *     {"name":"United States","code":"USA","male":74.8,"female":80.2},
- *     ...
- *   ]
- * }
- *
- * Fallback sample is used if fetch fails.
  */
-
-let LIFE_DATA = {
-  meta: { source: "fallback-sample", year: null },
+const LIFE_DATA = {
+  meta: {
+    source: "Snapshot (stored in-page)",
+    note: "Life expectancy values are point-in-time estimates. Update if you want newer numbers."
+  },
   countries: [
-    { name: "United States", code: "USA", male: 74.8, female: 80.2 },
-    { name: "Canada", code: "CAN", male: 79.8, female: 83.9 },
-    { name: "El Salvador", code: "SLV", male: 69.4, female: 77.4 },
-    { name: "Philippines", code: "PHL", male: 67.2, female: 73.7 }
+    // North America
+    { name:"United States", code:"USA", male:74.8, female:80.2 },
+    { name:"Canada", code:"CAN", male:79.8, female:83.9 },
+    { name:"Mexico", code:"MEX", male:70.9, female:76.9 },
+
+    // Central America / Caribbean
+    { name:"El Salvador", code:"SLV", male:69.4, female:77.4 },
+    { name:"Guatemala", code:"GTM", male:69.1, female:75.5 },
+    { name:"Honduras", code:"HND", male:69.6, female:75.6 },
+    { name:"Costa Rica", code:"CRI", male:78.4, female:83.2 },
+    { name:"Panama", code:"PAN", male:74.3, female:80.4 },
+    { name:"Dominican Republic", code:"DOM", male:70.7, female:77.4 },
+    { name:"Jamaica", code:"JAM", male:71.4, female:76.1 },
+
+    // South America
+    { name:"Brazil", code:"BRA", male:71.9, female:79.2 },
+    { name:"Argentina", code:"ARG", male:72.4, female:79.3 },
+    { name:"Chile", code:"CHL", male:77.0, female:82.3 },
+    { name:"Colombia", code:"COL", male:72.3, female:78.5 },
+    { name:"Peru", code:"PER", male:72.7, female:78.4 },
+    { name:"Ecuador", code:"ECU", male:73.0, female:79.1 },
+    { name:"Uruguay", code:"URY", male:73.9, female:81.4 },
+
+    // Western / Northern Europe
+    { name:"United Kingdom", code:"GBR", male:79.1, female:82.8 },
+    { name:"Ireland", code:"IRL", male:80.2, female:83.8 },
+    { name:"France", code:"FRA", male:79.5, female:85.3 },
+    { name:"Germany", code:"DEU", male:78.7, female:83.3 },
+    { name:"Netherlands", code:"NLD", male:79.9, female:83.2 },
+    { name:"Belgium", code:"BEL", male:78.9, female:83.8 },
+    { name:"Switzerland", code:"CHE", male:81.8, female:85.6 },
+    { name:"Austria", code:"AUT", male:78.9, female:84.0 },
+    { name:"Spain", code:"ESP", male:80.3, female:85.6 },
+    { name:"Portugal", code:"PRT", male:78.9, female:84.7 },
+    { name:"Italy", code:"ITA", male:80.7, female:85.3 },
+    { name:"Sweden", code:"SWE", male:80.7, female:84.4 },
+    { name:"Norway", code:"NOR", male:80.8, female:84.4 },
+    { name:"Denmark", code:"DNK", male:79.5, female:83.4 },
+    { name:"Finland", code:"FIN", male:79.0, female:84.3 },
+
+    // Central / Eastern Europe
+    { name:"Poland", code:"POL", male:73.9, female:81.7 },
+    { name:"Czechia", code:"CZE", male:75.9, female:81.9 },
+    { name:"Hungary", code:"HUN", male:72.7, female:79.4 },
+    { name:"Romania", code:"ROU", male:71.6, female:79.2 },
+    { name:"Greece", code:"GRC", male:78.6, female:83.9 },
+    { name:"Russia", code:"RUS", male:66.1, female:76.1 },
+    { name:"Ukraine", code:"UKR", male:67.0, female:76.7 },
+
+    // Middle East
+    { name:"Turkey", code:"TUR", male:75.6, female:81.3 },
+    { name:"Israel", code:"ISR", male:81.0, female:84.6 },
+    { name:"Saudi Arabia", code:"SAU", male:74.6, female:77.8 },
+    { name:"United Arab Emirates", code:"ARE", male:78.6, female:80.8 },
+    { name:"Qatar", code:"QAT", male:79.2, female:82.1 },
+    { name:"Jordan", code:"JOR", male:72.0, female:76.1 },
+
+    // South Asia
+    { name:"India", code:"IND", male:67.5, female:70.2 },
+    { name:"Pakistan", code:"PAK", male:64.2, female:66.3 },
+    { name:"Bangladesh", code:"BGD", male:71.2, female:74.3 },
+    { name:"Sri Lanka", code:"LKA", male:73.4, female:79.3 },
+    { name:"Nepal", code:"NPL", male:69.3, female:72.5 },
+
+    // East / Southeast Asia
+    { name:"China", code:"CHN", male:75.0, female:80.7 },
+    { name:"Japan", code:"JPN", male:81.6, female:87.5 },
+    { name:"South Korea", code:"KOR", male:81.2, female:86.7 },
+    { name:"Singapore", code:"SGP", male:81.3, female:85.7 },
+    { name:"Thailand", code:"THA", male:71.7, female:79.4 },
+    { name:"Vietnam", code:"VNM", male:69.4, female:77.6 },
+    { name:"Philippines", code:"PHL", male:67.2, female:73.7 },
+    { name:"Indonesia", code:"IDN", male:68.9, female:73.3 },
+    { name:"Malaysia", code:"MYS", male:72.7, female:77.4 },
+
+    // Oceania
+    { name:"Australia", code:"AUS", male:81.3, female:85.2 },
+    { name:"New Zealand", code:"NZL", male:80.0, female:83.6 },
+
+    // Africa
+    { name:"South Africa", code:"ZAF", male:60.7, female:67.3 },
+    { name:"Nigeria", code:"NGA", male:53.5, female:55.0 },
+    { name:"Egypt", code:"EGY", male:69.1, female:74.2 },
+    { name:"Morocco", code:"MAR", male:73.5, female:76.7 },
+    { name:"Kenya", code:"KEN", male:62.9, female:67.6 },
+    { name:"Ghana", code:"GHA", male:62.4, female:65.7 },
+    { name:"Ethiopia", code:"ETH", male:65.7, female:69.5 }
   ]
 };
 
@@ -192,11 +269,6 @@ let LIFE_DATA = {
  * ------------------------------------------------------------
  * Chronic Conditions (30 common) — ballpark “years subtracted”
  * ------------------------------------------------------------
- * These are NOT medical-grade and will vary widely by severity,
- * treatment adherence, age of onset, comorbidities, etc.
- * Keep them conservative and use diminishing returns.
- *
- * You can refine these over time with better sources (GBD/WHO/etc).
  */
 const DISEASES = [
   { key:"none", label:"None / Prefer not to say", yearsLost:0 },
@@ -249,25 +321,9 @@ document.getElementById('resetButton').addEventListener('click', () => resetAll(
 
 init();
 
-async function init() {
-  // Load life expectancy data from repo snapshot (recommended)
-  await loadLifeData();
-
+function init() {
   populateCountrySelect();
   initDiseaseRows();
-}
-
-async function loadLifeData() {
-  try {
-    const res = await fetch('./data/life_expectancy.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error('No data file');
-    const json = await res.json();
-    if (!json || !Array.isArray(json.countries)) throw new Error('Bad data format');
-    LIFE_DATA = json;
-  } catch (e) {
-    // fallback stays in place
-    console.warn('Using fallback life expectancy sample. Add ./data/life_expectancy.json for full coverage.');
-  }
 }
 
 function populateCountrySelect() {
@@ -282,9 +338,8 @@ function populateCountrySelect() {
     sel.appendChild(opt);
   });
 
-  // Nice default if USA exists
-  const usa = sorted.find(x => x.code === 'USA');
-  if (usa) sel.value = 'USA';
+  // Default to USA if present
+  if (sorted.some(x => x.code === 'USA')) sel.value = 'USA';
 }
 
 function initDiseaseRows() {
@@ -313,7 +368,6 @@ function addDiseaseRow(isFirst=false) {
     const rows = [...container.querySelectorAll('.disease-row')];
     const isLast = rows[rows.length - 1] === row;
     if (isLast && select.value !== 'none') addDiseaseRow(false);
-    // If user sets a non-last row back to none, we won't auto-remove — keep predictable UX
   });
 
   row.appendChild(select);
@@ -326,7 +380,6 @@ function addDiseaseRow(isFirst=false) {
     remove.title = 'Remove this condition';
     remove.addEventListener('click', () => {
       row.remove();
-      // Always ensure there is a trailing empty row
       ensureTrailingEmptyRow();
     });
     row.appendChild(remove);
@@ -370,7 +423,7 @@ function calculate() {
 
   const baseLE = lookupLifeExpectancy(inputs.countryCode, inputs.gender);
   if (!baseLE) {
-    errorDiv.textContent = 'Life expectancy data not found for that country. Add /data/life_expectancy.json.';
+    errorDiv.textContent = 'Life expectancy data not found for that country.';
     return;
   }
 
@@ -378,8 +431,6 @@ function calculate() {
   const conditionYearsLost = computeConditionYearsLost(inputs.diseases);
 
   // Estimated age at death (simple model)
-  // NOTE: This is based on "life expectancy at birth" which is not conditional on current age.
-  // It's a motivational estimator, not actuarial precision.
   const estimatedDeathAge = clamp(baseLE - conditionYearsLost, 30, 130);
 
   const remainingYears = estimatedDeathAge - inputs.age;
@@ -390,7 +441,8 @@ function calculate() {
   if (remainingYears <= 0) {
     // Bonus time page
     const bonusYears = Math.abs(remainingYears);
-    const bonusOwnedHours = bonusYears * 365.25 * wakingHoursPerDay; // "owned" assumes no work subtraction past LE
+    const bonusOwnedHours = bonusYears * 365.25 * wakingHoursPerDay;
+
     bonusDiv.style.display = 'block';
     bonusText.innerHTML = `
       You’ve exceeded this estimate by <strong>${bonusYears.toFixed(1)} years</strong>.<br/>
@@ -413,7 +465,6 @@ function calculate() {
   const ownedWakingHoursRemaining = Math.max(0, totalWakingHoursRemaining - workHoursRemaining);
 
   // Convert owned waking hours into "months of owned life"
-  // months = ownedHours / (wakingHoursPerDay * (365.25/12))
   const ownedMonths = ownedWakingHoursRemaining / (wakingHoursPerDay * (365.25/12));
 
   // Friendly extras
@@ -516,8 +567,13 @@ function computeConditionYearsLost(keys) {
 function resetAll() {
   document.getElementById('age').value = '';
   document.getElementById('gender').value = 'male';
-  if (document.querySelector('#country option[value="USA"]')) document.getElementById('country').value = 'USA';
-  else document.getElementById('country').value = '';
+
+  // Default to USA if present
+  if ([...document.querySelectorAll('#country option')].some(o => o.value === 'USA')) {
+    document.getElementById('country').value = 'USA';
+  } else {
+    document.getElementById('country').value = '';
+  }
 
   document.getElementById('retireAge').value = 65;
   document.getElementById('workHoursPerWeek').value = 40;
