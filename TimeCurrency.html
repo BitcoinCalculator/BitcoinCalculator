@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Time Currency — Remaining Owned Time Calculator</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background:#f9fafb;
+    color:#1a1a1a;
+    margin:0;
+  }
+  header {
+    background:#111;
+    color:#f9fafb;
+    padding:1.6rem 1rem;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+  }
+  header h1 { margin:0 0 .25rem; font-size:2rem; }
+  header p { margin:0; opacity:.9; }
+
+  main { max-width:1100px; margin:2rem auto; padding:0 20px; }
+
+  .calculator { background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08);}
+  .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:14px;}
+  .form-group { display:flex; flex-direction:column; }
+  label { font-weight:600; color:#333; margin-bottom:6px;}
+
+  input[type="number"], select {
+    padding:10px; border:1px solid #ccc; border-radius:8px; font-size:14px; background:#fff;
+  }
+
+  .btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  button {
+    border:0; padding:12px 16px; border-radius:8px; cursor:pointer;
+    font-size:15px; font-weight:700;
+  }
+  #calcButton { background:#f7931a; color:#fff; width:100%; margin-top:8px; }
+  #calcButton:hover { background:#e07c12; }
+  #resetButton { background:#6c757d; color:#fff; }
+  #resetButton:hover { background:#5a6268; }
+
+  #result, #error, #bonus { margin-top:16px; }
+  #result { display:none; background:#e9ecef; padding:14px; border-radius:8px;}
+  #bonus  { display:none; background:#e7f7ee; padding:14px; border-radius:8px; border:1px solid rgba(0,0,0,.06);}
+  #error  { color:#c62828; }
+
+  .note { font-size:13px; color:#666; margin-top:6px; line-height:1.35; }
+
+  .disease-row { display:flex; gap:10px; align-items:center; }
+  .disease-row select { flex: 1; }
+  .remove-btn {
+    background:#dc3545; color:#fff; padding:10px 12px; border-radius:8px; font-weight:800;
+  }
+  .remove-btn:hover { background:#b92b37; }
+
+  .kpi {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap:10px;
+    margin-top:12px;
+  }
+  .kpi .card {
+    background:#fff;
+    border:1px solid rgba(0,0,0,.06);
+    border-radius:10px;
+    padding:12px;
+  }
+  .kpi .card .big { font-size:20px; font-weight:800; }
+  .kpi .card .small { font-size:13px; color:#666; margin-top:4px; }
+
+  footer { text-align:center; padding:1.5rem; color:#666; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Time Currency</h1>
+    <p>Estimate how much waking time you truly own — before it’s spent.</p>
+  </header>
+
+  <main>
+    <div class="calculator">
+      <div class="grid">
+        <div class="form-group">
+          <label for="age">Current Age (years)</label>
+          <input type="number" id="age" min="0" max="120" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="country">Country</label>
+          <select id="country">
+            <option value="">Loading countries…</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="retireAge">Retirement Age (years)</label>
+          <input type="number" id="retireAge" min="0" max="120" step="0.5" value="65" required>
+        </div>
+
+        <div class="form-group">
+          <label for="workHoursPerWeek">Work Hours / Week</label>
+          <input type="number" id="workHoursPerWeek" min="0" max="120" step="0.5" value="40" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weeksPerYearWorked">Weeks Worked / Year</label>
+          <input type="number" id="weeksPerYearWorked" min="0" max="52" step="1" value="48" required>
+        </div>
+
+        <div class="form-group">
+          <label for="sleepHours">Sleep Hours / Day</label>
+          <input type="number" id="sleepHours" value="8" disabled>
+          <div class="note">Fixed at 8 for simplicity (waking time is your spendable currency).</div>
+        </div>
+
+        <div class="form-group">
+          <label>Chronic Conditions (auto-add)</label>
+          <div id="diseaseContainer"></div>
+          <div class="note">Pick a condition → a new dropdown appears for adding another. Remove if needed.</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="calcButton">Calculate Remaining Owned Time</button>
+        <button id="resetButton" type="button">Reset</button>
+      </div>
+
+      <div class="note">
+        Data model:
+        <strong>Base life expectancy</strong> comes from your country + sex dataset (recommended: World Bank male/female life expectancy at birth indicators).  [oai_citation:1‡DataBank](https://databank.worldbank.org/metadataglossary/world-development-indicators/series/SP.DYN.LE00.MA.IN?utm_source=chatgpt.com)
+        <br/>
+        Then we subtract estimated impact from selected chronic conditions (ballpark). This is motivational/educational, not medical advice.
+        <br/>
+        “Owned time” = waking hours remaining − work hours remaining until retirement.
+      </div>
+
+      <div id="error"></div>
+
+      <div id="bonus">
+        <div style="font-weight:900; font-size:18px;">🎉 Congratulations — you’re living on bonus time.</div>
+        <div id="bonusText" style="margin-top:8px;"></div>
+      </div>
+
+      <div id="result"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 The Bitcoiner's Calculators</p>
+  </footer>
+
+<script>
+/**
+ * ------------------------------------------------------------
+ * Life Expectancy Data
+ * ------------------------------------------------------------
+ * Expected JSON format at: /data/life_expectancy.json
+ * {
+ *   "meta": {"source":"World Bank WDI","year":2022},
+ *   "countries": [
+ *     {"name":"United States","code":"USA","male":74.8,"female":80.2},
+ *     ...
+ *   ]
+ * }
+ *
+ * Fallback sample is used if fetch fails.
+ */
+
+let LIFE_DATA = {
+  meta: { source: "fallback-sample", year: null },
+  countries: [
+    { name: "United States", code: "USA", male: 74.8, female: 80.2 },
+    { name: "Canada", code: "CAN", male: 79.8, female: 83.9 },
+    { name: "El Salvador", code: "SLV", male: 69.4, female: 77.4 },
+    { name: "Philippines", code: "PHL", male: 67.2, female: 73.7 }
+  ]
+};
+
+/**
+ * ------------------------------------------------------------
+ * Chronic Conditions (30 common) — ballpark “years subtracted”
+ * ------------------------------------------------------------
+ * These are NOT medical-grade and will vary widely by severity,
+ * treatment adherence, age of onset, comorbidities, etc.
+ * Keep them conservative and use diminishing returns.
+ *
+ * You can refine these over time with better sources (GBD/WHO/etc).
+ */
+const DISEASES = [
+  { key:"none", label:"None / Prefer not to say", yearsLost:0 },
+
+  { key:"hypertension", label:"Hypertension (high blood pressure)", yearsLost:1.0 },
+  { key:"type2diabetes", label:"Type 2 Diabetes", yearsLost:3.5 },
+  { key:"type1diabetes", label:"Type 1 Diabetes", yearsLost:6.0 },
+  { key:"coronary_artery_disease", label:"Coronary artery disease", yearsLost:4.0 },
+  { key:"heart_failure", label:"Heart failure", yearsLost:5.0 },
+  { key:"stroke_history", label:"Stroke (history of)", yearsLost:4.5 },
+  { key:"copd", label:"COPD", yearsLost:5.0 },
+  { key:"asthma_severe", label:"Asthma (severe/persistent)", yearsLost:1.0 },
+  { key:"chronic_kidney_disease", label:"Chronic kidney disease", yearsLost:5.0 },
+  { key:"cancer_history", label:"Cancer (history of / active)", yearsLost:4.0 },
+  { key:"cirrhosis", label:"Cirrhosis / chronic liver disease", yearsLost:6.0 },
+  { key:"hiv", label:"HIV", yearsLost:4.0 },
+  { key:"obesity", label:"Obesity", yearsLost:2.0 },
+  { key:"sleep_apnea", label:"Sleep apnea", yearsLost:1.0 },
+  { key:"depression_severe", label:"Depression (severe)", yearsLost:1.0 },
+  { key:"substance_use", label:"Substance use disorder", yearsLost:6.0 },
+  { key:"smoker", label:"Smoking (current)", yearsLost:7.0 },
+  { key:"high_cholesterol", label:"High cholesterol (uncontrolled)", yearsLost:1.0 },
+  { key:"afib", label:"Atrial fibrillation", yearsLost:2.0 },
+  { key:"autoimmune", label:"Autoimmune disease (e.g., RA/Lupus)", yearsLost:2.0 },
+  { key:"dementia_risk", label:"Neurodegenerative disease (risk/early)", yearsLost:4.0 },
+  { key:"parkinsons", label:"Parkinson’s disease", yearsLost:3.0 },
+  { key:"epilepsy", label:"Epilepsy", yearsLost:1.0 },
+  { key:"tb_history", label:"Tuberculosis (history/complications)", yearsLost:1.5 },
+  { key:"sickle_cell", label:"Sickle cell disease", yearsLost:15.0 },
+  { key:"hemophilia", label:"Hemophilia (moderate/severe)", yearsLost:2.0 },
+  { key:"ibd", label:"Inflammatory bowel disease", yearsLost:1.0 },
+  { key:"osteoporosis_severe", label:"Osteoporosis (severe)", yearsLost:0.5 },
+  { key:"anxiety_severe", label:"Anxiety disorder (severe)", yearsLost:0.5 },
+  { key:"other_chronic", label:"Other chronic condition (unspecified)", yearsLost:1.5 }
+];
+
+// Diminishing-returns weights for multiple conditions (1st counts most)
+const WEIGHTS = [1.0, 0.60, 0.45, 0.35, 0.25, 0.20, 0.15, 0.12, 0.10, 0.08];
+
+/**
+ * ------------------------------------------------------------
+ * UI Setup
+ * ------------------------------------------------------------
+ */
+document.getElementById('calcButton').addEventListener('click', (e) => {
+  e.preventDefault();
+  calculate();
+});
+document.getElementById('resetButton').addEventListener('click', () => resetAll());
+
+init();
+
+async function init() {
+  // Load life expectancy data from repo snapshot (recommended)
+  await loadLifeData();
+
+  populateCountrySelect();
+  initDiseaseRows();
+}
+
+async function loadLifeData() {
+  try {
+    const res = await fetch('./data/life_expectancy.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('No data file');
+    const json = await res.json();
+    if (!json || !Array.isArray(json.countries)) throw new Error('Bad data format');
+    LIFE_DATA = json;
+  } catch (e) {
+    // fallback stays in place
+    console.warn('Using fallback life expectancy sample. Add ./data/life_expectancy.json for full coverage.');
+  }
+}
+
+function populateCountrySelect() {
+  const sel = document.getElementById('country');
+  sel.innerHTML = '<option value="">Select a country…</option>';
+
+  const sorted = [...LIFE_DATA.countries].sort((a,b) => a.name.localeCompare(b.name));
+  sorted.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.code;
+    opt.textContent = c.name;
+    sel.appendChild(opt);
+  });
+
+  // Nice default if USA exists
+  const usa = sorted.find(x => x.code === 'USA');
+  if (usa) sel.value = 'USA';
+}
+
+function initDiseaseRows() {
+  const container = document.getElementById('diseaseContainer');
+  container.innerHTML = '';
+  addDiseaseRow(true); // first row, no remove button
+}
+
+function addDiseaseRow(isFirst=false) {
+  const container = document.getElementById('diseaseContainer');
+  const row = document.createElement('div');
+  row.className = 'disease-row';
+
+  const select = document.createElement('select');
+  DISEASES.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d.key;
+    opt.textContent = d.label;
+    select.appendChild(opt);
+  });
+
+  select.value = 'none';
+
+  select.addEventListener('change', () => {
+    // If this is the last row and user picked something real, auto-add a new row
+    const rows = [...container.querySelectorAll('.disease-row')];
+    const isLast = rows[rows.length - 1] === row;
+    if (isLast && select.value !== 'none') addDiseaseRow(false);
+    // If user sets a non-last row back to none, we won't auto-remove — keep predictable UX
+  });
+
+  row.appendChild(select);
+
+  if (!isFirst) {
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'remove-btn';
+    remove.textContent = '–';
+    remove.title = 'Remove this condition';
+    remove.addEventListener('click', () => {
+      row.remove();
+      // Always ensure there is a trailing empty row
+      ensureTrailingEmptyRow();
+    });
+    row.appendChild(remove);
+  }
+
+  container.appendChild(row);
+  ensureTrailingEmptyRow();
+}
+
+function ensureTrailingEmptyRow() {
+  const container = document.getElementById('diseaseContainer');
+  const rows = [...container.querySelectorAll('.disease-row')];
+  if (!rows.length) { addDiseaseRow(true); return; }
+  const lastSelect = rows[rows.length - 1].querySelector('select');
+  if (lastSelect && lastSelect.value !== 'none') addDiseaseRow(false);
+}
+
+/**
+ * ------------------------------------------------------------
+ * Core Calculation
+ * ------------------------------------------------------------
+ */
+function calculate() {
+  const errorDiv = document.getElementById('error');
+  const resultDiv = document.getElementById('result');
+  const bonusDiv = document.getElementById('bonus');
+  const bonusText = document.getElementById('bonusText');
+
+  errorDiv.textContent = '';
+  resultDiv.style.display = 'none';
+  bonusDiv.style.display = 'none';
+  resultDiv.innerHTML = '';
+  bonusText.innerHTML = '';
+
+  const inputs = getInputs();
+  const errs = validate(inputs);
+  if (errs.length) {
+    errorDiv.textContent = errs.join(' ');
+    return;
+  }
+
+  const baseLE = lookupLifeExpectancy(inputs.countryCode, inputs.gender);
+  if (!baseLE) {
+    errorDiv.textContent = 'Life expectancy data not found for that country. Add /data/life_expectancy.json.';
+    return;
+  }
+
+  // Condition impact (diminishing returns)
+  const conditionYearsLost = computeConditionYearsLost(inputs.diseases);
+
+  // Estimated age at death (simple model)
+  // NOTE: This is based on "life expectancy at birth" which is not conditional on current age.
+  // It's a motivational estimator, not actuarial precision.
+  const estimatedDeathAge = clamp(baseLE - conditionYearsLost, 30, 130);
+
+  const remainingYears = estimatedDeathAge - inputs.age;
+
+  const sleepHours = 8; // fixed
+  const wakingHoursPerDay = 24 - sleepHours;
+
+  if (remainingYears <= 0) {
+    // Bonus time page
+    const bonusYears = Math.abs(remainingYears);
+    const bonusOwnedHours = bonusYears * 365.25 * wakingHoursPerDay; // "owned" assumes no work subtraction past LE
+    bonusDiv.style.display = 'block';
+    bonusText.innerHTML = `
+      You’ve exceeded this estimate by <strong>${bonusYears.toFixed(1)} years</strong>.<br/>
+      That’s roughly <strong>${formatInt(bonusOwnedHours)} waking hours</strong> of bonus time already lived.
+      <div class="note" style="margin-top:8px;">
+        (This tool uses broad population averages. Real life is personal — keep stacking good decisions.)
+      </div>
+    `;
+    return;
+  }
+
+  // Total waking time remaining
+  const totalWakingHoursRemaining = remainingYears * 365.25 * wakingHoursPerDay;
+
+  // Work time “not owned” until retirement
+  const yearsToRetire = Math.max(0, inputs.retireAge - inputs.age);
+  const workHoursRemaining = yearsToRetire * inputs.workHoursPerWeek * inputs.weeksPerYearWorked;
+
+  // Owned waking hours remaining (floor at 0)
+  const ownedWakingHoursRemaining = Math.max(0, totalWakingHoursRemaining - workHoursRemaining);
+
+  // Convert owned waking hours into "months of owned life"
+  // months = ownedHours / (wakingHoursPerDay * (365.25/12))
+  const ownedMonths = ownedWakingHoursRemaining / (wakingHoursPerDay * (365.25/12));
+
+  // Friendly extras
+  const ownedDays = ownedWakingHoursRemaining / wakingHoursPerDay;
+  const ownedYears = ownedDays / 365.25;
+
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = `
+    <div style="font-weight:900; font-size:18px;">⏳ Your Remaining Owned Time</div>
+    <div class="note" style="margin-top:6px;">
+      Country+sex base: <strong>${baseLE.toFixed(1)}</strong> yrs
+      • Conditions: −<strong>${conditionYearsLost.toFixed(1)}</strong> yrs
+      → Estimated age at death: <strong>${estimatedDeathAge.toFixed(1)}</strong> yrs
+    </div>
+
+    <div class="kpi">
+      <div class="card">
+        <div class="big">${formatInt(ownedWakingHoursRemaining)} hours</div>
+        <div class="small">Owned waking hours remaining (after sleep + work subtraction)</div>
+      </div>
+      <div class="card">
+        <div class="big">${ownedMonths.toFixed(1)} months</div>
+        <div class="small">Owned months of life remaining (waking-time months)</div>
+      </div>
+      <div class="card">
+        <div class="big">${ownedYears.toFixed(1)} years</div>
+        <div class="small">Owned years remaining (waking-time converted)</div>
+      </div>
+      <div class="card">
+        <div class="big">${formatInt(workHoursRemaining)} hours</div>
+        <div class="small">Work hours remaining until retirement (not counted as owned)</div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:12px;">
+      Reminder: you spend this currency every minute you’re awake. The point isn’t fear — it’s focus.
+    </div>
+  `;
+}
+
+function getInputs() {
+  const v = (id) => document.getElementById(id).value;
+
+  const diseases = [...document.querySelectorAll('#diseaseContainer select')]
+    .map(s => s.value)
+    .filter(x => x && x !== 'none');
+
+  return {
+    age: parseFloat(v('age')),
+    gender: v('gender'),
+    countryCode: v('country'),
+    retireAge: parseFloat(v('retireAge')),
+    workHoursPerWeek: parseFloat(v('workHoursPerWeek')),
+    weeksPerYearWorked: parseFloat(v('weeksPerYearWorked')),
+    diseases
+  };
+}
+
+function validate(i) {
+  const err = [];
+  if (isNaN(i.age) || i.age < 0 || i.age > 120) err.push('Age must be 0–120.');
+  if (!i.countryCode) err.push('Select a country.');
+  if (!['male','female'].includes(i.gender)) err.push('Select a gender.');
+  if (isNaN(i.retireAge) || i.retireAge < 0 || i.retireAge > 120) err.push('Retirement age must be 0–120.');
+  if (i.retireAge < i.age) err.push('Retirement age must be ≥ current age.');
+  if (isNaN(i.workHoursPerWeek) || i.workHoursPerWeek < 0 || i.workHoursPerWeek > 120) err.push('Work hours/week must be 0–120.');
+  if (isNaN(i.weeksPerYearWorked) || i.weeksPerYearWorked < 0 || i.weeksPerYearWorked > 52) err.push('Weeks/year must be 0–52.');
+  return err;
+}
+
+function lookupLifeExpectancy(code, gender) {
+  const c = LIFE_DATA.countries.find(x => x.code === code);
+  if (!c) return null;
+  const le = gender === 'female' ? c.female : c.male;
+  return (typeof le === 'number' && isFinite(le)) ? le : null;
+}
+
+function computeConditionYearsLost(keys) {
+  if (!keys || !keys.length) return 0;
+
+  // Get yearsLost values, sort biggest-first
+  const values = keys
+    .map(k => DISEASES.find(d => d.key === k))
+    .filter(Boolean)
+    .map(d => d.yearsLost)
+    .filter(x => typeof x === 'number' && x > 0)
+    .sort((a,b) => b - a);
+
+  // Apply diminishing weights
+  let total = 0;
+  for (let idx = 0; idx < values.length; idx++) {
+    const w = (idx < WEIGHTS.length) ? WEIGHTS[idx] : WEIGHTS[WEIGHTS.length - 1];
+    total += values[idx] * w;
+  }
+
+  // Cap to avoid absurd results from stacking
+  return clamp(total, 0, 25);
+}
+
+function resetAll() {
+  document.getElementById('age').value = '';
+  document.getElementById('gender').value = 'male';
+  if (document.querySelector('#country option[value="USA"]')) document.getElementById('country').value = 'USA';
+  else document.getElementById('country').value = '';
+
+  document.getElementById('retireAge').value = 65;
+  document.getElementById('workHoursPerWeek').value = 40;
+  document.getElementById('weeksPerYearWorked').value = 48;
+
+  initDiseaseRows();
+
+  document.getElementById('error').textContent = '';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('bonus').style.display = 'none';
+}
+
+function clamp(x, a, b){ return Math.max(a, Math.min(b, x)); }
+function formatInt(n){ return Math.round(n).toLocaleString(); }
+</script>
+</body>
+</html>
