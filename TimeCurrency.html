@@ -69,8 +69,23 @@
     border-radius:10px;
     padding:12px;
   }
+  .kpi .card.primary {
+    border:1px solid rgba(0,0,0,.12);
+    box-shadow:0 1px 10px rgba(0,0,0,.06);
+  }
   .kpi .card .big { font-size:20px; font-weight:800; }
+  .kpi .card.primary .big { font-size:24px; }
   .kpi .card .small { font-size:13px; color:#666; margin-top:4px; }
+
+  .callout {
+    margin-top:14px;
+    background:#fff;
+    border:1px solid rgba(0,0,0,.08);
+    border-radius:10px;
+    padding:12px;
+  }
+  .callout strong { font-weight:900; }
+  .divider { height:1px; background:rgba(0,0,0,.08); margin:10px 0; }
 
   footer { text-align:center; padding:1.5rem; color:#666; }
 </style>
@@ -78,11 +93,18 @@
 <body>
   <header>
     <h1>Time Currency</h1>
-    <p>Estimate how much waking time you truly own — before it’s spent.</p>
+    <p>This is your most valuable currency.  Turn your remaining waking hours into a number you can’t ignore.</p>
   </header>
 
   <main>
     <div class="calculator">
+      <div class="note" style="margin-bottom:12px;">
+        <strong>What this measures:</strong> Your “owned time” is the waking time you still have, minus the waking time you’ll likely spend working until retirement.
+        <div class="note" style="margin-top:6px;">
+          This uses broad population averages and simplified assumptions. It’s meant for reflection and motivation — not medical or financial advice.
+        </div>
+      </div>
+
       <div class="grid">
         <div class="form-group">
           <label for="age">Current Age (years)</label>
@@ -123,11 +145,11 @@
         <div class="form-group">
           <label for="sleepHours">Sleep Hours / Day</label>
           <input type="number" id="sleepHours" value="8" disabled>
-          <div class="note">Fixed at 8 for simplicity (waking time is your spendable currency).</div>
+          <div class="note">Fixed at 8 for simplicity (sleep is not owned time).</div>
         </div>
 
         <div class="form-group">
-          <label>Chronic Conditions (auto-add)</label>
+          <label>Chronic Conditions (optional)</label>
           <div id="diseaseContainer"></div>
           <div class="note">Pick a condition → a new dropdown appears for adding another. Remove if needed.</div>
         </div>
@@ -139,18 +161,15 @@
       </div>
 
       <div class="note">
-        Data model:
-        <strong>Base life expectancy</strong> comes from your country + sex snapshot (stored in this page).
-        Then we subtract estimated impact from selected chronic conditions (ballpark).
-        This is motivational/educational, not medical advice.
+        <strong>Definition:</strong> Owned time = remaining <em>waking</em> hours − remaining work hours (until retirement).
         <br/>
-        “Owned time” = waking hours remaining − work hours remaining until retirement.
+        Life expectancy is a population average (at birth) adjusted by selected conditions (ballpark estimates).
       </div>
 
       <div id="error"></div>
 
       <div id="bonus">
-        <div style="font-weight:900; font-size:18px;">🎉 Congratulations — you’re living on bonus time.</div>
+        <div style="font-weight:900; font-size:18px;">You are living on bonus time.</div>
         <div id="bonusText" style="margin-top:8px;"></div>
       </div>
 
@@ -302,6 +321,7 @@ const DISEASES = [
   { key:"other_chronic", label:"Other chronic condition (unspecified)", yearsLost:1.5 }
 ];
 
+// Diminishing-returns weights for multiple conditions (1st counts most)
 const WEIGHTS = [1.0, 0.60, 0.45, 0.35, 0.25, 0.20, 0.15, 0.12, 0.10, 0.08];
 
 /**
@@ -395,9 +415,9 @@ function ensureTrailingEmptyRow() {
  * Core Calculation
  * ------------------------------------------------------------
  * Owned time is computed ONLY as waking hours.
- * Sleep is subtracted by using waking-hours-per-day (16).
+ * Sleep is excluded by using waking-hours-per-day (16).
  * Output conversions (months/years) are based on standard calendar
- * time units (24h/day), to avoid confusing "16-hour-day years".
+ * time units (24h/day), so the “years” and “months” read naturally.
  * ------------------------------------------------------------
  */
 function calculate() {
@@ -437,16 +457,32 @@ function calculate() {
 
     bonusDiv.style.display = 'block';
     bonusText.innerHTML = `
-      You’ve exceeded this estimate by <strong>${bonusYears.toFixed(1)} years</strong>.<br/>
-      That’s roughly <strong>${formatInt(bonusOwnedHours)} waking hours</strong> of bonus time already lived.
-      <div class="note" style="margin-top:8px;">
-        (This tool uses broad population averages. Real life is personal — keep stacking good decisions.)
+      <div class="note" style="margin-top:6px;">
+        Based on broad population averages, you have already lived beyond this estimate.
+        Models don’t define you — they just remove illusions.
+      </div>
+
+      <div class="kpi" style="margin-top:10px;">
+        <div class="card primary">
+          <div class="big">${formatInt(bonusOwnedHours)} hours</div>
+          <div class="small">Estimated waking hours already lived beyond this model</div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:12px;">
+        <strong>Perspective:</strong> If this truly is bonus time, every owned hour matters.
+        <div class="divider"></div>
+        <div>Pick one thing you’ve been postponing and spend <strong>1 owned hour</strong> on it today.</div>
+      </div>
+
+      <div class="note" style="margin-top:10px;">
+        This tool uses population-level data and simplified assumptions. Your real life is personal and still being written.
       </div>
     `;
     return;
   }
 
-  // 1) Total waking hours remaining (sleep already removed)
+  // 1) Total waking hours remaining (sleep already excluded)
   const totalWakingHoursRemaining = remainingCalendarYears * WAKING_HOURS_PER_YEAR;
 
   // 2) Subtract work hours until retirement (if already retired, yearsToRetire = 0)
@@ -456,25 +492,28 @@ function calculate() {
   // 3) Owned waking hours (the "Time Currency")
   const ownedWakingHours = Math.max(0, totalWakingHoursRemaining - workHoursRemaining);
 
-  // 4) Convert owned waking hours into standard calendar time units (24h/day) for readability
-  const HOURS_PER_YEAR = 24 * DAYS_PER_YEAR;           // 8766
-  const HOURS_PER_MONTH = HOURS_PER_YEAR / 12;         // 730.5
+  // 4) Convert owned waking hours into standard calendar units (24h/day) for readability
+  const HOURS_PER_YEAR = 24 * DAYS_PER_YEAR;   // 8766
+  const HOURS_PER_MONTH = HOURS_PER_YEAR / 12; // 730.5
   const ownedMonths = ownedWakingHours / HOURS_PER_MONTH;
   const ownedYears  = ownedWakingHours / HOURS_PER_YEAR;
+
+  const retireNote = (inputs.retireAge <= inputs.age)
+    ? "Already retired — no work time subtracted."
+    : "Work time subtracted until retirement.";
 
   resultDiv.style.display = 'block';
   resultDiv.innerHTML = `
     <div style="font-weight:900; font-size:18px;">⏳ Your Remaining Owned Time</div>
     <div class="note" style="margin-top:6px;">
-      Base life expectancy (country + gender): <strong>${baseLE.toFixed(1)}</strong> yrs
-      • Conditions: −<strong>${conditionYearsLost.toFixed(1)}</strong> yrs
-      → Estimated age at death: <strong>${estimatedDeathAge.toFixed(1)}</strong> yrs
+      <strong>Owned time = waking hours remaining − work hours remaining</strong>.
+      <br/>${retireNote}
     </div>
 
     <div class="kpi">
-      <div class="card">
+      <div class="card primary">
         <div class="big">${formatInt(ownedWakingHours)} hours</div>
-        <div class="small">Owned waking hours remaining (sleep excluded, work subtracted)</div>
+        <div class="small">Owned waking hours remaining (sleep excluded)</div>
       </div>
       <div class="card">
         <div class="big">${ownedMonths.toFixed(1)} months</div>
@@ -490,8 +529,18 @@ function calculate() {
       </div>
     </div>
 
+    <div class="callout">
+      <strong>Interpretation:</strong> This number is your real budget — the time you can actually spend awake and free.
+      <div class="divider"></div>
+      <div><strong>Challenge:</strong> Pick one thing you’ve been postponing and spend <strong>1 owned hour</strong> on it today.</div>
+      <div class="note" style="margin-top:8px;">
+        Assumptions used: base life expectancy <strong>${baseLE.toFixed(1)}</strong> yrs; condition adjustment
+        −<strong>${conditionYearsLost.toFixed(1)}</strong> yrs; estimated age at death <strong>${estimatedDeathAge.toFixed(1)}</strong> yrs.
+      </div>
+    </div>
+
     <div class="note" style="margin-top:12px;">
-      Reminder: you spend this currency every minute you’re awake. The point isn’t fear — it’s focus.
+      You don’t get more time. You only get more intention.
     </div>
   `;
 }
