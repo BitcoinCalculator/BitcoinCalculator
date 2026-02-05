@@ -41,12 +41,12 @@
   .page-nav a{
     text-decoration: none;
     font-weight: bold;
-    color: #f9fafb;
+    color: #f7931a; /* Home link default orange */
     transition: color 0.2s;
     font-size: clamp(0.9rem, 2.5vw, 1.1rem);
   }
   .page-nav a:hover{
-    color: #f7931a;
+    color: #ffffff; /* hover contrast on dark header */
   }
 
   main { max-width:1100px; margin:2rem auto; padding:0 20px; }
@@ -80,6 +80,35 @@
   th, td { text-align:right; padding:8px; border-bottom:1px solid #eee;}
   th { background:#f8f9fa; position:sticky; top:0; }
   td:first-child, th:first-child { text-align:left; }
+
+  /* Highlight BTC price column */
+  th.btc-price-col {
+    background: #f7931a !important;
+    color: #fff !important;
+  }
+  td.btc-price-col {
+    background: #fff3e0;
+    font-weight: 700;
+  }
+
+  /* Highlight Net Worth column */
+  th.networth-col{
+    background:#9fd0ff !important;
+    color:#0b2a3f !important;
+  }
+  td.networth-col{
+    background:#eaf5ff;
+    font-weight: 700;
+  }
+
+  /* NEW: Retirement divider row */
+  tr.retire-divider td{
+    background:#efe6ff;          /* light purple */
+    color:#3b245a;
+    font-weight:800;
+    text-align:center !important;
+    border-bottom:1px solid #d9c6ff;
+  }
 
   .note { font-size:13px; color:#666; margin-top:6px;}
   footer { text-align:center; padding:1.5rem; color:#666; }
@@ -139,7 +168,7 @@
         </div>
         <div class="form-group">
           <label for="btcCagr">Bitcoin CAGR (%)</label>
-          <input type="number" id="btcCagr" min="-100" max="500" step="0.1" value="30">
+          <input type="number" id="btcCagr" min="-100" max="500" step="0.1" value="20">
         </div>
 
         <div class="form-group">
@@ -179,7 +208,7 @@
         </div>
         <div class="form-group">
           <label for="realEstateCagr">Real Estate CAGR (%)</label>
-          <input type="number" id="realEstateCagr" min="-100" max="100" step="0.1" required>
+          <input type="number" id="realEstateCagr" min="-100" max="100" step="0.1" value="2" required>
         </div>
 
         <div class="form-group">
@@ -342,7 +371,9 @@ function simulatePlan(i, startInYears) {
   let oth = i.otherAssets;
   let k401 = i.k401Balance;
   let re  = i.realEstate;
-  let btc = (i.bitcoinBTC || 0) * (i.btcPrice || 0);
+
+  const startBtcPrice = (i.btcPrice || 0);
+  let btcUsd = (i.bitcoinBTC || 0) * startBtcPrice;
 
   const path = [];
   const startAge = i.age;
@@ -350,26 +381,23 @@ function simulatePlan(i, startInYears) {
   const maxAge = i.lifeExpectancy;
 
   const annualSavings = i.income * i.savingsRate;
+  const startYear = new Date().getFullYear(); // current year auto
 
   let yearIndex = 0;
   for (let age = startAge; age <= maxAge; age += 1, yearIndex += 1) {
     const isRetired = age >= retireAge;
 
+    // BTC price per coin for THIS row (growth shows on next year/age)
+    const btcPriceThisYear = startBtcPrice * Math.pow(1 + i.btcCagr, yearIndex);
+
     // 1) Contributions (only before retirement): add to selected bucket
     if (!isRetired && annualSavings > 0) {
-      if (i.savingsDestination === 'bitcoin') btc += annualSavings;
+      if (i.savingsDestination === 'bitcoin') btcUsd += annualSavings;
       else if (i.savingsDestination === 'otherAssets') oth += annualSavings;
       else inv += annualSavings; // default investments
     }
 
-    // 2) Grow all buckets annually by their CAGRs
-    inv *= (1 + i.investmentCagr);
-    oth *= (1 + i.otherAssetsCagr);
-    k401 *= (1 + i.k401Cagr);
-    re  *= (1 + i.realEstateCagr);
-    btc *= (1 + i.btcCagr);
-
-    // 3) If retired, withdraw to cover inflation-adjusted spending by lowest CAGR → highest
+    // 2) If retired, withdraw to cover inflation-adjusted spending by lowest CAGR → highest
     let withdrawnInv = 0, withdrawnOth = 0, withdrawn401Gross = 0, withdrawnBtc = 0;
     let required = 0;
 
@@ -414,8 +442,8 @@ function simulatePlan(i, startInYears) {
       buckets.push({
         name:'Bitcoin',
         cagr:i.btcCagr,
-        netAvail: () => btc,
-        take: (takeNet) => { const amt = Math.min(btc, takeNet); btc -= amt; withdrawnBtc += amt; return amt; }
+        netAvail: () => btcUsd,
+        take: (takeNet) => { const amt = Math.min(btcUsd, takeNet); btcUsd -= amt; withdrawnBtc += amt; return amt; }
       });
 
       buckets.sort((a,b) => a.cagr - b.cagr);
@@ -433,15 +461,21 @@ function simulatePlan(i, startInYears) {
       }
     }
 
-    const netWorth = inv + oth + k401 + re + btc;
+    // Record the row FIRST, then apply growth so growth shows on the *next* age/year.
+    const netWorth = inv + oth + k401 + re + btcUsd;
     path.push({
+      year: startYear + yearIndex,
       age: +age.toFixed(1),
+      netWorth: netWorth,
+
       invested: inv,
       other: oth,
       k401: k401,
-      bitcoin: btc,
+
+      btcPrice: +btcPriceThisYear.toFixed(2),
+      bitcoin: btcUsd,
+
       realEstate: re,
-      netWorth: netWorth,
       requiredSpending: +required.toFixed(2),
       withdrawnInv: +withdrawnInv.toFixed(2),
       withdrawnOther: +withdrawnOth.toFixed(2),
@@ -450,9 +484,16 @@ function simulatePlan(i, startInYears) {
       retired: isRetired
     });
 
-    if (inv < -1e-6 || oth < -1e-6 || k401 < -1e-6 || btc < -1e-6) {
+    if (inv < -1e-6 || oth < -1e-6 || k401 < -1e-6 || btcUsd < -1e-6) {
       return { success: false, reason: 'negative_balance', atAge: age };
     }
+
+    // Grow all buckets annually by their CAGRs (applies to NEXT age/year)
+    inv *= (1 + i.investmentCagr);
+    oth *= (1 + i.otherAssetsCagr);
+    k401 *= (1 + i.k401Cagr);
+    re  *= (1 + i.realEstateCagr);
+    btcUsd *= (1 + i.btcCagr);
   }
 
   return { success: true, path };
@@ -501,11 +542,13 @@ function drawChart(path) {
 function renderTable(path, container) {
   if (!path || !path.length) return;
   const cols = [
+    ['Year','year'],
     ['Age','age'],
     ['Net Worth ($)','netWorth'],
     ['Investments ($)','invested'],
     ['Other Assets ($)','other'],
     ['401k ($)','k401'],
+    ['BTC Price ($)','btcPrice'],
     ['Bitcoin ($)','bitcoin'],
     ['Real Estate ($)','realEstate'],
     ['Req. Spending ($)','requiredSpending'],
@@ -517,17 +560,35 @@ function renderTable(path, container) {
   ];
 
   let html = '<table><thead><tr>';
-  cols.forEach(c => html += `<th>${c[0]}</th>`);
+  cols.forEach(([label,key]) => {
+    let cls = '';
+    if (key === 'btcPrice') cls = 'btc-price-col';
+    if (key === 'netWorth') cls = 'networth-col';
+    html += `<th${cls ? ` class="${cls}"` : ''}>${label}</th>`;
+  });
   html += '</tr></thead><tbody>';
 
+  // Insert divider right before first retired year
+  let dividerInserted = false;
+
   path.forEach(row => {
+    if (!dividerInserted && row.retired) {
+      html += `<tr class="retire-divider"><td colspan="${cols.length}">Retirement Starts</td></tr>`;
+      dividerInserted = true;
+    }
+
     html += '<tr>';
     cols.forEach(([label,key]) => {
       let v = row[key];
-      if (key === 'age') html += `<td>${v}</td>`;
-      else if (key === 'retired') html += `<td>${v ? 'Yes' : 'No'}</td>`;
-      else if (typeof v === 'number') html += `<td>${'$' + Number(v).toLocaleString()}</td>`;
-      else html += `<td>${v}</td>`;
+      let cls = '';
+      if (key === 'btcPrice') cls = 'btc-price-col';
+      if (key === 'netWorth') cls = 'networth-col';
+
+      if (key === 'year') html += `<td${cls ? ` class="${cls}"` : ''}>${v}</td>`;
+      else if (key === 'age') html += `<td${cls ? ` class="${cls}"` : ''}>${v}</td>`;
+      else if (key === 'retired') html += `<td${cls ? ` class="${cls}"` : ''}>${v ? 'Yes' : 'No'}</td>`;
+      else if (typeof v === 'number') html += `<td${cls ? ` class="${cls}"` : ''}>${'$' + Number(v).toLocaleString()}</td>`;
+      else html += `<td${cls ? ` class="${cls}"` : ''}>${v}</td>`;
     });
     html += '</tr>';
   });
@@ -539,17 +600,19 @@ function renderTable(path, container) {
 function exportCSV(path) {
   if (!path || !path.length) return;
   const headers = [
-    'Age','NetWorth','Investments','OtherAssets','401k','Bitcoin','RealEstate',
+    'Year','Age','NetWorth','Investments','OtherAssets','401k','BTCPrice','Bitcoin','RealEstate',
     'RequiredSpending','WithdrawnInvestments','WithdrawnOther','Withdrawn401kGross','WithdrawnBitcoin','Retired'
   ];
   const lines = [headers.join(',')];
   path.forEach(p => {
     lines.push([
+      p.year,
       p.age,
       Math.round(p.netWorth),
       Math.round(p.invested),
       Math.round(p.other),
       Math.round(p.k401),
+      Math.round(p.btcPrice),
       Math.round(p.bitcoin),
       Math.round(p.realEstate),
       p.requiredSpending,
