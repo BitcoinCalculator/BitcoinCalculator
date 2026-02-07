@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -324,6 +325,7 @@ let lastProjection = null;
 
 const propertiesContainer = document.getElementById('propertiesContainer');
 
+/* ✅ FIXED addProperty() (buttons will work) */
 function addProperty() {
   propertyCount += 1;
   const idx = propertyCount;
@@ -340,10 +342,7 @@ function addProperty() {
   removeBtn.type = 'button';
   removeBtn.className = 'remove-btn';
   removeBtn.textContent = 'Remove';
-  removeBtn.addEventListener('click', () => {
-    card.remove();
-    // no renumbering to keep IDs stable; table labels use order at calculation time
-  });
+  removeBtn.addEventListener('click', () => card.remove());
 
   head.appendChild(removeBtn);
   card.appendChild(head);
@@ -355,7 +354,10 @@ function addProperty() {
   grid.appendChild(makeInput(`p${idx}_name`, 'Nickname (optional)', 'text', '', { placeholder: 'e.g., Duplex in Riverside' }));
 
   grid.appendChild(makeInput(`p${idx}_value`, 'Current Property Value ($)', 'number', 0, { min:0, step:100 }));
-  grid.appendChild(makeInput(`p${idx}_equity`, 'Current Equity ($)', 'number', 0, { min:0, step:100, hint:'Equity = value - mortgage balance (if you know mortgage balance instead, set equity = value - balance).' }));
+  grid.appendChild(makeInput(`p${idx}_equity`, 'Current Equity ($)', 'number', 0, {
+    min:0, step:100,
+    hint:'Equity = value - mortgage balance (if you know mortgage balance instead, set equity = value - balance).'
+  }));
 
   grid.appendChild(makeInput(`p${idx}_rate`, 'Mortgage Interest Rate (%)', 'number', 6.5, { step:0.01, hint:'If no mortgage, set rate=0, payment=0, balance via equity.' }));
   grid.appendChild(makeInput(`p${idx}_payment`, 'Monthly Mortgage Payment ($)', 'number', 0, { min:0, step:10 }));
@@ -363,16 +365,16 @@ function addProperty() {
   grid.appendChild(makeInput(`p${idx}_yearsRemaining`, 'Years Remaining on Mortgage', 'number', 30, { min:0, max:50, step:1 }));
 
   if (idx === 1) {
-    // Primary residence only for first property
-    grid.appendChild(makeSelect(`p${idx}_primary`, 'Is this your Primary Residence?', [
+    const prim = makeSelect(`p${idx}_primary`, 'Is this your Primary Residence?', [
       { value:'no', text:'No' },
       { value:'yes', text:'Yes' }
-    ], 'no'));
+    ], 'no');
+    grid.appendChild(prim.wrapper);
   } else {
-    // Spacer (keeps layout feel)
-    grid.appendChild(makeSelect(`p${idx}_primary_dummy`, 'Primary Residence (only asked on Property 1)', [
+    const primDummy = makeSelect(`p${idx}_primary_dummy`, 'Primary Residence (only asked on Property 1)', [
       { value:'na', text:'N/A' }
-    ], 'na', true));
+    ], 'na', true);
+    grid.appendChild(primDummy.wrapper);
   }
 
   // Rental toggle for all properties
@@ -390,10 +392,11 @@ function addProperty() {
   rentalFields.id = `p${idx}_rentalFields`;
 
   // Rental type
-  rentalFields.appendChild(makeSelect(`p${idx}_rentalType`, 'Rental Type', [
+  const rentalType = makeSelect(`p${idx}_rentalType`, 'Rental Type', [
     { value:'long', text:'Long-Term Rental (monthly rent)' },
     { value:'short', text:'Short-Term Rental (nightly + occupancy)' }
-  ], 'long').wrapper);
+  ], 'long');
+  rentalFields.appendChild(rentalType.wrapper);
 
   // Long-term income
   rentalFields.appendChild(makeInput(`p${idx}_monthlyRent`, 'Monthly Rent ($)', 'number', 0, { min:0, step:10 }));
@@ -404,7 +407,7 @@ function addProperty() {
   rentalFields.appendChild(makeInput(`p${idx}_bookingsPerMonth`, 'Avg Bookings / Month', 'number', 10, { min:0, step:1 }));
   rentalFields.appendChild(makeInput(`p${idx}_cleaningFee`, 'Cleaning Fee (per booking) ($)', 'number', 0, { min:0, step:1 }));
 
-  // Operating costs (applies to rentals, but also useful for owner-occupied)
+  // Operating costs
   rentalFields.appendChild(makeInput(`p${idx}_hoa`, 'HOA (monthly) ($)', 'number', 0, { min:0, step:10 }));
   rentalFields.appendChild(makeInput(`p${idx}_insurance`, 'Insurance (monthly) ($)', 'number', 0, { min:0, step:10 }));
   rentalFields.appendChild(makeInput(`p${idx}_utilities`, 'Utilities Paid by Owner (monthly) ($)', 'number', 0, { min:0, step:10 }));
@@ -423,11 +426,12 @@ function addProperty() {
     toggleRentalTypeFields(idx);
   });
 
-  // Toggle long vs short fields (within rentalFields)
-  const rentalTypeSelect = rentalFields.querySelector(`#p${idx}_rentalType`);
-  rentalTypeSelect.addEventListener('change', () => toggleRentalTypeFields(idx));
+  rentalType.select.addEventListener('change', () => toggleRentalTypeFields(idx));
 
   propertiesContainer.appendChild(card);
+
+  // Ensure correct default visibility for long vs short fields
+  toggleRentalTypeFields(idx);
 }
 
 function toggleRentalTypeFields(idx){
@@ -515,7 +519,6 @@ toggleRentalTypeFields(1);
 
 document.getElementById('addPropertyBtn').addEventListener('click', () => {
   addProperty();
-  toggleRentalTypeFields(propertyCount);
 });
 
 /* ===========================
@@ -576,10 +579,7 @@ function run(){
   const projection = simulate(inputs);
   lastProjection = projection;
 
-  // Summary message
   const firstRetiredYear = projection.path.find(r => r.surplus >= 0);
-  const startYear = new Date().getFullYear();
-  const startAge = inputs.age;
 
   resultDiv.style.display = 'block';
   if (firstRetiredYear) {
@@ -595,7 +595,6 @@ function run(){
     `;
   }
 
-  // Render tables
   renderMainTable(projection.path, inputs, tableContainer);
   renderBitcoinTable(projection.btcPath, btcTableContainer);
   renderPropertyYear1Summary(projection.propertyYear1, propertySummaryContainer);
@@ -603,7 +602,6 @@ function run(){
   exportBtn.style.display = 'inline-block';
   chartBtn.style.display = 'inline-block';
 
-  // Auto-show chart
   drawChart(projection);
 }
 
@@ -655,7 +653,6 @@ function getInputsAndProperties(){
   ];
   mustNums.forEach(([name,val]) => { if (isNaN(val)) errors.push(`${name} is required.`); });
 
-  // Gather property cards in DOM order
   const cards = Array.from(document.querySelectorAll('.property-card'));
   if (!cards.length) errors.push('Please add at least 1 property.');
 
@@ -675,23 +672,21 @@ function getInputsAndProperties(){
     const rented = vSel(`p${idx}_rented`) === 'yes';
     const rentalType = rented ? vSel(`p${idx}_rentalType`) : 'none';
 
-    // Rental fields (optional if not rented)
     const monthlyRent = rented ? vNum(`p${idx}_monthlyRent`) : 0;
     const nightlyRate = rented ? vNum(`p${idx}_nightlyRate`) : 0;
     const occupancy = rented ? vNum(`p${idx}_occupancy`)/100 : 0;
     const bookingsPerMonth = rented ? vNum(`p${idx}_bookingsPerMonth`) : 0;
     const cleaningFee = rented ? vNum(`p${idx}_cleaningFee`) : 0;
 
-    const hoa = rented ? vNum(`p${idx}_hoa`) : vNum(`p${idx}_hoa`) || 0;
-    const insurance = rented ? vNum(`p${idx}_insurance`) : vNum(`p${idx}_insurance`) || 0;
-    const utilities = rented ? vNum(`p${idx}_utilities`) : vNum(`p${idx}_utilities`) || 0;
-    const otherMonthly = rented ? vNum(`p${idx}_otherMonthly`) : vNum(`p${idx}_otherMonthly`) || 0;
+    const hoa = (vNum(`p${idx}_hoa`) || 0);
+    const insurance = (vNum(`p${idx}_insurance`) || 0);
+    const utilities = (vNum(`p${idx}_utilities`) || 0);
+    const otherMonthly = (vNum(`p${idx}_otherMonthly`) || 0);
 
-    const taxRate = rented ? vNum(`p${idx}_taxRate`)/100 : (vNum(`p${idx}_taxRate`)/100 || 0.011);
-    const maintenancePct = rented ? vNum(`p${idx}_maintenancePct`)/100 : (vNum(`p${idx}_maintenancePct`)/100 || 0.01);
-    const managementPct = rented ? vNum(`p${idx}_managementPct`)/100 : (vNum(`p${idx}_managementPct`)/100 || 0);
+    const taxRate = (vNum(`p${idx}_taxRate`)/100 || 0.011);
+    const maintenancePct = (vNum(`p${idx}_maintenancePct`)/100 || 0.01);
+    const managementPct = (vNum(`p${idx}_managementPct`)/100 || 0);
 
-    // Validate property basics
     if (isNaN(value) || value < 0) errors.push(`${name}: property value must be ≥ 0.`);
     if (isNaN(equity) || equity < 0) errors.push(`${name}: equity must be ≥ 0.`);
     if (isNaN(rate) || rate < 0) errors.push(`${name}: interest rate is required.`);
@@ -711,12 +706,10 @@ function getInputsAndProperties(){
         ];
         reqs.forEach(([lab,val]) => { if (isNaN(val) || val < 0) errors.push(`${name}: ${lab} must be valid.`); });
       }
-      // ops costs
       const ops = [hoa, insurance, utilities, otherMonthly, taxRate, maintenancePct, managementPct];
       if (ops.some(x => isNaN(x))) errors.push(`${name}: rental expense inputs are incomplete.`);
     }
 
-    // Derive mortgage balance from equity
     const mortgageBalance = Math.max(0, value - equity);
 
     properties.push({
@@ -747,7 +740,6 @@ function getInputsAndProperties(){
     });
   });
 
-  // btcStartAmount can be 0 (auto-filled later)
   if (isNaN(btcStartAmount) || btcStartAmount < 0) btcStartAmount = 0;
 
   return {
@@ -770,7 +762,6 @@ function getInputsAndProperties(){
   };
 }
 
-/* Mortgage amortization for one year (monthly simulation) */
 function amortizeOneYear(balance, annualRate, monthlyPayment, extraMonthly){
   let b = balance;
   const r = annualRate / 12;
@@ -789,9 +780,7 @@ function amortizeOneYear(balance, annualRate, monthlyPayment, extraMonthly){
     const principal = pay - interest;
 
     if (principal <= 0) {
-      // Negative amortization (payment not covering interest)
       b = b + (interest - pay);
-      // principalPaid stays 0
       continue;
     }
 
@@ -807,7 +796,6 @@ function simulate(inputs){
   const startYear = new Date().getFullYear();
   const years = Math.max(0, Math.floor(inputs.lifeExpectancy - inputs.age));
 
-  // Clone property states for simulation
   const props = inputs.properties.map(p => ({
     name: p.name,
     value: p.value,
@@ -831,8 +819,7 @@ function simulate(inputs){
     taxRate: p.taxRate,
     maintenancePct: p.maintenancePct,
     managementPct: p.managementPct,
-    payoffYear: null,
-    interestSavedEstimate: 0
+    payoffYear: null
   }));
 
   let bank = inputs.bank;
@@ -840,13 +827,11 @@ function simulate(inputs){
   let k401 = inputs.k401;
   let other = inputs.otherAssets;
 
-  // Bitcoin what-if
   let btcVal = inputs.btcStartAmount;
 
   const path = [];
   const btcPath = [];
 
-  // Store a “year 1” property summary (so you can see which props are profitable now)
   let propertyYear1 = null;
 
   for (let y=0; y<=years; y++){
@@ -854,7 +839,7 @@ function simulate(inputs){
     const age = inputs.age + y;
 
     const spending = inputs.retirementSpending * Math.pow(1 + inputs.inflationRate, y);
-    const otherIncome = inputs.otherIncome; // kept flat; if you want it inflation-adjusted later, add a toggle
+    const otherIncome = inputs.otherIncome;
 
     let totalPropValue = 0;
     let totalBalance = 0;
@@ -868,7 +853,6 @@ function simulate(inputs){
     const perProp = [];
 
     props.forEach((p) => {
-      // Determine gross rental income for this year
       let grossIncome = 0;
       if (p.rented) {
         if (p.rentalType === 'long') {
@@ -879,12 +863,10 @@ function simulate(inputs){
           const nightly = p.nightlyRate * Math.pow(1 + inputs.rentGrowth, y);
           const occ = Math.max(0, Math.min(1, p.occupancy));
           grossIncome = nightly * 365 * occ;
-          // small vacancy haircut too (downtime beyond occupancy assumptions)
           grossIncome *= (1 - (inputs.vacancyRate/2));
         }
       }
 
-      // Operating expenses (annual)
       const tax = p.value * p.taxRate;
       const insurance = p.insurance * 12;
       const hoa = p.hoa * 12;
@@ -894,42 +876,30 @@ function simulate(inputs){
       const maintenance = p.value * p.maintenancePct;
       const management = p.rented ? (grossIncome * p.managementPct) : 0;
 
-      // Short-term cleaning
       const cleaning = (p.rented && p.rentalType === 'short')
         ? (p.bookingsPerMonth * 12 * p.cleaningFee)
         : 0;
 
       const operatingExp = tax + insurance + hoa + utilities + otherFixed + maintenance + management + cleaning;
 
-      // Mortgage for this year (simulate)
-      let mortInterest = 0;
-      let mortPrincipal = 0;
       let mortPaid = 0;
 
       if (p.balance > 0 && (p.payment + p.extra) > 0) {
         const res = amortizeOneYear(p.balance, p.rate, p.payment, p.extra);
-        mortInterest = res.interestPaid;
-        mortPrincipal = res.principalPaid;
         p.balance = res.endBalance;
 
         mortPaid = (p.payment + p.extra) * res.monthsPaid;
-        // If balance paid off mid-year, cap actual paid to interest+principal (small rounding guard)
-        const approxPaid = mortInterest + mortPrincipal;
+        const approxPaid = res.interestPaid + res.principalPaid;
         mortPaid = Math.min(mortPaid, approxPaid + 5);
 
         if (p.balance <= 0 && p.payoffYear === null) {
           p.payoffYear = year;
         }
-      } else {
-        // If no mortgage payment, keep balance as-is (likely 0)
-        mortPaid = 0;
       }
 
-      // Net cashflow
       const totalExp = operatingExp + mortPaid;
       const netCashflow = grossIncome - totalExp;
 
-      // Totals
       totalPropValue += p.value;
       totalBalance += p.balance;
       totalEquity += Math.max(0, p.value - p.balance);
@@ -950,16 +920,11 @@ function simulate(inputs){
         netCashflow
       });
 
-      // Apply appreciation at end of year (so growth shows on next year)
       p.value *= (1 + inputs.propertyAppreciation);
     });
 
-    // Grow non-property assets at end of year (growth shows next year)
-    // We record before growth (same logic you liked in your other calculator).
     const liquidTotal = bank + stocks + k401 + other;
-
-    const netWorth = liquidTotal + totalPropValue - totalBalance; // liquid + property equity
-
+    const netWorth = liquidTotal + totalPropValue - totalBalance;
     const surplus = (otherIncome + totalNetCashflow) - spending;
 
     path.push({
@@ -986,7 +951,6 @@ function simulate(inputs){
       perProp
     });
 
-    // Save year 1 property summary (the first row, i.e. y=0)
     if (y === 0) {
       propertyYear1 = perProp.map(p => ({
         name: p.name,
@@ -1000,14 +964,12 @@ function simulate(inputs){
       }));
     }
 
-    // Bitcoin what-if (record then grow)
     btcPath.push({
       year,
       age,
       btcValue: round2(btcVal)
     });
 
-    // Apply growth AFTER recording
     bank *= (1 + inputs.bankCagr);
     stocks *= (1 + inputs.stocksCagr);
     k401 *= (1 + inputs.k401Cagr);
@@ -1023,14 +985,9 @@ function round2(x){
   return Math.round((x + Number.EPSILON) * 100) / 100;
 }
 
-/* ===========================
-   RENDERING
-=========================== */
-
 function renderMainTable(path, inputs, container){
   if(!path || !path.length) return;
 
-  // Property columns: each property gets 5 columns: Value, Balance, Income, Expenses, Cashflow
   const propNames = path[0].perProp.map(p => p.name);
 
   const baseCols = [
@@ -1056,7 +1013,6 @@ function renderMainTable(path, inputs, container){
     html += `<th${cls ? ` class="${cls}"` : ''}>${label}</th>`;
   });
 
-  // Add property group headers
   propNames.forEach((name, i) => {
     const pLabel = `P${i+1}`;
     html += `<th>${pLabel} Value</th>`;
@@ -1068,7 +1024,6 @@ function renderMainTable(path, inputs, container){
 
   html += '</tr></thead><tbody>';
 
-  // Insert divider where surplus first becomes >= 0 (optional “retirement-like” moment)
   let dividerInserted = false;
 
   path.forEach(row => {
@@ -1163,10 +1118,6 @@ function escapeHtml(str){
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 }
-
-/* ===========================
-   CHART + EXPORT
-=========================== */
 
 function drawChart(projection){
   if(!projection || !projection.path || !projection.path.length) return;
