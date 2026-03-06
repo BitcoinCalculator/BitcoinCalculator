@@ -5,7 +5,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Day the World Runs Out of Bitcoin</title>
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>html,body{background:#0A0805!important;color:#E8DEC8!important}</style>
 <style>
   :root {
     --gold: #F0A500;
@@ -22,14 +25,25 @@
 
 - { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+scroll-behavior: smooth;
+background: #0A0805 !important;
+color-scheme: dark !important;
+}
 
 body {
-background: var(–bg);
-color: var(–text);
+background: #0A0805 !important;
+background-color: #0A0805 !important;
+color: #E8DEC8 !important;
 font-family: ‘Libre Baskerville’, Georgia, serif;
 line-height: 1.8;
 overflow-x: hidden;
+-webkit-text-size-adjust: 100%;
+}
+
+/* Force all text elements to inherit dark colors */
+p, h1, h2, h3, li, span, div {
+color: inherit;
 }
 
 /* Grain overlay */
