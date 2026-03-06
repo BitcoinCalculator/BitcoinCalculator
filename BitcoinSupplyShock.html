@@ -7,8 +7,20 @@
 <title>The Day the World Runs Out of Bitcoin</title>
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0A0805">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>html,body{background:#0A0805!important;color:#E8DEC8!important}</style>
+<!-- Fonts loaded async so page renders immediately with system fallbacks -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Fallback font stacks that match the aesthetic when Google Fonts unavailable */
+  :root {
+    --font-display: 'Bebas Neue', Impact, 'Arial Narrow', 'Franklin Gothic Medium', 'Arial Black', sans-serif;
+    --font-serif: 'Libre Baskerville', 'Georgia', 'Times New Roman', serif;
+    --font-italic: 'DM Serif Display', 'Georgia', 'Times New Roman', serif;
+    --font-mono: 'IBM Plex Mono', 'Courier New', 'Lucida Console', monospace;
+  }
+</style>
 <style>
   :root {
     --gold: #F0A500;
@@ -35,7 +47,7 @@ body {
 background: #0A0805 !important;
 background-color: #0A0805 !important;
 color: #E8DEC8 !important;
-font-family: ‘Libre Baskerville’, Georgia, serif;
+font-family: var(–font-serif);
 line-height: 1.8;
 overflow-x: hidden;
 -webkit-text-size-adjust: 100%;
@@ -72,7 +84,7 @@ border-bottom: 1px solid rgba(240,165,0,0.12);
 }
 
 .hero-label {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.7rem;
 letter-spacing: 0.25em;
 color: var(–gold);
@@ -83,7 +95,7 @@ animation: fadeUp 0.8s 0.2s forwards;
 }
 
 .hero h1 {
-font-family: ‘Bebas Neue’, sans-serif;
+font-family: var(–font-display);
 font-size: clamp(3.5rem, 12vw, 9rem);
 line-height: 0.92;
 letter-spacing: 0.02em;
@@ -99,7 +111,7 @@ display: block;
 }
 
 .hero-sub {
-font-family: ‘DM Serif Display’, serif;
+font-family: var(–font-italic);
 font-style: italic;
 font-size: clamp(1.1rem, 2.5vw, 1.5rem);
 color: var(–text-muted);
@@ -123,7 +135,7 @@ animation: fadeUp 1s 1.2s forwards;
 }
 
 .scroll-hint span {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.6rem;
 letter-spacing: 0.2em;
 color: var(–text-muted);
@@ -159,7 +171,7 @@ transform: translateY(0);
 
 /* Chapter label */
 .chapter {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.62rem;
 letter-spacing: 0.25em;
 color: var(–gold-dim);
@@ -178,7 +190,7 @@ background: rgba(240,165,0,0.15);
 }
 
 h2 {
-font-family: ‘DM Serif Display’, serif;
+font-family: var(–font-italic);
 font-size: clamp(1.8rem, 4vw, 2.6rem);
 line-height: 1.2;
 color: var(–white);
@@ -213,7 +225,7 @@ pointer-events: none;
 }
 
 .stat-number {
-font-family: ‘Bebas Neue’, sans-serif;
+font-family: var(–font-display);
 font-size: clamp(3rem, 8vw, 5rem);
 color: var(–gold);
 line-height: 1;
@@ -222,7 +234,7 @@ margin-bottom: 0.4rem;
 }
 
 .stat-label {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.8rem;
 color: var(–text-muted);
 letter-spacing: 0.1em;
@@ -245,7 +257,7 @@ text-align: center;
 .collision-side {}
 
 .collision-num {
-font-family: ‘Bebas Neue’, sans-serif;
+font-family: var(–font-display);
 font-size: clamp(2rem, 5vw, 3.5rem);
 color: var(–white);
 line-height: 1;
@@ -253,7 +265,7 @@ display: block;
 }
 
 .collision-desc {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.7rem;
 color: var(–text-muted);
 letter-spacing: 0.1em;
@@ -262,7 +274,7 @@ margin-top: 0.4rem;
 }
 
 .vs {
-font-family: ‘Bebas Neue’, sans-serif;
+font-family: var(–font-display);
 font-size: 2rem;
 color: var(–accent);
 border: 1px solid rgba(255,77,28,0.3);
@@ -281,7 +293,7 @@ border-bottom: 1px solid rgba(240,165,0,0.15);
 }
 
 blockquote p {
-font-family: ‘DM Serif Display’, serif;
+font-family: var(–font-italic);
 font-style: italic;
 font-size: clamp(1.4rem, 3vw, 2rem);
 color: var(–white);
@@ -299,7 +311,7 @@ margin: 2.5rem 0;
 }
 
 .shift-from {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.9rem;
 color: var(–text-muted);
 text-decoration: line-through;
@@ -314,7 +326,7 @@ margin: 0.5rem 0;
 }
 
 .shift-to {
-font-family: ‘DM Serif Display’, serif;
+font-family: var(–font-italic);
 font-style: italic;
 font-size: clamp(1.2rem, 2.5vw, 1.6rem);
 color: var(–white);
@@ -326,7 +338,7 @@ margin: 2.5rem 0;
 }
 
 .supply-bar-label {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.68rem;
 letter-spacing: 0.12em;
 color: var(–text-muted);
@@ -371,7 +383,7 @@ pointer-events: none;
 }
 
 .finale-question {
-font-family: ‘Bebas Neue’, sans-serif;
+font-family: var(–font-display);
 font-size: clamp(2rem, 7vw, 5rem);
 line-height: 1;
 color: var(–white);
@@ -381,7 +393,7 @@ margin-bottom: 1rem;
 .finale-question span { color: var(–gold); }
 
 .finale-sub {
-font-family: ‘DM Serif Display’, serif;
+font-family: var(–font-italic);
 font-style: italic;
 font-size: 1.2rem;
 color: var(–text-muted);
@@ -399,7 +411,7 @@ margin: 3rem auto;
 
 /* Mono callout */
 .mono-fact {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.85rem;
 color: var(–gold);
 background: rgba(240,165,0,0.06);
