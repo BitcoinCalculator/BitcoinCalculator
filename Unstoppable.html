@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>The Unkillable Network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+background-color: #0A0805;
+color-scheme: dark;
+scroll-behavior: smooth;
+}
+
+body {
+background-color: #0A0805;
+color: #E8DEC8;
+font-family: ‘Libre Baskerville’, Georgia, ‘Times New Roman’, serif;
+line-height: 1.8;
+overflow-x: hidden;
+}
+
+/* Grain */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.04’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 999;
+opacity: 0.45;
+}
+
+/* ── HERO ── */
+.hero {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+padding: 4rem 2rem;
+position: relative;
+background-color: #0A0805;
+background-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(240,165,0,0.09) 0%, transparent 70%);
+border-bottom: 1px solid rgba(240,165,0,0.12);
+}
+
+.hero-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.7rem;
+letter-spacing: 0.25em;
+color: #F0A500;
+text-transform: uppercase;
+margin-bottom: 2rem;
+opacity: 0;
+animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero h1 {
+font-family: ‘Bebas Neue’, Impact, ‘Arial Narrow’, ‘Franklin Gothic Medium’, sans-serif;
+font-size: clamp(3.5rem, 12vw, 9rem);
+line-height: 0.92;
+letter-spacing: 0.02em;
+color: #FAF5EB;
+max-width: 900px;
+opacity: 0;
+animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero h1 span {
+color: #F0A500;
+display: block;
+}
+
+.hero-sub {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-style: italic;
+font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+color: #8A7D62;
+margin-top: 1.5rem;
+max-width: 580px;
+opacity: 0;
+animation: fadeUp 0.9s 0.65s forwards;
+}
+
+/* death counter */
+.death-counter {
+margin-top: 2.5rem;
+opacity: 0;
+animation: fadeUp 1s 0.9s forwards;
+}
+
+.death-counter-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+color: #8A7D62;
+text-transform: uppercase;
+margin-bottom: 0.5rem;
+}
+
+.death-counter-num {
+font-family: ‘Bebas Neue’, Impact, sans-serif;
+font-size: clamp(1.8rem, 4vw, 2.8rem);
+color: #FF4D1C;
+line-height: 1;
+text-shadow: 0 0 20px rgba(255,77,28,0.3);
+}
+
+.death-counter-sub {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.65rem;
+color: #8A7D62;
+letter-spacing: 0.1em;
+margin-top: 0.3rem;
+}
+
+.scroll-hint {
+position: absolute;
+bottom: 2.5rem;
+left: 50%;
+transform: translateX(-50%);
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.5rem;
+opacity: 0;
+animation: fadeUp 1s 1.3s forwards;
+}
+
+.scroll-hint span {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+color: #8A7D62;
+text-transform: uppercase;
+}
+
+.scroll-line {
+width: 1px;
+height: 40px;
+background: linear-gradient(to bottom, #F0A500, transparent);
+animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── ARTICLE ── */
+article {
+max-width: 720px;
+margin: 0 auto;
+padding: 5rem 2rem 8rem;
+background-color: #0A0805;
+}
+
+.section {
+margin-bottom: 5rem;
+opacity: 0;
+transform: translateY(24px);
+transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.section.visible {
+opacity: 1;
+transform: translateY(0);
+}
+
+.chapter {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.62rem;
+letter-spacing: 0.25em;
+color: #C47F00;
+text-transform: uppercase;
+margin-bottom: 1rem;
+display: flex;
+align-items: center;
+gap: 1rem;
+}
+
+.chapter::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background-color: rgba(240,165,0,0.15);
+}
+
+h2 {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-size: clamp(1.8rem, 4vw, 2.6rem);
+line-height: 1.2;
+color: #FAF5EB;
+margin-bottom: 1.5rem;
+font-weight: 400;
+}
+
+p {
+margin-bottom: 1.2rem;
+color: #E8DEC8;
+font-size: 1.05rem;
+}
+
+/* OBJECTION CARD — the “fear” cards */
+.objection {
+background-color: #110E08;
+border: 1px solid rgba(255,77,28,0.2);
+border-left: 3px solid #FF4D1C;
+padding: 2rem 2rem 2rem 2rem;
+margin: 2.5rem 0;
+position: relative;
+overflow: hidden;
+}
+
+.objection::before {
+content: ‘’;
+position: absolute;
+top: 0; right: 0;
+width: 160px; height: 160px;
+background: radial-gradient(circle, rgba(255,77,28,0.07) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.objection-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+color: #FF4D1C;
+text-transform: uppercase;
+margin-bottom: 0.8rem;
+}
+
+.objection-claim {
+font-family: ‘Bebas Neue’, Impact, ‘Arial Narrow’, sans-serif;
+font-size: clamp(1.4rem, 4vw, 2rem);
+color: #FAF5EB;
+line-height: 1.1;
+letter-spacing: 0.03em;
+}
+
+/* REBUTTAL — the gold answer */
+.rebuttal {
+background-color: #0D0A04;
+border: 1px solid rgba(240,165,0,0.2);
+border-left: 3px solid #F0A500;
+padding: 2rem;
+margin: 1rem 0 2.5rem;
+position: relative;
+overflow: hidden;
+}
+
+.rebuttal::before {
+content: ‘’;
+position: absolute;
+top: 0; right: 0;
+width: 160px; height: 160px;
+background: radial-gradient(circle, rgba(240,165,0,0.08) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.rebuttal-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+color: #F0A500;
+text-transform: uppercase;
+margin-bottom: 0.8rem;
+}
+
+.rebuttal p {
+margin-bottom: 0.8rem;
+font-size: 1rem;
+color: #E8DEC8;
+}
+
+.rebuttal p:last-child { margin-bottom: 0; }
+
+/* NETWORK STAT */
+.stat-block {
+background-color: #110E08;
+border: 1px solid rgba(240,165,0,0.2);
+border-left: 3px solid #F0A500;
+padding: 2.5rem 2rem;
+margin: 2.5rem 0;
+position: relative;
+overflow: hidden;
+}
+
+.stat-block::before {
+content: ‘’;
+position: absolute;
+top: 0; right: 0;
+width: 200px; height: 200px;
+background: radial-gradient(circle, rgba(240,165,0,0.1) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.stat-number {
+font-family: ‘Bebas Neue’, Impact, ‘Arial Narrow’, sans-serif;
+font-size: clamp(3rem, 8vw, 5rem);
+color: #F0A500;
+line-height: 1;
+display: block;
+margin-bottom: 0.4rem;
+}
+
+.stat-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.78rem;
+color: #8A7D62;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+}
+
+/* RESILIENCE GRID */
+.resilience-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 1rem;
+margin: 2.5rem 0;
+}
+
+.resilience-item {
+background-color: #110E08;
+border: 1px solid rgba(240,165,0,0.13);
+padding: 1.4rem;
+}
+
+.resilience-item-icon {
+font-size: 1.3rem;
+display: block;
+margin-bottom: 0.6rem;
+}
+
+.resilience-item h4 {
+font-family: ‘Bebas Neue’, Impact, sans-serif;
+font-size: 1.1rem;
+color: #FAF5EB;
+letter-spacing: 0.04em;
+margin-bottom: 0.4rem;
+}
+
+.resilience-item p {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.67rem;
+color: #8A7D62;
+line-height: 1.55;
+letter-spacing: 0.02em;
+margin-bottom: 0;
+}
+
+/* BLOCK COUNTER — live blocks animation */
+.block-ticker {
+background-color: #0D0A04;
+border: 1px solid rgba(240,165,0,0.2);
+padding: 2rem;
+margin: 2.5rem 0;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+
+.block-ticker-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.62rem;
+letter-spacing: 0.2em;
+color: #8A7D62;
+text-transform: uppercase;
+margin-bottom: 0.8rem;
+}
+
+.block-ticker-row {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 0.6rem;
+flex-wrap: wrap;
+}
+
+.block-box {
+width: 28px;
+height: 28px;
+border: 1px solid rgba(240,165,0,0.3);
+background-color: rgba(240,165,0,0.06);
+border-radius: 2px;
+animation: blockPulse 1.5s ease-in-out infinite;
+}
+
+.block-box:nth-child(2) { animation-delay: 0.2s; }
+.block-box:nth-child(3) { animation-delay: 0.4s; }
+.block-box:nth-child(4) { animation-delay: 0.6s; }
+.block-box:nth-child(5) { animation-delay: 0.8s; }
+.block-box:nth-child(6) { animation-delay: 1.0s; }
+
+.block-ticker-sub {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.65rem;
+color: #8A7D62;
+letter-spacing: 0.1em;
+margin-top: 0.8rem;
+text-transform: uppercase;
+}
+
+.block-ticker-sub span {
+color: #F0A500;
+}
+
+/* BLOCKQUOTE */
+blockquote {
+padding: 2.5rem 0;
+margin: 3rem 0;
+border-top: 1px solid rgba(240,165,0,0.15);
+border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+blockquote p {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-style: italic;
+font-size: clamp(1.4rem, 3vw, 2rem);
+color: #FAF5EB;
+line-height: 1.4;
+margin-bottom: 0;
+}
+
+/* MONO CALLOUT */
+.mono-fact {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.85rem;
+color: #F0A500;
+background-color: rgba(240,165,0,0.06);
+border-left: 2px solid #F0A500;
+padding: 1rem 1.5rem;
+margin: 2rem 0;
+letter-spacing: 0.05em;
+}
+
+/* DIVIDER */
+.divider {
+width: 60px;
+height: 2px;
+background: linear-gradient(to right, transparent, #F0A500, transparent);
+margin: 3rem auto;
+}
+
+/* FINALE */
+.finale {
+text-align: center;
+padding: 5rem 2rem;
+background-image: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(240,165,0,0.06), transparent 70%);
+}
+
+.finale-question {
+font-family: ‘Bebas Neue’, Impact, ‘Arial Narrow’, sans-serif;
+font-size: clamp(2rem, 7vw, 5rem);
+line-height: 1;
+color: #FAF5EB;
+margin-bottom: 1rem;
+}
+
+.finale-question span { color: #F0A500; }
+
+.finale-sub {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-style: italic;
+font-size: 1.2rem;
+color: #8A7D62;
+max-width: 480px;
+margin: 0 auto;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(20px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+0%, 100% { opacity: 0.3; }
+50%       { opacity: 1; }
+}
+
+@keyframes blockPulse {
+0%, 100% { background-color: rgba(240,165,0,0.06); border-color: rgba(240,165,0,0.3); }
+50%       { background-color: rgba(240,165,0,0.22); border-color: rgba(240,165,0,0.7); }
+}
+
+@media (max-width: 520px) {
+.resilience-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- HERO -->
+
+<header class="hero">
+  <p class="hero-label">₿ Network Resilience Report</p>
+  <h1>The Unkillable<span>Network</span></h1>
+  <p class="hero-sub">Every time they predicted Bitcoin's death — it adapted, survived, and grew stronger.</p>
+
+  <div class="death-counter">
+    <div class="death-counter-label">Times Bitcoin declared dead</div>
+    <div class="death-counter-num">400+</div>
+    <div class="death-counter-sub">Bitcoin still running · Block after block · Since 2009</div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+
+<article>
+
+  <!-- INTRO -->
+
+  <div class="section">
+    <div class="chapter">The Pattern</div>
+    <h2>They've Been Wrong Every Single Time</h2>
+    <p>Since its creation in 2009, critics have repeatedly declared the end of Bitcoin. The predictions come in waves — governments, energy grids, quantum computing, hackers, market crashes. Each one confident. Each one wrong.</p>
+
+```
+<blockquote><p>"Yet the network keeps running. Block after block. Year after year. And every supposed weakness has an answer."</p></blockquote>
+
+<p>What follows is a systematic breakdown of every major argument against Bitcoin's survival — and why none of them have worked.</p>
+```
+
+  </div>
+
+  <!-- OBJECTION 1 -->
+
+  <div class="section">
+    <div class="chapter">Threat 01</div>
+
+```
+<div class="objection">
+  <div class="objection-label">⚠ The Threat</div>
+  <div class="objection-claim">"Governments Will Ban It"</div>
+</div>
+
+<div class="rebuttal">
+  <div class="rebuttal-label">✓ The Reality</div>
+  <p>Bitcoin was designed from the ground up to operate without a central authority. It runs on thousands of independent nodes spread across the world — no headquarters, no CEO, no single server to shut down.</p>
+  <p>If one country bans it, the network simply continues everywhere else. History has already seen multiple governments restrict Bitcoin activity. The global network kept running without interruption.</p>
+  <p>In a decentralized system, banning participation in one place does not shut down the protocol everywhere.</p>
+</div>
+
+<div class="stat-block">
+  <span class="stat-number">100+</span>
+  <span class="stat-label">Countries where Bitcoin nodes operate — simultaneously</span>
+</div>
+```
+
+  </div>
+
+  <!-- OBJECTION 2 -->
+
+  <div class="section">
+    <div class="chapter">Threat 02</div>
+
+```
+<div class="objection">
+  <div class="objection-label">⚠ The Threat</div>
+  <div class="objection-claim">"The Power Grid Could Go Down"</div>
+</div>
+
+<div class="rebuttal">
+  <div class="rebuttal-label">✓ The Reality</div>
+  <p>The Bitcoin network is not dependent on any single power grid. Nodes run across homes, data centers, universities, and independent operators on every continent.</p>
+  <p>If power fails in one region, nodes elsewhere continue operating without pause. Some participants even run nodes on solar panels, portable batteries, and low-power devices — because Bitcoin's software can run on modest hardware, the network can exist anywhere electricity exists.</p>
+</div>
+
+<div class="resilience-grid">
+  <div class="resilience-item">
+    <span class="resilience-item-icon">☀️</span>
+    <h4>Solar Power</h4>
+    <p>Nodes running entirely on renewable energy, independent of the grid.</p>
+  </div>
+  <div class="resilience-item">
+    <span class="resilience-item-icon">🔋</span>
+    <h4>Battery Backup</h4>
+    <p>Portable power sources keeping nodes alive through outages.</p>
+  </div>
+  <div class="resilience-item">
+    <span class="resilience-item-icon">🏠</span>
+    <h4>Home Nodes</h4>
+    <p>Thousands of individuals running nodes from their own homes worldwide.</p>
+  </div>
+  <div class="resilience-item">
+    <span class="resilience-item-icon">🌍</span>
+    <h4>Global Spread</h4>
+    <p>No single region controls enough of the network to take it down alone.</p>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- OBJECTION 3 -->
+
+  <div class="section">
+    <div class="chapter">Threat 03</div>
+
+```
+<div class="objection">
+  <div class="objection-label">⚠ The Threat</div>
+  <div class="objection-claim">"What If the Internet Goes Down?"</div>
+</div>
+
+<div class="rebuttal">
+  <div class="rebuttal-label">✓ The Reality</div>
+  <p>Bitcoin transactions travel through the internet — but that's not the only channel available. The blockchain can be broadcast through alternative communication methods that most people haven't considered.</p>
+  <p>Projects have already demonstrated Bitcoin data transmission using satellite broadcasts, radio signals, and mesh networks. These channels allow blockchain data to reach areas with limited or zero internet connectivity.</p>
+</div>
+
+<div class="mono-fact">
+  Satellite · Radio · Mesh Networks · Direct Peer-to-Peer<br>
+  The internet is one path. Not the only one.
+</div>
+```
+
+  </div>
+
+  <!-- OBJECTION 4 -->
+
+  <div class="section">
+    <div class="chapter">Threat 04</div>
+
+```
+<div class="objection">
+  <div class="objection-label">⚠ The Threat</div>
+  <div class="objection-claim">"Quantum Computers Will Break It"</div>
+</div>
+
+<div class="rebuttal">
+  <div class="rebuttal-label">✓ The Reality</div>
+  <p>Quantum computing is often cited as a future threat to cryptography. But this threat applies to every digital system on earth — banking, internet encryption, government communications, and more.</p>
+  <p>Bitcoin's cryptographic systems can evolve. If quantum computers ever reached the scale required to threaten current algorithms, developers could introduce new post-quantum cryptographic methods through protocol upgrades — the same way the entire digital world would be forced to adapt.</p>
+  <p>Bitcoin is not uniquely vulnerable. It is, however, uniquely motivated to stay ahead of the threat.</p>
+</div>
+```
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- OBJECTION 5 -->
+
+  <div class="section">
+    <div class="chapter">Threat 05</div>
+
+```
+<div class="objection">
+  <div class="objection-label">⚠ The Threat</div>
+  <div class="objection-claim">"Hackers Will Destroy It"</div>
+</div>
+
+<div class="rebuttal">
+  <div class="rebuttal-label">✓ The Reality</div>
+  <p>Bitcoin's blockchain is protected by the largest computational security system ever assembled. Miners worldwide compete to validate blocks and secure the ledger.</p>
+  <p>Altering past transactions would require controlling the majority of the entire network's computing power simultaneously — an economic and technical barrier so large it has remained unbroken since Bitcoin's first block in 2009.</p>
+</div>
+
+<div class="stat-block">
+  <span class="stat-number">15+</span>
+  <span class="stat-label">Years of unbroken operation — not a single block reversed</span>
+</div>
+```
+
+  </div>
+
+  <!-- OBJECTION 6 -->
+
+  <div class="section">
+    <div class="chapter">Threat 06</div>
+
+```
+<div class="objection">
+  <div class="objection-label">⚠ The Threat</div>
+  <div class="objection-claim">"It's Just a Bubble"</div>
+</div>
+
+<div class="rebuttal">
+  <div class="rebuttal-label">✓ The Reality</div>
+  <p>Bitcoin has experienced dramatic price rises and sharp corrections. Every cycle, the obituaries are written. Every cycle, the network keeps running.</p>
+  <p>The distinction between market price and network function is critical. Even at its lowest prices, the protocol continued processing transactions. The network's uptime has never depended on its price.</p>
+  <p>Bubbles destroy what they inflate. Bitcoin's network has survived every crash with its fundamentals intact.</p>
+</div>
+
+<div class="mono-fact">
+  Price went to zero in people's predictions.<br>
+  The network never did.
+</div>
+```
+
+  </div>
+
+  <!-- OPEN SOURCE + DESIGN -->
+
+  <div class="section">
+    <div class="chapter">The Architecture</div>
+    <h2>Built Different From Everything That Came Before</h2>
+
+```
+<p>Traditional systems have centralized points of failure. Banks have headquarters. Companies have executives. Servers can be seized. Executives can be pressured. Buildings can be raided.</p>
+
+<p>Bitcoin was designed around the opposite principle. It operates through a distributed network of independent participants — no headquarters, no central server, no single human in control.</p>
+
+<blockquote><p>"In a world where everything can be targeted, Bitcoin's greatest strength is that there is nothing to target."</p></blockquote>
+
+<p>Its open-source nature adds another layer of resilience. Anyone can review the code. Developers around the world contribute improvements. This global collaboration means the system can evolve while its core rules remain fixed.</p>
+```
+
+  </div>
+
+  <!-- BLOCK TICKER -->
+
+  <div class="section">
+    <div class="chapter">Right Now</div>
+    <h2>It's Running at This Very Moment</h2>
+
+```
+<p>While you read this, the Bitcoin network is processing transactions and adding new blocks to the chain. It has done this, without interruption, since the first block was mined on January 3rd, 2009.</p>
+
+<div class="block-ticker">
+  <div class="block-ticker-label">New blocks being added to the chain</div>
+  <div class="block-ticker-row">
+    <div class="block-box"></div>
+    <div class="block-box"></div>
+    <div class="block-box"></div>
+    <div class="block-box"></div>
+    <div class="block-box"></div>
+    <div class="block-box"></div>
+  </div>
+  <div class="block-ticker-sub">One new block approximately every <span>10 minutes</span> — forever</div>
+</div>
+
+<div class="stat-block">
+  <span class="stat-number">~900,000</span>
+  <span class="stat-label">Blocks mined and counting — the chain never stops</span>
+</div>
+```
+
+  </div>
+
+  <!-- FINALE -->
+
+  <div class="section finale">
+    <div class="chapter">The Conclusion</div>
+    <h2 class="finale-question">They Said It Would<span> Die.</span></h2>
+    <p class="finale-sub">After more than a decade of predicted failures — government bans, energy crises, quantum threats, market crashes — the network still runs. Block after block. Every ten minutes. Without asking permission from anyone.</p>
+  </div>
+
+</article>
+
+<script>
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
