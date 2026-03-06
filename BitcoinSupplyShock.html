@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Day the World Runs Out of Bitcoin</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F0A500;
+    --gold-dim: #C47F00;
+    --gold-glow: rgba(240,165,0,0.15);
+    --bg: #0A0805;
+    --bg2: #110E08;
+    --bg3: #1A1610;
+    --text: #E8DEC8;
+    --text-muted: #8A7D62;
+    --accent: #FF4D1C;
+    --white: #FAF5EB;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+background: var(–bg);
+color: var(–text);
+font-family: ‘Libre Baskerville’, Georgia, serif;
+line-height: 1.8;
+overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.035’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 100;
+opacity: 0.4;
+}
+
+/* ── HERO ── */
+.hero {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+padding: 4rem 2rem;
+position: relative;
+background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(240,165,0,0.08) 0%, transparent 70%);
+border-bottom: 1px solid rgba(240,165,0,0.12);
+}
+
+.hero-label {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 0.7rem;
+letter-spacing: 0.25em;
+color: var(–gold);
+text-transform: uppercase;
+margin-bottom: 2rem;
+opacity: 0;
+animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero h1 {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: clamp(3.5rem, 12vw, 9rem);
+line-height: 0.92;
+letter-spacing: 0.02em;
+color: var(–white);
+max-width: 900px;
+opacity: 0;
+animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero h1 span {
+color: var(–gold);
+display: block;
+}
+
+.hero-sub {
+font-family: ‘DM Serif Display’, serif;
+font-style: italic;
+font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+color: var(–text-muted);
+margin-top: 1.5rem;
+max-width: 560px;
+opacity: 0;
+animation: fadeUp 0.9s 0.65s forwards;
+}
+
+.scroll-hint {
+position: absolute;
+bottom: 2.5rem;
+left: 50%;
+transform: translateX(-50%);
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.5rem;
+opacity: 0;
+animation: fadeUp 1s 1.2s forwards;
+}
+
+.scroll-hint span {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+color: var(–text-muted);
+text-transform: uppercase;
+}
+
+.scroll-line {
+width: 1px;
+height: 40px;
+background: linear-gradient(to bottom, var(–gold), transparent);
+animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── ARTICLE ── */
+article {
+max-width: 720px;
+margin: 0 auto;
+padding: 5rem 2rem 8rem;
+}
+
+/* Sections */
+.section {
+margin-bottom: 5rem;
+opacity: 0;
+transform: translateY(24px);
+transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.section.visible {
+opacity: 1;
+transform: translateY(0);
+}
+
+/* Chapter label */
+.chapter {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 0.62rem;
+letter-spacing: 0.25em;
+color: var(–gold-dim);
+text-transform: uppercase;
+margin-bottom: 1rem;
+display: flex;
+align-items: center;
+gap: 1rem;
+}
+
+.chapter::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background: rgba(240,165,0,0.15);
+}
+
+h2 {
+font-family: ‘DM Serif Display’, serif;
+font-size: clamp(1.8rem, 4vw, 2.6rem);
+line-height: 1.2;
+color: var(–white);
+margin-bottom: 1.5rem;
+font-weight: 400;
+}
+
+p {
+margin-bottom: 1.2rem;
+color: var(–text);
+font-size: 1.05rem;
+}
+
+/* BIG STAT BLOCKS */
+.stat-block {
+background: var(–bg2);
+border: 1px solid rgba(240,165,0,0.2);
+border-left: 3px solid var(–gold);
+padding: 2.5rem 2rem;
+margin: 2.5rem 0;
+position: relative;
+overflow: hidden;
+}
+
+.stat-block::before {
+content: ‘’;
+position: absolute;
+top: 0; right: 0;
+width: 200px; height: 200px;
+background: radial-gradient(circle, var(–gold-glow) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.stat-number {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: clamp(3rem, 8vw, 5rem);
+color: var(–gold);
+line-height: 1;
+display: block;
+margin-bottom: 0.4rem;
+}
+
+.stat-label {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 0.8rem;
+color: var(–text-muted);
+letter-spacing: 0.1em;
+text-transform: uppercase;
+}
+
+/* COLLISION TABLE */
+.collision {
+background: var(–bg3);
+border: 1px solid rgba(240,165,0,0.15);
+padding: 2.5rem;
+margin: 2.5rem 0;
+display: grid;
+grid-template-columns: 1fr auto 1fr;
+align-items: center;
+gap: 1.5rem;
+text-align: center;
+}
+
+.collision-side {}
+
+.collision-num {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: clamp(2rem, 5vw, 3.5rem);
+color: var(–white);
+line-height: 1;
+display: block;
+}
+
+.collision-desc {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 0.7rem;
+color: var(–text-muted);
+letter-spacing: 0.1em;
+text-transform: uppercase;
+margin-top: 0.4rem;
+}
+
+.vs {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 2rem;
+color: var(–accent);
+border: 1px solid rgba(255,77,28,0.3);
+width: 48px; height: 48px;
+display: flex; align-items: center; justify-content: center;
+border-radius: 50%;
+}
+
+/* PULL QUOTE */
+blockquote {
+border: none;
+padding: 2.5rem 0;
+margin: 3rem 0;
+border-top: 1px solid rgba(240,165,0,0.15);
+border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+blockquote p {
+font-family: ‘DM Serif Display’, serif;
+font-style: italic;
+font-size: clamp(1.4rem, 3vw, 2rem);
+color: var(–white);
+line-height: 1.4;
+margin-bottom: 0;
+}
+
+/* SHIFT MOMENT */
+.shift {
+text-align: center;
+padding: 3rem 2rem;
+background: var(–bg2);
+border: 1px solid rgba(240,165,0,0.12);
+margin: 2.5rem 0;
+}
+
+.shift-from {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 0.9rem;
+color: var(–text-muted);
+text-decoration: line-through;
+margin-bottom: 0.8rem;
+}
+
+.shift-arrow {
+font-size: 1.5rem;
+color: var(–gold);
+display: block;
+margin: 0.5rem 0;
+}
+
+.shift-to {
+font-family: ‘DM Serif Display’, serif;
+font-style: italic;
+font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+color: var(–white);
+}
+
+/* LOST COINS BAR */
+.supply-bar {
+margin: 2.5rem 0;
+}
+
+.supply-bar-label {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 0.68rem;
+letter-spacing: 0.12em;
+color: var(–text-muted);
+text-transform: uppercase;
+margin-bottom: 0.6rem;
+display: flex;
+justify-content: space-between;
+}
+
+.bar-track {
+height: 10px;
+background: var(–bg3);
+border-radius: 2px;
+overflow: hidden;
+margin-bottom: 0.4rem;
+}
+
+.bar-fill {
+height: 100%;
+border-radius: 2px;
+width: 0;
+transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-fill.gold { background: var(–gold); }
+.bar-fill.dim  { background: rgba(240,165,0,0.35); }
+.bar-fill.muted{ background: rgba(240,165,0,0.15); }
+
+/* FINAL CTA */
+.finale {
+text-align: center;
+padding: 5rem 2rem;
+position: relative;
+}
+
+.finale::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(240,165,0,0.06), transparent 70%);
+pointer-events: none;
+}
+
+.finale-question {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: clamp(2rem, 7vw, 5rem);
+line-height: 1;
+color: var(–white);
+margin-bottom: 1rem;
+}
+
+.finale-question span { color: var(–gold); }
+
+.finale-sub {
+font-family: ‘DM Serif Display’, serif;
+font-style: italic;
+font-size: 1.2rem;
+color: var(–text-muted);
+max-width: 480px;
+margin: 0 auto;
+}
+
+/* Divider */
+.divider {
+width: 60px;
+height: 2px;
+background: linear-gradient(to right, transparent, var(–gold), transparent);
+margin: 3rem auto;
+}
+
+/* Mono callout */
+.mono-fact {
+font-family: ‘IBM Plex Mono’, monospace;
+font-size: 0.85rem;
+color: var(–gold);
+background: rgba(240,165,0,0.06);
+border-left: 2px solid var(–gold);
+padding: 1rem 1.5rem;
+margin: 2rem 0;
+letter-spacing: 0.05em;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(20px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+0%, 100% { opacity: 0.3; transform: scaleY(1); }
+50%       { opacity: 1;   transform: scaleY(1.15); }
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+.collision { grid-template-columns: 1fr; }
+.vs { margin: 0 auto; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- HERO -->
+
+<header class="hero">
+  <p class="hero-label">₿ Supply Shock Analysis</p>
+  <h1>The Day the World Runs<span>Out of Bitcoin</span></h1>
+  <p class="hero-sub">The supply shock nobody is ready for — and why the math was always pointing here.</p>
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+
+<article>
+
+  <!-- INTRO -->
+
+  <div class="section">
+    <div class="chapter">Opening</div>
+    <h2>Everyone Thinks They Can Buy Some Later</h2>
+    <p>Most people assume that if they ever decide to buy Bitcoin, they'll simply open an app and grab some. Just like buying a stock. Just like buying gold. Just like buying anything else.</p>
+    <p>But buried inside Bitcoin's design is a mathematical reality most people haven't fully processed yet:</p>
+    <blockquote><p>"There may not be enough for everyone who eventually wants it — and the moment that realization spreads could trigger one of the most dramatic supply shocks financial markets have ever witnessed."</p></blockquote>
+  </div>
+
+  <!-- 21M -->
+
+  <div class="section">
+    <div class="chapter">Chapter I</div>
+    <h2>21 Million. That's It. Forever.</h2>
+    <p>Bitcoin has a hard-coded maximum supply. Not a target. Not a guideline. A ceiling permanently written into the protocol itself.</p>
+
+```
+<div class="stat-block">
+  <span class="stat-number">21,000,000</span>
+  <span class="stat-label">Maximum Bitcoin that will ever exist — by design</span>
+</div>
+
+<p>No central bank can print more. No government can authorize new supply. No mining operation can discover an untapped reserve. When the final coin is mined around the year 2140, the supply stops — permanently.</p>
+<p>That rule has never changed in Bitcoin's 15-year history. It's the one thing every participant agrees on.</p>
+```
+
+  </div>
+
+  <!-- REAL SUPPLY -->
+
+  <div class="section">
+    <div class="chapter">Chapter II</div>
+    <h2>The Real Supply Is Already Far Smaller</h2>
+    <p>Here's the part that surprises most people: not all 21 million coins are actually accessible. Millions are believed to be gone forever — trapped on old hard drives, locked behind forgotten passwords, or buried with their owners.</p>
+
+```
+<div class="supply-bar">
+  <div class="supply-bar-label"><span>Estimated lost forever</span><span>~3–4M BTC</span></div>
+  <div class="bar-track"><div class="bar-fill dim" data-width="19"></div></div>
+</div>
+<div class="supply-bar">
+  <div class="supply-bar-label"><span>Long-term holders (rarely sell)</span><span>~6–7M BTC</span></div>
+  <div class="bar-track"><div class="bar-fill dim" data-width="33"></div></div>
+</div>
+<div class="supply-bar">
+  <div class="supply-bar-label"><span>Actively liquid supply</span><span>~4–5M BTC</span></div>
+  <div class="bar-track"><div class="bar-fill gold" data-width="24"></div></div>
+</div>
+
+<div class="mono-fact">
+  Estimated usable supply: ~17–18 million coins.<br>
+  Liquid, actively traded supply: potentially far less.
+</div>
+```
+
+  </div>
+
+  <!-- DORMANT -->
+
+  <div class="section">
+    <div class="chapter">Chapter III</div>
+    <h2>The Coins That Simply Never Move</h2>
+    <p>Add another layer. A substantial portion of existing Bitcoin is held by long-term owners who almost never sell. Some wallets haven't moved coins in five years. Some in ten. Some since Bitcoin was worth less than a dollar.</p>
+    <p>These holdings don't disappear from the supply count — but they effectively disappear from the market. They're not for sale at any near-term price. They sit in cold storage while the world slowly wakes up to what's happening.</p>
+    <p>What remains actively traded may be a remarkably thin slice of a 21-million-coin cap that was already small to begin with.</p>
+  </div>
+
+  <!-- COLLISION -->
+
+  <div class="section">
+    <div class="chapter">Chapter IV</div>
+    <h2>The Millionaire Collision</h2>
+    <p>Here's where the arithmetic becomes uncomfortable.</p>
+
+```
+<div class="collision">
+  <div class="collision-side">
+    <span class="collision-num">60M</span>
+    <div class="collision-desc">Millionaires worldwide</div>
+  </div>
+  <div class="vs">VS</div>
+  <div class="collision-side">
+    <span class="collision-num">21M</span>
+    <div class="collision-desc">Bitcoin that will ever exist</div>
+  </div>
+</div>
+
+<p>Even if every millionaire on Earth wanted just one whole coin, more than half of them could never have one. That's before accounting for the 3–4 million already lost, the millions held by long-term holders who won't sell, and the billions of non-millionaires who also want exposure.</p>
+<p>The collision between potential demand and fixed supply is not a theory. It's arithmetic.</p>
+```
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PSYCHOLOGY -->
+
+  <div class="section">
+    <div class="chapter">Chapter V</div>
+    <h2>The Psychological Turning Point</h2>
+    <p>For years, Bitcoin was viewed as something speculative. Something to watch. Something to consider "later." That posture has a hidden cost — because later keeps getting more expensive.</p>
+    <p>Markets often change violently the moment perception shifts. When enough participants stop asking whether something is worth owning and start asking whether any is left to own, price discovery tends to be swift and unforgiving.</p>
+
+```
+<div class="shift">
+  <div class="shift-from">"Should I buy some Bitcoin?"</div>
+  <span class="shift-arrow">↓</span>
+  <div class="shift-to">"Is there any Bitcoin left to buy?"</div>
+</div>
+
+<p>That transition — from casual interest to urgency — is the moment supply shocks are made.</p>
+```
+
+  </div>
+
+  <!-- SHOCK SCENARIO -->
+
+  <div class="section">
+    <div class="chapter">Chapter VI</div>
+    <h2>What a Real Supply Shock Looks Like</h2>
+    <p>Imagine millions of institutional investors, sovereign wealth funds, and retail participants all deciding — in the same short window — that they want Bitcoin exposure. Not all at once, necessarily. Just enough to overwhelm the thin slice of supply that's actually available to buy.</p>
+    <p>In any market, when buyers compete for limited and inelastic supply, price discovery doesn't walk upward. It lurches.</p>
+
+```
+<div class="stat-block">
+  <span class="stat-number">0</span>
+  <span class="stat-label">Additional Bitcoin that can ever be created to meet new demand</span>
+</div>
+
+<p>This dynamic has appeared repeatedly throughout financial history with scarce assets — art, land, rare commodities. But none of them came with a mathematically guaranteed supply ceiling enforced by a global network of computers.</p>
+```
+
+  </div>
+
+  <!-- SATOSHIS -->
+
+  <div class="section">
+    <div class="chapter">Chapter VII</div>
+    <h2>The Future Is Measured in Satoshis</h2>
+    <p>Bitcoin is divisible to eight decimal places. The smallest unit — a satoshi — is one hundred-millionth of a single coin.</p>
+
+```
+<div class="stat-block">
+  <span class="stat-number">100,000,000</span>
+  <span class="stat-label">Satoshis per Bitcoin</span>
+</div>
+
+<p>As ownership becomes increasingly fractional, the question shifts from "how many Bitcoin do you own?" to "how many satoshis do you hold?" It's the same transition that happened with gold — from ingots to ounces to grams to milligrams — as more people wanted access to less available supply.</p>
+<div class="mono-fact">"Do you own a Bitcoin?" → "How many satoshis do you have?"</div>
+```
+
+  </div>
+
+  <!-- FINALE -->
+
+  <div class="section finale">
+    <div class="chapter">The Question That Remains</div>
+    <h2 class="finale-question">How Much Can<span> You Still Get?</span></h2>
+    <p class="finale-sub">The world has had years to slowly learn about Bitcoin. But markets don't wait for everyone to be ready. When perception shifts — and supply doesn't — only one question matters.</p>
+  </div>
+
+</article>
+
+<script>
+  // Intersection observer for section animations
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // Animate bars inside this section
+        entry.target.querySelectorAll('.bar-fill[data-width]').forEach(bar => {
+          setTimeout(() => {
+            bar.style.width = bar.dataset.width + '%';
+          }, 200);
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
