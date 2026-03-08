@@ -1,215 +1,544 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bitcoin Analytics</title>
-  <style>
-    /* Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: "Helvetica Neue", Arial, sans-serif;
-      background: #f9fafb;
-      color: #1a1a1a;
-      line-height: 1.6;
-    }
-
-    header {
-      background: #111;
-      color: #f9fafb;
-      padding: 2rem 1rem;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-
-    header h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    header p {
-      font-size: 1.1rem;
-      max-width: 700px;
-      margin: 0 auto;
-      opacity: 0.9;
-    }
-
-    nav {
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      justify-content: center;
-      padding: 1rem;
-    }
-
-   nav ul {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;        /* allows wrapping onto multiple lines */
-  justify-content: center;
-  gap: 1.2rem;            /* spacing between items */
-  padding: 0;
-  margin: 0;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SATOLOGY — Understanding Bitcoin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ── THEMES ── */
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#666;--nav-bg:rgba(8,8,8,.95);--toggle-bg:#1e1e24;
+  --intro-bg:#111114;--footer-bg:#0d0d0d;--donate-bg:#0d0d0d;
 }
-
-nav a {
-  text-decoration: none;
-  font-weight: bold;
-  color: #333;
-  transition: color 0.2s;
-  font-size: clamp(0.9rem, 2.5vw, 1.1rem); 
-  /* min size 0.9rem, scales with screen, max 1.1rem */
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#ffffff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#888;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --intro-bg:#ffffff;--footer-bg:#ece9e0;--donate-bg:#f5f4f0;
 }
+:root{--btc:#F7931A;--btc2:#e07b10;}
 
-nav a:hover {
-  color: #f7931a; /* Bitcoin orange */
+/* ── RESET ── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── TICKER ── */
+.ticker{background:var(--btc);padding:9px 0;overflow:hidden;white-space:nowrap;position:relative;z-index:201}
+.ticker-inner{display:inline-flex;gap:72px;animation:tick 32s linear infinite;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tick-sep{opacity:.5}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .35s,border-color .35s}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);transition:color .35s}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase;transition:color .35s}
+.nav-right{display:flex;align-items:center;gap:12px}
+
+/* PRICE BADGE in nav */
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;font-size:14px;font-weight:800;color:var(--btc);letter-spacing:-.3px;transition:all .35s}
+.nav-price-dot{width:7px;height:7px;background:#22c55e;border-radius:50%;animation:livePulse 2s infinite}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* THEME TOGGLE */
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);border:1px solid var(--border);cursor:pointer;position:relative;transition:all .3s;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}
+[data-theme="light"] .t-icon.sun{opacity:1}
+
+/* ── HERO ── */
+.hero{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:72px 24px 64px;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(247,147,26,.13),transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none;animation:glow 4s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.5;transform:translate(-50%,-55%) scale(1)}50%{opacity:1;transform:translate(-50%,-55%) scale(1.12)}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.3);border-radius:100px;padding:6px 18px;font-size:11px;font-weight:700;color:var(--btc);letter-spacing:.5px;margin-bottom:28px;animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.hero h1{font-size:clamp(42px,8vw,92px);font-weight:900;line-height:1.02;letter-spacing:-4px;margin-bottom:24px;animation:fadeUp .7s .1s ease both}
+.hero h1 em{color:var(--btc);font-style:normal}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:var(--muted);max-width:560px;line-height:1.75;margin-bottom:12px;animation:fadeUp .7s .2s ease both}
+
+/* LIVE PRICE in hero */
+.hero-price-wrap{display:flex;align-items:center;gap:12px;margin-bottom:48px;animation:fadeUp .7s .25s ease both}
+.hero-price{font-size:clamp(28px,4vw,48px);font-weight:900;color:var(--btc);letter-spacing:-1.5px;text-shadow:0 0 30px rgba(247,147,26,.3)}
+.hero-price-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;line-height:1.4;text-align:left}
+.hero-btc-logo{width:clamp(44px,6vw,64px);height:auto;filter:drop-shadow(0 4px 16px rgba(247,147,26,.3));animation:floatBob 3s ease-in-out infinite}
+@keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.btn-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:64px;animation:fadeUp .7s .35s ease both}
+.btn{padding:15px 32px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .25s;text-decoration:none;display:inline-block}
+.btn-p{background:var(--btc);color:#fff}
+.btn-p:hover{background:var(--btc2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(247,147,26,.35)}
+.btn-o{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-o:hover{border-color:var(--btc);color:var(--btc)}
+
+/* STATS ROW */
+.stats-strip{display:flex;gap:0;background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;animation:fadeUp .7s .45s ease both;transition:background .35s,border-color .35s}
+.stat{padding:24px 36px;text-align:center;border-right:1px solid var(--border);flex:1;transition:border-color .35s}
+.stat:last-child{border-right:none}
+.stat-num{font-size:28px;font-weight:900;color:var(--btc);letter-spacing:-1px}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── FEATURE STRIP ── */
+.feat-strip{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:64px 48px;transition:background .35s,border-color .35s}
+.feat-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:40px}
+.feat-item{display:flex;flex-direction:column;gap:12px}
+.feat-icon-wrap{font-size:28px}
+.feat-item h3{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.feat-item p{font-size:13px;color:var(--muted);line-height:1.75}
+
+/* ── TOOLS SECTION ── */
+.tools-section{padding:80px 48px;max-width:1280px;margin:0 auto}
+.s-eye{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--btc);font-weight:700;margin-bottom:10px}
+.s-title{font-size:clamp(26px,4vw,44px);font-weight:900;letter-spacing:-2px;margin-bottom:12px}
+.s-sub{color:var(--muted);font-size:15px;line-height:1.75;max-width:500px;margin-bottom:48px}
+
+/* TOOLS GRID */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px}
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;text-decoration:none;color:var(--text);transition:all .3s;display:flex;flex-direction:column}
+.tool-card:hover{border-color:var(--btc);transform:translateY(-6px);box-shadow:0 20px 56px rgba(247,147,26,.13)}
+.tool-thumb{height:120px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;flex-shrink:0}
+.t-or{background:linear-gradient(135deg,#1a0e00,#2d1800)}
+.t-nv{background:linear-gradient(135deg,#000a1a,#001440)}
+.t-dk{background:linear-gradient(135deg,#0a0a0f,#141420)}
+.t-gn{background:linear-gradient(135deg,#001209,#002015)}
+.t-pu{background:linear-gradient(135deg,#0d0014,#1a0028)}
+.t-rd{background:linear-gradient(135deg,#1a0000,#2d0a00)}
+.tool-body{padding:20px;flex:1;display:flex;flex-direction:column}
+.tool-tag{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--btc);font-weight:700;margin-bottom:6px}
+.tool-title{font-size:16px;font-weight:800;letter-spacing:-.2px;margin-bottom:8px;line-height:1.3}
+.tool-desc{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:14px;flex:1}
+.tool-link{font-size:12px;font-weight:700;color:var(--btc);display:inline-flex;align-items:center;gap:5px;transition:gap .2s}
+.tool-card:hover .tool-link{gap:9px}
+
+/* ── WELCOME / INTRO ── */
+.welcome-section{padding:0 48px 80px;max-width:1280px;margin:0 auto}
+.welcome-card{background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;transition:background .35s,border-color .35s}
+.welcome-inner{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:0}
+.welcome-text{padding:52px}
+.welcome-text h2{font-size:clamp(24px,3vw,36px);font-weight:900;letter-spacing:-1.5px;margin-bottom:16px}
+.welcome-text h2 em{color:var(--btc);font-style:normal}
+.welcome-text p{font-size:15px;color:var(--muted);line-height:1.8}
+.welcome-img{height:100%;min-height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#0d0800,#1a1000);position:relative}
+.welcome-img img{width:100%;height:100%;object-fit:cover;opacity:.85;transition:transform .4s}
+.welcome-card:hover .welcome-img img{transform:scale(1.03)}
+
+/* ── DONATE ── */
+.donate-section{background:var(--donate-bg);border-top:1px solid var(--border);padding:72px 48px;transition:background .35s,border-color .35s}
+.donate-inner{max-width:680px;margin:0 auto;text-align:center}
+.donate-inner h2{font-size:clamp(22px,3vw,34px);font-weight:900;letter-spacing:-1px;margin-bottom:14px}
+.donate-inner p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:10px}
+.btc-address{display:inline-flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 20px;margin:20px 0;font-size:13px;font-weight:700;color:var(--btc);letter-spacing:.5px;word-break:break-all;text-align:left;transition:background .35s,border-color .35s;cursor:pointer;max-width:100%}
+.btc-address:hover{border-color:var(--btc)}
+.copy-icon{font-size:16px;flex-shrink:0}
+.donate-note{font-size:13px;color:var(--muted);margin-bottom:20px}
+.qr-wrap{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;transition:background .35s,border-color .35s}
+.qr-wrap img{display:block;border-radius:8px}
+
+/* ── FOOTER ── */
+.footer-wrap{border-top:1px solid var(--border);background:var(--footer-bg);transition:background .35s,border-color .35s}
+footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:24px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:0 18px}
+  .nav-price-label{display:none}
+  .feat-strip{padding:52px 20px}
+  .feat-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .tools-section,.welcome-section{padding-left:20px;padding-right:20px}
+  .welcome-inner{grid-template-columns:1fr}
+  .welcome-img{min-height:220px}
+  .donate-section{padding:52px 20px}
+  footer{padding:32px 20px;flex-direction:column;text-align:center}
+  .stats-strip{flex-wrap:wrap}
+  .stat{min-width:50%;border-right:none;border-bottom:1px solid var(--border)}
+  .stat:last-child,.stat:nth-last-child(-n+2):nth-child(odd){border-bottom:none}
 }
-    nav a:hover {
-      color: #f7931a; /* Bitcoin orange */
-    }
-
-    main {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    .intro {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      margin-bottom: 2rem;
-    }
-
-    .intro h2 {
-      margin-bottom: 1rem;
-      font-size: 1.6rem;
-      color: #111;
-    }
-
-    .intro p {
-      font-size: 1.05rem;
-      color: #444;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-    /* --- Bitcoin price styling --- */
-.price-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
+@media(max-width:540px){
+  .feat-grid{grid-template-columns:1fr}
+  .hero{padding:60px 18px 48px}
+  .btn-row{flex-direction:column;align-items:center}
+  .stat{min-width:100%}
 }
-
-.price-row img {
-  width: clamp(64px, 8vw, 90px);
-  height: auto;
-}
-
-#btcPriceHeader {
-  color: #f7931a;                              /* Bitcoin orange */
-  font-weight: 900;                            /* extra bold */
-  font-size: clamp(2rem, 4vw, 3rem);     /* responsive size */
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 6px rgba(247,147,26,0.35);  /* subtle glow */
-  line-height: 1;
-}
-  </style>
+</style>
 </head>
 <body>
- 
-    <header>
-  <h1 style="text-align:center;">Mark's Bitcoin Calculators</h1>
 
-  <!-- Logo and price row below the title -->
-<div class="price-row">
-  <img src="Bitcoinlogo.png" alt="Bitcoin Logo">
-  <span id="btcPriceHeader">$--</span>
+<!-- ── TICKER ── -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>₿ BITCOIN</span><span class="tick-sep">·</span>
+    <span>21,000,000 MAX SUPPLY</span><span class="tick-sep">·</span>
+    <span>🟠 SOUND MONEY</span><span class="tick-sep">·</span>
+    <span>🔐 NOT YOUR KEYS, NOT YOUR COINS</span><span class="tick-sep">·</span>
+    <span>⚡ LIGHTNING NETWORK</span><span class="tick-sep">·</span>
+    <span>📈 STACK SATS DAILY</span><span class="tick-sep">·</span>
+    <span>🌍 BORDERLESS &amp; PERMISSIONLESS</span><span class="tick-sep">·</span>
+    <span>₿ BITCOIN</span><span class="tick-sep">·</span>
+    <span>21,000,000 MAX SUPPLY</span><span class="tick-sep">·</span>
+    <span>🟠 SOUND MONEY</span><span class="tick-sep">·</span>
+    <span>🔐 NOT YOUR KEYS, NOT YOUR COINS</span><span class="tick-sep">·</span>
+    <span>⚡ LIGHTNING NETWORK</span><span class="tick-sep">·</span>
+    <span>📈 STACK SATS DAILY</span><span class="tick-sep">·</span>
+    <span>🌍 BORDERLESS &amp; PERMISSIONLESS</span><span class="tick-sep">·</span>
+  </div>
 </div>
-      
-      
-      <p>A collection of tools to help you project your financial future, understand Bitcoin’s potential, 
-       and design a better life through sound money.</p>  
-    <nav>
-    <ul>
-      <li><a href="why-bitcoin.html">Why Bitcoin?</a></li>
-      <li><a href="Retireearlywithbitcoin.html">Retire Early Calculator</a></li>
-      <li><a href="LandlordCalculator.html">Landlord Calculator</a></li>
-      <li><a href="TimeCurrency.html">Time Currency</a></li>
-      <li><a href="raise-with-bitcoin.html">DCA Calculator</a></li>
-      <li><a href="real-estate-vs-bitcoin.html">Real Estate VS Bitcoin</a></li>
-      <li><a href="BitcoinKids18.html">Bitcoin For Kids 18 Fund</a></li>
-      <li><a href="LumpSumVSdcaVShybrid.html">Lump Sum vs DCA Simulator</a></li>
-      <li><a href="Bitcoinshirts.html">Bitcoin Shirts for Sale</a></li>
-      <li><a href="why-bitcoin-wins.html">Why Bitcoin Wins</a></li>
-      <li><a href="BitcoinSupplyShock.html">Bitcoin Supply Shock</a></li>
-      <li><a href="Unstoppable.html">Unstoppable Network</a></li>
-      <li><a href="IntrinsicValue.html">Intrinsic Value</a></li>
-      <li><a href="Keychain.html">Keychain</a></li>
-    </ul>
-  </nav>
 
-  <main>
-    <section class="intro">
-      <h2>Welcome!</h2>
-      <p>
-        This is your hub for Bitcoin-powered financial calculators. Our mission is to empower people 
-        worldwide to build personalized projections and explore how Bitcoin can strengthen their 
-        financial independence. Whether your goal is early retirement, a better standard of living, 
-        or simply understanding why Bitcoin matters, these tools will guide your journey.  More tools 
-        coming soon.
-      </p>
-      
-      <img src="Bitcoingate.png" 
-     alt="Bitcoin Gate" 
-     style="display:block; margin:20px auto; width:90%; height:auto; min-width:300px;">
-    </section>
-  </main>
-<!-- Donation Section -->
-<section id="donate" style="text-align:center; padding:40px 20px; background-color:#f9f9f9; border-top:1px solid #ddd;">
-  <h2 style="font-family:Arial, sans-serif; color:#333;">❤️ Support This Website</h2>
-  <p style="font-family:Arial, sans-serif; color:#555; max-width:600px; margin:10px auto;">
-    If you enjoy using this website and would like to support its upkeep, consider sending a Bitcoin donation. Every contribution helps keep it running and improves the content we provide. Thank you!
-  </p>
-  <p style="font-family:Arial, sans-serif; color:#333; font-weight:bold; margin-top:20px; word-break:break-all;">
-    Bitcoin Address: <span style="color:#0070f3;">BC1QJEG2NER8K79YK7P8RRNAHJ3SLJ6SNQFEMPAR0L</span>
-  </p>
-  <p style="font-family:Arial, sans-serif; color:#555; margin-top:5px;">
-    You can copy the address or scan the QR code below:
-  </p>
-  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BC1QJEG2NER8K79YK7P8RRNAHJ3SLJ6SNQFEMPAR0L" alt="Bitcoin QR Code" style="margin-top:15px; border:1px solid #ddd; border-radius:8px;">
-</section>  <footer>
-    <p>&copy; 2025 The Bitcoiner's Calculators. All rights reserved.</p>
+<!-- ── NAV ── -->
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+
+  <div class="nav-right">
+    <div class="nav-price">
+      <span class="nav-price-dot"></span>
+      <span id="btcPriceNav">$--</span>
+      <span class="nav-price-label">BTC<br>LIVE</span>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">🟠 Mark's Bitcoin Tools & Education Hub</div>
+
+  <h1>Build Your<br><em>Bitcoin</em><br>Future.</h1>
+
+  <p class="hero-sub">A collection of tools to help you project your financial future, understand Bitcoin's potential, and design a better life through sound money.</p>
+
+  <div class="hero-price-wrap">
+    <img class="hero-btc-logo" src="Bitcoinlogo.png" alt="Bitcoin Logo" onerror="this.style.display='none'">
+    <div>
+      <div class="hero-price" id="btcPriceHeader">$--</div>
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Bitcoin Price · Live</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <a href="Retireearlywithbitcoin.html" class="btn btn-p">Retire Early Calculator</a>
+    <a href="why-bitcoin.html" class="btn btn-o">Why Bitcoin?</a>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat"><div class="stat-num">21M</div><div class="stat-lbl">Max Supply Ever</div></div>
+    <div class="stat"><div class="stat-num">14+</div><div class="stat-lbl">Tools & Calculators</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-lbl">Reasons to Learn</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-lbl">Free to Use</div></div>
+  </div>
+</section>
+
+<!-- ── FEATURE STRIP ── -->
+<div class="feat-strip">
+  <div class="feat-grid">
+    <div class="feat-item reveal">
+      <div class="feat-icon-wrap">🔢</div>
+      <h3>Real Calculators</h3>
+      <p>Project exactly what consistent Bitcoin savings means for your retirement, kids, or financial independence.</p>
+    </div>
+    <div class="feat-item reveal">
+      <div class="feat-icon-wrap">📖</div>
+      <h3>Plain English</h3>
+      <p>No jargon. No hype. Bitcoin explained honestly so anyone can understand what it is and why it matters.</p>
+    </div>
+    <div class="feat-item reveal">
+      <div class="feat-icon-wrap">🛡️</div>
+      <h3>Sound Money</h3>
+      <p>21 million cap. No inflation. No bailouts. Explore why Bitcoin is the hardest money ever created.</p>
+    </div>
+    <div class="feat-item reveal">
+      <div class="feat-icon-wrap">🚀</div>
+      <h3>More Coming</h3>
+      <p>New tools and guides added regularly. Bookmark this page and come back to explore what's new.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOOLS GRID ── -->
+<div class="tools-section">
+  <p class="s-eye">All Tools & Guides</p>
+  <h2 class="s-title">Your Bitcoin Toolkit</h2>
+  <p class="s-sub">Every calculator and guide in one place — free, no signup required.</p>
+
+  <div class="tools-grid">
+
+    <a href="why-bitcoin.html" class="tool-card reveal">
+      <div class="tool-thumb t-nv">🔆</div>
+      <div class="tool-body">
+        <div class="tool-tag">Education</div>
+        <div class="tool-title">Why Bitcoin?</div>
+        <div class="tool-desc">The foundational case for Bitcoin — why it exists, what problem it solves, and why it matters to you.</div>
+        <div class="tool-link">Read more →</div>
+      </div>
+    </a>
+
+    <a href="Retireearlywithbitcoin.html" class="tool-card reveal">
+      <div class="tool-thumb t-or">📈</div>
+      <div class="tool-body">
+        <div class="tool-tag">Calculator</div>
+        <div class="tool-title">Retire Early Calculator</div>
+        <div class="tool-desc">Model your path to early retirement using Bitcoin. See your timeline and projected portfolio value.</div>
+        <div class="tool-link">Run the numbers →</div>
+      </div>
+    </a>
+
+    <a href="LandlordCalculator.html" class="tool-card reveal">
+      <div class="tool-thumb t-gn">🏠</div>
+      <div class="tool-body">
+        <div class="tool-tag">Calculator</div>
+        <div class="tool-title">Landlord Calculator</div>
+        <div class="tool-desc">Is your rental property actually making you money? Model real returns vs. stacking Bitcoin instead.</div>
+        <div class="tool-link">Calculate →</div>
+      </div>
+    </a>
+
+    <a href="TimeCurrency.html" class="tool-card reveal">
+      <div class="tool-thumb t-pu">⏱️</div>
+      <div class="tool-body">
+        <div class="tool-tag">Tool</div>
+        <div class="tool-title">Time Currency</div>
+        <div class="tool-desc">Convert prices into hours of your life. Discover the true cost of things measured in your most valuable asset — time.</div>
+        <div class="tool-link">Explore →</div>
+      </div>
+    </a>
+
+    <a href="raise-with-bitcoin.html" class="tool-card reveal">
+      <div class="tool-thumb t-or">🪙</div>
+      <div class="tool-body">
+        <div class="tool-tag">Calculator</div>
+        <div class="tool-title">DCA Calculator</div>
+        <div class="tool-desc">Dollar-cost averaging into Bitcoin. See how consistent small buys compound into serious wealth over time.</div>
+        <div class="tool-link">Start DCA →</div>
+      </div>
+    </a>
+
+    <a href="real-estate-vs-bitcoin.html" class="tool-card reveal">
+      <div class="tool-thumb t-nv">⚖️</div>
+      <div class="tool-body">
+        <div class="tool-tag">Comparison</div>
+        <div class="tool-title">Real Estate VS Bitcoin</div>
+        <div class="tool-desc">Side-by-side comparison of real estate investment vs. Bitcoin over time. Which builds more wealth?</div>
+        <div class="tool-link">Compare →</div>
+      </div>
+    </a>
+
+    <a href="BitcoinKids18.html" class="tool-card reveal">
+      <div class="tool-thumb t-gn">👶</div>
+      <div class="tool-body">
+        <div class="tool-tag">Calculator</div>
+        <div class="tool-title">Bitcoin For Kids 18 Fund</div>
+        <div class="tool-desc">What if you started stacking Bitcoin for your child at birth? See what they'd have by age 18.</div>
+        <div class="tool-link">Plan ahead →</div>
+      </div>
+    </a>
+
+    <a href="LumpSumVSdcaVShybrid.html" class="tool-card reveal">
+      <div class="tool-thumb t-dk">📊</div>
+      <div class="tool-body">
+        <div class="tool-tag">Simulator</div>
+        <div class="tool-title">Lump Sum vs DCA Simulator</div>
+        <div class="tool-desc">All at once, or spread out over time? Compare lump sum vs. DCA vs. hybrid strategies head-to-head.</div>
+        <div class="tool-link">Simulate →</div>
+      </div>
+    </a>
+
+    <a href="Bitcoinshirts.html" class="tool-card reveal">
+      <div class="tool-thumb t-or" style="font-size:40px">👕</div>
+      <div class="tool-body">
+        <div class="tool-tag">Shop</div>
+        <div class="tool-title">Bitcoin Shirts for Sale</div>
+        <div class="tool-desc">Wear your conviction. Browse Bitcoin-themed shirts and represent the orange revolution wherever you go.</div>
+        <div class="tool-link">Shop →</div>
+      </div>
+    </a>
+
+    <a href="why-bitcoin-wins.html" class="tool-card reveal">
+      <div class="tool-thumb t-nv">🏆</div>
+      <div class="tool-body">
+        <div class="tool-tag">Education</div>
+        <div class="tool-title">Why Bitcoin Wins</div>
+        <div class="tool-desc">The deeper case — network effects, monetary history, and the fundamental reasons Bitcoin outcompetes everything.</div>
+        <div class="tool-link">Learn why →</div>
+      </div>
+    </a>
+
+    <a href="BitcoinSupplyShock.html" class="tool-card reveal">
+      <div class="tool-thumb t-rd">💥</div>
+      <div class="tool-body">
+        <div class="tool-tag">Analysis</div>
+        <div class="tool-title">Bitcoin Supply Shock</div>
+        <div class="tool-desc">What happens when demand rises but supply is fixed at 21 million? Explore the mechanics of scarcity-driven price discovery.</div>
+        <div class="tool-link">Explore →</div>
+      </div>
+    </a>
+
+    <a href="Unstoppable.html" class="tool-card reveal">
+      <div class="tool-thumb t-gn">⚡</div>
+      <div class="tool-body">
+        <div class="tool-tag">Education</div>
+        <div class="tool-title">Unstoppable Network</div>
+        <div class="tool-desc">Why Bitcoin can't be shut down, censored, or controlled — and why that changes everything about money.</div>
+        <div class="tool-link">Read more →</div>
+      </div>
+    </a>
+
+    <a href="IntrinsicValue.html" class="tool-card reveal">
+      <div class="tool-thumb t-pu">💎</div>
+      <div class="tool-body">
+        <div class="tool-tag">Education</div>
+        <div class="tool-title">Intrinsic Value</div>
+        <div class="tool-desc">Does Bitcoin have intrinsic value? A deep dive into what gives money value — and where Bitcoin fits in.</div>
+        <div class="tool-link">Explore →</div>
+      </div>
+    </a>
+
+    <a href="Keychain.html" class="tool-card reveal">
+      <div class="tool-thumb t-or" style="font-size:44px">₿</div>
+      <div class="tool-body">
+        <div class="tool-tag">Shop</div>
+        <div class="tool-title">Bitcoin Keychain</div>
+        <div class="tool-desc">The original SATOSHI KEY — hard enamel, zinc alloy, 38mm. Carry your conviction wherever you go.</div>
+        <div class="tool-link">Shop now →</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ── WELCOME / BITCOIN GATE IMAGE ── -->
+<div class="welcome-section">
+  <div class="welcome-card reveal">
+    <div class="welcome-inner">
+      <div class="welcome-text">
+        <h2>Welcome to<br><em>SATOLOGY</em></h2>
+        <p>This is your hub for Bitcoin-powered financial tools. Our mission is to empower people worldwide to build personalized projections and explore how Bitcoin can strengthen their financial independence.</p>
+        <br>
+        <p>Whether your goal is early retirement, a better standard of living, or simply understanding why Bitcoin matters — these tools will guide your journey.</p>
+        <br>
+        <a href="why-bitcoin.html" class="btn btn-p" style="display:inline-block;margin-top:8px">Start Here →</a>
+      </div>
+      <div class="welcome-img">
+        <img src="Bitcoingate.png" alt="Bitcoin Gate — the path to financial freedom" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DONATE ── -->
+<div class="donate-section">
+  <div class="donate-inner reveal">
+    <h2>❤️ Support This Website</h2>
+    <p>If these tools have helped you on your Bitcoin journey, consider sending a donation. Every contribution helps keep the site running and the tools improving.</p>
+    <p class="donate-note">Send Bitcoin directly to this address:</p>
+
+    <div class="btc-address" onclick="copyAddress(this)" title="Click to copy">
+      <span class="copy-icon">₿</span>
+      <span>BC1QJEG2NER8K79YK7P8RRNAHJ3SLJ6SNQFEMPAR0L</span>
+      <span style="margin-left:auto;font-size:14px;opacity:.5">📋</span>
+    </div>
+
+    <p class="donate-note">Or scan the QR code:</p>
+    <div class="qr-wrap">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=BC1QJEG2NER8K79YK7P8RRNAHJ3SLJ6SNQFEMPAR0L" alt="Bitcoin Donation QR Code" width="160" height="160">
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="why-bitcoin.html">Why Bitcoin?</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+      <a href="raise-with-bitcoin.html">DCA Calculator</a>
+      <a href="LandlordCalculator.html">Landlord</a>
+      <a href="TimeCurrency.html">Time Currency</a>
+      <a href="real-estate-vs-bitcoin.html">RE vs BTC</a>
+      <a href="BitcoinKids18.html">Kids Fund</a>
+      <a href="LumpSumVSdcaVShybrid.html">Lump Sum vs DCA</a>
+      <a href="Bitcoinshirts.html">Shirts</a>
+      <a href="why-bitcoin-wins.html">Why It Wins</a>
+      <a href="BitcoinSupplyShock.html">Supply Shock</a>
+      <a href="Unstoppable.html">Unstoppable</a>
+      <a href="IntrinsicValue.html">Intrinsic Value</a>
+      <a href="Keychain.html">Keychain</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin. All rights reserved.</div>
   </footer>
-      <script>
-function updateBTCPriceHeader() {
+</div>
+
+<script>
+// ── THEME TOGGLE ──
+const html = document.documentElement;
+const saved = localStorage.getItem('satology-theme') || 'dark';
+html.setAttribute('data-theme', saved);
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('satology-theme', next);
+});
+
+// ── LIVE BITCOIN PRICE ──
+function updatePrice() {
   fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
-    .then(response => response.json())
+    .then(r => r.json())
     .then(data => {
-      const btcPrice = data.bitcoin.usd;
-      document.getElementById('btcPriceHeader').textContent = `$${btcPrice.toLocaleString()}`;
+      const p = data.bitcoin.usd;
+      const fmt = '$' + p.toLocaleString();
+      document.getElementById('btcPriceHeader').textContent = fmt;
+      document.getElementById('btcPriceNav').textContent = fmt;
     })
-    .catch(error => console.error('Error fetching Bitcoin price:', error));
+    .catch(() => {});
+}
+updatePrice();
+setInterval(updatePrice, 10000);
+
+// ── COPY ADDRESS ──
+function copyAddress(el) {
+  const addr = 'BC1QJEG2NER8K79YK7P8RRNAHJ3SLJ6SNQFEMPAR0L';
+  navigator.clipboard.writeText(addr).then(() => {
+    const orig = el.innerHTML;
+    el.innerHTML = '<span>✅ Address Copied!</span>';
+    el.style.color = '#22c55e';
+    el.style.borderColor = '#22c55e';
+    setTimeout(() => { el.innerHTML = orig; el.style.color = ''; el.style.borderColor = ''; }, 2500);
+  }).catch(() => {});
 }
 
-// Initial load
-updateBTCPriceHeader();
-
-// Update every 10 seconds
-setInterval(updateBTCPriceHeader, 10000);
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
-
 </body>
 </html>
