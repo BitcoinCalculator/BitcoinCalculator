@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>Bitcoin Has No Intrinsic Value — The Criticism That Proves Too Much</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html {
+background-color: #0A0805;
+color-scheme: dark;
+scroll-behavior: smooth;
+}
+
+body {
+background-color: #0A0805;
+color: #E8DEC8;
+font-family: ‘Libre Baskerville’, Georgia, ‘Times New Roman’, serif;
+line-height: 1.85;
+overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’ opacity=‘0.04’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 1000;
+opacity: 0.5;
+}
+
+/* ── PROGRESS BAR ── */
+#progress-bar {
+position: fixed;
+top: 0; left: 0;
+height: 2px;
+width: 0%;
+background: linear-gradient(to right, #C47F00, #F0A500, #FFD166);
+z-index: 999;
+transition: width 0.1s linear;
+box-shadow: 0 0 8px rgba(240,165,0,0.4);
+}
+
+/* ── STICKY NAV ── */
+#site-nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+background-color: rgba(10,8,5,0.92);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border-bottom: 1px solid rgba(240,165,0,0.1);
+padding: 0.7rem 1.5rem;
+z-index: 200;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 1rem;
+transform: translateY(-100%);
+transition: transform 0.35s ease;
+}
+
+#site-nav.visible { transform: translateY(0); }
+
+.nav-logo {
+font-family: ‘Bebas Neue’, Impact, sans-serif;
+font-size: 1rem;
+color: #F0A500;
+letter-spacing: 0.06em;
+text-decoration: none;
+white-space: nowrap;
+flex-shrink: 0;
+}
+
+.nav-chapters {
+display: flex;
+gap: 0.15rem;
+flex-wrap: wrap;
+justify-content: flex-end;
+}
+
+.nav-chapters a {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.58rem;
+letter-spacing: 0.07em;
+text-transform: uppercase;
+color: #8A7D62;
+text-decoration: none;
+padding: 0.25rem 0.55rem;
+border: 1px solid transparent;
+border-radius: 2px;
+transition: color 0.2s, border-color 0.2s;
+white-space: nowrap;
+}
+
+.nav-chapters a:hover,
+.nav-chapters a.active {
+color: #F0A500;
+border-color: rgba(240,165,0,0.25);
+}
+
+/* ── HERO ── */
+.hero {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+padding: 7rem 2rem 5rem;
+position: relative;
+background-color: #0A0805;
+background-image:
+radial-gradient(ellipse 100% 70% at 50% 30%, rgba(240,165,0,0.1) 0%, transparent 65%),
+radial-gradient(ellipse 50% 30% at 10% 80%, rgba(255,77,28,0.05) 0%, transparent 60%);
+overflow: hidden;
+}
+
+.hero-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.68rem;
+letter-spacing: 0.32em;
+color: #F0A500;
+text-transform: uppercase;
+margin-bottom: 2rem;
+opacity: 0;
+animation: fadeUp 0.8s 0.2s forwards;
+}
+
+/* Accusation badge — the thing critics say */
+.hero-accusation {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: clamp(0.8rem, 2.2vw, 1rem);
+letter-spacing: 0.05em;
+color: #FF4D1C;
+background-color: rgba(255,77,28,0.06);
+border: 1px solid rgba(255,77,28,0.22);
+border-left: 3px solid #FF4D1C;
+padding: 1rem 1.5rem;
+margin-bottom: 2.5rem;
+max-width: 580px;
+text-align: left;
+opacity: 0;
+animation: fadeUp 0.8s 0.35s forwards;
+position: relative;
+}
+
+.hero-accusation::before {
+content: ‘”’;
+position: absolute;
+top: -1.2rem; left: 1rem;
+font-family: Georgia, serif;
+font-size: 4rem;
+color: rgba(255,77,28,0.15);
+line-height: 1;
+}
+
+.hero-accusation-label {
+font-size: 0.55rem;
+letter-spacing: 0.22em;
+color: rgba(255,77,28,0.6);
+text-transform: uppercase;
+display: block;
+margin-bottom: 0.5rem;
+}
+
+/* Main headline */
+.hero h1 {
+font-family: ‘Bebas Neue’, Impact, ‘Arial Narrow’, sans-serif;
+font-size: clamp(3.2rem, 12vw, 9rem);
+line-height: 0.88;
+letter-spacing: 0.02em;
+color: #FAF5EB;
+max-width: 900px;
+opacity: 0;
+animation: fadeUp 0.9s 0.5s forwards;
+}
+
+.hero h1 em {
+color: #F0A500;
+font-style: normal;
+display: block;
+text-shadow: 0 0 60px rgba(240,165,0,0.2);
+}
+
+.hero-sub {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-style: italic;
+font-size: clamp(1rem, 2.4vw, 1.45rem);
+color: #8A7D62;
+margin-top: 2rem;
+max-width: 580px;
+line-height: 1.55;
+opacity: 0;
+animation: fadeUp 0.9s 0.7s forwards;
+}
+
+/* Stat ticker */
+.hero-ticker {
+margin-top: 3rem;
+display: flex;
+align-items: center;
+gap: 0.6rem;
+opacity: 0;
+animation: fadeUp 0.9s 0.95s forwards;
+}
+
+.ticker-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.15em;
+color: #8A7D62;
+text-transform: uppercase;
+white-space: nowrap;
+}
+
+.ticker-wrap {
+background-color: rgba(240,165,0,0.07);
+border: 1px solid rgba(240,165,0,0.18);
+padding: 0.4rem 1.1rem;
+border-radius: 2px;
+min-width: 280px;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+
+.ticker-item {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.82rem;
+color: #F0A500;
+letter-spacing: 0.05em;
+position: absolute;
+width: 100%;
+left: 0;
+top: 50%;
+transform: translateY(-50%);
+opacity: 0;
+transition: opacity 0.5s ease;
+padding: 0 1rem;
+}
+
+.ticker-item.active { opacity: 1; position: relative; top: auto; transform: none; }
+
+.scroll-hint {
+position: absolute;
+bottom: 2.5rem;
+left: 50%;
+transform: translateX(-50%);
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.5rem;
+opacity: 0;
+animation: fadeUp 1s 1.4s forwards;
+}
+
+.scroll-hint span {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.58rem;
+letter-spacing: 0.22em;
+color: #8A7D62;
+text-transform: uppercase;
+}
+
+.scroll-line {
+width: 1px;
+height: 44px;
+background: linear-gradient(to bottom, #F0A500, transparent);
+animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── ARTICLE BODY ── */
+article {
+max-width: 720px;
+margin: 0 auto;
+padding: 5rem 2rem 10rem;
+}
+
+.section {
+margin-bottom: 6rem;
+opacity: 0;
+transform: translateY(22px);
+transition: opacity 0.75s ease, transform 0.75s ease;
+}
+
+.section.visible { opacity: 1; transform: translateY(0); }
+
+/* Chapter label */
+.chapter-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.28em;
+color: #C47F00;
+text-transform: uppercase;
+margin-bottom: 1rem;
+display: flex;
+align-items: center;
+gap: 1rem;
+}
+
+.chapter-label::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background-color: rgba(240,165,0,0.15);
+}
+
+h2 {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-size: clamp(1.9rem, 4.5vw, 3rem);
+line-height: 1.15;
+color: #FAF5EB;
+margin-bottom: 1.6rem;
+font-weight: 400;
+}
+
+p {
+margin-bottom: 1.4rem;
+color: #E8DEC8;
+font-size: 1.07rem;
+line-height: 1.9;
+}
+
+p:last-child { margin-bottom: 0; }
+
+em { color: #FAF5EB; font-style: italic; }
+
+strong { color: #F0A500; font-weight: 700; }
+
+/* ── PULL QUOTE ── */
+blockquote {
+padding: 2.8rem 0;
+margin: 3.5rem 0;
+border-top: 1px solid rgba(240,165,0,0.14);
+border-bottom: 1px solid rgba(240,165,0,0.14);
+position: relative;
+}
+
+blockquote::before {
+content: ‘”’;
+position: absolute;
+top: 1.2rem; left: -0.5rem;
+font-family: Georgia, serif;
+font-size: 6rem;
+line-height: 1;
+color: rgba(240,165,0,0.1);
+}
+
+blockquote p {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-style: italic;
+font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+color: #FAF5EB;
+line-height: 1.35;
+margin-bottom: 0;
+padding-left: 1rem;
+}
+
+blockquote p span { color: #F0A500; }
+
+/* ── MONO FACT BOX ── */
+.mono-fact {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.82rem;
+color: #E8DEC8;
+background-color: rgba(240,165,0,0.05);
+border-left: 2px solid #F0A500;
+padding: 1.2rem 1.6rem;
+margin: 2.2rem 0;
+letter-spacing: 0.04em;
+line-height: 1.8;
+}
+
+.mono-fact strong { color: #F0A500; }
+
+/* ── CLAIM → REBUTTAL PAIRS ── */
+.irony-block { margin: 2.8rem 0; }
+
+.irony-claim {
+background-color: #110E08;
+border: 1px solid rgba(255,77,28,0.18);
+border-left: 3px solid #FF4D1C;
+padding: 1.5rem 1.8rem;
+margin-bottom: 2px;
+}
+
+.irony-claim-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.56rem;
+letter-spacing: 0.22em;
+color: #FF4D1C;
+text-transform: uppercase;
+display: block;
+margin-bottom: 0.6rem;
+opacity: 0.8;
+}
+
+.irony-claim-text {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-style: italic;
+font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+color: #FAF5EB;
+line-height: 1.4;
+display: block;
+}
+
+.irony-reveal {
+background-color: #0D0A04;
+border: 1px solid rgba(240,165,0,0.18);
+border-left: 3px solid #F0A500;
+padding: 1.5rem 1.8rem;
+}
+
+.irony-reveal-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.56rem;
+letter-spacing: 0.22em;
+color: #F0A500;
+text-transform: uppercase;
+display: block;
+margin-bottom: 0.6rem;
+opacity: 0.8;
+}
+
+.irony-reveal-text {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.82rem;
+color: #E8DEC8;
+line-height: 1.75;
+letter-spacing: 0.03em;
+display: block;
+}
+
+/* ── MONETARY HISTORY TIMELINE ── */
+.timeline {
+margin: 3rem 0;
+position: relative;
+}
+
+.timeline::before {
+content: ‘’;
+position: absolute;
+left: 22px;
+top: 0; bottom: 0;
+width: 1px;
+background: linear-gradient(to bottom, rgba(240,165,0,0.4), rgba(240,165,0,0.05));
+}
+
+.timeline-item {
+display: flex;
+gap: 1.5rem;
+margin-bottom: 0.4rem;
+position: relative;
+}
+
+.timeline-dot {
+flex-shrink: 0;
+width: 44px; height: 44px;
+border-radius: 50%;
+background-color: #110E08;
+border: 1px solid rgba(240,165,0,0.25);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.2rem;
+z-index: 1;
+}
+
+.timeline-body {
+background-color: #110E08;
+border: 1px solid rgba(240,165,0,0.1);
+padding: 1.1rem 1.4rem;
+flex: 1;
+margin-bottom: 1rem;
+}
+
+.timeline-era {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.6rem;
+color: #C47F00;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+display: block;
+margin-bottom: 0.35rem;
+}
+
+.timeline-title {
+font-family: ‘Bebas Neue’, Impact, sans-serif;
+font-size: 1.1rem;
+color: #FAF5EB;
+letter-spacing: 0.04em;
+display: block;
+margin-bottom: 0.35rem;
+}
+
+.timeline-desc {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.68rem;
+color: #8A7D62;
+line-height: 1.65;
+letter-spacing: 0.02em;
+}
+
+.timeline-basis {
+display: inline-block;
+margin-top: 0.6rem;
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.58rem;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+padding: 0.2rem 0.6rem;
+border-radius: 1px;
+font-weight: 600;
+}
+
+.basis-belief { background-color: rgba(240,165,0,0.12); color: #F0A500; border: 1px solid rgba(240,165,0,0.25); }
+.basis-scarcity { background-color: rgba(100,180,255,0.1); color: #9fd0ff; border: 1px solid rgba(100,180,255,0.2); }
+.basis-math { background-color: rgba(107,203,119,0.1); color: #6BCB77; border: 1px solid rgba(107,203,119,0.2); }
+
+/* ── DESERT SPLIT ── */
+.desert-split {
+display: grid;
+grid-template-columns: 1fr auto 1fr;
+gap: 0;
+margin: 2.8rem 0;
+border: 1px solid rgba(240,165,0,0.14);
+}
+
+.desert-side {
+background-color: #110E08;
+padding: 2.2rem 1.5rem;
+text-align: center;
+}
+
+.desert-vs {
+background-color: #0A0805;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 48px;
+border-left: 1px solid rgba(240,165,0,0.1);
+border-right: 1px solid rgba(240,165,0,0.1);
+}
+
+.desert-vs span {
+font-family: ‘Bebas Neue’, Impact, sans-serif;
+font-size: 1rem;
+color: #8A7D62;
+letter-spacing: 0.1em;
+writing-mode: vertical-rl;
+}
+
+.desert-emoji { font-size: 2.8rem; display: block; margin-bottom: 0.8rem; }
+
+.desert-name {
+font-family: ‘Bebas Neue’, Impact, sans-serif;
+font-size: 1.3rem;
+color: #FAF5EB;
+letter-spacing: 0.06em;
+display: block;
+margin-bottom: 0.5rem;
+}
+
+.desert-context {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.65rem;
+color: #8A7D62;
+letter-spacing: 0.04em;
+line-height: 1.6;
+display: block;
+margin-bottom: 0.8rem;
+}
+
+.desert-verdict {
+font-family: ‘Bebas Neue’, Impact, sans-serif;
+font-size: 0.95rem;
+letter-spacing: 0.08em;
+display: block;
+padding: 0.4rem 0.9rem;
+border-radius: 1px;
+display: inline-block;
+}
+
+.verdict-worthless { background-color: rgba(255,77,28,0.12); color: #FF4D1C; border: 1px solid rgba(255,77,28,0.25); }
+.verdict-priceless { background-color: rgba(107,203,119,0.12); color: #6BCB77; border: 1px solid rgba(107,203,119,0.25); }
+
+.desert-footer {
+background-color: #0D0A04;
+border-top: 1px solid rgba(240,165,0,0.1);
+padding: 0.9rem 1.5rem;
+text-align: center;
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.63rem;
+color: #8A7D62;
+letter-spacing: 0.05em;
+grid-column: 1 / -1;
+}
+
+/* ── BITCOIN PROPERTIES GRID ── */
+.properties-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 1px;
+background-color: rgba(240,165,0,0.08);
+border: 1px solid rgba(240,165,0,0.12);
+margin: 2.8rem 0;
+}
+
+.property-item {
+background-color: #0D0A04;
+padding: 1.6rem 1.4rem;
+transition: background-color 0.2s;
+}
+
+.property-item:hover { background-color: #110E08; }
+
+.property-icon { font-size: 1.4rem; display: block; margin-bottom: 0.7rem; }
+
+.property-title {
+font-family: ‘Bebas Neue’, Impact, sans-serif;
+font-size: 1.05rem;
+color: #FAF5EB;
+letter-spacing: 0.05em;
+display: block;
+margin-bottom: 0.4rem;
+}
+
+.property-desc {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.65rem;
+color: #8A7D62;
+line-height: 1.65;
+letter-spacing: 0.02em;
+}
+
+/* ── ASSET COMPARISON TABLE ── */
+.value-table {
+width: 100%;
+border-collapse: collapse;
+margin: 2.8rem 0;
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.72rem;
+border: 1px solid rgba(240,165,0,0.12);
+}
+
+.value-table th {
+background-color: #150F07;
+color: #C47F00;
+font-size: 0.58rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+padding: 0.8rem 1rem;
+text-align: left;
+border-bottom: 1px solid rgba(240,165,0,0.18);
+white-space: nowrap;
+}
+
+.value-table td {
+padding: 0.8rem 1rem;
+border-bottom: 1px solid rgba(255,255,255,0.04);
+color: #E8DEC8;
+vertical-align: top;
+line-height: 1.5;
+}
+
+.value-table tr:last-child td { border-bottom: none; }
+.value-table tr:hover td { background-color: rgba(240,165,0,0.03); }
+
+.value-table td:first-child {
+color: #FAF5EB;
+font-weight: 600;
+white-space: nowrap;
+}
+
+/* Bitcoin row stands out */
+.value-table tr.btc-row td {
+background-color: rgba(240,165,0,0.04);
+border-top: 1px solid rgba(240,165,0,0.15);
+border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+.tag {
+display: inline-block;
+font-size: 0.56rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+padding: 0.18rem 0.55rem;
+border-radius: 1px;
+font-weight: 600;
+white-space: nowrap;
+}
+
+.tag-belief   { background-color: rgba(240,165,0,0.12); color: #F0A500; border: 1px solid rgba(240,165,0,0.28); }
+.tag-scarcity { background-color: rgba(100,180,255,0.1); color: #9fd0ff; border: 1px solid rgba(100,180,255,0.22); }
+.tag-math     { background-color: rgba(107,203,119,0.1); color: #6BCB77; border: 1px solid rgba(107,203,119,0.22); }
+
+/* ── REAL QUESTION BOX ── */
+.real-question {
+background-color: #110E08;
+border: 1px solid rgba(240,165,0,0.2);
+border-top: 3px solid #F0A500;
+padding: 3rem 2.5rem;
+margin: 3rem 0;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+
+.real-question::after {
+content: ‘’;
+position: absolute;
+top: 0; left: 50%;
+transform: translateX(-50%);
+width: 400px; height: 200px;
+background: radial-gradient(circle, rgba(240,165,0,0.07) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.real-question-label {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.58rem;
+letter-spacing: 0.28em;
+color: #C47F00;
+text-transform: uppercase;
+display: block;
+margin-bottom: 1.2rem;
+}
+
+.real-question p {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-style: italic;
+font-size: clamp(1.25rem, 3vw, 1.9rem);
+color: #FAF5EB;
+line-height: 1.45;
+max-width: 540px;
+margin: 0 auto;
+}
+
+.real-question p strong { color: #F0A500; font-style: normal; }
+
+/* ── DIVIDER ── */
+.divider {
+width: 80px;
+height: 1px;
+background: linear-gradient(to right, transparent, #F0A500, transparent);
+margin: 4rem auto;
+opacity: 0.5;
+}
+
+/* ── FINALE ── */
+.finale {
+text-align: center;
+padding: 5rem 2rem 3rem;
+margin-bottom: 0;
+}
+
+.finale-eyebrow {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.62rem;
+letter-spacing: 0.28em;
+color: #C47F00;
+text-transform: uppercase;
+display: block;
+margin-bottom: 2rem;
+}
+
+.finale-headline {
+font-family: ‘Bebas Neue’, Impact, ‘Arial Narrow’, sans-serif;
+font-size: clamp(2.5rem, 8vw, 6.5rem);
+line-height: 0.9;
+color: #FAF5EB;
+margin-bottom: 0.2rem;
+}
+
+.finale-headline span { color: #F0A500; }
+
+.finale-sub {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-style: italic;
+font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+color: #8A7D62;
+max-width: 520px;
+margin: 1.8rem auto 2.5rem;
+line-height: 1.6;
+}
+
+.finale-kicker {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.78rem;
+color: #C47F00;
+letter-spacing: 0.1em;
+line-height: 2;
+}
+
+.finale-kicker strong { color: #F0A500; font-size: 1rem; }
+
+/* ── FOOTER ── */
+footer {
+border-top: 1px solid rgba(240,165,0,0.1);
+padding: 2.5rem 2rem;
+text-align: center;
+background-color: #0A0805;
+}
+
+.footer-tagline {
+font-family: ‘DM Serif Display’, Georgia, serif;
+font-style: italic;
+font-size: 1rem;
+color: #C47F00;
+margin-bottom: 0.5rem;
+}
+
+footer p {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.6rem;
+color: #8A7D62;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+}
+
+footer nav {
+margin-top: 1rem;
+display: flex;
+justify-content: center;
+flex-wrap: wrap;
+gap: 0.2rem;
+}
+
+footer nav a {
+font-family: ‘IBM Plex Mono’, ‘Courier New’, monospace;
+font-size: 0.58rem;
+color: #8A7D62;
+text-decoration: none;
+padding: 0.25rem 0.6rem;
+border: 1px solid transparent;
+border-radius: 2px;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+transition: color 0.2s, border-color 0.2s;
+}
+
+footer nav a:hover { color: #F0A500; border-color: rgba(240,165,0,0.2); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(18px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+0%, 100% { opacity: 0.25; }
+50%       { opacity: 1; }
+}
+
+@keyframes tickerIn {
+from { opacity: 0; transform: translateY(6px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 580px) {
+.desert-split { grid-template-columns: 1fr; }
+.desert-vs { display: none; }
+.desert-side:first-child { border-bottom: 1px solid rgba(240,165,0,0.1); }
+.properties-grid { grid-template-columns: 1fr; }
+.nav-chapters { display: none; }
+.ticker-wrap { min-width: 200px; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- Progress bar -->
+
+<div id="progress-bar"></div>
+
+<!-- Sticky nav (appears after hero) -->
+
+<nav id="site-nav" aria-label="Article chapters">
+  <a class="nav-logo" href="index.html">₿ Bitcoiner's Calc</a>
+  <div class="nav-chapters">
+    <a href="#intro">Intro</a>
+    <a href="#ch1">What Is Value?</a>
+    <a href="#ch2">Gold Problem</a>
+    <a href="#ch3">Paper Money</a>
+    <a href="#ch4">History of Money</a>
+    <a href="#ch5">The Desert</a>
+    <a href="#ch6">Bitcoin's Case</a>
+    <a href="#ch7">The Table</a>
+    <a href="#ch8">Real Question</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+
+<header class="hero" id="top">
+  <p class="hero-label">₿ Economic Philosophy · Long Read</p>
+
+  <div class="hero-accusation">
+    <span class="hero-accusation-label">⚠ The Criticism — Repeated Endlessly</span>
+    "Bitcoin has no intrinsic value."
+  </div>
+
+  <h1>The Argument<em>That Proves Too Much</em></h1>
+
+  <p class="hero-sub">Pull on that thread long enough and the criticism doesn't destroy Bitcoin — it dismantles the philosophical foundation most critics were standing on.</p>
+
+  <div class="hero-ticker">
+    <span class="ticker-label">Consider —</span>
+    <div class="ticker-wrap" id="ticker-wrap">
+      <span class="ticker-item active" id="ticker-0">A $100 bill costs ~17¢ to print</span>
+      <span class="ticker-item" id="ticker-1">Gold's monetary premium = ~90% of its value</span>
+      <span class="ticker-item" id="ticker-2">Bitcoin: fixed at exactly 21,000,000 coins</span>
+      <span class="ticker-item" id="ticker-3">Art sells for millions based purely on consensus</span>
+      <span class="ticker-item" id="ticker-4">Diamonds: scarcity manufactured by one company</span>
+      <span class="ticker-item" id="ticker-5">Every currency ever: backed by collective belief</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<article>
+
+  <!-- INTRO -->
+
+  <section class="section" id="intro">
+    <div class="chapter-label">The Setup</div>
+    <h2>One Sentence. Delivered With Certainty. Almost Never Examined.</h2>
+    <p>It appears in newspaper editorials, investor memos, congressional hearings, and dinner table arguments. Delivered with the confidence of someone who has just ended a debate.</p>
+    <p><em>"Bitcoin has no intrinsic value."</em></p>
+    <p>To many people, this sounds final. Case closed. What more is there to say? If something has no intrinsic value, why would any rational person want it?</p>
+    <p>Here's the problem: the people saying it almost never follow the argument to its logical conclusion. And that conclusion — when you reach it honestly — doesn't destroy Bitcoin. It destroys the premise.</p>
+
+```
+<blockquote>
+  <p>"Hidden inside that criticism is a truth most people never reach: <span>almost nothing humans value has intrinsic value.</span>"</p>
+</blockquote>
+
+<p>This isn't a defense of Bitcoin. It's a defense of intellectual consistency. If you want to use "no intrinsic value" as a weapon, you have to be willing to use it on everything — and see what survives.</p>
+```
+
+  </section>
+
+  <!-- CHAPTER 1 -->
+
+  <section class="section" id="ch1">
+    <div class="chapter-label">Chapter I</div>
+    <h2>What "Intrinsic Value" Actually Means — and Why It's Almost Empty</h2>
+    <p>When philosophers use the term "intrinsic value," they mean something precise: value that exists independently of any observer. Value baked into the object itself, regardless of what any human thinks, believes, or feels about it.</p>
+    <p>By that strict definition, very few things qualify. Food has intrinsic value to a living body — it provides calories needed to function. Water. Shelter in extreme cold. Oxygen. These things have properties that generate value regardless of whether anyone believes in them.</p>
+    <p>But notice what doesn't make the list: gold, dollars, stocks, bonds, art, real estate in an uninhabitable location, collectibles, diamonds. These have value not because of what they physically <em>are</em> — but because of what humans collectively <em>agree they are</em>.</p>
+
+```
+<div class="mono-fact">
+  Economists call this <strong>subjective value theory</strong>.<br>
+  Developed in the 1870s by Menger, Jevons, and Walras — it has been the dominant framework in economic thought for over 150 years.<br><br>
+  When critics use "intrinsic value" to dismiss Bitcoin, they are often arguing against a framework economics abandoned more than a century ago.
+</div>
+
+<p>The critics aren't wrong that Bitcoin has no intrinsic value. They're wrong about what that implies — because the same statement is true of nearly everything they consider valuable.</p>
+```
+
+  </section>
+
+  <!-- CHAPTER 2 -->
+
+  <section class="section" id="ch2">
+    <div class="chapter-label">Chapter II</div>
+    <h2>The Gold Problem Nobody Wants to Answer</h2>
+    <p>Gold is worth tens of trillions of dollars globally. It is the canonical "safe haven" asset — the benchmark against which all money has historically been measured, the thing people run to when everything else fails.</p>
+    <p>So: <em>why?</em></p>
+    <p>Gold conducts electricity. It resists corrosion. It's used in dentistry and electronics and aerospace. These are real, measurable, physical properties. But here's the problem: strip away gold's monetary premium — the value humans assign it as a <em>store of value</em> — and the industrial uses account for a small fraction of its market price.</p>
+    <p>What remains is the monetary premium itself: the multi-thousand-year collective human agreement that gold is scarce, durable, divisible, and difficult to produce. That agreement has been remarkably durable. But it is still, at its foundation, an agreement.</p>
+
+```
+<div class="irony-block">
+  <div class="irony-claim">
+    <span class="irony-claim-label">⚠ What critics say about gold</span>
+    <span class="irony-claim-text">"Gold is different. It's real. It's physical. It has proven its value for thousands of years. You can hold it."</span>
+  </div>
+  <div class="irony-reveal">
+    <span class="irony-reveal-label">✓ What the analysis shows</span>
+    <span class="irony-reveal-text">Approximately 90% of gold's market value is monetary premium — driven entirely by human belief in its scarcity and durability as a store of value. Its physical industrial utility accounts for a fraction of its price. Gold's "intrinsic value" is mostly subjective value wearing a very convincing costume.</span>
+  </div>
+</div>
+
+<p>This doesn't mean gold is worthless. It means gold's value — like all monetary value — ultimately rests on human consensus. The consensus around gold has held for millennia. That's genuinely impressive. But it doesn't change what it is.</p>
+```
+
+  </section>
+
+  <!-- CHAPTER 3 -->
+
+  <section class="section" id="ch3">
+    <div class="chapter-label">Chapter III</div>
+    <h2>Paper Money and the Ultimate Leap of Faith</h2>
+    <p>A $100 bill costs approximately 17 cents to produce. The cotton-linen blend it's printed on is cheap raw material. The ink costs almost nothing. The design is issued by a government.</p>
+    <p>Yet you can walk into any store with this piece of printed paper and exchange it for $100 worth of real goods — food, fuel, medicine. The merchant accepts it confidently. They don't weigh it or test it. They just take it, because they know with near-certainty that the next person will take it too.</p>
+    <p>That shared certainty <em>is</em> the money. Remove it, and you have a piece of paper. The mechanism isn't the material — it's the collective act of belief, enforced and reinforced by habit, law, and institutional trust.</p>
+
+```
+<div class="mono-fact">
+  The dollar is officially backed by <strong>"the full faith and credit of the United States government."</strong><br><br>
+  Faith. Credit. Both words describe human belief about future behavior.<br>
+  Neither describes a physical property of the currency itself.
+</div>
+
+<p>This is not a flaw in the system. It is the system. Every fiat currency on earth — the euro, the yen, the yuan, the pound — operates on the same principle. The critics who use "intrinsic value" to dismiss Bitcoin are typically paid in a currency whose entire value rests on the same logic they're critiquing.</p>
+```
+
+  </section>
+
+  <!-- CHAPTER 4 — TIMELINE -->
+
+  <section class="section" id="ch4">
+    <div class="chapter-label">Chapter IV</div>
+    <h2>The History of Money Is the History of Belief</h2>
+    <p>This is not a new observation. Every form of money humans have ever used has followed the same pattern: a group agrees that something is scarce and useful as a medium of exchange. That agreement spreads. The thing becomes money. The pattern repeats throughout all of recorded history.</p>
+
+```
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-dot">🐚</div>
+    <div class="timeline-body">
+      <span class="timeline-era">~3000 BCE — Pacific Rim, Africa, Americas</span>
+      <span class="timeline-title">Shell Money</span>
+      <span class="timeline-desc">Cowrie shells used as currency across multiple civilizations simultaneously. Value basis: scarcity, portability, and recognizability — not any physical utility.</span>
+      <span class="timeline-basis basis-belief">Pure Collective Belief</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot">🥇</div>
+    <div class="timeline-body">
+      <span class="timeline-era">~700 BCE — Lydia (modern Turkey) → Global</span>
+      <span class="timeline-title">Gold & Silver Coinage</span>
+      <span class="timeline-desc">Standardized metal coins. Valued for scarcity and durability. Industrial utility was secondary — the coins were valued for <em>being</em> coins, not for the metal's other uses.</span>
+      <span class="timeline-basis basis-scarcity">Scarcity + Social Agreement</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot">📜</div>
+    <div class="timeline-body">
+      <span class="timeline-era">~960 CE — Tang Dynasty China → World</span>
+      <span class="timeline-title">Paper Money</span>
+      <span class="timeline-desc">The first paper currency: government-issued notes representing a promise. Worth nothing physically. Worth everything socially — because the issuer said so, and people believed them.</span>
+      <span class="timeline-basis basis-belief">Institutional Faith</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot">🏦</div>
+    <div class="timeline-body">
+      <span class="timeline-era">1971 — Nixon Closes the Gold Window</span>
+      <span class="timeline-title">Pure Fiat Currency</span>
+      <span class="timeline-desc">The US dollar is untethered from gold. Every major currency becomes backed purely by government authority and collective trust — with no physical commodity backing whatsoever.</span>
+      <span class="timeline-basis basis-belief">Government Decree + Habit</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot">₿</div>
+    <div class="timeline-body">
+      <span class="timeline-era">2009 — Global, Borderless</span>
+      <span class="timeline-title">Bitcoin</span>
+      <span class="timeline-desc">The first digitally scarce monetary asset. Fixed supply enforced by mathematics, not policy. No issuing authority. Value basis: mathematical scarcity, censorship resistance, and collective adoption.</span>
+      <span class="timeline-basis basis-math">Mathematical Scarcity + Adoption</span>
+    </div>
+  </div>
+</div>
+
+<p>The pattern across five thousand years is identical: something becomes money when enough people agree it does, when it's sufficiently scarce, and when that agreement can be trusted to hold. Bitcoin is the newest iteration of a very old story — except this time, the scarcity is guaranteed by mathematics rather than geology or governments.</p>
+```
+
+  </section>
+
+  <!-- CHAPTER 5 — DESERT -->
+
+  <section class="section" id="ch5">
+    <div class="chapter-label">Chapter V</div>
+    <h2>The Desert That Dismantles the Argument</h2>
+    <p>Economists use a thought experiment to show that value is never a fixed property of objects — it is always a relationship between an object and a human in a particular context.</p>
+
+```
+<div class="desert-split">
+  <div class="desert-side">
+    <span class="desert-emoji">💎</span>
+    <span class="desert-name">A Diamond</span>
+    <span class="desert-context">One of the most coveted objects on earth. Rare. Beautiful. Durable. Valued at tens of thousands of dollars. Desired by billions of people.</span>
+    <span class="desert-verdict verdict-worthless">Worthless — in the desert</span>
+  </div>
+  <div class="desert-vs"><span>VS</span></div>
+  <div class="desert-side">
+    <span class="desert-emoji">💧</span>
+    <span class="desert-name">A Bottle of Water</span>
+    <span class="desert-context">Mass-produced. Costs cents. Available at every gas station. Nobody keeps it in a vault. Nobody insures it.</span>
+    <span class="desert-verdict verdict-priceless">Priceless — in the same desert</span>
+  </div>
+  <div class="desert-footer">The objects didn't change. The context did. This is what economists mean when they say value is always relative — never absolute, never fixed, never intrinsic.</div>
+</div>
+
+<p>The diamond in the desert still has every physical property it had in the jewelry store. It's still rare, still beautiful, still the hardest natural substance on earth. But none of those properties generate value when the context shifts to survival.</p>
+<p>This is the philosophical problem with "intrinsic value" as a concept. If value were truly intrinsic — fixed inside the object, independent of all observers — then context couldn't change it. But context always changes it. Which means value was never intrinsic in the first place.</p>
+```
+
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CHAPTER 6 -->
+
+  <section class="section" id="ch6">
+    <div class="chapter-label">Chapter VI</div>
+    <h2>What Bitcoin Actually Claims to Offer</h2>
+    <p>Bitcoin doesn't claim intrinsic value. It claims something more honest and more falsifiable: a specific set of properties that a growing number of people find useful in a world of inflationary currencies, financial gatekeeping, and institutional debasement.</p>
+    <p>Those properties are technical and verifiable. They can be audited by anyone. They don't require trust in a government, a central bank, or a CEO.</p>
+
+```
+<div class="properties-grid">
+  <div class="property-item">
+    <span class="property-icon">🔒</span>
+    <span class="property-title">Mathematically Fixed Supply</span>
+    <span class="property-desc">21 million coins. No central authority can change it. The cap is enforced by cryptographic consensus across thousands of independent nodes worldwide — not policy, not politics, not promises.</span>
+  </div>
+  <div class="property-item">
+    <span class="property-icon">🌍</span>
+    <span class="property-title">Permissionless Global Transfer</span>
+    <span class="property-desc">Any amount. Anywhere on earth. Any time. No bank approval. No business hours. No borders. No minimum balance. No correspondent banking relationships required.</span>
+  </div>
+  <div class="property-item">
+    <span class="property-icon">🛡</span>
+    <span class="property-title">Censorship Resistance</span>
+    <span class="property-desc">No government, institution, or entity can freeze your Bitcoin, reverse a transaction, or block you from the network. There is no single point of control to capture or corrupt.</span>
+  </div>
+  <div class="property-item">
+    <span class="property-icon">🔑</span>
+    <span class="property-title">Sovereign Ownership</span>
+    <span class="property-desc">Cryptographic proof of ownership. Not custodial. Not "held on your behalf." Yours, mathematically, in a way that no physical asset can match. No counterparty risk if you hold your keys.</span>
+  </div>
+  <div class="property-item">
+    <span class="property-icon">📖</span>
+    <span class="property-title">Fully Auditable Ledger</span>
+    <span class="property-desc">Every transaction in history is publicly verifiable. No hidden money creation. No secret liabilities. The entire monetary base can be independently audited by anyone with a computer — something impossible with gold or fiat.</span>
+  </div>
+  <div class="property-item">
+    <span class="property-icon">⚡</span>
+    <span class="property-title">True Digital Scarcity</span>
+    <span class="property-desc">Before Bitcoin, digital information had never been made genuinely scarce. Every digital file could be copied infinitely at zero cost. Bitcoin solved this — for the first time in history, creating a digital asset that cannot be duplicated.</span>
+  </div>
+</div>
+
+<p>Are these properties "intrinsic value" in the strict philosophical sense? No. But neither is gold's monetary premium, a currency's legal tender status, a stock's discounted cash flow valuation, or a Picasso's auction price. All of these derive their value from human agreement about properties that matter.</p>
+<p>Bitcoin's properties are more <em>verifiable</em> than most — you can audit the supply right now, confirm the 21 million cap, and trace any transaction in history. Try doing that with gold stored in a central bank.</p>
+```
+
+  </section>
+
+  <!-- CHAPTER 7 — TABLE -->
+
+  <section class="section" id="ch7">
+    <div class="chapter-label">Chapter VII</div>
+    <h2>Apply the Same Test to Everything</h2>
+    <p>The critics implicitly compare Bitcoin to assets they consider to have "real" value. But apply the identical philosophical standard to any asset class — rigorously, without special pleading — and the analysis produces the same result every time.</p>
+
+```
+<table class="value-table">
+  <thead>
+    <tr>
+      <th>Asset</th>
+      <th>The Claim</th>
+      <th>The Reality</th>
+      <th>Basis</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Gold</td>
+      <td>Physical, industrial, proven for millennia</td>
+      <td>~90% of value is monetary premium driven by collective belief in scarcity — not industrial use</td>
+      <td><span class="tag tag-belief">Belief + Scarcity</span></td>
+    </tr>
+    <tr>
+      <td>USD / Fiat</td>
+      <td>Government-backed, legal tender, stable</td>
+      <td>Backed by "full faith and credit" — institutional trust enforced by law, not physical property</td>
+      <td><span class="tag tag-belief">Faith + Law</span></td>
+    </tr>
+    <tr>
+      <td>Stocks</td>
+      <td>Backed by real company assets and earnings</td>
+      <td>Valued on discounted future cash flows — estimates about future human behavior that may never materialize</td>
+      <td><span class="tag tag-belief">Future Belief</span></td>
+    </tr>
+    <tr>
+      <td>Real Estate</td>
+      <td>Land is finite, shelter is essential</td>
+      <td>Location value is 100% determined by surrounding human activity — a remote plot of land worth $0 can become worth millions if a city grows around it</td>
+      <td><span class="tag tag-belief">Location + Consensus</span></td>
+    </tr>
+    <tr>
+      <td>Art</td>
+      <td>Craftsmanship, beauty, cultural significance</td>
+      <td>Value derives entirely from provenance, reputation, and collector consensus — physically identical paintings have wildly different values based purely on attribution</td>
+      <td><span class="tag tag-belief">Pure Consensus</span></td>
+    </tr>
+    <tr>
+      <td>Diamonds</td>
+      <td>Rare, hard, beautiful</td>
+      <td>Scarcity artificially maintained by De Beers controlling ~85% of supply for decades. "A Diamond is Forever" — a marketing slogan from 1947 that invented the norm</td>
+      <td><span class="tag tag-belief">Manufactured Belief</span></td>
+    </tr>
+    <tr class="btc-row">
+      <td>Bitcoin</td>
+      <td>"Nothing. It's just numbers."</td>
+      <td>Mathematical scarcity (verifiable, uncheatable), censorship resistance, permissionless global transfer, sovereign ownership without custodial risk</td>
+      <td><span class="tag tag-math">Math + Adoption</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The column missing from every single row in this table: intrinsic, context-independent, observer-free value. Because that column would be empty for everything — including the assets critics use as their benchmark.</p>
+<p>Bitcoin is at least honest about what it is. The others pretend.</p>
+```
+
+  </section>
+
+  <!-- CHAPTER 8 -->
+
+  <section class="section" id="ch8">
+    <div class="chapter-label">Chapter VIII</div>
+    <h2>The Question Nobody Is Actually Asking</h2>
+    <p>Once you understand that value is always subjective — that it has always been a human agreement about what is scarce, useful, and trustworthy — the entire debate reframes itself.</p>
+    <p>The question was never: <em>"Does Bitcoin have intrinsic value?"</em> That's a question that rules out gold and the dollar by the same logic, if followed honestly.</p>
+
+```
+<div class="real-question">
+  <span class="real-question-label">The Real Debate</span>
+  <p>Will enough people continue to believe that a <strong>mathematically scarce, censorship-resistant, permissionless, globally transferable</strong> digital asset is useful for storing and transmitting value across time and borders?</p>
+</div>
+
+<p>If the answer becomes no — if humans collectively stop valuing Bitcoin's properties — then its price goes to zero. This is true. But it's equally true of gold if humans stop valuing its monetary premium. It's equally true of any fiat currency if trust in the issuing government collapses. Argentina, Venezuela, Zimbabwe, the Weimar Republic — these aren't thought experiments.</p>
+<p>All monetary value is a bet on continued human consensus. Bitcoin makes that bet explicit and transparent. Every other monetary asset makes the same bet while pretending not to.</p>
+<p>That isn't Bitcoin's weakness. It is its unusual honesty.</p>
+```
+
+  </section>
+
+  <!-- FINALE -->
+
+  <section class="section finale">
+    <div class="chapter-label">The Conclusion</div>
+    <h2 class="finale-headline">The Argument<span> Cuts Both Ways.</span></h2>
+    <p class="finale-sub">If "no intrinsic value" disqualifies Bitcoin, it disqualifies gold, dollars, art, real estate, and diamonds by the same logic. Either value is subjective — for everything, always — or the argument was never rigorous to begin with.</p>
+    <p class="finale-kicker">
+      The critics chose their weapon carefully.<br>
+      <strong>They just forgot to check which direction it points.</strong>
+    </p>
+  </section>
+
+</article>
+
+<footer>
+  <p class="footer-tagline">Stack sats. Think long.</p>
+  <nav aria-label="Site navigation">
+    <a href="index.html">← Home</a>
+    <a href="BitcoinSupplyShock.html">Supply Shock</a>
+    <a href="unkillable-network.html">Unkillable Network</a>
+    <a href="Retireearlywithbitcoin.html">Retire Early</a>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+  </nav>
+  <p style="margin-top:1rem;">&copy; 2025 The Bitcoiner's Calculators — All rights reserved</p>
+</footer>
+
+<script>
+  // ── PROGRESS BAR ──
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (scrolled / total * 100) + '%';
+  }, { passive: true });
+
+  // ── STICKY NAV ──
+  const stickyNav = document.getElementById('site-nav');
+  const heroHeight = document.querySelector('.hero').offsetHeight;
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > heroHeight * 0.6) {
+      stickyNav.classList.add('visible');
+    } else {
+      stickyNav.classList.remove('visible');
+    }
+  }, { passive: true });
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id], header[id="top"]');
+  const navLinks = document.querySelectorAll('#site-nav .nav-chapters a');
+  const observerNav = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => observerNav.observe(s));
+
+  // ── FADE IN SECTIONS ──
+  const allSections = document.querySelectorAll('.section');
+  const observerFade = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observerFade.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  allSections.forEach(s => observerFade.observe(s));
+
+  // ── TICKER ──
+  const tickerItems = document.querySelectorAll('.ticker-item');
+  let tickerIndex = 0;
+  const tickerWrap = document.getElementById('ticker-wrap');
+
+  // Set a fixed height so it doesn't jump
+  tickerWrap.style.height = '2.2rem';
+
+  setInterval(() => {
+    tickerItems[tickerIndex].classList.remove('active');
+    tickerIndex = (tickerIndex + 1) % tickerItems.length;
+    tickerItems[tickerIndex].classList.add('active');
+  }, 3200);
+</script>
+
+</body>
+</html>
