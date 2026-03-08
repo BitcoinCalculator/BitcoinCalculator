@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 10: What Is DCA? | SATOLOGY</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;
+  --prose:#c8c8c8;--quote-bg:#0d0d10;
+}
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --prose:#3a3a3a;--quote-bg:#f0ede6;
+}
+:root{--btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;
+      --red:#e63946;--teal:#06b6d4;--dca:#10b981;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
+  transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--dca),var(--btc),var(--green));width:0%}
+
+.ticker{background:linear-gradient(90deg,var(--dca),#0d9488);padding:9px 0;overflow:hidden;white-space:nowrap;z-index:201}
+.ticker-inner{display:inline-flex;gap:64px;animation:tick 32s linear infinite;font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
+  align-items:center;justify-content:space-between;background:var(--nav-bg);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;
+  place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);
+  border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);
+  border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0;transition:all .3s}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;
+  border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+.step-nav-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;height:52px}
+.step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.step-nav-left a{color:var(--muted);text-decoration:none;transition:color .2s}
+.step-nav-left a:hover{color:var(--btc)}
+.step-nav-sep{opacity:.4}
+.step-nav-current{color:var(--text);font-weight:600}
+.step-nav-right{display:flex;align-items:center;gap:8px}
+.step-pill{background:var(--dca);color:#fff;border-radius:100px;padding:4px 14px;font-size:11px;font-weight:800;letter-spacing:.5px}
+.step-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:var(--dca);border-radius:2px;width:47.6%}
+
+.reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
+.rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:var(--dca);border-radius:2px;height:0%;transition:height .15s}
+.rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+  writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
+
+/* ══ HERO ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;position:relative;overflow:hidden}
+.hero-bg-glyph{position:absolute;right:-10px;top:0;font-size:clamp(200px,30vw,340px);
+  opacity:.035;line-height:1;pointer-events:none;font-weight:900;color:var(--dca);
+  animation:glyphFloat 8s ease-in-out infinite;font-family:'Inter',sans-serif}
+@keyframes glyphFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+
+.step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;animation:fadeUp .6s ease both;position:relative;z-index:1}
+.step-number{width:52px;height:52px;background:var(--dca);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;
+  color:#fff;flex-shrink:0;box-shadow:0 8px 32px rgba(16,185,129,.4)}
+.step-meta{display:flex;flex-direction:column;gap:3px}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--dca);font-weight:700}
+.step-meta-bottom{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.step-hero h1{font-size:clamp(32px,6vw,72px);font-weight:900;letter-spacing:-3px;line-height:1.02;
+  margin-bottom:20px;animation:fadeUp .6s .08s ease both;position:relative;z-index:1}
+.step-hero h1 em{color:var(--dca);font-style:normal}
+.step-hero h1 .btc-em{color:var(--btc)}
+
+.step-hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.75;max-width:680px;
+  margin-bottom:36px;animation:fadeUp .6s .14s ease both;font-family:'Lora',serif;
+  font-style:italic;position:relative;z-index:1}
+.key-lesson{display:inline-flex;align-items:flex-start;gap:10px;background:rgba(16,185,129,.07);
+  border:1px solid rgba(16,185,129,.22);border-radius:14px;padding:14px 20px;font-size:14px;
+  color:var(--text);line-height:1.6;margin-bottom:48px;animation:fadeUp .6s .18s ease both;
+  max-width:680px;position:relative;z-index:1}
+.key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.key-lesson strong{color:var(--dca)}
+
+/* ── ARTICLE ── */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
+.chapter{margin-bottom:72px}
+.chapter-label{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.chapter-num{width:40px;height:40px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);
+  border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;color:var(--dca);flex-shrink:0}
+.chapter-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.8vw,19px);line-height:1.9;color:var(--prose)}
+.prose p{margin-bottom:24px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--dca);font-style:italic}
+
+.pull-quote{border-left:4px solid var(--dca);margin:40px 0;padding:24px 28px;
+  background:var(--quote-bg);border-radius:0 14px 14px 0}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(17px,2.3vw,23px);font-style:italic;
+  color:var(--text);line-height:1.65;margin:0}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);
+  font-style:normal;margin-top:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.pull-quote.btc{border-left-color:var(--btc)}
+.pull-quote.btc p{color:var(--btc)}
+
+.callout{border-radius:16px;padding:28px 32px;margin:36px 0;border:1px solid}
+.callout-dca{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2)}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.2)}
+.callout-green{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)}
+.callout-red{background:rgba(230,57,70,.06);border-color:rgba(230,57,70,.2)}
+.callout-purple{background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.2)}
+.callout-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.callout-dca .callout-title{color:var(--dca)}
+.callout-btc .callout-title{color:var(--btc)}
+.callout-green .callout-title{color:var(--green)}
+.callout-red .callout-title{color:var(--red)}
+.callout-purple .callout-title{color:var(--purple)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.8;margin:0;font-family:'Inter',sans-serif}
+.callout p+p{margin-top:12px}
+
+/* ══ DCA VS LUMP SUM VISUAL ══ */
+.dca-intro-visual{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:40px 0}
+.div-side{border-radius:18px;overflow:hidden;border:2px solid}
+.div-side.lump{border-color:rgba(230,57,70,.3)}
+.div-side.dca{border-color:rgba(16,185,129,.3)}
+.div-top{padding:20px 22px;font-size:13px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;display:flex;align-items:center;gap:8px}
+.div-side.lump .div-top{background:rgba(230,57,70,.1);color:var(--red)}
+.div-side.dca .div-top{background:rgba(16,185,129,.1);color:var(--dca)}
+.div-body{padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.div-item{font-size:13px;color:var(--prose);line-height:1.65;display:flex;gap:10px;align-items:flex-start}
+.div-icon{flex-shrink:0;font-size:16px}
+
+/* ══ ANIMATED PRICE CHART ══ */
+.chart-wrapper{background:var(--card);border:1px solid rgba(16,185,129,.2);border-radius:22px;
+  overflow:hidden;margin:44px 0}
+.cw-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(16,185,129,.07),transparent)}
+.cw-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.cw-header p{font-size:13px;color:var(--muted)}
+.cw-body{padding:28px}
+.chart-area{position:relative;height:220px;margin-bottom:24px}
+.chart-svg{width:100%;height:100%}
+.chart-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.chart-btn{padding:8px 16px;border-radius:100px;font-size:12px;font-weight:800;
+  border:1px solid var(--border);background:var(--bg2);color:var(--muted);
+  cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.chart-btn.active{background:var(--dca);border-color:var(--dca);color:#fff}
+.chart-legend{display:flex;gap:20px;flex-wrap:wrap}
+.cl-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.cl-dot{width:10px;height:10px;border-radius:50%}
+
+/* ══ MASTER DCA CALCULATOR ══ */
+.dca-calc{background:var(--card);border:1px solid rgba(16,185,129,.25);border-radius:22px;
+  overflow:hidden;margin:44px 0}
+.dc-header{padding:24px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(16,185,129,.08),transparent)}
+.dc-header h3{font-size:18px;font-weight:900;margin-bottom:4px}
+.dc-header p{font-size:13px;color:var(--muted)}
+.dc-body{padding:28px}
+.dc-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+.dc-field{display:flex;flex-direction:column;gap:7px}
+.dc-field label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.dc-field input,.dc-field select{background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;font-size:15px;font-weight:700;color:var(--text);
+  font-family:'Inter',sans-serif;width:100%;outline:none;transition:border-color .2s}
+.dc-field input:focus,.dc-field select:focus{border-color:var(--dca)}
+
+.dc-results{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
+.dc-result{background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+  padding:22px;text-align:center;transition:all .3s}
+.dc-result.big{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.04);grid-column:span 2}
+.dc-result-label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1px;color:var(--muted);margin-bottom:8px}
+.dc-result.big .dc-result-label{color:var(--dca)}
+.dc-result-val{font-size:clamp(20px,3.5vw,36px);font-weight:900;letter-spacing:-1.5px;
+  color:var(--text);line-height:1;margin-bottom:4px}
+.dc-result.big .dc-result-val{color:var(--dca);font-size:clamp(28px,5vw,56px)}
+.dc-result-sub{font-size:11px;color:var(--muted);line-height:1.5}
+
+.dc-schedule{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.ds-header{display:grid;grid-template-columns:60px 1fr 1fr 1fr 1fr;padding:10px 16px;
+  background:var(--bg);border-bottom:1px solid var(--border)}
+.ds-header span{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.ds-body{max-height:300px;overflow-y:auto}
+.ds-row{display:grid;grid-template-columns:60px 1fr 1fr 1fr 1fr;padding:11px 16px;
+  border-bottom:1px solid var(--border);transition:background .2s}
+.ds-row:hover{background:rgba(16,185,129,.03)}
+.ds-row:last-child{border-bottom:none}
+.ds-row span{font-size:13px;color:var(--prose)}
+.ds-row span.highlight{color:var(--dca);font-weight:700}
+.ds-row span.invested{color:var(--muted)}
+
+/* ══ PSYCHOLOGY SECTION ══ */
+.psych-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0}
+.psych-card{background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:24px;transition:all .3s;position:relative;overflow:hidden}
+.psych-card:hover{transform:translateY(-3px);border-color:var(--dca)}
+.psych-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.psych-card:nth-child(1)::before{background:var(--dca)}
+.psych-card:nth-child(2)::before{background:var(--btc)}
+.psych-card:nth-child(3)::before{background:var(--purple)}
+.psych-card:nth-child(4)::before{background:var(--teal)}
+.psych-icon{font-size:32px;margin-bottom:12px}
+.psych-title{font-size:15px;font-weight:800;margin-bottom:8px;letter-spacing:-.2px}
+.psych-body{font-size:13px;color:var(--muted);line-height:1.75}
+
+/* ══ FREQUENCY COMPARISON ══ */
+.freq-table{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin:40px 0}
+.ft-header{padding:22px 28px;border-bottom:1px solid var(--border)}
+.ft-header h3{font-size:15px;font-weight:800;margin-bottom:4px}
+.ft-header p{font-size:13px;color:var(--muted)}
+.ft-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);transition:background .2s}
+.ft-row:hover{background:rgba(16,185,129,.02)}
+.ft-row.header{background:var(--bg2)}
+.ft-row.recommended{background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.15)}
+.ft-row:last-child{border-bottom:none}
+.ft-cell{padding:14px 18px;font-size:13px;color:var(--prose);border-right:1px solid var(--border)}
+.ft-cell:last-child{border-right:none}
+.ft-row.header .ft-cell{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1px;color:var(--muted);padding:10px 18px}
+.ft-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;
+  padding:3px 9px;border-radius:100px}
+.fb-best{background:rgba(16,185,129,.12);color:var(--dca)}
+.fb-good{background:rgba(247,147,26,.12);color:var(--btc)}
+.fb-ok{background:rgba(255,255,255,.06);color:var(--muted)}
+
+/* ══ REAL WORLD EXAMPLES ══ */
+.examples-grid{display:flex;flex-direction:column;gap:16px;margin:36px 0}
+.eg-card{background:var(--card);border:1px solid var(--border);border-radius:18px;
+  overflow:hidden;display:grid;grid-template-columns:auto 1fr;transition:all .3s}
+.eg-card:hover{border-color:var(--dca);transform:translateX(4px)}
+.eg-left{padding:28px 24px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;background:rgba(16,185,129,.05);
+  border-right:1px solid var(--border);min-width:130px}
+.eg-person{font-size:36px}
+.eg-amount{font-size:18px;font-weight:900;color:var(--dca)}
+.eg-freq{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.eg-right{padding:24px 26px}
+.eg-name{font-size:16px;font-weight:800;margin-bottom:6px;letter-spacing:-.3px}
+.eg-story{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:12px}
+.eg-stats{display:flex;gap:12px;flex-wrap:wrap}
+.eg-stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:8px 14px;text-align:center}
+.eg-stat-val{font-size:14px;font-weight:900;color:var(--dca)}
+.eg-stat-label{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ══ AUTOMATE CTA ══ */
+.automate-cta{background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(16,185,129,.03));
+  border:1px solid rgba(16,185,129,.25);border-radius:22px;padding:40px;margin:44px 0;
+  text-align:center}
+.ac-icon{font-size:64px;margin-bottom:20px;animation:cog 6s linear infinite}
+@keyframes cog{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.ac-title{font-size:clamp(22px,4vw,36px);font-weight:900;letter-spacing:-1.5px;margin-bottom:12px}
+.ac-title em{color:var(--dca);font-style:normal}
+.ac-body{font-size:15px;color:var(--muted);max-width:600px;margin:0 auto 28px;line-height:1.85}
+.ac-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;text-align:left}
+.ac-step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.ac-step-num{font-size:24px;font-weight:900;color:var(--dca);margin-bottom:6px}
+.ac-step-title{font-size:13px;font-weight:800;margin-bottom:4px}
+.ac-step-desc{font-size:12px;color:var(--muted);line-height:1.65}
+
+/* ══ THE SATS STACK MOMENT ══ */
+.sats-stack-moment{text-align:center;padding:72px 24px;position:relative;overflow:hidden}
+.ssm-bg{position:absolute;inset:0;background:radial-gradient(ellipse 65% 65% at 50% 50%,rgba(16,185,129,.06),transparent 70%);pointer-events:none}
+.ssm-counter{font-size:clamp(56px,12vw,120px);font-weight:900;letter-spacing:-5px;line-height:1;
+  background:linear-gradient(135deg,var(--dca),var(--btc));-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;
+  font-variant-numeric:tabular-nums}
+.ssm-label{font-size:clamp(16px,3vw,28px);font-weight:800;color:var(--text);margin-bottom:10px;letter-spacing:-.5px}
+.ssm-sub{font-size:15px;color:var(--muted);max-width:540px;margin:0 auto;line-height:1.9}
+
+/* ── KEY TAKEAWAY ── */
+.key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));
+  border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
+.kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--btc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kt-text{font-size:clamp(17px,2.5vw,22px);font-weight:800;line-height:1.5;letter-spacing:-.3px;margin-bottom:20px}
+.kt-text em{color:var(--btc);font-style:normal}
+.kt-points{display:flex;flex-direction:column;gap:10px}
+.kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--prose);line-height:1.6}
+.kt-point-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── STEP NAV ── */
+.step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
+.snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);
+  border:1px solid var(--border);border-radius:16px;padding:20px 24px;
+  text-decoration:none;color:var(--text);transition:all .3s}
+.snb-prev:hover,.snb-next:hover{border-color:var(--btc);transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(247,147,26,.12)}
+.snb-next{flex-direction:row-reverse;text-align:right}
+.snb-icon{font-size:28px;flex-shrink:0}
+.snb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700;margin-bottom:3px}
+.snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ── MINIMAP ── */
+.steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
+.sm-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px}
+.sm-title{font-size:14px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.sm-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sm-step{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:800;text-decoration:none;
+  transition:all .2s;border:1px solid var(--border);color:var(--muted);background:var(--bg2)}
+.sm-step:hover{border-color:var(--btc);color:var(--btc);transform:translateY(-2px)}
+.sm-step.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:var(--green)}
+.sm-step.current{background:var(--dca);border-color:var(--dca);color:#fff}
+.sm-step.phase-2{background:rgba(247,147,26,.08);border-color:rgba(247,147,26,.2)}
+.sm-step.phase-3{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)}
+.sm-step.phase-4{background:rgba(255,107,0,.08);border-color:rgba(255,107,0,.2)}
+.sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sm-leg-dot{width:10px;height:10px;border-radius:3px}
+
+.footer-wrap{border-top:1px solid var(--border)}
+footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;
+  max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  nav,.step-nav-bar{padding:0 18px}
+  .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
+  .dca-intro-visual,.psych-grid{grid-template-columns:1fr}
+  .dc-controls{grid-template-columns:1fr 1fr}
+  .dc-results{grid-template-columns:1fr}
+  .dc-result.big{grid-column:span 1}
+  .ac-steps{grid-template-columns:1fr}
+  .ft-row{grid-template-columns:1fr 1fr}
+  .ft-cell:nth-child(3),.ft-cell:nth-child(4){display:none}
+  .ft-row.header .ft-cell:nth-child(3),.ft-row.header .ft-cell:nth-child(4){display:none}
+  .snb-inner{grid-template-columns:1fr}
+  .snb-next{flex-direction:row;text-align:left}
+  .reading-progress{display:none}
+  footer{padding:28px 20px;flex-direction:column;text-align:center}
+}
+@media(max-width:540px){
+  .step-hero h1{letter-spacing:-1.5px}
+  .dc-controls{grid-template-columns:1fr}
+  .sm-step{width:30px;height:30px;font-size:10px}
+  .eg-card{grid-template-columns:1fr}
+  .eg-left{border-right:none;border-bottom:1px solid var(--border)}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>₿ STEP 10 OF 21</span><span>·</span>
+    <span>📈 DOLLAR-COST AVERAGING — THE STRATEGY THAT BEATS EMOTION</span><span>·</span>
+    <span>⏰ $50/WEEK FOR 4 YEARS = LIFE-CHANGING POSITION</span><span>·</span>
+    <span>🤖 AUTOMATE IT — REMOVE YOURSELF FROM THE EQUATION</span><span>·</span>
+    <span>💎 STACK SATS. EVERY WEEK. WITHOUT THINKING.</span><span>·</span>
+    <span>📊 DCA BEATS LUMP-SUM TIMING IN VOLATILE MARKETS</span><span>·</span>
+    <span>₿ STEP 10 OF 21</span><span>·</span>
+    <span>📈 DOLLAR-COST AVERAGING — THE STRATEGY THAT BEATS EMOTION</span><span>·</span>
+    <span>⏰ $50/WEEK FOR 4 YEARS = LIFE-CHANGING POSITION</span><span>·</span>
+    <span>🤖 AUTOMATE IT — REMOVE YOURSELF FROM THE EQUATION</span><span>·</span>
+    <span>💎 STACK SATS. EVERY WEEK. WITHOUT THINKING.</span><span>·</span>
+    <span>📊 DCA BEATS LUMP-SUM TIMING IN VOLATILE MARKETS</span><span>·</span>
+  </div>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span><span id="btcPriceNav">$--</span></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="step-nav-bar">
+  <div class="step-nav-left">
+    <a href="index.html">Home</a>
+    <span class="step-nav-sep">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <span class="step-nav-sep">›</span>
+    <span class="step-nav-current">Step 10 — What Is DCA?</span>
+  </div>
+  <div class="step-nav-right">
+    <div class="step-progress-mini">
+      <div class="spm-bar"><div class="spm-fill"></div></div>
+      <span>10 / 21</span>
+    </div>
+    <div class="step-pill">Step 10</div>
+  </div>
+</div>
+
+<div class="reading-progress">
+  <div class="rp-label">Reading</div>
+  <div class="rp-track"><div class="rp-fill" id="rpFill"></div></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<div class="step-hero">
+  <div class="hero-bg-glyph">DCA</div>
+
+  <div class="step-eyebrow">
+    <div class="step-number">10</div>
+    <div class="step-meta">
+      <div class="step-meta-top">🟢 Phase 2 — Practical · Step 4 of 6</div>
+      <div class="step-meta-bottom">
+        <span>⏱ 8 min read</span><span>·</span>
+        <span>📈 Strategy</span><span>·</span>
+        <span>🤖 Set it. Forget it. Stack forever.</span>
+      </div>
+    </div>
+  </div>
+
+  <h1><em>Dollar-Cost</em><br><em>Averaging.</em><br>The <span class="btc-em">Unfair</span> Edge.</h1>
+
+  <p class="step-hero-sub">You bought your first Bitcoin in Step 9. That was the starting pistol. DCA is the race strategy — the systematic, automated, emotionless approach that has turned ordinary people's coffee-money into life-changing Bitcoin positions. No charts. No timing. No stress.</p>
+
+  <div class="key-lesson">
+    <span class="key-lesson-icon">📈</span>
+    <span><strong>What you'll master in this step:</strong> Exactly what DCA is and why it mathematically reduces your average cost, why it destroys the emotion that destroys most investors, a fully interactive DCA calculator that projects your exact stack over any time horizon, real-world examples from people just like you, and how to automate the whole thing so it runs without a single decision.</span>
+  </div>
+</div>
+
+<!-- ══ ARTICLE ══ -->
+<div class="article-wrap">
+
+  <!-- CHAPTER 1 -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">①</div>
+      <div class="chapter-title">The Strategy That Removes Your Worst Enemy</div>
+    </div>
+
+    <div class="prose">
+      <p>Your worst enemy in investing is not the market. It is not inflation, government policy, or bad luck. Your worst enemy is yourself — specifically, the part of your brain that evolved on the African savanna and has absolutely no business making financial decisions in a volatile 24/7 global market.</p>
+      <p>When Bitcoin drops 30%, your brain screams: <em>sell, danger, run.</em> When Bitcoin surges 50%, your brain screams: <em>buy, buy, buy — before it's too late.</em> These instincts kept your ancestors alive on the plains. They will drain your portfolio. Every single time.</p>
+      <p>Dollar-Cost Averaging — DCA — is the antidote. It is beautifully simple: <strong>invest a fixed amount at regular intervals, regardless of price.</strong> Every week or every month, the same dollar amount goes in. When Bitcoin is expensive, you buy fewer sats. When Bitcoin is cheap, you buy more. You never make a timing decision. You never panic. You never miss a dip because you were waiting for a bigger one.</p>
+      <p>The math rewards you for the volatility that terrifies everyone else.</p>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p>"The stock market is a device for transferring money from the impatient to the patient."</p>
+      <cite>— Warren Buffett — and this is doubly true for Bitcoin, where the impatient have sold the exact bottoms that the patient bought</cite>
+    </div>
+  </div>
+
+  <!-- DCA vs LUMP SUM -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">②</div>
+      <div class="chapter-title">DCA vs. Lump Sum — What Actually Works</div>
+    </div>
+
+    <div class="prose">
+      <p>The classic debate: should you invest everything at once, or spread it out over time? For Bitcoin specifically — with its famous volatility and 4-year halving cycles — DCA has a powerful structural advantage over lump-sum investing for most people.</p>
+    </div>
+
+    <div class="dca-intro-visual reveal">
+      <div class="div-side lump">
+        <div class="div-top">❌ Lump Sum — The Gamble</div>
+        <div class="div-body">
+          <div class="div-item"><div class="div-icon">🎰</div>Requires buying at the "right time" — which nobody can predict consistently</div>
+          <div class="div-item"><div class="div-icon">😱</div>Massive psychological pressure to time the market perfectly</div>
+          <div class="div-item"><div class="div-icon">📉</div>If you buy the day before a 50% drop, recovery takes years emotionally</div>
+          <div class="div-item"><div class="div-icon">🧠</div>Brain interprets every price move as a verdict on your decision</div>
+          <div class="div-item"><div class="div-icon">⚡</div>Works brilliantly if you buy the bottom — which you won't, reliably</div>
+        </div>
+      </div>
+      <div class="div-side dca">
+        <div class="div-top">✅ DCA — The System</div>
+        <div class="div-body">
+          <div class="div-item"><div class="div-icon">🤖</div>Requires zero timing — the schedule makes the decision, not you</div>
+          <div class="div-item"><div class="div-icon">😌</div>Price drops become <em>good news</em> — you're buying more sats for the same dollar</div>
+          <div class="div-item"><div class="div-icon">📊</div>Automatically averages down during bear markets</div>
+          <div class="div-item"><div class="div-icon">💪</div>Removes the emotional energy drain of watching price constantly</div>
+          <div class="div-item"><div class="div-icon">♾️</div>Scales from $10/week to $10,000/month — same strategy, any size</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-dca reveal">
+      <div class="callout-title">📊 The Math That Makes DCA Beautiful</div>
+      <p>Imagine Bitcoin oscillates between $80,000 and $120,000 over six months. A lump-sum buyer at $120,000 is sitting on a loss. A DCA buyer who invested every week bought at $80k, $90k, $100k, $110k, $120k, $110k, $95k, $85k — averaging roughly $98,750 per coin. They outperformed the lump-sum buyer without predicting a single price move. <strong>Volatility works for the DCA investor.</strong> Every dip is a sale. Every crash is a gift.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 — MASTER DCA CALCULATOR -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">③</div>
+      <div class="chapter-title">Your Personal DCA Calculator — See Your Future Stack</div>
+    </div>
+
+    <div class="prose">
+      <p>This is the calculator that changes how people think about Bitcoin. Enter your numbers. Watch your future stack materialize. Adjust the variables. Feel what consistent, patient accumulation actually builds over time.</p>
+    </div>
+
+    <div class="dca-calc reveal">
+      <div class="dc-header">
+        <h3>🧮 DCA Stack Calculator</h3>
+        <p>Project your Bitcoin position at any point in the future — live BTC price auto-loaded</p>
+      </div>
+      <div class="dc-body">
+        <div class="dc-controls">
+          <div class="dc-field">
+            <label>Weekly Amount ($)</label>
+            <input type="number" id="dcAmount" value="50" min="1">
+          </div>
+          <div class="dc-field">
+            <label>Frequency</label>
+            <select id="dcFreq">
+              <option value="52">Weekly</option>
+              <option value="26">Bi-weekly</option>
+              <option value="12">Monthly</option>
+              <option value="4">Quarterly</option>
+            </select>
+          </div>
+          <div class="dc-field">
+            <label>Years to Stack</label>
+            <input type="number" id="dcYears" value="4" min="1" max="20">
+          </div>
+          <div class="dc-field">
+            <label>Today's BTC Price ($)</label>
+            <input type="number" id="dcPrice" value="100000" min="1">
+          </div>
+          <div class="dc-field">
+            <label>Conservative Target Price</label>
+            <input type="number" id="dcTarget" value="500000" min="1">
+          </div>
+          <div class="dc-field">
+            <label>Optimistic Target Price</label>
+            <input type="number" id="dcBull" value="1000000" min="1">
+          </div>
+        </div>
+
+        <div class="dc-results">
+          <div class="dc-result">
+            <div class="dc-result-label">Total Invested</div>
+            <div class="dc-result-val" id="dcInvested">$10,400</div>
+            <div class="dc-result-sub">dollars out of pocket</div>
+          </div>
+          <div class="dc-result">
+            <div class="dc-result-label">Bitcoin Stacked</div>
+            <div class="dc-result-val" id="dcBtc">0.10400000</div>
+            <div class="dc-result-sub">BTC accumulated</div>
+          </div>
+          <div class="dc-result">
+            <div class="dc-result-label">Satoshis Stacked</div>
+            <div class="dc-result-val" id="dcSats">10,400,000</div>
+            <div class="dc-result-sub">sats — you own them forever</div>
+          </div>
+          <div class="dc-result">
+            <div class="dc-result-label">At Conservative Target</div>
+            <div class="dc-result-val" id="dcConservative" style="color:var(--btc)">$52,000</div>
+            <div class="dc-result-sub">portfolio value</div>
+          </div>
+          <div class="dc-result big">
+            <div class="dc-result-label">🚀 At Optimistic Target</div>
+            <div class="dc-result-val" id="dcOptimistic">$104,000</div>
+            <div class="dc-result-sub">on $10,400 invested — <span id="dcMultiple">10x</span> return</div>
+          </div>
+        </div>
+
+        <div class="dc-schedule">
+          <div class="ds-header">
+            <span>Year</span>
+            <span>Invested</span>
+            <span>BTC Stack</span>
+            <span>@ Conservative</span>
+            <span>@ Optimistic</span>
+          </div>
+          <div class="ds-body" id="dsBody"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-btc reveal">
+      <div class="callout-title">💡 Try This — The Coffee Test</div>
+      <p>The average American spends $5–7 per day on coffee. That's $35–49 per week. Enter $40 in the calculator above and run it for 4 years. Now ask yourself: in four years, which would you rather have — the memory of several thousand coffees, or the Bitcoin position that calculator just showed you? This is not about deprivation. It is about priorities. Stack sats first. Coffee second.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 4 — THE PSYCHOLOGY -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">④</div>
+      <div class="chapter-title">The Four Psychological Superpowers of DCA</div>
+    </div>
+
+    <div class="prose">
+      <p>DCA is not just a mathematical strategy. It rewires your entire relationship with Bitcoin's price — turning the thing that drives most people to panic into the thing that makes you smile. Here's how.</p>
+    </div>
+
+    <div class="psych-grid reveal">
+      <div class="psych-card">
+        <div class="psych-icon">📉</div>
+        <div class="psych-title">Crashes Become Sales</div>
+        <div class="psych-body">When Bitcoin drops 40%, most investors feel pain. The DCA investor feels something different: their fixed weekly amount now buys 67% more Bitcoin than it did before. The crash is a discount. The bear market is a buying opportunity. DCA flips the emotional polarity of volatility.</div>
+      </div>
+      <div class="psych-card">
+        <div class="psych-icon">🧘</div>
+        <div class="psych-title">Decision Fatigue Eliminated</div>
+        <div class="psych-body">Should I buy today or wait until Thursday? Is this the top? What if it goes lower? These questions are exhausting — and answered differently by your brain depending on whether the price just went up or down. DCA eliminates every one of them. The schedule decides. You don't have to.</div>
+      </div>
+      <div class="psych-card">
+        <div class="psych-icon">⏰</div>
+        <div class="psych-title">Time Becomes Your Ally</div>
+        <div class="psych-body">Every week you stack is a week further in the past your average cost moves. After two years of weekly DCA, you're looking at a cost basis built across 104 price points spanning bear markets, consolidations, and bull runs. Your average will almost certainly be lower than where Bitcoin trades today.</div>
+      </div>
+      <div class="psych-card">
+        <div class="psych-icon">🎯</div>
+        <div class="psych-title">Identity Shift — You Become a Stacker</div>
+        <div class="psych-body">Something profound happens when DCA is automated. You stop thinking of yourself as a "Bitcoin speculator" and start thinking of yourself as a Bitcoin stacker. The identity shift changes your behaviour — you naturally start caring less about price today and more about your long-term accumulation. You've become the patient investor.</div>
+      </div>
+    </div>
+
+    <div class="pull-quote btc reveal">
+      <p>"Every dip is a gift. Every crash is a sale. Every bear market is a transfer of wealth from the impatient to the patient. The DCA investor collects all three."</p>
+      <cite>— The philosophy of every long-term Bitcoin stacker who has lived through multiple cycles</cite>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 — FREQUENCY -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑤</div>
+      <div class="chapter-title">How Often Should You Buy?</div>
+    </div>
+
+    <div class="prose">
+      <p>DCA works at any frequency — the right answer depends on your income rhythm, your fee structure, and how much mental bandwidth you want to give it. Here's the breakdown:</p>
+    </div>
+
+    <div class="freq-table reveal">
+      <div class="ft-header">
+        <h3>📅 DCA Frequency Comparison</h3>
+        <p>Costs, benefits, and the right fit for your situation</p>
+      </div>
+      <div class="ft-row header">
+        <div class="ft-cell">Frequency</div>
+        <div class="ft-cell">Best For</div>
+        <div class="ft-cell">Fee Impact</div>
+        <div class="ft-cell">Smoothing Effect</div>
+      </div>
+      <div class="ft-row recommended">
+        <div class="ft-cell"><strong>Weekly</strong> <span class="ft-badge fb-best">Recommended</span></div>
+        <div class="ft-cell">Most people — aligns with pay cycle</div>
+        <div class="ft-cell">Small fees but 52x/year — use low-fee exchange</div>
+        <div class="ft-cell">Excellent — 52 price points per year</div>
+      </div>
+      <div class="ft-row">
+        <div class="ft-cell"><strong>Daily</strong></div>
+        <div class="ft-cell">High-frequency stackers, small amounts</div>
+        <div class="ft-cell">365 fees/year — only viable on zero-fee platforms</div>
+        <div class="ft-cell">Maximum — 365 price points, near-perfect average</div>
+      </div>
+      <div class="ft-row">
+        <div class="ft-cell"><strong>Bi-weekly</strong></div>
+        <div class="ft-cell">Bi-weekly paycheck earners</div>
+        <div class="ft-cell">26 fees/year — good balance</div>
+        <div class="ft-cell">Good — aligns naturally with income</div>
+      </div>
+      <div class="ft-row">
+        <div class="ft-cell"><strong>Monthly</strong></div>
+        <div class="ft-cell">Larger amounts, salary earners</div>
+        <div class="ft-cell">Only 12 fees/year — most fee-efficient</div>
+        <div class="ft-cell">Moderate — 12 data points, more timing risk</div>
+      </div>
+      <div class="ft-row">
+        <div class="ft-cell"><strong>Quarterly</strong></div>
+        <div class="ft-cell">Large lump-sums, bonus earners</div>
+        <div class="ft-cell">4 fees/year — very low</div>
+        <div class="ft-cell">Low — only 4 price points, approaches lump-sum risk</div>
+      </div>
+    </div>
+
+    <div class="callout callout-green reveal">
+      <div class="callout-title">✅ The SATOLOGY Recommendation</div>
+      <p><strong>Weekly DCA, automated, to a reputable exchange, with immediate withdrawal to self-custody.</strong> Set it up once. Link it to your paycheck rhythm. Every Friday — or whichever day feels right — a fixed amount goes into Bitcoin. Every month or quarter, you batch your withdrawals to your hardware wallet to minimize on-chain fees. The system runs. You live your life. The sats accumulate.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 — REAL EXAMPLES -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑥</div>
+      <div class="chapter-title">Real People, Real Stacks — What DCA Actually Builds</div>
+    </div>
+
+    <div class="prose">
+      <p>Numbers on a calculator can feel abstract. Here's what DCA looks like in human terms — the kinds of stories that play out when ordinary people make one decision and stick with it.</p>
+    </div>
+
+    <div class="examples-grid reveal">
+      <div class="eg-card">
+        <div class="eg-left">
+          <div class="eg-person">👩‍🏫</div>
+          <div class="eg-amount">$100/mo</div>
+          <div class="eg-freq">Monthly · 3 years</div>
+        </div>
+        <div class="eg-right">
+          <div class="eg-name">The Teacher</div>
+          <div class="eg-story">A middle-school teacher in Ohio started DCA-ing $100/month in January 2020 — through COVID, through the 2022 bear market that cut Bitcoin 75%, through every headline that screamed "crypto is dead." She never stopped. She never looked at the price except on DCA day. After 3 years of contributions, her $3,600 invested had grown substantially as Bitcoin recovered and surged. Her cost basis through the bear market averaged around $32,000. She held through to highs well above that.</div>
+          <div class="eg-stats">
+            <div class="eg-stat"><div class="eg-stat-val">$3,600</div><div class="eg-stat-label">Total invested</div></div>
+            <div class="eg-stat"><div class="eg-stat-val">~0.085 BTC</div><div class="eg-stat-label">Stack accumulated</div></div>
+            <div class="eg-stat"><div class="eg-stat-val">Stayed the course</div><div class="eg-stat-label">Through -75% bear</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eg-card">
+        <div class="eg-left">
+          <div class="eg-person">👨‍🔧</div>
+          <div class="eg-amount">$200/wk</div>
+          <div class="eg-freq">Weekly · 2 years</div>
+        </div>
+        <div class="eg-right">
+          <div class="eg-name">The Electrician</div>
+          <div class="eg-story">A self-employed electrician in Texas set up an automatic $200 weekly buy on Swan Bitcoin after reading about DCA in late 2022 — right at the bottom of the bear market. He didn't know it was the bottom. He just started. Two years later, he'd invested $20,800 and accumulated over 0.3 BTC. He told his wife "I just pretend it's paying a bill." That mental reframe — DCA as a recurring expense rather than a speculative bet — is how you stick with the strategy through the noise.</div>
+          <div class="eg-stats">
+            <div class="eg-stat"><div class="eg-stat-val">$20,800</div><div class="eg-stat-label">Total invested</div></div>
+            <div class="eg-stat"><div class="eg-stat-val">~0.31 BTC</div><div class="eg-stat-label">Stack accumulated</div></div>
+            <div class="eg-stat"><div class="eg-stat-val">"Just a bill"</div><div class="eg-stat-label">His mental model</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eg-card">
+        <div class="eg-left">
+          <div class="eg-person">👴</div>
+          <div class="eg-amount">$500/mo</div>
+          <div class="eg-freq">Monthly · 4 years</div>
+        </div>
+        <div class="eg-right">
+          <div class="eg-name">The Pre-Retiree</div>
+          <div class="eg-story">A 58-year-old accountant in Florida decided to allocate 10% of his monthly savings to Bitcoin DCA starting in 2020, after reading about its fixed supply and the coming halving. He told himself: "If it goes to zero, I can handle 10% of my savings. If it doesn't, I've changed my retirement." Four years and $24,000 later, his Bitcoin allocation represented a significant portion of his net worth — at prices that made 2020's entry look prophetic. He now thinks of Bitcoin as the best decision he almost didn't make.</div>
+          <div class="eg-stats">
+            <div class="eg-stat"><div class="eg-stat-val">$24,000</div><div class="eg-stat-label">Total invested</div></div>
+            <div class="eg-stat"><div class="eg-stat-val">~0.42 BTC</div><div class="eg-stat-label">Stack built</div></div>
+            <div class="eg-stat"><div class="eg-stat-val">10% rule</div><div class="eg-stat-label">His framework</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 7 — AUTOMATE -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑦</div>
+      <div class="chapter-title">Automate It — Remove Yourself Entirely</div>
+    </div>
+
+    <div class="prose">
+      <p>The final and most important DCA upgrade: make it automatic. A DCA strategy you have to manually execute every week will eventually break down. You'll be busy. You'll be watching the price. You'll think "maybe I'll wait until it dips a bit more." Manual execution reintroduces the very decisions DCA was designed to eliminate.</p>
+      <p>The solution is dead simple: set up an automatic recurring purchase on your exchange and never look at it.</p>
+    </div>
+
+    <div class="automate-cta reveal">
+      <div class="ac-icon">⚙️</div>
+      <div class="ac-title">Set It. Forget It. <em>Stack Forever.</em></div>
+      <div class="ac-body">Every major exchange offers automatic recurring Bitcoin purchases. Set yours up once — five minutes of work — and your DCA strategy runs indefinitely without a single additional decision. The system becomes invisible. The sats accumulate in the background of your life like interest in a savings account — except the asset is scarce, deflationary, and running on mathematics that no central bank can override.</div>
+      <div class="ac-steps">
+        <div class="ac-step">
+          <div class="ac-step-num">01</div>
+          <div class="ac-step-title">Set Your Amount</div>
+          <div class="ac-step-desc">Choose a dollar amount you genuinely won't miss. Start small — $25, $50 per week. You can always increase it. The habit matters more than the amount.</div>
+        </div>
+        <div class="ac-step">
+          <div class="ac-step-num">02</div>
+          <div class="ac-step-title">Choose Your Day</div>
+          <div class="ac-step-desc">Pick any day. Wednesday is popular (mid-week, avoids weekend illiquidity). Friday aligns with payday. The specific day matters less than the consistency.</div>
+        </div>
+        <div class="ac-step">
+          <div class="ac-step-num">03</div>
+          <div class="ac-step-title">Withdraw Monthly</div>
+          <div class="ac-step-desc">Let sats accumulate on the exchange for a month, then withdraw everything to your hardware wallet in one transaction. Batching reduces on-chain fees significantly.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-purple reveal">
+      <div class="callout-title">🧠 The Most Powerful DCA Mindset Shift</div>
+      <p>Stop thinking in dollars. Start thinking in satoshis. When your $50 weekly buy gets you 45,000 sats this week and 52,000 sats next week (because the price dropped), you're not losing — you're accumulating more of the fixed supply. The dollar fluctuation is noise. The sats are permanent. Every satoshi you own is a satoshi that <strong>cannot be inflated away, cannot be confiscated without your keys, and cannot be created by any government or central bank.</strong> Stack sats. The rest is commentary.</p>
+    </div>
+  </div>
+
+  <!-- SATS STACK MOMENT -->
+  <div class="sats-stack-moment reveal">
+    <div class="ssm-bg"></div>
+    <div class="ssm-counter" id="satCounter">0</div>
+    <div class="ssm-label">sats stacked — and counting</div>
+    <div class="ssm-sub">This counter shows what your weekly DCA buys in the next 60 seconds — sats arriving in your stack right now, at this moment. Every second you wait is a second your stack could be growing. The best time to start was last year. The second best time is before you finish reading this sentence.</div>
+  </div>
+
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">🏆 Step 10 — Key Takeaways</div>
+    <div class="kt-text">DCA doesn't time the market.<br><em>It makes time your market.</em></div>
+    <div class="kt-points">
+      <div class="kt-point"><span class="kt-point-icon">🤖</span><span>Dollar-Cost Averaging means buying a fixed dollar amount of Bitcoin at regular intervals — regardless of price. No decisions. No timing. No emotion. The system makes the buy. You live your life.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📉</span><span>Price drops are your friend. When Bitcoin falls 40%, your fixed weekly amount buys 67% more sats. DCA investors who stayed the course through every bear market built the positions that compounded in the next bull run.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🧮</span><span>Use the calculator above. Run the numbers for your actual income. Even $25/week — the cost of one lunch — builds a meaningful Bitcoin position over 4 years at any reasonable price target.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">⚙️</span><span>Automate it. Set up a recurring buy on your exchange. Pick a day. Pick an amount. Walk away. Review quarterly. The habit is everything — the specific amount is secondary.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🔑</span><span>Withdraw to your hardware wallet monthly. Don't let sats accumulate on an exchange. Let them accumulate on your own hardware. Batch your withdrawals to minimize fees.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">⚖️</span><span>Step 11 pivots to the comparison that blows most people's minds: Bitcoin vs. Gold. You understand scarcity, supply, and accumulation. Now we put Bitcoin next to the 5,000-year incumbent — and let the data speak.</span></div>
+    </div>
+  </div>
+
+</div><!-- /article-wrap -->
+
+<!-- STEP NAV -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="btc-step-09.html" class="snb-prev reveal">
+      <div class="snb-icon">🛒</div>
+      <div>
+        <div class="snb-label">← Step 9</div>
+        <div class="snb-title">How to Buy Your First Bitcoin</div>
+        <div class="snb-desc">The 7-step purchase guide</div>
+      </div>
+    </a>
+    <a href="btc-step-11.html" class="snb-next reveal">
+      <div class="snb-icon">🥇</div>
+      <div>
+        <div class="snb-label">Step 11 →</div>
+        <div class="snb-title">Bitcoin vs. Gold</div>
+        <div class="snb-desc">5,000 years of scarcity meets its match</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- MINIMAP -->
+<div class="steps-minimap">
+  <div class="sm-card reveal">
+    <div class="sm-title">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step done">1</a>
+      <a href="btc-step-02.html" class="sm-step done">2</a>
+      <a href="btc-step-03.html" class="sm-step done">3</a>
+      <a href="btc-step-04.html" class="sm-step done">4</a>
+      <a href="btc-step-05.html" class="sm-step done">5</a>
+      <a href="btc-step-06.html" class="sm-step done">6</a>
+      <a href="btc-step-07.html" class="sm-step done">7</a>
+      <a href="btc-step-08.html" class="sm-step done">8</a>
+      <a href="btc-step-09.html" class="sm-step done">9</a>
+      <a href="btc-step-10.html" class="sm-step current">10</a>
+      <a href="btc-step-11.html" class="sm-step phase-2">11</a>
+      <a href="btc-step-12.html" class="sm-step phase-2">12</a>
+      <a href="btc-step-13.html" class="sm-step phase-3">13</a>
+      <a href="btc-step-14.html" class="sm-step phase-3">14</a>
+      <a href="btc-step-15.html" class="sm-step phase-3">15</a>
+      <a href="btc-step-16.html" class="sm-step phase-3">16</a>
+      <a href="btc-step-17.html" class="sm-step phase-3">17</a>
+      <a href="btc-step-18.html" class="sm-step phase-3">18</a>
+      <a href="btc-step-19.html" class="sm-step phase-4">19</a>
+      <a href="btc-step-20.html" class="sm-step phase-4">20</a>
+      <a href="btc-step-21.html" class="sm-step phase-4">21</a>
+    </div>
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(34,197,94,.6)"></div>Completed</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--dca)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(247,147,26,.4)"></div>Phase 2</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(139,92,246,.4)"></div>Phase 3</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(255,107,0,.4)"></div>Phase 4</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="raise-with-bitcoin.html">DCA Calculator</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+      <a href="real-estate-vs-bitcoin.html">RE vs BTC</a>
+      <a href="Keychain.html">Keychain</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n); localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE PRICE ──
+let livePrice = 100000;
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json())
+    .then(d => {
+      livePrice = d.bitcoin.usd;
+      document.getElementById('btcPriceNav').textContent = '$' + livePrice.toLocaleString();
+      document.getElementById('dcPrice').value = livePrice;
+      calcDCA();
+    }).catch(() => {});
+}
+updatePrice(); setInterval(updatePrice, 10000);
+
+// ── SCROLL ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── DCA CALCULATOR ──
+function calcDCA() {
+  const weekly = parseFloat(document.getElementById('dcAmount').value) || 0;
+  const freq = parseInt(document.getElementById('dcFreq').value) || 52;
+  const years = parseInt(document.getElementById('dcYears').value) || 4;
+  const price = parseFloat(document.getElementById('dcPrice').value) || 100000;
+  const target = parseFloat(document.getElementById('dcTarget').value) || 500000;
+  const bull = parseFloat(document.getElementById('dcBull').value) || 1000000;
+
+  const perPurchase = weekly;
+  const purchasesPerYear = freq;
+  const totalPurchases = purchasesPerYear * years;
+  const totalInvested = perPurchase * totalPurchases;
+  const btcPerPurchase = perPurchase / price;
+  const totalBtc = btcPerPurchase * totalPurchases;
+  const totalSats = Math.round(totalBtc * 1e8);
+  const conservative = totalBtc * target;
+  const optimistic = totalBtc * bull;
+  const multiple = (optimistic / totalInvested).toFixed(1);
+
+  document.getElementById('dcInvested').textContent = '$' + Math.round(totalInvested).toLocaleString();
+  document.getElementById('dcBtc').textContent = totalBtc.toFixed(8);
+  document.getElementById('dcSats').textContent = totalSats.toLocaleString();
+  document.getElementById('dcConservative').textContent = '$' + Math.round(conservative).toLocaleString();
+  document.getElementById('dcOptimistic').textContent = '$' + Math.round(optimistic).toLocaleString();
+  document.getElementById('dcMultiple').textContent = multiple + 'x';
+
+  // Build schedule table
+  const tbody = document.getElementById('dsBody');
+  tbody.innerHTML = '';
+  for (let y = 1; y <= years; y++) {
+    const yInvested = perPurchase * purchasesPerYear * y;
+    const yBtc = btcPerPurchase * purchasesPerYear * y;
+    const yConservative = yBtc * target;
+    const yOptimistic = yBtc * bull;
+    const row = document.createElement('div');
+    row.className = 'ds-row';
+    row.innerHTML = `
+      <span>${y}</span>
+      <span class="invested">$${Math.round(yInvested).toLocaleString()}</span>
+      <span class="highlight">${yBtc.toFixed(6)} BTC</span>
+      <span>$${Math.round(yConservative).toLocaleString()}</span>
+      <span style="color:var(--dca);font-weight:700">$${Math.round(yOptimistic).toLocaleString()}</span>
+    `;
+    tbody.appendChild(row);
+  }
+}
+
+['dcAmount','dcFreq','dcYears','dcPrice','dcTarget','dcBull'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calcDCA);
+});
+calcDCA();
+
+// ── LIVE SAT COUNTER ──
+// Simulates sats accumulating based on user's calculator settings in real time
+let satCount = 0;
+let satTarget = 0;
+let satInterval = null;
+
+function startSatCounter() {
+  const weekly = parseFloat(document.getElementById('dcAmount').value) || 50;
+  const price = parseFloat(document.getElementById('dcPrice').value) || 100000;
+  const satsPerWeek = (weekly / price) * 1e8;
+  const satsPerSecond = satsPerWeek / (7 * 24 * 3600);
+  satTarget = Math.round(satsPerSecond * 60); // 60 seconds of accumulation
+
+  const el = document.getElementById('satCounter');
+  let start = null;
+  const duration = 60000; // 60 seconds
+
+  function animate(ts) {
+    if (!start) start = ts;
+    const elapsed = ts - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(eased * satTarget);
+    el.textContent = current.toLocaleString();
+    if (progress < 1) requestAnimationFrame(animate);
+    else {
+      // Keep counting continuously
+      let extra = satTarget;
+      satInterval = setInterval(() => {
+        extra += Math.round(satsPerSecond);
+        el.textContent = extra.toLocaleString();
+      }, 1000);
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+// Start counter when it scrolls into view
+const counterObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !satInterval) startSatCounter();
+  });
+}, { threshold: 0.3 });
+const counterEl = document.querySelector('.sats-stack-moment');
+if (counterEl) counterObs.observe(counterEl);
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.05 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
