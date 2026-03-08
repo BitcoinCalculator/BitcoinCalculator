@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 14: Bitcoin's Network Effect | SATOLOGY</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;
+  --prose:#c8c8c8;--quote-bg:#0d0d10;
+}
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --prose:#3a3a3a;--quote-bg:#f0ede6;
+}
+:root{
+  --btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;
+  --red:#e63946;--teal:#06b6d4;--net:#0ea5e9;--net2:#0284c7;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
+  transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--net),var(--btc),var(--green));width:0%}
+
+.ticker{background:linear-gradient(90deg,var(--net2),#1e3a5f);padding:9px 0;
+  overflow:hidden;white-space:nowrap;z-index:201}
+.ticker-inner{display:inline-flex;gap:64px;animation:tick 34s linear infinite;
+  font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
+  align-items:center;justify-content:space-between;background:var(--nav-bg);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;
+  place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);
+  border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;
+  font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);
+  border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0;transition:all .3s}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;
+  border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+.step-nav-bar{background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.step-nav-left a{color:var(--muted);text-decoration:none;transition:color .2s}
+.step-nav-left a:hover{color:var(--btc)}
+.step-nav-sep{opacity:.4}
+.step-nav-current{color:var(--text);font-weight:600}
+.step-nav-right{display:flex;align-items:center;gap:8px}
+.step-pill{background:linear-gradient(135deg,var(--net),var(--btc));color:#fff;
+  border-radius:100px;padding:4px 14px;font-size:11px;font-weight:900;letter-spacing:.5px}
+.step-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:linear-gradient(90deg,var(--net),var(--btc));
+  border-radius:2px;width:66.67%}
+
+.reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
+.rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:linear-gradient(to bottom,var(--net),var(--btc));
+  border-radius:2px;height:0%;transition:height .15s}
+.rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+  writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
+
+/* ══ HERO ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;
+  position:relative;overflow:hidden}
+.hero-net-bg{position:absolute;inset:0;pointer-events:none;opacity:.06}
+.hero-net-bg canvas{width:100%;height:100%}
+.step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;
+  animation:fadeUp .6s ease both;position:relative;z-index:1}
+.step-number{width:52px;height:52px;
+  background:linear-gradient(135deg,var(--net),var(--btc));
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 8px 32px rgba(14,165,233,.4)}
+.step-meta{display:flex;flex-direction:column;gap:3px}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--net),var(--btc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-weight:700}
+.step-meta-bottom{font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.step-hero h1{font-size:clamp(32px,6vw,72px);font-weight:900;letter-spacing:-3px;
+  line-height:1.02;margin-bottom:20px;animation:fadeUp .6s .08s ease both;
+  position:relative;z-index:1}
+.n-em{color:var(--net)}.btc-em{color:var(--btc)}.g-em{color:var(--green)}
+.step-hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.75;
+  max-width:680px;margin-bottom:36px;animation:fadeUp .6s .14s ease both;
+  font-family:'Lora',serif;font-style:italic;position:relative;z-index:1}
+.key-lesson{display:inline-flex;align-items:flex-start;gap:10px;
+  background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.22);
+  border-radius:14px;padding:14px 20px;font-size:14px;color:var(--text);
+  line-height:1.6;margin-bottom:48px;animation:fadeUp .6s .18s ease both;
+  max-width:680px;position:relative;z-index:1}
+.key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.key-lesson strong{color:var(--net)}
+
+/* ── ARTICLE ── */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
+.chapter{margin-bottom:72px}
+.chapter-label{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.chapter-num{width:40px;height:40px;background:rgba(14,165,233,.1);
+  border:1px solid rgba(14,165,233,.25);border-radius:11px;display:flex;
+  align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;color:var(--net);flex-shrink:0}
+.chapter-title{font-size:13px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--muted)}
+
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.8vw,19px);
+  line-height:1.9;color:var(--prose)}
+.prose p{margin-bottom:24px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;
+  font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--net);font-style:italic}
+.prose em.btc{color:var(--btc);font-style:italic}
+.prose em.green{color:var(--green);font-style:italic}
+.prose em.red{color:var(--red);font-style:italic}
+
+.pull-quote{border-left:4px solid var(--net);margin:40px 0;padding:24px 28px;
+  background:var(--quote-bg);border-radius:0 14px 14px 0}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(17px,2.3vw,23px);
+  font-style:italic;color:var(--text);line-height:1.65;margin:0}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;
+  color:var(--muted);font-style:normal;margin-top:12px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.5px}
+.pull-quote.btc{border-left-color:var(--btc)}
+.pull-quote.btc p{color:var(--btc)}
+
+.callout{border-radius:16px;padding:28px 32px;margin:36px 0;border:1px solid}
+.callout-net{background:rgba(14,165,233,.06);border-color:rgba(14,165,233,.2)}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.2)}
+.callout-green{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)}
+.callout-red{background:rgba(230,57,70,.06);border-color:rgba(230,57,70,.2)}
+.callout-purple{background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.2)}
+.callout-title{font-size:12px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.callout-net .callout-title{color:var(--net)}
+.callout-btc .callout-title{color:var(--btc)}
+.callout-green .callout-title{color:var(--green)}
+.callout-red .callout-title{color:var(--red)}
+.callout-purple .callout-title{color:var(--purple)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.8;
+  margin:0;font-family:'Inter',sans-serif}
+.callout p+p{margin-top:12px}
+
+/* ══ LIVE NETWORK VISUALISER ══ */
+.network-viz{background:var(--card);border:1px solid rgba(14,165,233,.25);
+  border-radius:22px;overflow:hidden;margin:44px 0;position:relative}
+.nv-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(14,165,233,.08),transparent);
+  display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px}
+.nv-header-text h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.nv-header-text p{font-size:13px;color:var(--muted)}
+.nv-stats{display:flex;gap:16px;flex-wrap:wrap}
+.nv-stat{text-align:center}
+.nv-stat-val{font-size:18px;font-weight:900;color:var(--net)}
+.nv-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.nv-canvas-wrap{position:relative;height:320px;background:var(--bg)}
+.nv-canvas-wrap canvas{width:100%;height:100%}
+.nv-overlay{position:absolute;bottom:16px;left:16px;right:16px;
+  display:flex;gap:10px;flex-wrap:wrap}
+.nv-badge{background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  border:1px solid rgba(14,165,233,.2);border-radius:8px;padding:6px 12px;
+  font-size:11px;font-weight:700;color:var(--net);display:flex;align-items:center;gap:6px}
+.nv-dot{width:6px;height:6px;border-radius:50%;background:var(--green);
+  animation:pulse 2s infinite}
+
+/* ══ METCALFE VISUAL ══ */
+.metcalfe-demo{background:var(--card);border:1px solid rgba(14,165,233,.2);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.md-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(14,165,233,.07),transparent)}
+.md-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.md-header p{font-size:13px;color:var(--muted)}
+.md-body{padding:28px}
+.md-slider-wrap{margin-bottom:28px}
+.md-slider-label{display:flex;justify-content:space-between;align-items:baseline;
+  margin-bottom:10px}
+.md-slider-title{font-size:13px;font-weight:700}
+.md-slider-val{font-size:22px;font-weight:900;color:var(--net);letter-spacing:-1px}
+.md-slider{width:100%;-webkit-appearance:none;height:6px;border-radius:3px;
+  background:var(--border);outline:none;cursor:pointer}
+.md-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;
+  border-radius:50%;background:linear-gradient(135deg,var(--net),var(--btc));
+  cursor:pointer;box-shadow:0 2px 8px rgba(14,165,233,.4)}
+.md-results{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.md-result{background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;padding:18px;text-align:center}
+.md-result.highlight{border-color:rgba(14,165,233,.3);
+  background:rgba(14,165,233,.05)}
+.md-result-label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted);margin-bottom:8px}
+.md-result.highlight .md-result-label{color:var(--net)}
+.md-result-val{font-size:clamp(18px,3vw,28px);font-weight:900;
+  letter-spacing:-1px;color:var(--text);line-height:1}
+.md-result.highlight .md-result-val{color:var(--net)}
+.md-result-sub{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
+.md-bar-section{margin-top:24px}
+.md-bar-label{font-size:12px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.md-bar-item{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.md-bar-name{font-size:12px;font-weight:700;min-width:90px;text-align:right}
+.md-bar-track{flex:1;height:24px;background:var(--bg2);
+  border-radius:6px;overflow:hidden;position:relative}
+.md-bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;
+  padding-left:10px;font-size:10px;font-weight:800;color:#fff;
+  transition:width 1s cubic-bezier(.16,1,.3,1);white-space:nowrap;overflow:hidden}
+
+/* ══ WHY BITCOIN WINS — MOAT CARDS ══ */
+.moat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0}
+.moat-card{background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:26px;transition:all .35s;position:relative;overflow:hidden}
+.moat-card:hover{transform:translateY(-4px);border-color:var(--net);
+  box-shadow:0 16px 40px rgba(14,165,233,.1)}
+.moat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.moat-card:nth-child(1)::before{background:var(--net)}
+.moat-card:nth-child(2)::before{background:var(--btc)}
+.moat-card:nth-child(3)::before{background:var(--green)}
+.moat-card:nth-child(4)::before{background:var(--purple)}
+.moat-card:nth-child(5)::before{background:var(--teal)}
+.moat-card:nth-child(6)::before{background:#ec4899}
+.moat-icon{font-size:36px;margin-bottom:14px;
+  animation:moatFloat 4s ease-in-out infinite}
+.moat-card:nth-child(2) .moat-icon{animation-delay:.3s}
+.moat-card:nth-child(3) .moat-icon{animation-delay:.6s}
+.moat-card:nth-child(4) .moat-icon{animation-delay:.9s}
+.moat-card:nth-child(5) .moat-icon{animation-delay:1.2s}
+.moat-card:nth-child(6) .moat-icon{animation-delay:1.5s}
+@keyframes moatFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.moat-title{font-size:16px;font-weight:900;margin-bottom:8px;letter-spacing:-.3px}
+.moat-body{font-size:13px;color:var(--muted);line-height:1.8}
+.moat-body strong{color:var(--text);font-weight:700}
+.moat-metric{display:inline-flex;align-items:center;gap:6px;margin-top:12px;
+  font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px}
+.mm-net{background:rgba(14,165,233,.1);color:var(--net)}
+.mm-btc{background:rgba(247,147,26,.1);color:var(--btc)}
+.mm-green{background:rgba(34,197,94,.1);color:var(--green)}
+.mm-purple{background:rgba(139,92,246,.1);color:var(--purple)}
+.mm-teal{background:rgba(6,182,212,.1);color:var(--teal)}
+.mm-pink{background:rgba(236,72,153,.1);color:#ec4899}
+
+/* ══ COMPETITOR GRAVEYARD ══ */
+.graveyard{background:linear-gradient(135deg,rgba(230,57,70,.06),rgba(230,57,70,.02));
+  border:1px solid rgba(230,57,70,.15);border-radius:22px;overflow:hidden;margin:44px 0}
+.gy-header{padding:22px 28px;border-bottom:1px solid var(--border)}
+.gy-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.gy-header p{font-size:13px;color:var(--muted)}
+.gy-list{padding:0}
+.gy-item{display:grid;grid-template-columns:auto 1fr auto;gap:16px;
+  align-items:center;padding:18px 28px;border-bottom:1px solid var(--border);
+  transition:background .2s}
+.gy-item:hover{background:rgba(230,57,70,.03)}
+.gy-item:last-child{border-bottom:none}
+.gy-icon{font-size:28px;filter:grayscale(1);opacity:.5}
+.gy-info{display:flex;flex-direction:column;gap:3px}
+.gy-name{font-size:15px;font-weight:800;letter-spacing:-.2px;
+  text-decoration:line-through;text-decoration-color:var(--red);
+  text-decoration-thickness:2px}
+.gy-reason{font-size:12px;color:var(--muted);line-height:1.5}
+.gy-reason strong{color:var(--text);font-weight:700}
+.gy-epitaph{font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px;
+  background:rgba(230,57,70,.1);color:var(--red);white-space:nowrap;flex-shrink:0}
+
+/* ══ ADOPTION CURVE ══ */
+.adoption-curve{background:var(--card);border:1px solid rgba(14,165,233,.2);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.ac-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(14,165,233,.06),transparent)}
+.ac-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.ac-header p{font-size:13px;color:var(--muted)}
+.ac-body{padding:28px}
+.ac-stages{display:flex;flex-direction:column;gap:0}
+.ac-stage{display:grid;grid-template-columns:140px 1fr auto;
+  gap:16px;align-items:center;padding:16px 0;
+  border-bottom:1px solid var(--border)}
+.ac-stage:last-child{border-bottom:none}
+.ac-stage-left{display:flex;flex-direction:column;gap:3px}
+.ac-stage-name{font-size:13px;font-weight:800;letter-spacing:-.2px}
+.ac-stage-pct{font-size:11px;font-weight:700}
+.ac-bar-wrap{flex:1}
+.ac-bar-track{height:20px;background:var(--bg2);border-radius:6px;overflow:hidden}
+.ac-bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;
+  padding:0 10px;font-size:10px;font-weight:800;color:#fff;
+  transition:width 1.5s cubic-bezier(.16,1,.3,1)}
+.ac-stage-right{font-size:13px;font-weight:800;min-width:100px;text-align:right}
+.ac-now{background:rgba(14,165,233,.05);border-radius:12px;
+  margin-top:12px;padding:14px 16px;font-size:13px;color:var(--prose);
+  line-height:1.75;font-family:'Inter',sans-serif;
+  border:1px solid rgba(14,165,233,.15)}
+.ac-now strong{color:var(--net);font-weight:800}
+
+/* ══ THE LINDY SECTION ══ */
+.lindy-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:36px 0}
+.lindy-card{background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:22px;text-align:center;transition:all .3s}
+.lindy-card:hover{border-color:var(--net);transform:translateY(-3px)}
+.lindy-icon{font-size:40px;margin-bottom:12px}
+.lindy-age{font-size:28px;font-weight:900;letter-spacing:-1px;
+  margin-bottom:4px;line-height:1}
+.lindy-card:nth-child(1) .lindy-age{color:var(--muted)}
+.lindy-card:nth-child(2) .lindy-age{color:var(--btc)}
+.lindy-card:nth-child(3) .lindy-age{color:var(--net)}
+.lindy-name{font-size:13px;font-weight:800;margin-bottom:6px;letter-spacing:-.2px}
+.lindy-body{font-size:11px;color:var(--muted);line-height:1.65}
+
+/* ══ NETWORK STRENGTH CALCULATOR ══ */
+.net-calc{background:linear-gradient(135deg,rgba(14,165,233,.09),rgba(247,147,26,.04));
+  border:1px solid rgba(14,165,233,.22);border-radius:22px;
+  overflow:hidden;margin:44px 0}
+.nc-header{padding:24px 28px;border-bottom:1px solid var(--border)}
+.nc-header h3{font-size:17px;font-weight:900;margin-bottom:4px}
+.nc-header p{font-size:13px;color:var(--muted)}
+.nc-body{padding:28px}
+.nc-controls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.nc-field{display:flex;flex-direction:column;gap:7px}
+.nc-field label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted)}
+.nc-field input{background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:11px 14px;font-size:15px;font-weight:700;
+  color:var(--text);font-family:'Inter',sans-serif;
+  width:100%;outline:none;transition:border-color .2s}
+.nc-field input:focus{border-color:var(--net)}
+.nc-results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.nc-result{background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;padding:18px;text-align:center}
+.nc-result.big{border-color:rgba(14,165,233,.3);
+  background:rgba(14,165,233,.05);grid-column:span 3}
+.nc-result-label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted);margin-bottom:8px}
+.nc-result.big .nc-result-label{color:var(--net)}
+.nc-result-val{font-size:clamp(18px,3vw,28px);font-weight:900;
+  letter-spacing:-1px;color:var(--text);line-height:1}
+.nc-result.big .nc-result-val{color:var(--net);font-size:clamp(22px,4vw,42px)}
+.nc-result-sub{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
+
+/* ══ THE UNSTOPPABLE MOMENT ══ */
+.unstoppable-moment{text-align:center;padding:88px 24px;
+  position:relative;overflow:hidden}
+.um-bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 70% at 50% 50%,
+    rgba(14,165,233,.07),transparent 70%);pointer-events:none}
+.um-network{position:absolute;inset:0;pointer-events:none;opacity:.08}
+.um-content{position:relative;z-index:1}
+.um-icon{font-size:72px;margin-bottom:24px;display:block;
+  animation:umPulse 3s ease-in-out infinite}
+@keyframes umPulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 0px rgba(14,165,233,0))}
+  50%{transform:scale(1.08);filter:drop-shadow(0 0 30px rgba(14,165,233,.5))}}
+.um-title{font-size:clamp(28px,6vw,68px);font-weight:900;letter-spacing:-3px;
+  line-height:1.05;margin-bottom:18px}
+.um-title .n1{color:var(--net)}.um-title .n2{color:var(--btc)}
+.um-title .n3{color:var(--green)}
+.um-sub{font-size:16px;color:var(--muted);max-width:640px;
+  margin:0 auto;line-height:1.9}
+
+/* ══ NODE COUNTER ══ */
+.node-counter{background:var(--card);border:1px solid rgba(14,165,233,.2);
+  border-radius:20px;padding:32px;margin:44px 0;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;text-align:center}
+.nc2-item{display:flex;flex-direction:column;gap:6px}
+.nc2-val{font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-3px;
+  line-height:1;background:linear-gradient(135deg,var(--net),var(--btc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-variant-numeric:tabular-nums}
+.nc2-label{font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--muted)}
+.nc2-sub{font-size:11px;color:var(--muted);line-height:1.5}
+.nc2-divider{width:1px;background:var(--border);align-self:stretch;margin:auto 0}
+
+/* ── KEY TAKEAWAY ── */
+.key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));
+  border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
+.kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--btc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kt-text{font-size:clamp(17px,2.5vw,22px);font-weight:800;line-height:1.5;
+  letter-spacing:-.3px;margin-bottom:20px}
+.kt-text em{color:var(--btc);font-style:normal}
+.kt-points{display:flex;flex-direction:column;gap:10px}
+.kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;
+  color:var(--prose);line-height:1.6}
+.kt-point-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── STEP NAV + MINIMAP ── */
+.step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
+.snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);
+  border:1px solid var(--border);border-radius:16px;padding:20px 24px;
+  text-decoration:none;color:var(--text);transition:all .3s}
+.snb-prev:hover,.snb-next:hover{border-color:var(--btc);transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(247,147,26,.12)}
+.snb-next{flex-direction:row-reverse;text-align:right}
+.snb-icon{font-size:28px;flex-shrink:0}
+.snb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--muted);font-weight:700;margin-bottom:3px}
+.snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+.steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
+.sm-card{background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:28px}
+.sm-title{font-size:14px;font-weight:800;margin-bottom:20px;
+  display:flex;align-items:center;gap:8px}
+.sm-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sm-step{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:800;text-decoration:none;
+  transition:all .2s;border:1px solid var(--border);
+  color:var(--muted);background:var(--bg2)}
+.sm-step:hover{border-color:var(--btc);color:var(--btc);transform:translateY(-2px)}
+.sm-step.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:var(--green)}
+.sm-step.current{background:linear-gradient(135deg,var(--net),var(--btc));
+  border-color:var(--net);color:#fff;box-shadow:0 4px 16px rgba(14,165,233,.4)}
+.sm-step.phase-3{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)}
+.sm-step.phase-4{background:rgba(255,107,0,.08);border-color:rgba(255,107,0,.2)}
+.sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sm-leg-dot{width:10px;height:10px;border-radius:3px}
+
+.footer-wrap{border-top:1px solid var(--border)}
+footer{padding:40px 48px;display:flex;justify-content:space-between;
+  align-items:center;max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;
+  font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+.reveal{opacity:0;transform:translateY(22px);
+  transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  nav,.step-nav-bar{padding:0 18px}
+  .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
+  .moat-grid,.lindy-grid{grid-template-columns:1fr}
+  .md-results{grid-template-columns:1fr 1fr}
+  .nc-results{grid-template-columns:1fr 1fr}
+  .nc-result.big{grid-column:span 2}
+  .node-counter{grid-template-columns:1fr}
+  .nc2-divider{display:none}
+  .ac-stage{grid-template-columns:100px 1fr auto}
+  .snb-inner{grid-template-columns:1fr}
+  .snb-next{flex-direction:row;text-align:left}
+  .reading-progress{display:none}
+  footer{padding:28px 20px;flex-direction:column;text-align:center}
+}
+@media(max-width:540px){
+  .step-hero h1{letter-spacing:-1.5px}
+  .sm-step{width:30px;height:30px;font-size:10px}
+  .md-results,.nc-results{grid-template-columns:1fr}
+  .nc-result.big{grid-column:span 1}
+  .ac-stage{grid-template-columns:80px 1fr}
+  .ac-stage-right{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>🌐 STEP 14 OF 21</span><span>·</span>
+    <span>⚡ BITCOIN'S NETWORK EFFECT — THE MOAT THAT ONLY DEEPENS</span><span>·</span>
+    <span>📡 ~15,000 NODES · 800M+ ADDRESSES · $2T+ MARKET CAP</span><span>·</span>
+    <span>🔒 METCALFE'S LAW: VALUE GROWS AS THE SQUARE OF USERS</span><span>·</span>
+    <span>💀 BITCOIN CASH · BITCOIN SV · LITECOIN · ALL FAILED TO DETHRONE BTC</span><span>·</span>
+    <span>🏆 BITCOIN: 65%+ CRYPTO DOMINANCE — AND RISING AGAIN</span><span>·</span>
+    <span>🌐 STEP 14 OF 21</span><span>·</span>
+    <span>⚡ BITCOIN'S NETWORK EFFECT — THE MOAT THAT ONLY DEEPENS</span><span>·</span>
+    <span>📡 ~15,000 NODES · 800M+ ADDRESSES · $2T+ MARKET CAP</span><span>·</span>
+    <span>🔒 METCALFE'S LAW: VALUE GROWS AS THE SQUARE OF USERS</span><span>·</span>
+    <span>💀 BITCOIN CASH · BITCOIN SV · LITECOIN · ALL FAILED TO DETHRONE BTC</span><span>·</span>
+    <span>🏆 BITCOIN: 65%+ CRYPTO DOMINANCE — AND RISING AGAIN</span><span>·</span>
+  </div>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span>
+      <span id="btcPriceNav">$--</span></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="step-nav-bar">
+  <div class="step-nav-left">
+    <a href="index.html">Home</a>
+    <span class="step-nav-sep">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <span class="step-nav-sep">›</span>
+    <span class="step-nav-current">Step 14 — Bitcoin's Network Effect</span>
+  </div>
+  <div class="step-nav-right">
+    <div class="step-progress-mini">
+      <div class="spm-bar"><div class="spm-fill"></div></div>
+      <span>14 / 21</span>
+    </div>
+    <div class="step-pill">Step 14</div>
+  </div>
+</div>
+
+<div class="reading-progress">
+  <div class="rp-label">Reading</div>
+  <div class="rp-track"><div class="rp-fill" id="rpFill"></div></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<div class="step-hero">
+  <div class="hero-net-bg">
+    <canvas id="heroNetCanvas"></canvas>
+  </div>
+
+  <div class="step-eyebrow">
+    <div class="step-number">14</div>
+    <div class="step-meta">
+      <div class="step-meta-top">🌐 Phase 3 — Deep Dive · Step 2 of 6</div>
+      <div class="step-meta-bottom">
+        <span>⏱ 10 min read</span><span>·</span>
+        <span>🔒 The moat that ends every "but Bitcoin can be replaced" argument</span>
+      </div>
+    </div>
+  </div>
+
+  <h1>The <span class="n-em">Network</span><br>
+      That <span class="btc-em">Cannot</span><br>
+      Be <span class="g-em">Stopped.</span></h1>
+
+  <p class="step-hero-sub">Every competitor has tried. Governments have banned it. Billionaires have mocked it. Developers have forked it. Journalists have declared it dead 479 times. Bitcoin has responded to every single one of them the same way — by adding more nodes, more users, more hash rate, and a higher price. The network effect is why Bitcoin isn't just winning. It's why Bitcoin has already won.</p>
+
+  <div class="key-lesson">
+    <span class="key-lesson-icon">🌐</span>
+    <span><strong>What this step proves:</strong> What the network effect actually is and why it makes Bitcoin exponentially more valuable with every new user, how Metcalfe's Law explains Bitcoin's price trajectory better than any chart pattern, why every "Bitcoin killer" has failed and will keep failing, the six compounding moats that protect Bitcoin's position, where we are on the global adoption curve — and why the next billion users change everything.</span>
+  </div>
+</div>
+
+<!-- ══ ARTICLE ══ -->
+<div class="article-wrap">
+
+  <!-- CHAPTER 1 — THE FAX MACHINE -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">①</div>
+      <div class="chapter-title">The Fax Machine Analogy — And Why It Changes Everything</div>
+    </div>
+    <div class="prose">
+      <p>Imagine you own the world's only fax machine. It is completely useless. There is nobody to fax. The machine is worthless — not because of its engineering, but because it has no network to connect to.</p>
+      <p>Now imagine a second fax machine appears. Suddenly you have one connection. The network has value — but only barely. Now imagine a thousand fax machines. A million. A hundred million. Each new machine doesn't just add one connection — it multiplies the potential connections across the entire existing network. <em>The value of the network grows exponentially as the number of participants grows.</em></p>
+      <p>This is Metcalfe's Law — named after Robert Metcalfe, the inventor of Ethernet. It states that the value of a network is proportional to the <strong>square of the number of connected users.</strong> Double the users, quadruple the value. Triple the users, nine times the value. This mathematical relationship is why telephone networks, the internet, email, and social media each became increasingly difficult to replace once they reached critical mass.</p>
+      <p>Bitcoin is the first monetary network in history to operate by this law. <em class="btc">And its network is now so large that replacing it would require not just a better technology — but simultaneously convincing every node operator, miner, developer, exchange, ETF custodian, central bank reserve manager, and individual holder to abandon it at once.</em> That is not going to happen.</p>
+    </div>
+    <div class="pull-quote reveal">
+      <p>"The value of a telecommunications network is proportional to the square of the number of connected users of the system."</p>
+      <cite>— Robert Metcalfe, 1980 — writing about Ethernet, unknowingly describing the most powerful argument for Bitcoin's inevitability</cite>
+    </div>
+  </div>
+
+  <!-- LIVE NETWORK VIZ -->
+  <div class="network-viz reveal">
+    <div class="nv-header">
+      <div class="nv-header-text">
+        <h3>🌐 The Bitcoin Network — Live & Growing</h3>
+        <p>A real-time representation of the distributed global network that secures your Bitcoin</p>
+      </div>
+      <div class="nv-stats">
+        <div class="nv-stat">
+          <div class="nv-stat-val" id="nvNodes">~15,000</div>
+          <div class="nv-stat-label">Full Nodes</div>
+        </div>
+        <div class="nv-stat">
+          <div class="nv-stat-val" id="nvHashrate">~750 EH/s</div>
+          <div class="nv-stat-label">Hash Rate</div>
+        </div>
+        <div class="nv-stat">
+          <div class="nv-stat-val" id="nvAddresses">800M+</div>
+          <div class="nv-stat-label">Addresses Used</div>
+        </div>
+      </div>
+    </div>
+    <div class="nv-canvas-wrap">
+      <canvas id="networkCanvas"></canvas>
+      <div class="nv-overlay">
+        <div class="nv-badge"><span class="nv-dot"></span>Network Live</div>
+        <div class="nv-badge">⛏️ Mining in 50+ Countries</div>
+        <div class="nv-badge">🔒 15+ Years, Zero Downtime</div>
+        <div class="nv-badge">📡 ~15K Nodes Worldwide</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NODE COUNTER -->
+  <div class="node-counter reveal">
+    <div class="nc2-item">
+      <div class="nc2-val" id="uptimeCounter">0</div>
+      <div class="nc2-label">Minutes of Uptime</div>
+      <div class="nc2-sub">Since Genesis Block, January 3, 2009.<br>Zero planned downtime. Ever.</div>
+    </div>
+    <div class="nc2-divider"></div>
+    <div class="nc2-item">
+      <div class="nc2-val">~750</div>
+      <div class="nc2-label">Exahashes per Second</div>
+      <div class="nc2-sub">The combined computing power securing Bitcoin. More than every supercomputer on Earth combined, by an enormous margin.</div>
+    </div>
+    <div class="nc2-divider"></div>
+    <div class="nc2-item">
+      <div class="nc2-val">479</div>
+      <div class="nc2-label">Times Bitcoin Was "Dead"</div>
+      <div class="nc2-sub">Tracked by 99bitcoins.com. Every obituary was wrong. The network didn't notice. It kept mining.</div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 — METCALFE INTERACTIVE -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">②</div>
+      <div class="chapter-title">Metcalfe's Law — Feel the Mathematics of Network Value</div>
+    </div>
+    <div class="prose">
+      <p>Metcalfe's Law isn't just a metaphor. It has been empirically validated across Bitcoin's entire price history. Studies have shown that Bitcoin's market cap tracks remarkably well with the square of its active address count — sometimes called the "Metcalfe valuation." This isn't because traders believe in the formula. It's because the formula describes how human adoption of communication networks actually works.</p>
+      <p>Move the slider below. Watch what happens to network value as user count grows. Feel the <em>exponential</em> — the reason that the next 500 million Bitcoin users add more value to the network than the first 500 million did.</p>
+    </div>
+
+    <div class="metcalfe-demo reveal">
+      <div class="md-header">
+        <h3>📐 Metcalfe's Law — Interactive Network Value Model</h3>
+        <p>Drag the slider to see how network value scales with users — V ∝ n²</p>
+      </div>
+      <div class="md-body">
+        <div class="md-slider-wrap">
+          <div class="md-slider-label">
+            <span class="md-slider-title">Bitcoin Wallet Users (millions)</span>
+            <span class="md-slider-val" id="mdUserVal">500M</span>
+          </div>
+          <input type="range" class="md-slider" id="mdSlider"
+            min="10" max="4000" value="500" step="10">
+        </div>
+        <div class="md-results">
+          <div class="md-result">
+            <div class="md-result-label">Users</div>
+            <div class="md-result-val" id="mdUsers">500M</div>
+            <div class="md-result-sub">wallet holders</div>
+          </div>
+          <div class="md-result">
+            <div class="md-result-label">Network Connections</div>
+            <div class="md-result-val" id="mdConnections">125T</div>
+            <div class="md-result-sub">possible value exchanges</div>
+          </div>
+          <div class="md-result highlight">
+            <div class="md-result-label">Metcalfe Value Index</div>
+            <div class="md-result-val" id="mdValue">100x</div>
+            <div class="md-result-sub">vs 50M user baseline</div>
+          </div>
+          <div class="md-result">
+            <div class="md-result-label">Per-User Value</div>
+            <div class="md-result-val" id="mdPerUser">~$4,000</div>
+            <div class="md-result-sub">implied at $2T market cap</div>
+          </div>
+        </div>
+        <div class="md-bar-section">
+          <div class="md-bar-label">Network Size vs. Historical Adoption Phases</div>
+          <div class="md-bar-item">
+            <div class="md-bar-name" style="color:var(--muted)">Email (1990)</div>
+            <div class="md-bar-track">
+              <div class="md-bar-fill" style="background:#6b7280;width:1%">1M users</div>
+            </div>
+          </div>
+          <div class="md-bar-item">
+            <div class="md-bar-name" style="color:#3b82f6">Internet (2000)</div>
+            <div class="md-bar-track">
+              <div class="md-bar-fill" style="background:#3b82f6;width:12.5%">400M users</div>
+            </div>
+          </div>
+          <div class="md-bar-item">
+            <div class="md-bar-name" style="color:var(--btc)">BTC Today</div>
+            <div class="md-bar-track">
+              <div class="md-bar-fill" id="mdBtcBar"
+                style="background:linear-gradient(90deg,var(--btc2),var(--btc));width:15.6%">
+                ~500M users</div>
+            </div>
+          </div>
+          <div class="md-bar-item">
+            <div class="md-bar-name" style="color:var(--net)">Your Slider</div>
+            <div class="md-bar-track">
+              <div class="md-bar-fill" id="mdSliderBar"
+                style="background:linear-gradient(90deg,var(--net2),var(--net));width:15.6%">
+                500M</div>
+            </div>
+          </div>
+          <div class="md-bar-item">
+            <div class="md-bar-name" style="color:var(--green)">Global Adult Pop.</div>
+            <div class="md-bar-track">
+              <div class="md-bar-fill" style="background:linear-gradient(90deg,#15803d,var(--green));width:100%">
+                ~5.6B adults (full addressable market)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-net reveal">
+      <div class="callout-title">🌐 The Number That Should Stop You Cold</div>
+      <p>Bitcoin has approximately 500 million wallet addresses ever used — but estimates of active regular users are closer to 100–200 million. The global adult population is approximately 5.6 billion. <strong>If Bitcoin reaches 1 billion users, Metcalfe's Law implies the network is 4x more valuable than at 500 million.</strong> At 2 billion users it is 16x more valuable. At full global adoption — the same penetration as the internet today — the implied value is difficult to even calculate. This is not hopium. It is the same mathematics that made early investors in the telephone, the internet, and email extraordinarily wealthy.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 — THE SIX MOATS -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">③</div>
+      <div class="chapter-title">The Six Moats — Why Bitcoin's Lead Is Compounding, Not Eroding</div>
+    </div>
+    <div class="prose">
+      <p>A moat, in investing terms, is a durable competitive advantage that protects a business from competitors. Bitcoin doesn't have one moat. It has six — and every one of them deepens as the network grows. This is why every "Bitcoin killer" has failed. You don't kill a network by making a better network. You kill it by having a better network with all the same moats. Nobody has come close.</p>
+    </div>
+
+    <div class="moat-grid reveal">
+      <div class="moat-card">
+        <div class="moat-icon">⛏️</div>
+        <div class="moat-title">Hash Rate Moat</div>
+        <div class="moat-body">Bitcoin's hash rate — the computing power securing the network — has grown from zero to <strong>~750 exahashes per second.</strong> This represents more computing power than all of humanity's supercomputers combined, by orders of magnitude. To attack the Bitcoin network, you would need to acquire 51% of this hash rate — an investment of hundreds of billions of dollars in hardware that would be immediately rendered worthless by the attack itself. No competitor has more than 1% of this security.</div>
+        <div class="moat-metric mm-net">750 EH/s — Unmatched</div>
+      </div>
+
+      <div class="moat-card">
+        <div class="moat-icon">🏛️</div>
+        <div class="moat-title">Regulatory Legitimacy Moat</div>
+        <div class="moat-body">Bitcoin has achieved something no other crypto asset has: <strong>regulatory clarity in every major jurisdiction.</strong> The SEC has approved Bitcoin spot ETFs. The EU has classified it under MiCA. El Salvador has made it legal tender. Multiple US states have Bitcoin reserve laws. This regulatory legitimacy took 15 years to build — through countless hearings, legal battles, and enforcement actions. A new network starts at zero regulatory legitimacy and takes decades to build it.</div>
+        <div class="moat-metric mm-btc">ETFs Approved · Legal Tender · State Reserve Laws</div>
+      </div>
+
+      <div class="moat-card">
+        <div class="moat-icon">🏦</div>
+        <div class="moat-title">Institutional Infrastructure Moat</div>
+        <div class="moat-body">BlackRock, Fidelity, Vanguard, Goldman Sachs, JPMorgan — the world's largest asset managers have built Bitcoin custody, trading, and investment infrastructure. <strong>$50 billion+ in Bitcoin ETF assets.</strong> Coinbase Custody holds Bitcoin for dozens of institutional clients. Bloomberg terminals track Bitcoin. The S&P 500 includes Bitcoin-adjacent companies. This infrastructure was built specifically for Bitcoin — not "crypto." Switching it to a competitor would cost billions and years.</div>
+        <div class="moat-metric mm-green">$50B+ ETF AUM · Prime Brokerage · Custody Infrastructure</div>
+      </div>
+
+      <div class="moat-card">
+        <div class="moat-icon">👩‍💻</div>
+        <div class="moat-title">Developer & Protocol Moat</div>
+        <div class="moat-body">Bitcoin's protocol has been peer-reviewed, stress-tested, and battle-hardened for 15 years by the most security-conscious developers in the world. <strong>Every proposed change must pass the most rigorous consensus process in software history.</strong> Bitcoin has never had a catastrophic protocol failure. The Lightning Network, Taproot, and SegWit were all implemented without disrupting the base layer. Competitors start with unproven code and unknown attack vectors.</div>
+        <div class="moat-metric mm-purple">15 Years · Zero Critical Failures · Taproot · Lightning</div>
+      </div>
+
+      <div class="moat-card">
+        <div class="moat-icon">🧠</div>
+        <div class="moat-title">Lindy Effect Moat</div>
+        <div class="moat-body">The Lindy Effect is the principle that the longer something has survived, the longer it is likely to continue surviving. A book that has been in print for 100 years will likely be in print for another 100. Bitcoin has survived <strong>15 years of adversarial conditions</strong> — government bans, exchange collapses, forks, hacks, regulatory attacks, bear markets, and 479 obituaries. Each year it survives makes it statistically more likely to survive the next. No competitor has survived more than a few years of serious adversarial pressure.</div>
+        <div class="moat-metric mm-teal">15 Years Adversarial Survival · Antifragile</div>
+      </div>
+
+      <div class="moat-card">
+        <div class="moat-icon">🗺️</div>
+        <div class="moat-title">Schelling Point Moat</div>
+        <div class="moat-body">In game theory, a Schelling Point is the natural focal point that rational actors converge on without coordination. When the world thinks "store of value in digital form," it thinks Bitcoin. <strong>This mental monopoly is almost impossible to displace.</strong> When journalists write about crypto, they use Bitcoin's price. When companies add "crypto" to their balance sheet, they buy Bitcoin. When governments debate crypto regulation, they talk about Bitcoin. The brand and the mental model are fused. A competitor doesn't just need better technology — it needs to become a Schelling Point. That takes decades and cannot be engineered.</div>
+        <div class="moat-metric mm-pink">The Schelling Point of Digital Scarcity</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 4 — THE GRAVEYARD -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">④</div>
+      <div class="chapter-title">The Competitor Graveyard — Every "Bitcoin Killer," Killed</div>
+    </div>
+    <div class="prose">
+      <p>For fifteen years, a parade of projects, coins, and networks have been launched with explicit ambitions to dethrone Bitcoin. They had bigger blocks, faster speeds, lower fees, more features, celebrity endorsements, venture capital backing, and armies of developers. They all failed. Not because Bitcoin is perfect — but because they didn't understand what Bitcoin actually is.</p>
+    </div>
+
+    <div class="graveyard reveal">
+      <div class="gy-header">
+        <h3>💀 The Bitcoin Killer Graveyard</h3>
+        <p>Every project that came to bury Bitcoin — and what happened instead</p>
+      </div>
+      <div class="gy-list">
+        <div class="gy-item">
+          <div class="gy-icon">💰</div>
+          <div class="gy-info">
+            <div class="gy-name">Bitcoin Cash (BCH)</div>
+            <div class="gy-reason">Roger Ver's 2017 fork promised "the real Bitcoin" with bigger blocks and faster transactions. Peak: <strong>$4,300.</strong> Today: ~$350. It solved a problem that the Lightning Network solved better — without fracturing the network. BCH now has ~2% of Bitcoin's market cap and declining relevance.</div>
+          </div>
+          <div class="gy-epitaph">-92% vs BTC</div>
+        </div>
+        <div class="gy-item">
+          <div class="gy-icon">💀</div>
+          <div class="gy-info">
+            <div class="gy-name">Bitcoin SV (BSV)</div>
+            <div class="gy-reason">Craig Wright's 2018 fork, claiming to be "Satoshi's Vision." Wright has claimed in courts across three continents to be Satoshi Nakamoto — courts in the UK ruled he <strong>is not.</strong> BSV has been delisted from most major exchanges. Its hash rate is negligible. Its developer community has largely abandoned it.</div>
+          </div>
+          <div class="gy-epitaph">Delisted · Court Rejected</div>
+        </div>
+        <div class="gy-item">
+          <div class="gy-icon">🐕</div>
+          <div class="gy-info">
+            <div class="gy-name">Litecoin (LTC)</div>
+            <div class="gy-reason">Launched in 2011 as "the silver to Bitcoin's gold." For years, LTC was the second-largest crypto. Its creator Charlie Lee sold all his LTC in 2017 near the peak — a fact he publicly disclosed. Today, LTC's market cap is a fraction of Bitcoin's. It has no unique use case that Bitcoin or its layers don't provide. It quietly fades.</div>
+          </div>
+          <div class="gy-epitaph">Irrelevant · Creator Sold</div>
+        </div>
+        <div class="gy-item">
+          <div class="gy-icon">📱</div>
+          <div class="gy-info">
+            <div class="gy-name">Facebook Libra / Diem</div>
+            <div class="gy-reason">Mark Zuckerberg announced Libra in 2019 — a Facebook-backed "global digital currency" with 2.7 billion users as a ready-made network. <strong>It was killed by regulatory pressure before launch.</strong> Rebranded as Diem. Killed again. Sold for parts in 2022. A $2 trillion company with the world's largest social network couldn't launch a digital currency. Bitcoin just kept mining.</div>
+          </div>
+          <div class="gy-epitaph">Regulatory Killed · Disbanded</div>
+        </div>
+        <div class="gy-item">
+          <div class="gy-icon">🌐</div>
+          <div class="gy-info">
+            <div class="gy-name">XRP (Ripple)</div>
+            <div class="gy-reason">Marketed as "Bitcoin for banks." The SEC sued Ripple Labs in 2020 alleging XRP was an unregistered security — a lawsuit that lasted years and cast legal shadow across the entire ecosystem. The core problem: XRP is premined, controlled by a company, and has a fundamentally different value proposition than Bitcoin. It is a payment network, not a monetary network.</div>
+          </div>
+          <div class="gy-epitaph">SEC Lawsuit · Centralised</div>
+        </div>
+        <div class="gy-item">
+          <div class="gy-icon">🏦</div>
+          <div class="gy-info">
+            <div class="gy-name">Central Bank Digital Currencies (CBDCs)</div>
+            <div class="gy-reason">Governments worldwide have explored CBDCs as a "digital dollar/yuan/euro." They are the opposite of Bitcoin: <strong>fully traceable, programmable by governments, revocable, and inflationary.</strong> China's digital yuan has seen minimal uptake despite being a government mandate. CBDCs solve no problem that cash doesn't already solve — while removing all of cash's privacy benefits. They are Bitcoin's photographic negative.</div>
+          </div>
+          <div class="gy-epitaph">Low Uptake · Surveillance Money</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-btc reveal">
+      <div class="callout-title">₿ Why They All Failed — The Same Reason</div>
+      <p>Every Bitcoin competitor failed for a variation of the same reason: <strong>they optimised for features that Bitcoin doesn't have, without understanding why Bitcoin doesn't have them.</strong> Bitcoin is slow by design — slower means more decentralised. Bitcoin is simple by design — simpler means more secure. Bitcoin has a hard cap by design — that's the entire point. The competitors that added speed lost decentralisation. The ones that added features lost security. The ones that added supply lost scarcity. Bitcoin's "limitations" are its greatest strengths, and nobody has successfully argued otherwise for 15 years.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 — ADOPTION CURVE -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑤</div>
+      <div class="chapter-title">Where We Are — The Adoption Curve That Changes Everything</div>
+    </div>
+    <div class="prose">
+      <p>Every transformative technology follows an S-curve of adoption: slow start, explosive middle, saturated end. The telephone took 75 years to reach 100 million users. The internet took 7 years. Smartphones took 3.5 years. Bitcoin has been growing for 15 years and has roughly 100–500 million users depending on how you count. <em>By the metrics of every prior technology adoption, Bitcoin is somewhere between the early majority and the beginning of the late majority.</em> The explosive middle may still be ahead.</p>
+    </div>
+
+    <div class="adoption-curve reveal">
+      <div class="ac-header">
+        <h3>📈 Global Bitcoin Adoption Curve</h3>
+        <p>Where we are in the S-curve — and what comes next</p>
+      </div>
+      <div class="ac-body">
+        <div class="ac-stages">
+          <div class="ac-stage">
+            <div class="ac-stage-left">
+              <div class="ac-stage-name" style="color:var(--muted)">Innovators</div>
+              <div class="ac-stage-pct" style="color:var(--muted)">~2.5%</div>
+            </div>
+            <div class="ac-bar-wrap">
+              <div class="ac-bar-track">
+                <div class="ac-bar-fill" style="background:#6b7280;width:0%"
+                  data-width="100%">2009–2012 · Cypherpunks, developers, darknet</div>
+              </div>
+            </div>
+            <div class="ac-stage-right" style="color:var(--muted)">✅ Complete</div>
+          </div>
+          <div class="ac-stage">
+            <div class="ac-stage-left">
+              <div class="ac-stage-name" style="color:var(--purple)">Early Adopters</div>
+              <div class="ac-stage-pct" style="color:var(--purple)">~13.5%</div>
+            </div>
+            <div class="ac-bar-wrap">
+              <div class="ac-bar-track">
+                <div class="ac-bar-fill" style="background:linear-gradient(90deg,#7c3aed,var(--purple));width:0%"
+                  data-width="100%">2012–2017 · Tech investors, libertarians, traders</div>
+              </div>
+            </div>
+            <div class="ac-stage-right" style="color:var(--purple)">✅ Complete</div>
+          </div>
+          <div class="ac-stage">
+            <div class="ac-stage-left">
+              <div class="ac-stage-name" style="color:var(--btc)">Early Majority</div>
+              <div class="ac-stage-pct" style="color:var(--btc)">~34%</div>
+            </div>
+            <div class="ac-bar-wrap">
+              <div class="ac-bar-track">
+                <div class="ac-bar-fill" style="background:linear-gradient(90deg,var(--btc2),var(--btc));width:0%"
+                  data-width="65%">2017–2024 · Retail, some institutions</div>
+              </div>
+            </div>
+            <div class="ac-stage-right" style="color:var(--btc)">⏳ ~65% done</div>
+          </div>
+          <div class="ac-stage">
+            <div class="ac-stage-left">
+              <div class="ac-stage-name" style="color:var(--net)">Late Majority</div>
+              <div class="ac-stage-pct" style="color:var(--net)">~34%</div>
+            </div>
+            <div class="ac-bar-wrap">
+              <div class="ac-bar-track">
+                <div class="ac-bar-fill" style="background:linear-gradient(90deg,var(--net2),var(--net));width:0%"
+                  data-width="12%">2024–? · Mass institutions, pensions, sovereign wealth</div>
+              </div>
+            </div>
+            <div class="ac-stage-right" style="color:var(--net)">🔜 Just Starting</div>
+          </div>
+          <div class="ac-stage">
+            <div class="ac-stage-left">
+              <div class="ac-stage-name" style="color:var(--green)">Laggards</div>
+              <div class="ac-stage-pct" style="color:var(--green)">~16%</div>
+            </div>
+            <div class="ac-bar-wrap">
+              <div class="ac-bar-track">
+                <div class="ac-bar-fill" style="background:linear-gradient(90deg,#15803d,var(--green));width:0%"
+                  data-width="0%">? · Governments, central banks, holdouts</div>
+              </div>
+            </div>
+            <div class="ac-stage-right" style="color:var(--green)">🔮 Future</div>
+          </div>
+        </div>
+        <div class="ac-now">
+          <strong>We are here:</strong> Transitioning from Early Majority to Late Majority. The late majority represents the world's largest capital pools — pension funds ($35T globally), sovereign wealth funds ($10T+), insurance companies, endowments, and central bank reserves. <strong>If even 1% of these pools allocates to Bitcoin, the inflow dwarfs all prior demand combined.</strong> This is not speculation — it is the logical next phase of every S-curve adoption ever measured.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 — LINDY EFFECT -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑥</div>
+      <div class="chapter-title">The Lindy Effect — Why 15 Years Means Everything</div>
+    </div>
+    <div class="prose">
+      <p>The Lindy Effect is one of the most underappreciated principles in risk and durability. A restaurant that has been open for 50 years is more likely to survive the next decade than one that opened last month — because its survival to date is evidence of structural strength. The same principle applies to technologies, ideas, and monetary systems.</p>
+      <p><em>Bitcoin has survived 15 years of maximum adversarial pressure</em> — not in a controlled lab, but in the wild, against nation-states, billion-dollar short sellers, armies of competing developers, and the combined scepticism of the global financial establishment. Every year it survives, the probability of its continuation increases. Every failed attack makes it stronger. Every obituary proved wrong adds to its permanence.</p>
+    </div>
+
+    <div class="lindy-grid reveal">
+      <div class="lindy-card">
+        <div class="lindy-icon">📺</div>
+        <div class="lindy-age" style="color:var(--muted)">1–3 years</div>
+        <div class="lindy-name">New Technology</div>
+        <div class="lindy-body">Most new technologies fail within the first three years. The majority of crypto projects launched since 2017 are already dead or irrelevant. High failure rate. High uncertainty. Survival is the exception, not the rule.</div>
+      </div>
+      <div class="lindy-card">
+        <div class="lindy-icon">📱</div>
+        <div class="lindy-age" style="color:var(--btc)">10+ years</div>
+        <div class="lindy-name">Established Platform</div>
+        <div class="lindy-body">Technologies that survive a decade under adversarial conditions have demonstrated structural durability. The internet, email, GPS — all showed their permanence around the 10-year mark. Bitcoin crossed this threshold in 2019.</div>
+      </div>
+      <div class="lindy-card">
+        <div class="lindy-icon">₿</div>
+        <div class="lindy-age" style="color:var(--net)">15 years</div>
+        <div class="lindy-name">Bitcoin — Today</div>
+        <div class="lindy-body">Fifteen years of continuous operation. Zero successful protocol attacks. Every nation-state ban circumvented. Every competitor defeated. Every cycle survived. The Lindy Effect says: <strong>expect another 15 years at minimum.</strong> The math keeps compounding.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-green reveal">
+      <div class="callout-title">✅ The Antifragility Insight</div>
+      <p>Nassim Taleb coined the term <strong>antifragile</strong> to describe things that don't just survive shocks — they grow stronger because of them. Bitcoin is the most antifragile monetary system ever created. Every attempt to ban it created a new wave of curious adopters. Every exchange collapse drove users toward self-custody and hardware wallets. Every "Bitcoin is dead" article was shared by Bitcoiners as a badge of honour. The attacks don't weaken Bitcoin. <strong>They educate the market about why Bitcoin exists.</strong></p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 7 — NETWORK VALUE CALC -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑦</div>
+      <div class="chapter-title">The Network Value Calculator — What Each New User Adds</div>
+    </div>
+    <div class="prose">
+      <p>Every person who buys Bitcoin adds value to the network for every existing holder — not by donating money, but by strengthening the Metcalfe value of the network they just joined. This calculator shows exactly how much network value is added as user count grows — and what your sats are worth at different adoption milestones.</p>
+    </div>
+
+    <div class="net-calc reveal">
+      <div class="nc-header">
+        <h3>🌐 Network Value — Adoption Milestone Calculator</h3>
+        <p>See how your sats appreciate as Bitcoin's network grows toward global adoption</p>
+      </div>
+      <div class="nc-body">
+        <div class="nc-controls">
+          <div class="nc-field">
+            <label>Your Sats</label>
+            <input type="number" id="ncSats" value="1000000" min="1">
+          </div>
+          <div class="nc-field">
+            <label>Target Users (millions)</label>
+            <input type="number" id="ncUsers" value="1000" min="1">
+          </div>
+        </div>
+        <div class="nc-results">
+          <div class="nc-result">
+            <div class="nc-result-label">Your BTC</div>
+            <div class="nc-result-val" id="ncBtc">0.01</div>
+            <div class="nc-result-sub">from your sats</div>
+          </div>
+          <div class="nc-result">
+            <div class="nc-result-label">Today's Value</div>
+            <div class="nc-result-val" id="ncToday">$1,000</div>
+            <div class="nc-result-sub">at live BTC price</div>
+          </div>
+          <div class="nc-result">
+            <div class="nc-result-label">Metcalfe Network Growth</div>
+            <div class="nc-result-val" id="ncMetcalfe">4x</div>
+            <div class="nc-result-sub">vs 500M users today</div>
+          </div>
+          <div class="nc-result big">
+            <div class="nc-result-label">🌐 Your Sats at Target Adoption</div>
+            <div class="nc-result-val" id="ncProjected">$4,000</div>
+            <div class="nc-result-sub" id="ncProjectedSub">
+              based purely on network growth — before price discovery factors</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE UNSTOPPABLE MOMENT -->
+  <div class="unstoppable-moment reveal">
+    <div class="um-bg"></div>
+    <canvas class="um-network" id="umCanvas"></canvas>
+    <div class="um-content">
+      <span class="um-icon">🌐</span>
+      <div class="um-title">
+        <span class="n1">Bigger</span> every day.<br>
+        <span class="n2">Stronger</span> every block.<br>
+        <span class="n3">Unstoppable.</span>
+      </div>
+      <div class="um-sub">Bitcoin's network effect is not a feature someone added. It is an emergent property of fifteen years of open, permissionless, censorship-resistant value transfer — adopted freely by hundreds of millions of people in every country on Earth. Every new node makes the network harder to attack. Every new holder makes it harder to ignore. Every new ETF, every new corporate treasury, every new sovereign allocation adds another layer of permanence. The question stopped being "will Bitcoin survive" a long time ago. The question now is: how large does a network this durable eventually become?</div>
+    </div>
+  </div>
+
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">🏆 Step 14 — Key Takeaways</div>
+    <div class="kt-text">Bitcoin's network isn't just growing.<br><em>It's becoming mathematically inevitable.</em></div>
+    <div class="kt-points">
+      <div class="kt-point"><span class="kt-point-icon">📐</span><span>Metcalfe's Law states that network value grows as the square of users. Bitcoin has ~500M users. At 1 billion users, the network is 4x more valuable. At 2 billion, 16x. The next billion users add more value than the first billion did — and there are 4 billion more adults to reach.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🏰</span><span>Bitcoin has six compounding moats: hash rate security (~750 EH/s), regulatory legitimacy, institutional infrastructure ($50B+ in ETFs), battle-hardened protocol, 15 years of Lindy Effect, and Schelling Point status as the world's mental model for digital scarcity.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">💀</span><span>Every Bitcoin competitor has failed. Bitcoin Cash, Bitcoin SV, Litecoin, Libra, CBDCs — all tried, all failed, for the same reason: they optimised away the properties that make Bitcoin what it is. Bitcoin's "limitations" are its greatest strengths.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📈</span><span>We are at the Early Majority/Late Majority inflection point. The capital pools that haven't yet entered — pension funds ($35T), sovereign wealth funds ($10T+), central bank reserves — dwarf all prior Bitcoin demand. The late majority adoption phase is just beginning.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🔒</span><span>Bitcoin is antifragile. Every attack, ban, and obituary has made it stronger — by educating new users, eliminating weak holders, and demonstrating that the network cannot be stopped by any single actor or any combination of actors.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">⚡</span><span>Step 15 goes deep into the Lightning Network — the second layer built on top of Bitcoin that enables instant, near-free transactions at global scale. The network effect of the base layer just got a rocket attached to it.</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STEP NAV -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="btc-step-13.html" class="snb-prev reveal">
+      <div class="snb-icon">⚡</div>
+      <div>
+        <div class="snb-label">← Step 13</div>
+        <div class="snb-title">The Halving Explained</div>
+        <div class="snb-desc">The four-year supply shock that changes everything</div>
+      </div>
+    </a>
+    <a href="btc-step-15.html" class="snb-next reveal">
+      <div class="snb-icon">🚀</div>
+      <div>
+        <div class="snb-label">Step 15 →</div>
+        <div class="snb-title">The Lightning Network</div>
+        <div class="snb-desc">Bitcoin at the speed of light</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- MINIMAP -->
+<div class="steps-minimap">
+  <div class="sm-card reveal">
+    <div class="sm-title">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step done">1</a>
+      <a href="btc-step-02.html" class="sm-step done">2</a>
+      <a href="btc-step-03.html" class="sm-step done">3</a>
+      <a href="btc-step-04.html" class="sm-step done">4</a>
+      <a href="btc-step-05.html" class="sm-step done">5</a>
+      <a href="btc-step-06.html" class="sm-step done">6</a>
+      <a href="btc-step-07.html" class="sm-step done">7</a>
+      <a href="btc-step-08.html" class="sm-step done">8</a>
+      <a href="btc-step-09.html" class="sm-step done">9</a>
+      <a href="btc-step-10.html" class="sm-step done">10</a>
+      <a href="btc-step-11.html" class="sm-step done">11</a>
+      <a href="btc-step-12.html" class="sm-step done">12</a>
+      <a href="btc-step-13.html" class="sm-step done">13</a>
+      <a href="btc-step-14.html" class="sm-step current">14</a>
+      <a href="btc-step-15.html" class="sm-step phase-3">15</a>
+      <a href="btc-step-16.html" class="sm-step phase-3">16</a>
+      <a href="btc-step-17.html" class="sm-step phase-3">17</a>
+      <a href="btc-step-18.html" class="sm-step phase-3">18</a>
+      <a href="btc-step-19.html" class="sm-step phase-4">19</a>
+      <a href="btc-step-20.html" class="sm-step phase-4">20</a>
+      <a href="btc-step-21.html" class="sm-step phase-4">21</a>
+    </div>
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(34,197,94,.6)"></div>Completed</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--net)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(139,92,246,.4)"></div>Phase 3 — Deep Dive</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(255,107,0,.4)"></div>Phase 4 — Mastery</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="Unstoppable.html">Unstoppable Tool</a>
+      <a href="raise-with-bitcoin.html">DCA Calculator</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+      <a href="Keychain.html">Keychain</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n); localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE PRICE ──
+let liveBtcPrice = 100000;
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json()).then(d => {
+      liveBtcPrice = d.bitcoin.usd;
+      document.getElementById('btcPriceNav').textContent = '$' + liveBtcPrice.toLocaleString();
+      calcNetworkCalc();
+    }).catch(() => {});
+}
+updatePrice(); setInterval(updatePrice, 10000);
+
+// ── SCROLL ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── UPTIME COUNTER ──
+// Genesis block: Jan 3, 2009
+const genesis = new Date('2009-01-03T18:15:05Z');
+function updateUptime() {
+  const mins = Math.floor((Date.now() - genesis) / 60000);
+  document.getElementById('uptimeCounter').textContent = mins.toLocaleString();
+}
+updateUptime(); setInterval(updateUptime, 60000);
+
+// ── HERO NETWORK CANVAS ──
+function initHeroCanvas() {
+  const canvas = document.getElementById('heroNetCanvas');
+  if (!canvas) return;
+  const parent = canvas.parentElement;
+  canvas.width = parent.offsetWidth;
+  canvas.height = parent.offsetHeight;
+  const ctx = canvas.getContext('2d');
+  const nodes = Array.from({length: 28}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - .5) * .4,
+    vy: (Math.random() - .5) * .4,
+    r: 2 + Math.random() * 2
+  }));
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    const lineColor = isDark ? 'rgba(14,165,233,' : 'rgba(2,132,199,';
+    const nodeColor = isDark ? 'rgba(14,165,233,' : 'rgba(2,132,199,';
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+      if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+    });
+    nodes.forEach((a, i) => {
+      nodes.slice(i + 1).forEach(b => {
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        if (dist < 160) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = lineColor + (1 - dist / 160).toFixed(2) + ')';
+          ctx.lineWidth = .8;
+          ctx.stroke();
+        }
+      });
+    });
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = nodeColor + '.8)';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+initHeroCanvas();
+
+// ── MAIN NETWORK CANVAS ──
+function initNetworkCanvas() {
+  const canvas = document.getElementById('networkCanvas');
+  if (!canvas) return;
+  const wrap = canvas.parentElement;
+  canvas.width = wrap.offsetWidth;
+  canvas.height = wrap.offsetHeight;
+  const ctx = canvas.getContext('2d');
+
+  const nodeCount = 60;
+  const nodes = Array.from({length: nodeCount}, (_, i) => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - .5) * .5,
+    vy: (Math.random() - .5) * .5,
+    r: 2 + Math.random() * 3,
+    type: i < 8 ? 'miner' : i < 20 ? 'node' : 'user',
+    pulse: Math.random() * Math.PI * 2
+  }));
+
+  const colors = {
+    miner: '#F7931A',
+    node: '#0ea5e9',
+    user: '#22c55e'
+  };
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy; n.pulse += 0.04;
+      if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+      if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+    });
+    // Draw connections
+    nodes.forEach((a, i) => {
+      nodes.slice(i + 1).forEach(b => {
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        const maxDist = a.type === 'miner' || b.type === 'miner' ? 200 : 120;
+        if (dist < maxDist) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          const alpha = ((1 - dist / maxDist) * .35).toFixed(2);
+          ctx.strokeStyle = isDark
+            ? `rgba(14,165,233,${alpha})`
+            : `rgba(2,132,199,${alpha})`;
+          ctx.lineWidth = a.type === 'miner' ? 1.2 : .7;
+          ctx.stroke();
+        }
+      });
+    });
+    // Draw nodes
+    nodes.forEach(n => {
+      const col = colors[n.type];
+      const pulse = (Math.sin(n.pulse) + 1) / 2;
+      // Glow for miners
+      if (n.type === 'miner') {
+        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 18 + pulse * 8);
+        grad.addColorStop(0, 'rgba(247,147,26,.4)');
+        grad.addColorStop(1, 'rgba(247,147,26,0)');
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 18 + pulse * 8, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + (n.type === 'miner' ? 2 : 0), 0, Math.PI * 2);
+      ctx.fillStyle = col;
+      ctx.fill();
+      // Bitcoin symbol on miners
+      if (n.type === 'miner') {
+        ctx.fillStyle = '#fff';
+        ctx.font = `bold ${8 + n.r}px Inter`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('₿', n.x, n.y);
+      }
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+initNetworkCanvas();
+
+// ── UM CANVAS (unstoppable section) ──
+function initUmCanvas() {
+  const canvas = document.getElementById('umCanvas');
+  if (!canvas) return;
+  const parent = canvas.parentElement;
+  canvas.width = parent.offsetWidth;
+  canvas.height = parent.offsetHeight;
+  const ctx = canvas.getContext('2d');
+  const pts = Array.from({length: 40}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - .5) * .3,
+    vy: (Math.random() - .5) * .3
+  }));
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    });
+    pts.forEach((a, i) => {
+      pts.slice(i + 1).forEach(b => {
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < 140) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(14,165,233,${(1 - d/140) * .5})`;
+          ctx.lineWidth = .8;
+          ctx.stroke();
+        }
+      });
+    });
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(14,165,233,.7)';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── METCALFE SLIDER ──
+const baseUsers = 500; // millions
+function calcMetcalfe() {
+  const users = parseInt(document.getElementById('mdSlider').value);
+  document.getElementById('mdUserVal').textContent =
+    users >= 1000 ? (users/1000).toFixed(1) + 'B' : users + 'M';
+  document.getElementById('mdUsers').textContent =
+    users >= 1000 ? (users/1000).toFixed(1) + 'B' : users + 'M';
+
+  const connections = (users * 1e6 * (users * 1e6 - 1)) / 2;
+  const connStr = connections > 1e18 ? (connections/1e18).toFixed(1) + 'Q'
+    : connections > 1e15 ? (connections/1e15).toFixed(1) + 'P'
+    : connections > 1e12 ? (connections/1e12).toFixed(1) + 'T'
+    : (connections/1e9).toFixed(1) + 'B';
+  document.getElementById('mdConnections').textContent = connStr;
+
+  const metcalfeRatio = (users * users) / (baseUsers * baseUsers);
+  document.getElementById('mdValue').textContent = metcalfeRatio.toFixed(1) + 'x';
+
+  // Per-user value at $2T market cap and `users` users
+  const marketCap = 2e12;
+  const perUser = marketCap / (users * 1e6);
+  document.getElementById('mdPerUser').textContent = perUser > 1000
+    ? '~$' + (perUser/1000).toFixed(1) + 'K'
+    : '~$' + Math.round(perUser);
+
+  // Slider bar
+  const pct = Math.min(100, (users / 4000) * 100);
+  document.getElementById('mdSliderBar').style.width = pct + '%';
+  document.getElementById('mdSliderBar').textContent =
+    users >= 1000 ? (users/1000).toFixed(1) + 'B users' : users + 'M users';
+}
+document.getElementById('mdSlider').addEventListener('input', calcMetcalfe);
+calcMetcalfe();
+
+// ── NETWORK VALUE CALC ──
+function calcNetworkCalc() {
+  const sats = parseFloat(document.getElementById('ncSats').value) || 1000000;
+  const targetUsers = parseFloat(document.getElementById('ncUsers').value) || 1000;
+  const currentUsers = 500; // millions
+
+  const btc = sats / 1e8;
+  const todayVal = btc * liveBtcPrice;
+
+  // Metcalfe growth factor
+  const metcalfeGrowth = (targetUsers * targetUsers) / (currentUsers * currentUsers);
+  const projectedBtcPrice = liveBtcPrice * metcalfeGrowth;
+  const projectedVal = btc * projectedBtcPrice;
+
+  document.getElementById('ncBtc').textContent = btc.toFixed(8);
+  document.getElementById('ncToday').textContent = '$' + Math.round(todayVal).toLocaleString();
+  document.getElementById('ncMetcalfe').textContent = metcalfeGrowth.toFixed(1) + 'x';
+  document.getElementById('ncProjected').textContent = '$' + Math.round(projectedVal).toLocaleString();
+  document.getElementById('ncProjectedSub').textContent =
+    `At ${targetUsers >= 1000 ? (targetUsers/1000).toFixed(1) + 'B' : targetUsers + 'M'} users (${metcalfeGrowth.toFixed(1)}x Metcalfe growth from today's ~500M) · Metcalfe model only — not a price prediction`;
+}
+['ncSats','ncUsers'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcNetworkCalc));
+calcNetworkCalc();
+
+// ── ADOPTION CURVE BARS ANIMATE ──
+const adoptObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('[data-width]').forEach((bar, i) => {
+        setTimeout(() => { bar.style.width = bar.getAttribute('data-width'); }, i * 200);
+      });
+      adoptObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+const adoptEl = document.querySelector('.adoption-curve');
+if (adoptEl) adoptObs.observe(adoptEl);
+
+// ── SCROLL REVEAL + CANVAS INIT ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      if (e.target.classList.contains('unstoppable-moment')) initUmCanvas();
+    }
+  });
+}, { threshold: 0.05 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
