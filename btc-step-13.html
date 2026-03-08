@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 13: The Halving Explained | SATOLOGY</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;
+  --prose:#c8c8c8;--quote-bg:#0d0d10;
+}
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --prose:#3a3a3a;--quote-bg:#f0ede6;
+}
+:root{
+  --btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;
+  --red:#e63946;--teal:#06b6d4;--halving:#a855f7;--halving2:#7c3aed;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
+  transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--halving),var(--btc),var(--green));width:0%}
+
+/* ══ TICKER ══ */
+.ticker{background:linear-gradient(90deg,var(--halving2),#4c1d95);padding:9px 0;
+  overflow:hidden;white-space:nowrap;z-index:201}
+.ticker-inner{display:inline-flex;gap:64px;animation:tick 34s linear infinite;
+  font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
+  align-items:center;justify-content:space-between;background:var(--nav-bg);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;
+  place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);
+  border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;
+  font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);
+  border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0;transition:all .3s}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;
+  border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+.step-nav-bar{background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.step-nav-left a{color:var(--muted);text-decoration:none;transition:color .2s}
+.step-nav-left a:hover{color:var(--btc)}
+.step-nav-sep{opacity:.4}
+.step-nav-current{color:var(--text);font-weight:600}
+.step-nav-right{display:flex;align-items:center;gap:8px}
+.step-pill{background:linear-gradient(135deg,var(--halving),var(--btc));color:#fff;
+  border-radius:100px;padding:4px 14px;font-size:11px;font-weight:900;letter-spacing:.5px}
+.step-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:linear-gradient(90deg,var(--halving),var(--btc));
+  border-radius:2px;width:61.9%}
+
+.reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
+.rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:linear-gradient(to bottom,var(--halving),var(--btc));
+  border-radius:2px;height:0%;transition:height .15s}
+.rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+  writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
+
+/* ══ HERO ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;
+  position:relative;overflow:hidden}
+.hero-halving-bg{position:absolute;right:-20px;top:-10px;
+  font-size:clamp(180px,28vw,320px);font-weight:900;line-height:1;
+  pointer-events:none;opacity:.04;color:var(--halving);
+  animation:halvingPulse 4s ease-in-out infinite;font-family:'Inter',sans-serif;
+  -webkit-text-stroke:2px var(--halving)}
+@keyframes halvingPulse{0%,100%{opacity:.04;transform:scale(1)}
+  50%{opacity:.07;transform:scale(1.04)}}
+
+.step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;
+  animation:fadeUp .6s ease both;position:relative;z-index:1}
+.step-number{width:52px;height:52px;
+  background:linear-gradient(135deg,var(--halving),var(--btc));
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 8px 32px rgba(168,85,247,.4)}
+.step-meta{display:flex;flex-direction:column;gap:3px}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--halving),var(--btc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-weight:700}
+.step-meta-bottom{font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.step-hero h1{font-size:clamp(32px,6vw,72px);font-weight:900;
+  letter-spacing:-3px;line-height:1.02;margin-bottom:20px;
+  animation:fadeUp .6s .08s ease both;position:relative;z-index:1}
+.h-em{color:var(--halving);font-style:normal}
+.btc-em{color:var(--btc)}
+
+.step-hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.75;
+  max-width:680px;margin-bottom:36px;animation:fadeUp .6s .14s ease both;
+  font-family:'Lora',serif;font-style:italic;position:relative;z-index:1}
+.key-lesson{display:inline-flex;align-items:flex-start;gap:10px;
+  background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.22);
+  border-radius:14px;padding:14px 20px;font-size:14px;color:var(--text);
+  line-height:1.6;margin-bottom:48px;animation:fadeUp .6s .18s ease both;
+  max-width:680px;position:relative;z-index:1}
+.key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.key-lesson strong{color:var(--halving)}
+
+/* ── ARTICLE ── */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
+.chapter{margin-bottom:72px}
+.chapter-label{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.chapter-num{width:40px;height:40px;background:rgba(168,85,247,.1);
+  border:1px solid rgba(168,85,247,.25);border-radius:11px;display:flex;
+  align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;color:var(--halving);flex-shrink:0}
+.chapter-title{font-size:13px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--muted)}
+
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.8vw,19px);
+  line-height:1.9;color:var(--prose)}
+.prose p{margin-bottom:24px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--halving);font-style:italic}
+.prose em.btc{color:var(--btc);font-style:italic}
+.prose em.green{color:var(--green);font-style:italic}
+
+.pull-quote{border-left:4px solid var(--halving);margin:40px 0;padding:24px 28px;
+  background:var(--quote-bg);border-radius:0 14px 14px 0}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(17px,2.3vw,23px);
+  font-style:italic;color:var(--text);line-height:1.65;margin:0}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;
+  color:var(--muted);font-style:normal;margin-top:12px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.5px}
+.pull-quote.btc{border-left-color:var(--btc)}
+.pull-quote.btc p{color:var(--btc)}
+
+.callout{border-radius:16px;padding:28px 32px;margin:36px 0;border:1px solid}
+.callout-halving{background:rgba(168,85,247,.06);border-color:rgba(168,85,247,.2)}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.2)}
+.callout-green{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)}
+.callout-red{background:rgba(230,57,70,.06);border-color:rgba(230,57,70,.2)}
+.callout-title{font-size:12px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.callout-halving .callout-title{color:var(--halving)}
+.callout-btc .callout-title{color:var(--btc)}
+.callout-green .callout-title{color:var(--green)}
+.callout-red .callout-title{color:var(--red)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.8;
+  margin:0;font-family:'Inter',sans-serif}
+.callout p+p{margin-top:12px}
+
+/* ══ LIVE HALVING COUNTDOWN ══ */
+.halving-countdown{background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(168,85,247,.03));
+  border:2px solid rgba(168,85,247,.3);border-radius:24px;padding:40px;
+  margin:48px 0;text-align:center;position:relative;overflow:hidden}
+.hc-bg-pulse{position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(168,85,247,.08),transparent 70%);
+  animation:bgPulse 3s ease-in-out infinite;pointer-events:none}
+@keyframes bgPulse{0%,100%{opacity:.6}50%{opacity:1}}
+.hc-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;
+  color:var(--halving);margin-bottom:16px;position:relative;z-index:1}
+.hc-title{font-size:clamp(18px,3vw,26px);font-weight:900;letter-spacing:-.5px;
+  margin-bottom:28px;position:relative;z-index:1}
+.hc-title em{color:var(--halving)}
+.hc-units{display:flex;justify-content:center;gap:16px;
+  flex-wrap:wrap;position:relative;z-index:1}
+.hc-unit{background:var(--bg);border:1px solid rgba(168,85,247,.25);
+  border-radius:16px;padding:20px 24px;min-width:90px;text-align:center}
+.hc-num{font-size:clamp(32px,6vw,56px);font-weight:900;letter-spacing:-3px;
+  line-height:1;background:linear-gradient(135deg,var(--halving),var(--btc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-variant-numeric:tabular-nums}
+.hc-unit-label{font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--muted);margin-top:6px}
+.hc-next-info{margin-top:24px;font-size:13px;color:var(--muted);
+  line-height:1.75;position:relative;z-index:1}
+.hc-next-info strong{color:var(--halving)}
+.hc-block-progress{margin-top:20px;position:relative;z-index:1}
+.hc-bp-label{display:flex;justify-content:space-between;font-size:11px;
+  color:var(--muted);margin-bottom:8px;font-weight:600}
+.hc-bp-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.hc-bp-fill{height:100%;background:linear-gradient(90deg,var(--halving2),var(--halving),var(--btc));
+  border-radius:4px;transition:width .5s ease;position:relative;overflow:hidden}
+.hc-bp-fill::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  animation:shimmer 2s ease-in-out infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* ══ THE MECHANISM — ANIMATED ══ */
+.mechanism{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.mech-step{padding:28px 24px;text-align:center;position:relative;
+  border-right:1px solid var(--border);transition:background .3s}
+.mech-step:last-child{border-right:none}
+.mech-step:hover{background:rgba(168,85,247,.04)}
+.mech-step::after{content:'→';position:absolute;right:-14px;top:50%;
+  transform:translateY(-50%);font-size:20px;color:var(--muted);
+  z-index:2;display:block}
+.mech-step:last-child::after{display:none}
+.mech-icon{font-size:40px;margin-bottom:14px;
+  animation:mechFloat 3s ease-in-out infinite}
+.mech-step:nth-child(2) .mech-icon{animation-delay:.4s}
+.mech-step:nth-child(3) .mech-icon{animation-delay:.8s}
+@keyframes mechFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.mech-title{font-size:14px;font-weight:900;margin-bottom:8px;letter-spacing:-.2px}
+.mech-body{font-size:12px;color:var(--muted);line-height:1.7}
+.mech-step:nth-child(1) .mech-title{color:var(--halving)}
+.mech-step:nth-child(2) .mech-title{color:var(--btc)}
+.mech-step:nth-child(3) .mech-title{color:var(--green)}
+
+/* ══ HALVING HISTORY TIMELINE ══ */
+.halving-timeline{position:relative;margin:44px 0;padding-left:44px}
+.ht-line{position:absolute;left:18px;top:0;bottom:0;width:3px;
+  background:linear-gradient(to bottom,var(--halving),var(--btc),var(--green));
+  border-radius:2px}
+.ht-event{position:relative;margin-bottom:48px}
+.ht-event:last-child{margin-bottom:0}
+.ht-dot{position:absolute;left:-35px;width:20px;height:20px;border-radius:50%;
+  border:3px solid;display:flex;align-items:center;justify-content:center;
+  font-size:8px;font-weight:900;top:4px;transition:transform .3s}
+.ht-event:hover .ht-dot{transform:scale(1.3)}
+.ht-event:nth-child(1) .ht-dot{border-color:var(--halving);background:rgba(168,85,247,.2);color:var(--halving)}
+.ht-event:nth-child(2) .ht-dot{border-color:var(--btc);background:rgba(247,147,26,.2);color:var(--btc)}
+.ht-event:nth-child(3) .ht-dot{border-color:var(--green);background:rgba(34,197,94,.2);color:var(--green)}
+.ht-event:nth-child(4) .ht-dot{border-color:var(--teal);background:rgba(6,182,212,.2);color:var(--teal)}
+.ht-event:nth-child(5) .ht-dot{border-color:#ec4899;background:rgba(236,72,153,.2);color:#ec4899}
+
+.ht-card{background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:24px 26px;transition:all .3s;cursor:default}
+.ht-card:hover{border-color:var(--halving);transform:translateX(4px)}
+.ht-header{display:flex;align-items:flex-start;justify-content:space-between;
+  gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.ht-date-block{display:flex;flex-direction:column;gap:3px}
+.ht-date{font-size:11px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--muted)}
+.ht-event-name{font-size:18px;font-weight:900;letter-spacing:-.3px}
+.ht-event:nth-child(1) .ht-event-name{color:var(--halving)}
+.ht-event:nth-child(2) .ht-event-name{color:var(--btc)}
+.ht-event:nth-child(3) .ht-event-name{color:var(--green)}
+.ht-event:nth-child(4) .ht-event-name{color:var(--teal)}
+.ht-event:nth-child(5) .ht-event-name{color:#ec4899}
+.ht-reward-change{background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:8px 14px;text-align:center;flex-shrink:0}
+.ht-reward-old{font-size:12px;color:var(--muted);text-decoration:line-through}
+.ht-reward-new{font-size:16px;font-weight:900;color:var(--btc)}
+
+.ht-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.ht-stat{background:var(--bg2);border-radius:10px;padding:10px 12px;text-align:center}
+.ht-stat-val{font-size:14px;font-weight:900;color:var(--text);margin-bottom:2px}
+.ht-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px}
+.ht-stat-val.up{color:var(--green)}
+.ht-stat-val.halving-c{color:var(--halving)}
+
+.ht-narrative{font-size:13px;color:var(--muted);line-height:1.85;
+  padding-top:14px;border-top:1px solid var(--border);font-family:'Inter',sans-serif}
+.ht-narrative strong{color:var(--text);font-weight:700}
+
+.ht-future{background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(168,85,247,.02));
+  border-color:rgba(168,85,247,.2)}
+
+/* ══ SUPPLY SQUEEZE VISUAL ══ */
+.supply-squeeze{background:var(--card);border:1px solid rgba(168,85,247,.2);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.ss-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(168,85,247,.07),transparent)}
+.ss-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.ss-header p{font-size:13px;color:var(--muted)}
+.ss-body{padding:28px}
+.ss-bars{display:flex;flex-direction:column;gap:18px}
+.ss-bar-item{display:flex;flex-direction:column;gap:7px}
+.ss-bar-top{display:flex;justify-content:space-between;align-items:baseline}
+.ss-bar-label{font-size:13px;font-weight:700}
+.ss-bar-detail{font-size:11px;color:var(--muted)}
+.ss-bar-track{height:28px;background:var(--bg2);border-radius:8px;overflow:hidden;
+  position:relative}
+.ss-bar-fill{height:100%;border-radius:8px;display:flex;align-items:center;
+  padding:0 12px;font-size:11px;font-weight:800;white-space:nowrap;
+  transition:width 1.8s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.ss-bar-fill::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
+  animation:shimmer 2.5s ease-in-out infinite}
+.ss-note{font-size:11px;color:var(--muted);margin-top:16px;
+  line-height:1.7;font-style:italic;padding-top:16px;
+  border-top:1px solid var(--border)}
+
+/* ══ STOCK TO FLOW EXPLAINER ══ */
+.s2f-explainer{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:40px 0}
+.s2f-card{background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:24px;transition:all .3s;text-align:center;position:relative;overflow:hidden}
+.s2f-card:hover{transform:translateY(-4px);border-color:var(--halving)}
+.s2f-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.s2f-card:nth-child(1)::before{background:var(--muted)}
+.s2f-card:nth-child(2)::before{background:var(--btc)}
+.s2f-card:nth-child(3)::before{background:var(--halving)}
+.s2f-asset{font-size:32px;margin-bottom:12px}
+.s2f-name{font-size:14px;font-weight:800;margin-bottom:8px}
+.s2f-ratio{font-size:36px;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:6px}
+.s2f-card:nth-child(1) .s2f-ratio{color:var(--muted)}
+.s2f-card:nth-child(2) .s2f-ratio{color:var(--btc)}
+.s2f-card:nth-child(3) .s2f-ratio{color:var(--halving)}
+.s2f-meaning{font-size:11px;color:var(--muted);line-height:1.65}
+
+/* ══ INTERACTIVE HALVING SIMULATOR ══ */
+.halving-sim{background:linear-gradient(135deg,rgba(168,85,247,.09),rgba(247,147,26,.04));
+  border:1px solid rgba(168,85,247,.22);border-radius:22px;
+  overflow:hidden;margin:44px 0}
+.hs-header{padding:24px 28px;border-bottom:1px solid var(--border)}
+.hs-header h3{font-size:17px;font-weight:900;margin-bottom:4px}
+.hs-header p{font-size:13px;color:var(--muted)}
+.hs-body{padding:28px}
+.hs-controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px}
+.hs-field{display:flex;flex-direction:column;gap:7px}
+.hs-field label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted)}
+.hs-field input,.hs-field select{background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:11px 14px;font-size:15px;font-weight:700;
+  color:var(--text);font-family:'Inter',sans-serif;width:100%;outline:none;transition:border-color .2s}
+.hs-field input:focus,.hs-field select:focus{border-color:var(--halving)}
+.hs-results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.hs-result{background:var(--bg2);border:1px solid var(--border);border-radius:14px;
+  padding:18px;text-align:center;transition:all .3s}
+.hs-result.big{border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.05);
+  grid-column:span 3}
+.hs-result-label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted);margin-bottom:8px}
+.hs-result.big .hs-result-label{color:var(--halving)}
+.hs-result-val{font-size:clamp(18px,3vw,30px);font-weight:900;
+  letter-spacing:-1px;color:var(--text);line-height:1}
+.hs-result.big .hs-result-val{color:var(--halving);
+  font-size:clamp(24px,5vw,52px);letter-spacing:-3px}
+.hs-result-sub{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
+.hs-epoch-table{background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden}
+.hs-et-header{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+  padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.hs-et-header span{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted)}
+.hs-et-body{max-height:260px;overflow-y:auto}
+.hs-et-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+  padding:11px 16px;border-bottom:1px solid var(--border);transition:background .2s}
+.hs-et-row:hover{background:rgba(168,85,247,.03)}
+.hs-et-row:last-child{border-bottom:none}
+.hs-et-row span{font-size:13px;color:var(--prose)}
+.hs-et-row span.halving-c{color:var(--halving);font-weight:700}
+.hs-et-row span.btc-c{color:var(--btc);font-weight:700}
+.hs-et-row span.green-c{color:var(--green);font-weight:700}
+.hs-et-row.active-row{background:rgba(168,85,247,.06)}
+
+/* ══ WHY IT WORKS — SIMPLE ECONOMICS ══ */
+.econ-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0}
+.econ-card{background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:24px;transition:all .3s;position:relative;overflow:hidden}
+.econ-card:hover{border-color:var(--halving);transform:translateY(-3px)}
+.econ-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.econ-card:nth-child(1)::before,.econ-card:nth-child(3)::before{background:var(--halving)}
+.econ-card:nth-child(2)::before,.econ-card:nth-child(4)::before{background:var(--btc)}
+.econ-icon{font-size:36px;margin-bottom:12px}
+.econ-title{font-size:15px;font-weight:800;margin-bottom:8px;letter-spacing:-.2px}
+.econ-body{font-size:13px;color:var(--muted);line-height:1.8}
+.econ-body strong{color:var(--text);font-weight:700}
+
+/* ══ MINER ECONOMICS ══ */
+.miner-econ{background:var(--card);border:1px solid rgba(247,147,26,.2);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.me-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(247,147,26,.07),transparent)}
+.me-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.me-header p{font-size:13px;color:var(--muted)}
+.me-body{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.me-side{display:flex;flex-direction:column;gap:12px}
+.me-side-title{font-size:12px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:4px}
+.me-pre .me-side-title{color:var(--muted)}
+.me-post .me-side-title{color:var(--btc)}
+.me-item{display:flex;gap:10px;background:var(--bg2);border-radius:10px;
+  padding:12px;font-size:13px;color:var(--muted);line-height:1.65;
+  border:1px solid var(--border);align-items:flex-start}
+.me-item-icon{flex-shrink:0;font-size:16px}
+.me-item strong{color:var(--text);display:block;font-weight:700;margin-bottom:2px;font-size:13px}
+.me-verdict{grid-column:span 2;background:rgba(247,147,26,.06);
+  border:1px solid rgba(247,147,26,.15);border-radius:14px;
+  padding:18px;font-size:14px;color:var(--prose);line-height:1.75;
+  text-align:center;font-family:'Inter',sans-serif}
+.me-verdict strong{color:var(--btc);font-weight:800}
+
+/* ══ THE MOMENT — DRAMA SECTION ══ */
+.halving-drama{text-align:center;padding:80px 24px;position:relative;overflow:hidden}
+.hd-bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(168,85,247,.08),transparent 70%);
+  pointer-events:none}
+.hd-icon{font-size:80px;line-height:1;margin-bottom:24px;
+  animation:halvingDrama 2s ease-in-out infinite}
+@keyframes halvingDrama{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 20px rgba(168,85,247,0))}
+  50%{transform:scale(1.1);filter:drop-shadow(0 0 40px rgba(168,85,247,.6))}}
+.hd-title{font-size:clamp(28px,6vw,64px);font-weight:900;letter-spacing:-3px;
+  line-height:1.05;margin-bottom:16px}
+.hd-title .slash{color:var(--halving)}
+.hd-title .result{color:var(--btc)}
+.hd-sub{font-size:16px;color:var(--muted);max-width:620px;
+  margin:0 auto;line-height:1.9}
+
+/* ── KEY TAKEAWAY ── */
+.key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));
+  border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
+.kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--btc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kt-text{font-size:clamp(17px,2.5vw,22px);font-weight:800;line-height:1.5;
+  letter-spacing:-.3px;margin-bottom:20px}
+.kt-text em{color:var(--btc);font-style:normal}
+.kt-points{display:flex;flex-direction:column;gap:10px}
+.kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;
+  color:var(--prose);line-height:1.6}
+.kt-point-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── STEP NAV + MINIMAP ── */
+.step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
+.snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);
+  border:1px solid var(--border);border-radius:16px;padding:20px 24px;
+  text-decoration:none;color:var(--text);transition:all .3s}
+.snb-prev:hover,.snb-next:hover{border-color:var(--btc);transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(247,147,26,.12)}
+.snb-next{flex-direction:row-reverse;text-align:right}
+.snb-icon{font-size:28px;flex-shrink:0}
+.snb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--muted);font-weight:700;margin-bottom:3px}
+.snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+.steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
+.sm-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px}
+.sm-title{font-size:14px;font-weight:800;margin-bottom:20px;
+  display:flex;align-items:center;gap:8px}
+.sm-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sm-step{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:800;text-decoration:none;
+  transition:all .2s;border:1px solid var(--border);color:var(--muted);background:var(--bg2)}
+.sm-step:hover{border-color:var(--btc);color:var(--btc);transform:translateY(-2px)}
+.sm-step.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:var(--green)}
+.sm-step.current{background:linear-gradient(135deg,var(--halving),var(--btc));
+  border-color:var(--halving);color:#fff;box-shadow:0 4px 16px rgba(168,85,247,.4)}
+.sm-step.phase-3{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)}
+.sm-step.phase-4{background:rgba(255,107,0,.08);border-color:rgba(255,107,0,.2)}
+.sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sm-leg-dot{width:10px;height:10px;border-radius:3px}
+
+.footer-wrap{border-top:1px solid var(--border)}
+footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;
+  max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;
+  font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  nav,.step-nav-bar{padding:0 18px}
+  .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
+  .mechanism{grid-template-columns:1fr}
+  .mech-step{border-right:none;border-bottom:1px solid var(--border)}
+  .mech-step:last-child{border-bottom:none}
+  .mech-step::after{display:none}
+  .ht-stats{grid-template-columns:1fr 1fr}
+  .s2f-explainer{grid-template-columns:1fr}
+  .hs-controls{grid-template-columns:1fr 1fr}
+  .hs-results{grid-template-columns:1fr 1fr}
+  .hs-result.big{grid-column:span 2}
+  .hs-et-header,.hs-et-row{grid-template-columns:1fr 1fr 1fr}
+  .hs-et-header span:nth-child(4),.hs-et-header span:nth-child(5),
+  .hs-et-row span:nth-child(4),.hs-et-row span:nth-child(5){display:none}
+  .econ-grid{grid-template-columns:1fr}
+  .me-body{grid-template-columns:1fr}
+  .me-verdict{grid-column:span 1}
+  .snb-inner{grid-template-columns:1fr}
+  .snb-next{flex-direction:row;text-align:left}
+  .reading-progress{display:none}
+  footer{padding:28px 20px;flex-direction:column;text-align:center}
+}
+@media(max-width:540px){
+  .step-hero h1{letter-spacing:-1.5px}
+  .sm-step{width:30px;height:30px;font-size:10px}
+  .hc-units{gap:8px}
+  .hc-unit{min-width:70px;padding:14px 12px}
+  .hs-controls{grid-template-columns:1fr}
+  .hs-results{grid-template-columns:1fr}
+  .hs-result.big{grid-column:span 1}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>⚡ STEP 13 OF 21</span><span>·</span>
+    <span>🔥 THE HALVING — BITCOIN'S FOUR-YEAR SUPPLY SHOCK</span><span>·</span>
+    <span>📅 EVERY ~210,000 BLOCKS, MINER REWARDS CUT IN HALF</span><span>·</span>
+    <span>🚀 HALVING 1: $12 → $1,100 · HALVING 2: $650 → $19,800 · HALVING 3: $8,700 → $69,000</span><span>·</span>
+    <span>⏳ NEXT HALVING: APRIL 2028 · REWARD DROPS TO 1.5625 BTC</span><span>·</span>
+    <span>📊 STOCK-TO-FLOW RATIO DOUBLES WITH EVERY HALVING</span><span>·</span>
+    <span>⚡ STEP 13 OF 21</span><span>·</span>
+    <span>🔥 THE HALVING — BITCOIN'S FOUR-YEAR SUPPLY SHOCK</span><span>·</span>
+    <span>📅 EVERY ~210,000 BLOCKS, MINER REWARDS CUT IN HALF</span><span>·</span>
+    <span>🚀 HALVING 1: $12 → $1,100 · HALVING 2: $650 → $19,800 · HALVING 3: $8,700 → $69,000</span><span>·</span>
+    <span>⏳ NEXT HALVING: APRIL 2028 · REWARD DROPS TO 1.5625 BTC</span><span>·</span>
+    <span>📊 STOCK-TO-FLOW RATIO DOUBLES WITH EVERY HALVING</span><span>·</span>
+  </div>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span><span id="btcPriceNav">$--</span></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="step-nav-bar">
+  <div class="step-nav-left">
+    <a href="index.html">Home</a>
+    <span class="step-nav-sep">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <span class="step-nav-sep">›</span>
+    <span class="step-nav-current">Step 13 — The Halving Explained</span>
+  </div>
+  <div class="step-nav-right">
+    <div class="step-progress-mini">
+      <div class="spm-bar"><div class="spm-fill"></div></div>
+      <span>13 / 21</span>
+    </div>
+    <div class="step-pill">Step 13</div>
+  </div>
+</div>
+
+<div class="reading-progress">
+  <div class="rp-label">Reading</div>
+  <div class="rp-track"><div class="rp-fill" id="rpFill"></div></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<div class="step-hero">
+  <div class="hero-halving-bg">½</div>
+
+  <div class="step-eyebrow">
+    <div class="step-number">13</div>
+    <div class="step-meta">
+      <div class="step-meta-top">⚡ Phase 3 — Deep Dive · Step 1 of 6</div>
+      <div class="step-meta-bottom">
+        <span>⏱ 10 min read</span><span>·</span>
+        <span>🔥 The mechanism behind every bull run</span><span>·</span>
+        <span>📅 Encoded into Bitcoin since block zero</span>
+      </div>
+    </div>
+  </div>
+
+  <h1>The<br><span class="h-em">Halving.</span><br>Every ~4 Years,<br>Supply <span class="btc-em">Tightens.</span></h1>
+
+  <p class="step-hero-sub">Satoshi Nakamoto encoded a single mechanism into Bitcoin that no central banker has ever had the courage to implement: a scheduled, automatic, permanent reduction in new supply. Every 210,000 blocks — roughly every four years — the amount of new Bitcoin entering circulation is cut exactly in half. It has happened four times. And every single time, it has changed everything.</p>
+
+  <div class="key-lesson">
+    <span class="key-lesson-icon">⚡</span>
+    <span><strong>What you'll understand after this step:</strong> The precise mechanics of how the halving works, why Satoshi built it this way, the complete history of all four halvings and their aftermath, how Stock-to-Flow ratio explains Bitcoin's price trajectory, a live countdown to the next halving, an interactive simulator showing your sats through each epoch, and why the fifth halving in 2028 could be the most consequential financial event of the decade.</span>
+  </div>
+</div>
+
+<!-- ══ ARTICLE ══ -->
+<div class="article-wrap">
+
+  <!-- CHAPTER 1 — THE MECHANISM -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">①</div>
+      <div class="chapter-title">The Mechanism — How It Works at the Code Level</div>
+    </div>
+    <div class="prose">
+      <p>Bitcoin miners compete to add new blocks to the blockchain. Every ten minutes on average, one miner wins the competition and earns a <em>block reward</em> — a fixed number of freshly minted Bitcoin. This reward is the only mechanism by which new Bitcoin enters circulation. There is no other source. No treasury. No Federal Reserve. No minting ceremony. Just miners, solving cryptographic puzzles, winning new sats.</p>
+      <p>Satoshi hard-coded a single rule into Bitcoin's protocol: <strong>every 210,000 blocks, the block reward is cut in half.</strong> At roughly ten minutes per block, 210,000 blocks take approximately four years to mine. When that threshold is crossed, the network automatically, instantly, and irreversibly reduces the reward. No vote. No committee. No debate. The code executes.</p>
+      <p>This continues until the year 2140, when the reward reaches zero — and the last satoshi of the 21 million cap is mined. After that, miners are compensated solely by transaction fees from users. The supply schedule is not a policy. <em>It is physics.</em></p>
+    </div>
+
+    <div class="mechanism reveal">
+      <div class="mech-step">
+        <div class="mech-icon">⛏️</div>
+        <div class="mech-title">Miners Compete</div>
+        <div class="mech-body">Every ~10 minutes, miners race to solve a cryptographic puzzle. The winner adds the next block and earns the current block reward in fresh Bitcoin.</div>
+      </div>
+      <div class="mech-step">
+        <div class="mech-icon">📦</div>
+        <div class="mech-title">Block 210,000 Hits</div>
+        <div class="mech-body">After exactly 210,000 blocks (~4 years), the protocol automatically executes the halving. No human action required. The reward is precisely halved at the next block.</div>
+      </div>
+      <div class="mech-step">
+        <div class="mech-icon">📉</div>
+        <div class="mech-title">Supply Shock</div>
+        <div class="mech-body">New Bitcoin entering circulation drops by 50% overnight. If demand stays constant or grows — and it always has — price discovery begins. Supply tightens. Scarcity deepens.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-halving reveal">
+      <div class="callout-title">⚡ Why Satoshi Built It This Way</div>
+      <p>In his original writings, Satoshi described the halving as a way to distribute Bitcoin fairly over time — rewarding early adopters for taking risk while ensuring the supply cap is approached gradually, not instantly. But the deeper insight is this: <strong>the halving creates predictable, scheduled scarcity</strong> — the opposite of every fiat currency ever printed. Every central bank in history has increased money supply over time. Bitcoin is the first monetary system programmed to do the opposite.</p>
+    </div>
+  </div>
+
+  <!-- LIVE COUNTDOWN -->
+  <div class="halving-countdown reveal">
+    <div class="hc-bg-pulse"></div>
+    <div class="hc-label">⚡ Live Countdown</div>
+    <div class="hc-title">Next Bitcoin Halving — <em>Epoch 5 Begins</em></div>
+    <div class="hc-units">
+      <div class="hc-unit">
+        <div class="hc-num" id="hcDays">000</div>
+        <div class="hc-unit-label">Days</div>
+      </div>
+      <div class="hc-unit">
+        <div class="hc-num" id="hcHours">00</div>
+        <div class="hc-unit-label">Hours</div>
+      </div>
+      <div class="hc-unit">
+        <div class="hc-num" id="hcMins">00</div>
+        <div class="hc-unit-label">Minutes</div>
+      </div>
+      <div class="hc-unit">
+        <div class="hc-num" id="hcSecs">00</div>
+        <div class="hc-unit-label">Seconds</div>
+      </div>
+    </div>
+    <div class="hc-next-info">
+      Estimated date: <strong>~April 17, 2028</strong> · Block <strong>~1,050,000</strong> ·
+      Reward drops from <strong>3.125 BTC</strong> → <strong>1.5625 BTC</strong> per block ·
+      Daily issuance falls from <strong>~450 BTC</strong> → <strong>~225 BTC</strong>
+    </div>
+    <div class="hc-block-progress">
+      <div class="hc-bp-label">
+        <span>Epoch 4 Progress (block 840,000 → 1,050,000)</span>
+        <span id="hcBlockPct">0%</span>
+      </div>
+      <div class="hc-bp-track">
+        <div class="hc-bp-fill" id="hcBlockFill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 — HALVING HISTORY -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">②</div>
+      <div class="chapter-title">The Complete Halving History — Every Event, Every Aftermath</div>
+    </div>
+    <div class="prose">
+      <p>Four halvings have occurred. Four times, the supply of new Bitcoin was cut in half. Four times, the world watched what happened to price. The pattern is not a coincidence. It is supply and demand — the most basic law in economics — operating on a perfectly predictable schedule.</p>
+    </div>
+
+    <div class="halving-timeline reveal">
+      <div class="ht-line"></div>
+
+      <!-- Genesis -->
+      <div class="ht-event">
+        <div class="ht-dot">0</div>
+        <div class="ht-card">
+          <div class="ht-header">
+            <div class="ht-date-block">
+              <div class="ht-date">January 3, 2009 · Block 0</div>
+              <div class="ht-event-name">Genesis Block — The Beginning</div>
+            </div>
+            <div class="ht-reward-change">
+              <div class="ht-reward-old">∞ → </div>
+              <div class="ht-reward-new">50 BTC</div>
+            </div>
+          </div>
+          <div class="ht-stats">
+            <div class="ht-stat">
+              <div class="ht-stat-val">50 BTC</div>
+              <div class="ht-stat-label">Block Reward</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">~$0.00</div>
+              <div class="ht-stat-label">Price at Launch</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">7,200 BTC</div>
+              <div class="ht-stat-label">Daily Issuance</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">0</div>
+              <div class="ht-stat-label">Market Cap</div>
+            </div>
+          </div>
+          <div class="ht-narrative">Satoshi mined the first Bitcoin block, embedding a message: <strong>"Chancellor on brink of second bailout for banks."</strong> The irony was deliberate — Bitcoin was born as the direct response to centralised monetary failure. The initial reward was 50 BTC per block. At $0 market value. Given away to developers and cypherpunks. In 2010, someone famously paid <strong>10,000 BTC for two pizzas</strong> — the first real-world Bitcoin transaction.</div>
+        </div>
+      </div>
+
+      <!-- Halving 1 -->
+      <div class="ht-event">
+        <div class="ht-dot">½</div>
+        <div class="ht-card">
+          <div class="ht-header">
+            <div class="ht-date-block">
+              <div class="ht-date">November 28, 2012 · Block 210,000</div>
+              <div class="ht-event-name">First Halving — The World Notices</div>
+            </div>
+            <div class="ht-reward-change">
+              <div class="ht-reward-old">50 BTC →</div>
+              <div class="ht-reward-new">25 BTC</div>
+            </div>
+          </div>
+          <div class="ht-stats">
+            <div class="ht-stat">
+              <div class="ht-stat-val halving-c">25 BTC</div>
+              <div class="ht-stat-label">New Reward</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">$12</div>
+              <div class="ht-stat-label">Price at Halving</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val up">$1,100</div>
+              <div class="ht-stat-label">Peak (12 months later)</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val up">+9,000%</div>
+              <div class="ht-stat-label">Price Appreciation</div>
+            </div>
+          </div>
+          <div class="ht-narrative">Almost nobody knew what Bitcoin was in November 2012. The halving passed quietly — a few thousand people noticed. But twelve months later, Bitcoin had surged from <strong>$12 to over $1,100</strong>. A 9,000% increase. The mainstream media wrote it off as a bubble and declared Bitcoin dead. It wasn't. It was completing its first halving cycle — a pattern that would repeat three more times.</div>
+        </div>
+      </div>
+
+      <!-- Halving 2 -->
+      <div class="ht-event">
+        <div class="ht-dot">½</div>
+        <div class="ht-card">
+          <div class="ht-header">
+            <div class="ht-date-block">
+              <div class="ht-date">July 9, 2016 · Block 420,000</div>
+              <div class="ht-event-name">Second Halving — The Institutions Arrive</div>
+            </div>
+            <div class="ht-reward-change">
+              <div class="ht-reward-old">25 BTC →</div>
+              <div class="ht-reward-new">12.5 BTC</div>
+            </div>
+          </div>
+          <div class="ht-stats">
+            <div class="ht-stat">
+              <div class="ht-stat-val halving-c">12.5 BTC</div>
+              <div class="ht-stat-label">New Reward</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">$650</div>
+              <div class="ht-stat-label">Price at Halving</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val up">$19,800</div>
+              <div class="ht-stat-label">Peak (18 months later)</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val up">+2,946%</div>
+              <div class="ht-stat-label">Price Appreciation</div>
+            </div>
+          </div>
+          <div class="ht-narrative">By 2016, institutional awareness was growing. Hedge funds, family offices, and early tech investors had started accumulating. The halving at $650 was followed by an 18-month run to $19,800 — the most famous Bitcoin bull run in history, the one that put Bitcoin on every front page. December 2017 — <strong>"Bitcoin hits $20,000"</strong> — was the moment the world stopped laughing and started paying attention. Then came the 2018 bear market. Then the pattern repeated.</div>
+        </div>
+      </div>
+
+      <!-- Halving 3 -->
+      <div class="ht-event">
+        <div class="ht-dot">½</div>
+        <div class="ht-card">
+          <div class="ht-header">
+            <div class="ht-date-block">
+              <div class="ht-date">May 11, 2020 · Block 630,000</div>
+              <div class="ht-event-name">Third Halving — The Institutional Wave</div>
+            </div>
+            <div class="ht-reward-change">
+              <div class="ht-reward-old">12.5 BTC →</div>
+              <div class="ht-reward-new">6.25 BTC</div>
+            </div>
+          </div>
+          <div class="ht-stats">
+            <div class="ht-stat">
+              <div class="ht-stat-val halving-c">6.25 BTC</div>
+              <div class="ht-stat-label">New Reward</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">$8,700</div>
+              <div class="ht-stat-label">Price at Halving</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val up">$69,000</div>
+              <div class="ht-stat-label">Peak (18 months later)</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val up">+693%</div>
+              <div class="ht-stat-label">Price Appreciation</div>
+            </div>
+          </div>
+          <div class="ht-narrative">The third halving coincided with COVID-19 pandemic money printing — the most dramatic expansion of the global money supply in history. MicroStrategy bought $425M in Bitcoin. Square bought $50M. PayPal opened Bitcoin purchases to 350 million users. El Salvador made Bitcoin legal tender. The narrative had shifted from "internet money for criminals" to <strong>"institutional-grade digital gold."</strong> Peak: $69,000. Then the 2022 bear. Then $100,000+ in 2024.</div>
+        </div>
+      </div>
+
+      <!-- Halving 4 — Current -->
+      <div class="ht-event">
+        <div class="ht-dot">½</div>
+        <div class="ht-card">
+          <div class="ht-header">
+            <div class="ht-date-block">
+              <div class="ht-date">April 20, 2024 · Block 840,000</div>
+              <div class="ht-event-name">Fourth Halving — The ETF Era</div>
+            </div>
+            <div class="ht-reward-change">
+              <div class="ht-reward-old">6.25 BTC →</div>
+              <div class="ht-reward-new">3.125 BTC</div>
+            </div>
+          </div>
+          <div class="ht-stats">
+            <div class="ht-stat">
+              <div class="ht-stat-val halving-c">3.125 BTC</div>
+              <div class="ht-stat-label">Current Reward</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">$63,800</div>
+              <div class="ht-stat-label">Price at Halving</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val up">$100K+</div>
+              <div class="ht-stat-label">Price (post-halving)</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val up">ETF Era</div>
+              <div class="ht-stat-label">New demand driver</div>
+            </div>
+          </div>
+          <div class="ht-narrative">The fourth halving occurred in April 2024, just months after the SEC approved Bitcoin spot ETFs — products that allow institutional money to flow into Bitcoin without custody complexity. BlackRock's Bitcoin ETF became the fastest-growing ETF in history, accumulating $10B+ in assets within weeks. <strong>The supply shock of the halving met unprecedented institutional demand.</strong> The 450 BTC mined per day dropped to 225 BTC. BlackRock alone was buying more Bitcoin per day than miners could produce. The math is simple. The implications are profound.</div>
+        </div>
+      </div>
+
+      <!-- Halving 5 — Future -->
+      <div class="ht-event">
+        <div class="ht-dot">⏳</div>
+        <div class="ht-card ht-future">
+          <div class="ht-header">
+            <div class="ht-date-block">
+              <div class="ht-date">~April 2028 · Block 1,050,000 · ESTIMATED</div>
+              <div class="ht-event-name">Fifth Halving — The Convergence</div>
+            </div>
+            <div class="ht-reward-change">
+              <div class="ht-reward-old">3.125 →</div>
+              <div class="ht-reward-new">1.5625 BTC</div>
+            </div>
+          </div>
+          <div class="ht-stats">
+            <div class="ht-stat">
+              <div class="ht-stat-val halving-c">1.5625 BTC</div>
+              <div class="ht-stat-label">Future Reward</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">~$?</div>
+              <div class="ht-stat-label">Price at Halving?</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">~225 BTC/day</div>
+              <div class="ht-stat-label">Falls to ~112/day</div>
+            </div>
+            <div class="ht-stat">
+              <div class="ht-stat-val">~99.6%</div>
+              <div class="ht-stat-label">Supply already mined</div>
+            </div>
+          </div>
+          <div class="ht-narrative">By the fifth halving, <strong>more than 99.4% of all Bitcoin that will ever exist will already be in circulation.</strong> The remaining 0.6% will trickle out over the following century. Daily issuance will fall to ~112 BTC. Against the backdrop of global ETF flows, sovereign wealth fund allocations, and an expanding global user base — the supply pressure of the fifth halving could be the most consequential of all. The people who understand this are accumulating now. The countdown above shows exactly how much time remains.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 — SUPPLY SQUEEZE VIZ -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">③</div>
+      <div class="chapter-title">The Supply Squeeze — Visualising the Tightening</div>
+    </div>
+    <div class="prose">
+      <p>Words describe it. These bars make you feel it. Watch how annual Bitcoin issuance collapses across each epoch — while demand from an ever-growing global user base does the opposite.</p>
+    </div>
+
+    <div class="supply-squeeze reveal">
+      <div class="ss-header">
+        <h3>📉 Bitcoin Annual Issuance — Epoch by Epoch</h3>
+        <p>New Bitcoin entering circulation — collapsing with every halving, forever</p>
+      </div>
+      <div class="ss-body">
+        <div class="ss-bars">
+          <div class="ss-bar-item">
+            <div class="ss-bar-top">
+              <span class="ss-bar-label" style="color:var(--muted)">2009–2012 · Epoch 1</span>
+              <span class="ss-bar-detail">50 BTC/block · ~2,628,000 BTC/year</span>
+            </div>
+            <div class="ss-bar-track">
+              <div class="ss-bar-fill" style="background:linear-gradient(90deg,#6b7280,#9ca3af);width:0%;color:#fff"
+                data-width="100%">2,628,000 BTC/year</div>
+            </div>
+          </div>
+          <div class="ss-bar-item">
+            <div class="ss-bar-top">
+              <span class="ss-bar-label" style="color:var(--halving)">2012–2016 · Epoch 2</span>
+              <span class="ss-bar-detail">25 BTC/block · ~1,314,000 BTC/year</span>
+            </div>
+            <div class="ss-bar-track">
+              <div class="ss-bar-fill" style="background:linear-gradient(90deg,var(--halving2),var(--halving));width:0%;color:#fff"
+                data-width="50%">1,314,000 BTC/year</div>
+            </div>
+          </div>
+          <div class="ss-bar-item">
+            <div class="ss-bar-top">
+              <span class="ss-bar-label" style="color:var(--btc)">2016–2020 · Epoch 3</span>
+              <span class="ss-bar-detail">12.5 BTC/block · ~657,000 BTC/year</span>
+            </div>
+            <div class="ss-bar-track">
+              <div class="ss-bar-fill" style="background:linear-gradient(90deg,var(--btc2),var(--btc));width:0%;color:#fff"
+                data-width="25%">657,000 BTC/year</div>
+            </div>
+          </div>
+          <div class="ss-bar-item">
+            <div class="ss-bar-top">
+              <span class="ss-bar-label" style="color:var(--green)">2020–2024 · Epoch 4</span>
+              <span class="ss-bar-detail">6.25 BTC/block · ~328,500 BTC/year</span>
+            </div>
+            <div class="ss-bar-track">
+              <div class="ss-bar-fill" style="background:linear-gradient(90deg,#15803d,var(--green));width:0%;color:#fff"
+                data-width="12.5%">328,500 BTC/year</div>
+            </div>
+          </div>
+          <div class="ss-bar-item">
+            <div class="ss-bar-top">
+              <span class="ss-bar-label" style="color:var(--teal)">2024–2028 · Epoch 5 (Current)</span>
+              <span class="ss-bar-detail">3.125 BTC/block · ~164,250 BTC/year</span>
+            </div>
+            <div class="ss-bar-track">
+              <div class="ss-bar-fill" style="background:linear-gradient(90deg,#0891b2,var(--teal));width:0%;color:#fff"
+                data-width="6.25%">164,250 BTC/year ← NOW</div>
+            </div>
+          </div>
+          <div class="ss-bar-item">
+            <div class="ss-bar-top">
+              <span class="ss-bar-label" style="color:#ec4899">2028–2032 · Epoch 6 (Next)</span>
+              <span class="ss-bar-detail">1.5625 BTC/block · ~82,125 BTC/year</span>
+            </div>
+            <div class="ss-bar-track">
+              <div class="ss-bar-fill" style="background:linear-gradient(90deg,#9d174d,#ec4899);width:0%;color:#fff"
+                data-width="3.125%">82,125 BTC/year</div>
+            </div>
+          </div>
+        </div>
+        <div class="ss-note">Each bar is exactly half the one above it — by mathematical design. The top bar (Epoch 1) represents 100% of the initial issuance rate. Every subsequent epoch is 50% of the previous. This continues until ~2140 when the final satoshi is mined and issuance reaches zero. No inflation thereafter. Ever.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 4 — STOCK TO FLOW -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">④</div>
+      <div class="chapter-title">Stock-to-Flow — The Scarcity Metric That Explains Everything</div>
+    </div>
+    <div class="prose">
+      <p>Economists have long used a metric called <em>Stock-to-Flow (S2F)</em> to measure the scarcity of commodities. It's elegantly simple: divide the existing supply (stock) by the annual new production (flow). A high ratio means it takes many years of production to replicate the existing supply — meaning the asset is hard to inflate. A low ratio means it's easy to produce more.</p>
+      <p>Gold's S2F ratio of around 60 is why it has been the premier store of value for millennia. <em class="btc">Bitcoin's S2F ratio doubles with every halving.</em> After the fourth halving, Bitcoin's S2F surpassed gold's for the first time in history. After the fifth, it will be roughly double gold's. The scarcity that took gold 5,000 years of geological accident to achieve — Bitcoin surpasses it in 20 years of mathematical design.</p>
+    </div>
+
+    <div class="s2f-explainer reveal">
+      <div class="s2f-card">
+        <div class="s2f-asset">🛢️</div>
+        <div class="s2f-name">Oil</div>
+        <div class="s2f-ratio">~1</div>
+        <div class="s2f-meaning">About 1 year of production exists as stock. Highly inflationary. New supply easily produced. Poor store of value.</div>
+      </div>
+      <div class="s2f-card">
+        <div class="s2f-asset">🥇</div>
+        <div class="s2f-name">Gold</div>
+        <div class="s2f-ratio">~62</div>
+        <div class="s2f-meaning">62 years of current production would be needed to replicate existing stock. The highest S2F of any physical commodity. Hence its 5,000-year monetary history.</div>
+      </div>
+      <div class="s2f-card">
+        <div class="s2f-asset">₿</div>
+        <div class="s2f-name">Bitcoin (Post-4th Halving)</div>
+        <div class="s2f-ratio">~120</div>
+        <div class="s2f-meaning">After the 4th halving, Bitcoin's S2F surpassed gold. After the 5th halving it will reach ~240. An S2F ratio no physical commodity can ever achieve.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-halving reveal">
+      <div class="callout-title">⚡ The S2F Insight That Stops People Cold</div>
+      <p>Gold's S2F of 62 is essentially fixed — new gold mines and new mining technology keep pace with demand. Gold's scarcity improves slowly, if at all. Bitcoin's S2F <strong>doubles automatically every four years</strong> — by code, on schedule, without any action required by anyone. The fifth halving makes Bitcoin ~4x as scarce as gold by this measure. The sixth halving makes it ~8x. This trajectory has no precedent in monetary history.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 — WHY IT WORKS -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑤</div>
+      <div class="chapter-title">The Economics — Why Halved Supply Raises Price</div>
+    </div>
+    <div class="prose">
+      <p>The mechanism is simple economics — the same logic a first-year student learns in week two of Econ 101. But applied to the most perfectly inelastic supply schedule ever created, the results are extraordinary.</p>
+    </div>
+
+    <div class="econ-grid reveal">
+      <div class="econ-card">
+        <div class="econ-icon">📉</div>
+        <div class="econ-title">Supply Halves Overnight</div>
+        <div class="econ-body">Before the 2024 halving, miners produced <strong>~900 BTC per day</strong>. After: <strong>~450 BTC per day</strong>. That's a 50% reduction in new supply hitting markets — in a single block. No asset in history has experienced a programmed supply shock of this precision and predictability.</div>
+      </div>
+      <div class="econ-card">
+        <div class="econ-icon">📈</div>
+        <div class="econ-title">Demand Does Not Halve</div>
+        <div class="econ-body">ETF inflows, retail DCA buyers, corporate treasury allocations, sovereign wealth funds — demand does not receive a memo saying "supply just halved, please also halve." <strong>When supply halves and demand stays constant, price must rise</strong> to clear the market. This is not a theory. It has happened four consecutive times.</div>
+      </div>
+      <div class="econ-card">
+        <div class="econ-icon">⏳</div>
+        <div class="econ-title">The Lag Effect — 12–18 Months</div>
+        <div class="econ-body">The price response to each halving has taken 12–18 months to fully manifest. Why? Because miners who need to sell BTC to cover operating costs continue selling — but in smaller amounts. As their selling pressure decreases and the market absorbs the new supply reality, <strong>price discovery accelerates.</strong> The cycle follows a predictable rhythm.</div>
+      </div>
+      <div class="econ-card">
+        <div class="econ-icon">🧮</div>
+        <div class="econ-title">Miner Capitulation Clears the Path</div>
+        <div class="econ-body">Immediately post-halving, less-efficient miners who can no longer profit at current prices shut down. Hash rate briefly drops. Then recovers as the remaining miners — the most efficient — stabilize the network. This <strong>capitulation event clears weak sellers from the market</strong> and historically precedes the strongest price moves in the cycle.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 — MINER ECONOMICS -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑥</div>
+      <div class="chapter-title">Miner Economics — The Hidden Pressure Valve</div>
+    </div>
+    <div class="prose">
+      <p>Miners are the only consistent, structural sellers of Bitcoin. Every other holder — retail investors, institutions, ETFs — has the choice of when to sell. Miners have no choice: their electricity bills arrive monthly in fiat currency. They must sell some Bitcoin to operate. Understanding miner economics explains the rhythms of every halving cycle.</p>
+    </div>
+
+    <div class="miner-econ reveal">
+      <div class="me-header">
+        <h3>⛏️ The Miner Selling Pressure Dynamic</h3>
+        <p>Why miners are the swing factor in every halving cycle</p>
+      </div>
+      <div class="me-body">
+        <div class="me-side me-pre">
+          <div class="me-side-title">📅 Pre-Halving (Current Epoch)</div>
+          <div class="me-item">
+            <div class="me-item-icon">💰</div>
+            <div><strong>~450 BTC/day produced globally</strong>Miners must sell a portion to cover electricity, hardware, and operations. This creates constant selling pressure on the market.</div>
+          </div>
+          <div class="me-item">
+            <div class="me-item-icon">⚡</div>
+            <div><strong>At $100K BTC: ~$45M/day in revenue</strong>Mining operations are profitable. Inefficient miners stay operational. Selling pressure is relatively high.</div>
+          </div>
+          <div class="me-item">
+            <div class="me-item-icon">🏭</div>
+            <div><strong>Large mining operations can HODL</strong>Well-capitalised miners with cheap electricity hold their Bitcoin and sell only what's needed. They are accumulating.</div>
+          </div>
+        </div>
+        <div class="me-side me-post">
+          <div class="me-side-title">⚡ Post-Halving (After April 2028)</div>
+          <div class="me-item">
+            <div class="me-item-icon">📉</div>
+            <div><strong>~225 BTC/day produced globally</strong>Overnight, miner revenue drops 50%. Selling pressure from miners is cut in half — even before any change in price.</div>
+          </div>
+          <div class="me-item">
+            <div class="me-item-icon">🔥</div>
+            <div><strong>Inefficient miners shut down</strong>Operations with high electricity costs become unprofitable. They sell their reserves and exit. Hash rate drops briefly, then recovers.</div>
+          </div>
+          <div class="me-item">
+            <div class="me-item-icon">💎</div>
+            <div><strong>Surviving miners become HODLers</strong>Only the most efficient miners remain. They produce less Bitcoin, need to sell less, and the market faces dramatically reduced supply pressure.</div>
+          </div>
+        </div>
+        <div class="me-verdict">
+          The halving is not just a supply reduction event — it is a <strong>seller reduction event</strong>. The most consistent sellers in the Bitcoin market (miners) are forced to sell 50% less. Against the backdrop of ETF flows buying more per day than miners produce, the supply/demand math of the post-halving market is extraordinary.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 7 — INTERACTIVE SIMULATOR -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑦</div>
+      <div class="chapter-title">The Halving Simulator — Your Sats Through Every Epoch</div>
+    </div>
+    <div class="prose">
+      <p>Run the numbers on your own position. See how many sats you could accumulate through regular DCA across multiple halving epochs — and what those sats could be worth if historical halving patterns continue.</p>
+    </div>
+
+    <div class="halving-sim reveal">
+      <div class="hs-header">
+        <h3>⚡ Multi-Epoch Halving Simulator</h3>
+        <p>Stack sats across multiple halving cycles — see the compound effect of halvings on your position</p>
+      </div>
+      <div class="hs-body">
+        <div class="hs-controls">
+          <div class="hs-field">
+            <label>Monthly Investment ($)</label>
+            <input type="number" id="hsAmount" value="200" min="1">
+          </div>
+          <div class="hs-field">
+            <label>Current BTC Price ($)</label>
+            <input type="number" id="hsPrice" value="100000" min="1">
+          </div>
+          <div class="hs-field">
+            <label>Post-Halving Multiplier</label>
+            <select id="hsMultiplier">
+              <option value="3">Conservative (3x per cycle)</option>
+              <option value="5" selected>Moderate (5x per cycle)</option>
+              <option value="10">Optimistic (10x per cycle)</option>
+              <option value="1">Flat (no appreciation)</option>
+            </select>
+          </div>
+        </div>
+        <div class="hs-results">
+          <div class="hs-result">
+            <div class="hs-result-label">Total Invested</div>
+            <div class="hs-result-val" id="hsTotalInvested">$9,600</div>
+            <div class="hs-result-sub">across 4 years</div>
+          </div>
+          <div class="hs-result">
+            <div class="hs-result-label">BTC Accumulated</div>
+            <div class="hs-result-val" id="hsTotalBtc">0.1152</div>
+            <div class="hs-result-sub">through this epoch</div>
+          </div>
+          <div class="hs-result">
+            <div class="hs-result-label">Sats Stacked</div>
+            <div class="hs-result-val" id="hsTotalSats">11,520,000</div>
+            <div class="hs-result-sub">permanently yours</div>
+          </div>
+          <div class="hs-result big">
+            <div class="hs-result-label">⚡ Projected Value After 3 Halvings</div>
+            <div class="hs-result-val" id="hsProjected">$?</div>
+            <div class="hs-result-sub" id="hsProjectedSub">at selected multiplier scenario</div>
+          </div>
+        </div>
+        <div class="hs-epoch-table">
+          <div class="hs-et-header">
+            <span>Epoch</span>
+            <span>Period</span>
+            <span>BTC Price (est.)</span>
+            <span>Your BTC Stack</span>
+            <span>Stack Value</span>
+          </div>
+          <div class="hs-et-body" id="hsEpochBody"></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:14px;line-height:1.7;font-style:italic">
+          ⚠️ Projections are illustrative only. Bitcoin's past halving cycles do not guarantee future performance. All figures should be treated as speculative scenarios, not financial advice. The "flat" option shows accumulation with no price appreciation.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE DRAMA MOMENT -->
+  <div class="halving-drama reveal">
+    <div class="hd-bg"></div>
+    <div class="hd-icon">⚡</div>
+    <div class="hd-title">
+      Every 4 years,<br>
+      supply <span class="slash">slashes</span> in half.<br>
+      Demand does not.<br>
+      <span class="result">Price discovers.</span>
+    </div>
+    <div class="hd-sub">This is not a market opinion. It is not a prediction. It is supply and demand — the most ancient law in economics — applied to the most perfectly engineered monetary scarcity ever created. Satoshi didn't promise a price. He encoded a mechanism. The mechanism has operated flawlessly for 15 years through 4 halvings, 2 global financial crises, 1 pandemic, countless obituaries, and the opposition of governments, regulators, and central banks worldwide. In April 2028, it will execute again — exactly as written — whether anyone is watching or not.</div>
+  </div>
+
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">🏆 Step 13 — Key Takeaways</div>
+    <div class="kt-text">The halving is not an event.<br><em>It is Bitcoin's heartbeat.</em></div>
+    <div class="kt-points">
+      <div class="kt-point"><span class="kt-point-icon">⚡</span><span>Every ~210,000 blocks (roughly four years), Bitcoin's block reward is automatically cut in half. This reduces new Bitcoin entering circulation by 50% in a single block — by code, with no human decision required, forever.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📊</span><span>Four halvings have occurred. In each cycle, Bitcoin's price rose dramatically in the 12–18 months following the halving. Halving 1: $12 → $1,100. Halving 2: $650 → $19,800. Halving 3: $8,700 → $69,000. Halving 4 cycle: still unfolding.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📉</span><span>Bitcoin's annual issuance is currently ~164,000 BTC — down from 2.6 million in 2009. After the fifth halving, it falls to ~82,000. Against BlackRock ETF inflows alone buying 1,000+ BTC per day, the supply math is extraordinary.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📐</span><span>Bitcoin's Stock-to-Flow ratio now exceeds gold's — the first time any asset has surpassed gold's scarcity metric. After the fifth halving, it will be roughly double gold's. This trajectory has no precedent in monetary history.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">⛏️</span><span>Miners are the only structural, consistent sellers of Bitcoin. The halving cuts their revenue and selling pressure by 50% overnight. Paired with growing institutional demand, the post-halving supply/demand dynamic has been bullish in every cycle.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🌐</span><span>Step 14 introduces Bitcoin's Network Effect — the Metcalfe's Law argument for why Bitcoin specifically, and not any competitor, is the monetary network that wins. The network effect is the moat that makes Bitcoin's position more defensible with every passing year.</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STEP NAV -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="btc-step-12.html" class="snb-prev reveal">
+      <div class="snb-icon">🏠</div>
+      <div>
+        <div class="snb-label">← Step 12</div>
+        <div class="snb-title">Bitcoin vs. Real Estate</div>
+        <div class="snb-desc">The comparison that breaks assumptions</div>
+      </div>
+    </a>
+    <a href="btc-step-14.html" class="snb-next reveal">
+      <div class="snb-icon">🌐</div>
+      <div>
+        <div class="snb-label">Step 14 →</div>
+        <div class="snb-title">Bitcoin's Network Effect</div>
+        <div class="snb-desc">Why Bitcoin wins — and stays winning</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- MINIMAP -->
+<div class="steps-minimap">
+  <div class="sm-card reveal">
+    <div class="sm-title">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step done">1</a>
+      <a href="btc-step-02.html" class="sm-step done">2</a>
+      <a href="btc-step-03.html" class="sm-step done">3</a>
+      <a href="btc-step-04.html" class="sm-step done">4</a>
+      <a href="btc-step-05.html" class="sm-step done">5</a>
+      <a href="btc-step-06.html" class="sm-step done">6</a>
+      <a href="btc-step-07.html" class="sm-step done">7</a>
+      <a href="btc-step-08.html" class="sm-step done">8</a>
+      <a href="btc-step-09.html" class="sm-step done">9</a>
+      <a href="btc-step-10.html" class="sm-step done">10</a>
+      <a href="btc-step-11.html" class="sm-step done">11</a>
+      <a href="btc-step-12.html" class="sm-step done">12</a>
+      <a href="btc-step-13.html" class="sm-step current">13</a>
+      <a href="btc-step-14.html" class="sm-step phase-3">14</a>
+      <a href="btc-step-15.html" class="sm-step phase-3">15</a>
+      <a href="btc-step-16.html" class="sm-step phase-3">16</a>
+      <a href="btc-step-17.html" class="sm-step phase-3">17</a>
+      <a href="btc-step-18.html" class="sm-step phase-3">18</a>
+      <a href="btc-step-19.html" class="sm-step phase-4">19</a>
+      <a href="btc-step-20.html" class="sm-step phase-4">20</a>
+      <a href="btc-step-21.html" class="sm-step phase-4">21</a>
+    </div>
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(34,197,94,.6)"></div>Completed</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--halving)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(139,92,246,.4)"></div>Phase 3 — Deep Dive</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(255,107,0,.4)"></div>Phase 4 — Mastery</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="BitcoinSupplyShock.html">Supply Shock Tool</a>
+      <a href="raise-with-bitcoin.html">DCA Calculator</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+      <a href="Keychain.html">Keychain</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n); localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE PRICE ──
+let liveBtcPrice = 100000;
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json()).then(d => {
+      liveBtcPrice = d.bitcoin.usd;
+      document.getElementById('btcPriceNav').textContent = '$' + liveBtcPrice.toLocaleString();
+      document.getElementById('hsPrice').value = liveBtcPrice;
+      calcSimulator();
+    }).catch(() => {});
+}
+updatePrice(); setInterval(updatePrice, 10000);
+
+// ── SCROLL ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── HALVING COUNTDOWN ──
+// Next halving estimated ~April 17, 2028
+const nextHalving = new Date('2028-04-17T00:00:00Z');
+// Current epoch: block 840,000 → 1,050,000
+// Epoch 4 started April 20 2024
+const epoch4Start = new Date('2024-04-20T00:00:00Z');
+const epochDuration = nextHalving - epoch4Start;
+
+function updateCountdown() {
+  const now = new Date();
+  const diff = nextHalving - now;
+  if (diff <= 0) {
+    ['hcDays','hcHours','hcMins','hcSecs'].forEach(id =>
+      document.getElementById(id).textContent = '0');
+    return;
+  }
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  const secs = Math.floor((diff % 60000) / 1000);
+  document.getElementById('hcDays').textContent = String(days).padStart(3,'0');
+  document.getElementById('hcHours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('hcMins').textContent = String(mins).padStart(2,'0');
+  document.getElementById('hcSecs').textContent = String(secs).padStart(2,'0');
+
+  const elapsed = now - epoch4Start;
+  const pct = Math.min(100, (elapsed / epochDuration) * 100);
+  document.getElementById('hcBlockFill').style.width = pct.toFixed(2) + '%';
+  document.getElementById('hcBlockPct').textContent = pct.toFixed(1) + '%';
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── SUPPLY SQUEEZE BARS ──
+const squeezeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('[data-width]').forEach((bar, i) => {
+        setTimeout(() => { bar.style.width = bar.getAttribute('data-width'); }, i * 150);
+      });
+      squeezeObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+const squeezeEl = document.querySelector('.supply-squeeze');
+if (squeezeEl) squeezeObs.observe(squeezeEl);
+
+// ── HALVING SIMULATOR ──
+function calcSimulator() {
+  const monthly = parseFloat(document.getElementById('hsAmount').value) || 200;
+  const price = parseFloat(document.getElementById('hsPrice').value) || 100000;
+  const multiplier = parseFloat(document.getElementById('hsMultiplier').value) || 5;
+
+  const months = 48; // 4 years per epoch
+  const btcAccum = (monthly / price) * months;
+  const sats = Math.round(btcAccum * 1e8);
+  const totalInvested = monthly * months;
+
+  document.getElementById('hsTotalInvested').textContent = '$' + totalInvested.toLocaleString();
+  document.getElementById('hsTotalBtc').textContent = btcAccum.toFixed(6);
+  document.getElementById('hsTotalSats').textContent = sats.toLocaleString();
+
+  // Build epoch table
+  const epochs = [
+    { name: '5 (Current)', period: '2024–2028', priceMultiplier: 1 },
+    { name: '6', period: '2028–2032', priceMultiplier: multiplier },
+    { name: '7', period: '2032–2036', priceMultiplier: multiplier * multiplier },
+    { name: '8', period: '2036–2040', priceMultiplier: multiplier * multiplier * multiplier },
+  ];
+
+  let totalBtcStack = 0;
+  const tbody = document.getElementById('hsEpochBody');
+  tbody.innerHTML = '';
+
+  epochs.forEach((ep, i) => {
+    const epochPrice = price * ep.priceMultiplier;
+    const epochBtc = (monthly / epochPrice) * 48;
+    totalBtcStack += epochBtc;
+    const stackVal = totalBtcStack * epochPrice;
+    const row = document.createElement('div');
+    row.className = 'hs-et-row' + (i === 0 ? ' active-row' : '');
+    row.innerHTML = `
+      <span class="halving-c">${ep.name}</span>
+      <span>${ep.period}</span>
+      <span class="btc-c">$${Math.round(epochPrice).toLocaleString()}</span>
+      <span>${totalBtcStack.toFixed(6)}</span>
+      <span class="green-c">$${Math.round(stackVal).toLocaleString()}</span>
+    `;
+    tbody.appendChild(row);
+  });
+
+  const finalPrice = price * Math.pow(multiplier, 3);
+  const finalVal = totalBtcStack * finalPrice;
+  document.getElementById('hsProjected').textContent = '$' + Math.round(finalVal).toLocaleString();
+  document.getElementById('hsProjectedSub').textContent =
+    `${totalBtcStack.toFixed(4)} BTC × est. $${Math.round(finalPrice).toLocaleString()} — 3 halvings of continuous DCA`;
+}
+
+['hsAmount','hsPrice','hsMultiplier'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcSimulator));
+calcSimulator();
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.05 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
