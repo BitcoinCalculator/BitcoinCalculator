@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 5: The Blockchain Explained | SATOLOGY</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;
+  --prose:#c8c8c8;--quote-bg:#0d0d10;
+}
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --prose:#3a3a3a;--quote-bg:#f0ede6;
+}
+:root{--btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;--red:#e63946;--teal:#06b6d4;--chain:#3b82f6;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--chain),var(--teal),var(--green));width:0%}
+
+.ticker{background:var(--btc);padding:9px 0;overflow:hidden;white-space:nowrap;z-index:201;position:relative}
+.ticker-inner{display:inline-flex;gap:64px;animation:tick 34s linear infinite;font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .35s,border-color .35s}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0;transition:all .3s}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+.step-nav-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px;transition:background .35s}
+.step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.step-nav-left a{color:var(--muted);text-decoration:none;transition:color .2s}
+.step-nav-left a:hover{color:var(--btc)}
+.step-nav-sep{opacity:.4}
+.step-nav-current{color:var(--text);font-weight:600}
+.step-nav-right{display:flex;align-items:center;gap:8px}
+.step-pill{background:var(--chain);color:#fff;border-radius:100px;padding:4px 14px;font-size:11px;font-weight:800;letter-spacing:.5px}
+.step-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:var(--chain);border-radius:2px;width:23.8%}
+
+.reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
+.rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:var(--chain);border-radius:2px;height:0%;transition:height .15s}
+.rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
+
+/* ══ HERO ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;position:relative;overflow:hidden}
+.hero-chain-bg{position:absolute;right:-40px;top:30px;display:flex;gap:6px;opacity:.04;pointer-events:none;align-items:center;transform:rotate(-15deg)}
+.hero-block-bg{width:90px;height:90px;border:3px solid var(--chain);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:var(--chain)}
+.hero-arrow-bg{font-size:28px;color:var(--chain)}
+
+.step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;animation:fadeUp .6s ease both;position:relative;z-index:1}
+.step-number{width:52px;height:52px;background:var(--chain);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 8px 32px rgba(59,130,246,.4)}
+.step-meta{display:flex;flex-direction:column;gap:3px}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--chain);font-weight:700}
+.step-meta-bottom{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.step-hero h1{font-size:clamp(32px,6vw,72px);font-weight:900;letter-spacing:-3px;line-height:1.02;margin-bottom:20px;animation:fadeUp .6s .08s ease both;position:relative;z-index:1}
+.step-hero h1 em{color:var(--chain);font-style:normal}
+.step-hero h1 .sub-em{color:var(--green);font-style:normal}
+
+.step-hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.75;max-width:680px;margin-bottom:36px;animation:fadeUp .6s .14s ease both;font-family:'Lora',serif;font-style:italic;position:relative;z-index:1}
+
+.key-lesson{display:inline-flex;align-items:flex-start;gap:10px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.22);border-radius:14px;padding:14px 20px;font-size:14px;color:var(--text);line-height:1.6;margin-bottom:48px;animation:fadeUp .6s .18s ease both;max-width:680px;position:relative;z-index:1}
+.key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.key-lesson strong{color:var(--chain)}
+
+/* ── ARTICLE ── */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
+.chapter{margin-bottom:72px}
+.chapter-label{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.chapter-num{width:40px;height:40px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:var(--chain);flex-shrink:0}
+.chapter-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.8vw,19px);line-height:1.9;color:var(--prose);transition:color .35s}
+.prose p{margin-bottom:24px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--chain);font-style:italic}
+
+.pull-quote{border-left:4px solid var(--chain);margin:40px 0;padding:24px 28px;background:var(--quote-bg);border-radius:0 14px 14px 0;transition:background .35s}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(17px,2.3vw,23px);font-style:italic;color:var(--text);line-height:1.65;margin:0}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);font-style:normal;margin-top:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.pull-quote.btc{border-left-color:var(--btc)}
+.pull-quote.btc p{color:var(--btc)}
+
+.callout{border-radius:16px;padding:28px 32px;margin:36px 0;border:1px solid}
+.callout-chain{background:rgba(59,130,246,.06);border-color:rgba(59,130,246,.2)}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.2)}
+.callout-green{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)}
+.callout-red{background:rgba(230,57,70,.06);border-color:rgba(230,57,70,.2)}
+.callout-teal{background:rgba(6,182,212,.06);border-color:rgba(6,182,212,.2)}
+.callout-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.callout-chain .callout-title{color:var(--chain)}
+.callout-btc .callout-title{color:var(--btc)}
+.callout-green .callout-title{color:var(--green)}
+.callout-red .callout-title{color:var(--red)}
+.callout-teal .callout-title{color:var(--teal)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.8;margin:0;font-family:'Inter',sans-serif}
+.callout p+p{margin-top:12px}
+
+.insight{display:flex;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin:36px 0;align-items:flex-start;transition:all .3s}
+.insight:hover{border-color:var(--btc)}
+.insight-icon{font-size:28px;flex-shrink:0}
+.insight-body h4{font-size:15px;font-weight:800;margin-bottom:7px;letter-spacing:-.2px}
+.insight-body p{font-size:13px;color:var(--muted);line-height:1.75;margin:0}
+
+/* ══ LIVE BLOCKCHAIN VISUALIZER ══ */
+.chain-visualizer{background:var(--card);border:1px solid rgba(59,130,246,.25);border-radius:22px;overflow:hidden;margin:44px 0}
+.cv-header{padding:24px 28px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(59,130,246,.08),transparent);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.cv-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.cv-header p{font-size:13px;color:var(--muted)}
+.cv-live{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1px}
+.cv-live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite}
+.cv-body{padding:28px;overflow-x:auto}
+.cv-chain{display:flex;align-items:center;gap:0;min-width:max-content}
+.cv-block{background:var(--bg2);border:2px solid var(--border);border-radius:14px;padding:16px 18px;min-width:160px;transition:all .4s;position:relative;flex-shrink:0}
+.cv-block.active{border-color:var(--chain);background:rgba(59,130,246,.06);box-shadow:0 0 24px rgba(59,130,246,.15)}
+.cv-block.confirmed{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.04)}
+.cv-block.pending{border-color:rgba(247,147,26,.4);background:rgba(247,147,26,.04);animation:pendingPulse 2s infinite}
+@keyframes pendingPulse{0%,100%{box-shadow:0 0 0 rgba(247,147,26,.2)}50%{box-shadow:0 0 20px rgba(247,147,26,.3)}}
+.cv-block-num{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px}
+.cv-block-hash{font-family:monospace;font-size:10px;color:var(--chain);margin-bottom:8px;word-break:break-all;line-height:1.4}
+.cv-block.confirmed .cv-block-hash{color:var(--green)}
+.cv-block.pending .cv-block-hash{color:var(--btc)}
+.cv-block-txcount{font-size:11px;color:var(--muted);margin-bottom:4px}
+.cv-block-time{font-size:10px;color:var(--muted)}
+.cv-block-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:9px;font-weight:800;padding:2px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+.cv-block.pending .cv-block-badge{background:var(--btc)}
+.cv-arrow{display:flex;align-items:center;padding:0 4px;flex-shrink:0}
+.cv-arrow svg{width:28px;height:28px;color:var(--border)}
+.cv-block.confirmed + .cv-arrow svg{color:rgba(34,197,94,.4)}
+.cv-footer{padding:16px 28px;border-top:1px solid var(--border);display:flex;gap:20px;flex-wrap:wrap}
+.cv-stat{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.cv-stat strong{color:var(--text);font-weight:700}
+.cv-legend{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto}
+.cv-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.cv-leg-dot{width:8px;height:8px;border-radius:3px}
+
+/* ══ TAMPER DEMO ══ */
+.tamper-demo{background:var(--card);border:1px solid rgba(230,57,70,.2);border-radius:22px;overflow:hidden;margin:44px 0}
+.td-header{padding:24px 28px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(230,57,70,.06),transparent)}
+.td-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.td-header p{font-size:13px;color:var(--muted)}
+.td-body{padding:28px}
+.td-scenario{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:start;margin-bottom:24px}
+.td-side{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px}
+.td-side.bad{border-color:rgba(230,57,70,.25);background:rgba(230,57,70,.04)}
+.td-side.good{border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.04)}
+.td-side-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.bad .td-side-label{color:var(--red)}
+.good .td-side-label{color:var(--green)}
+.td-block-mini{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;font-family:monospace;font-size:11px;color:var(--muted);line-height:1.8}
+.td-block-mini .changed{color:var(--red);text-decoration:line-through}
+.td-block-mini .correct{color:var(--green)}
+.td-block-mini .cascade{color:var(--red)}
+.td-arrow-center{display:flex;align-items:center;justify-content:center;padding-top:60px;font-size:28px}
+.td-explain{font-size:13px;color:var(--muted);line-height:1.7;font-style:italic;border-top:1px solid var(--border);padding-top:16px}
+.td-explain strong{color:var(--text);font-weight:700;font-style:normal}
+
+/* ══ HASH EXPLAINER ══ */
+.hash-explainer{background:var(--card);border:1px solid rgba(59,130,246,.2);border-radius:20px;overflow:hidden;margin:40px 0}
+.he-header{padding:22px 28px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(59,130,246,.06),transparent)}
+.he-header h3{font-size:15px;font-weight:800;margin-bottom:4px}
+.he-header p{font-size:13px;color:var(--muted)}
+.he-body{padding:24px 28px}
+.he-row{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:12px}
+.he-row:last-child{margin-bottom:0}
+.he-input{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:monospace;font-size:12px;color:var(--text)}
+.he-arrow{color:var(--chain);font-size:18px;font-weight:700;text-align:center}
+.he-hash{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:10px;padding:10px 14px;font-family:monospace;font-size:11px;color:var(--chain);word-break:break-all;line-height:1.5}
+.he-note{font-size:12px;color:var(--muted);margin-top:16px;line-height:1.7;font-style:italic}
+.he-note strong{color:var(--text);font-style:normal}
+
+/* ══ WHY THIS MATTERS GRID ══ */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:36px 0}
+.wg-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;transition:all .3s;text-align:center}
+.wg-card:hover{border-color:var(--chain);transform:translateY(-3px)}
+.wg-icon{font-size:32px;margin-bottom:12px}
+.wg-title{font-size:14px;font-weight:800;margin-bottom:8px;letter-spacing:-.2px}
+.wg-body{font-size:12px;color:var(--muted);line-height:1.7}
+
+/* ══ PROOF OF WORK EXPLAINER ══ */
+.pow-visual{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin:40px 0}
+.pow-header{padding:22px 28px;border-bottom:1px solid var(--border)}
+.pow-header h3{font-size:15px;font-weight:800;margin-bottom:4px}
+.pow-header p{font-size:13px;color:var(--muted)}
+.pow-body{padding:24px 28px;display:flex;flex-direction:column;gap:16px}
+.pow-row{display:flex;align-items:center;gap:16px}
+.pow-emoji{font-size:28px;flex-shrink:0;width:44px;text-align:center}
+.pow-text h4{font-size:14px;font-weight:800;margin-bottom:4px}
+.pow-text p{font-size:13px;color:var(--muted);line-height:1.7}
+.pow-divider{height:1px;background:var(--border)}
+
+/* ══ INTERACTIVE HASH TOY ══ */
+.hash-toy{background:linear-gradient(135deg,rgba(59,130,246,.07),rgba(59,130,246,.02));border:1px solid rgba(59,130,246,.2);border-radius:20px;padding:32px;margin:40px 0}
+.ht-title{font-size:16px;font-weight:800;margin-bottom:6px}
+.ht-sub{font-size:13px;color:var(--muted);margin-bottom:22px}
+.ht-input-wrap{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.ht-input{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-size:15px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+.ht-input:focus{border-color:var(--chain)}
+.ht-output{background:var(--bg);border:1px solid rgba(59,130,246,.2);border-radius:12px;padding:18px}
+.ht-out-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--chain);margin-bottom:8px}
+.ht-out-hash{font-family:monospace;font-size:13px;color:var(--chain);word-break:break-all;line-height:1.6;min-height:40px;transition:all .3s}
+.ht-insight{margin-top:14px;font-size:13px;color:var(--muted);line-height:1.7;font-style:italic}
+.ht-insight strong{color:var(--text);font-style:normal}
+
+/* ══ BIG STAT ══ */
+.big-chain-stat{text-align:center;padding:64px 24px;position:relative;overflow:hidden}
+.bcs-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 50%,rgba(59,130,246,.07),transparent 70%);pointer-events:none}
+.bcs-icon{font-size:72px;line-height:1;margin-bottom:16px;animation:chainFloat 4s ease-in-out infinite}
+@keyframes chainFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.bcs-num{font-size:clamp(52px,10vw,100px);font-weight:900;letter-spacing:-4px;line-height:1;background:linear-gradient(135deg,var(--chain),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.bcs-label{font-size:clamp(16px,2.5vw,24px);font-weight:700;color:var(--text);margin-bottom:12px}
+.bcs-sub{font-size:14px;color:var(--muted);max-width:520px;margin:0 auto;line-height:1.8}
+
+/* ══ COMPARISON TABLE ══ */
+.trust-table{width:100%;border-radius:16px;overflow:hidden;border:1px solid var(--border);margin:36px 0}
+.trust-table table{width:100%;border-collapse:collapse}
+.trust-table th{padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:800;background:var(--bg2);color:var(--muted);text-align:left;border-bottom:1px solid var(--border)}
+.trust-table td{padding:15px 18px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--prose);font-family:'Inter',sans-serif;line-height:1.5}
+.trust-table tr:last-child td{border-bottom:none}
+.trust-table tr:hover td{background:rgba(59,130,246,.02)}
+.trust-table .row-label{font-weight:700;color:var(--text)}
+.cell-bad{color:var(--red);font-weight:600}
+.cell-good{color:var(--green);font-weight:600}
+.cell-mid{color:var(--btc);font-weight:600}
+
+/* ── KEY TAKEAWAY ── */
+.key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
+.kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--btc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kt-text{font-size:clamp(17px,2.5vw,22px);font-weight:800;line-height:1.5;letter-spacing:-.3px;margin-bottom:20px}
+.kt-text em{color:var(--btc);font-style:normal}
+.kt-points{display:flex;flex-direction:column;gap:10px}
+.kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--prose);line-height:1.6}
+.kt-point-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── STEP NAV ── */
+.step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
+.snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 24px;text-decoration:none;color:var(--text);transition:all .3s}
+.snb-prev:hover,.snb-next:hover{border-color:var(--btc);transform:translateY(-3px);box-shadow:0 12px 32px rgba(247,147,26,.12)}
+.snb-next{flex-direction:row-reverse;text-align:right}
+.snb-icon{font-size:28px;flex-shrink:0}
+.snb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700;margin-bottom:3px}
+.snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ── MINIMAP ── */
+.steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
+.sm-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px}
+.sm-title{font-size:14px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.sm-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sm-step{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;text-decoration:none;transition:all .2s;border:1px solid var(--border);color:var(--muted);background:var(--bg2)}
+.sm-step:hover{border-color:var(--btc);color:var(--btc);transform:translateY(-2px)}
+.sm-step.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:var(--green)}
+.sm-step.current{background:var(--chain);border-color:var(--chain);color:#fff}
+.sm-step.phase-2{background:rgba(247,147,26,.08);border-color:rgba(247,147,26,.2)}
+.sm-step.phase-3{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)}
+.sm-step.phase-4{background:rgba(255,107,0,.08);border-color:rgba(255,107,0,.2)}
+.sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sm-leg-dot{width:10px;height:10px;border-radius:3px}
+
+.footer-wrap{border-top:1px solid var(--border)}
+footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  nav,.step-nav-bar{padding:0 18px}
+  .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
+  .why-grid{grid-template-columns:1fr 1fr}
+  .td-scenario{grid-template-columns:1fr;gap:8px}
+  .td-arrow-center{padding-top:0;transform:rotate(90deg)}
+  .he-row{grid-template-columns:1fr;gap:6px}
+  .he-arrow{transform:rotate(90deg)}
+  .snb-inner{grid-template-columns:1fr}
+  .snb-next{flex-direction:row;text-align:left}
+  .reading-progress{display:none}
+  footer{padding:28px 20px;flex-direction:column;text-align:center}
+}
+@media(max-width:540px){
+  .step-hero h1{letter-spacing:-1.5px}
+  .why-grid{grid-template-columns:1fr}
+  .sm-step{width:30px;height:30px;font-size:10px}
+  .ht-input-wrap{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>₿ STEP 5 OF 21</span><span>·</span>
+    <span>⛓️ THE BLOCKCHAIN EXPLAINED</span><span>·</span>
+    <span>🔒 900,000+ BLOCKS — EVERY ONE UNBREAKABLE</span><span>·</span>
+    <span>📖 THE MOST TRANSPARENT LEDGER EVER BUILT</span><span>·</span>
+    <span>🌐 50,000+ NODES CHECKING EVERY TRANSACTION</span><span>·</span>
+    <span>⚡ TAMPER-PROOF BY MATHEMATICS, NOT POLICY</span><span>·</span>
+    <span>₿ STEP 5 OF 21</span><span>·</span>
+    <span>⛓️ THE BLOCKCHAIN EXPLAINED</span><span>·</span>
+    <span>🔒 900,000+ BLOCKS — EVERY ONE UNBREAKABLE</span><span>·</span>
+    <span>📖 THE MOST TRANSPARENT LEDGER EVER BUILT</span><span>·</span>
+    <span>🌐 50,000+ NODES CHECKING EVERY TRANSACTION</span><span>·</span>
+    <span>⚡ TAMPER-PROOF BY MATHEMATICS, NOT POLICY</span><span>·</span>
+  </div>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span><span id="btcPriceNav">$--</span></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="step-nav-bar">
+  <div class="step-nav-left">
+    <a href="index.html">Home</a>
+    <span class="step-nav-sep">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <span class="step-nav-sep">›</span>
+    <span class="step-nav-current">Step 5 — The Blockchain Explained</span>
+  </div>
+  <div class="step-nav-right">
+    <div class="step-progress-mini">
+      <div class="spm-bar"><div class="spm-fill"></div></div>
+      <span>5 / 21</span>
+    </div>
+    <div class="step-pill">Step 5</div>
+  </div>
+</div>
+
+<div class="reading-progress">
+  <div class="rp-label">Reading</div>
+  <div class="rp-track"><div class="rp-fill" id="rpFill"></div></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<div class="step-hero">
+  <div class="hero-chain-bg">
+    <div class="hero-block-bg">B</div>
+    <div class="hero-arrow-bg">→</div>
+    <div class="hero-block-bg">B</div>
+    <div class="hero-arrow-bg">→</div>
+    <div class="hero-block-bg">B</div>
+  </div>
+
+  <div class="step-eyebrow">
+    <div class="step-number">⛓️</div>
+    <div class="step-meta">
+      <div class="step-meta-top">🔵 The Technology · Phase 1 of 4</div>
+      <div class="step-meta-bottom">
+        <span>⏱ 7 min read</span><span>·</span>
+        <span>🎯 Beginner</span><span>·</span>
+        <span>🔒 Trust replaced by math</span>
+      </div>
+    </div>
+  </div>
+
+  <h1>The <em>Blockchain</em><br><span class="sub-em">Explained.</span></h1>
+
+  <p class="step-hero-sub">Every bank in history has asked you to trust them with your money. The blockchain is the first system in history that makes trust unnecessary — replacing it with something more reliable: mathematics that anyone can verify.</p>
+
+  <div class="key-lesson">
+    <span class="key-lesson-icon">⛓️</span>
+    <span><strong>What you'll understand by the end of this step:</strong> What a blockchain actually is, why it cannot be tampered with, how hashing makes data permanent, why proof-of-work secures the network, and why this changes the meaning of trust forever — with an interactive demo you can play with yourself.</span>
+  </div>
+</div>
+
+<!-- ══ ARTICLE ══ -->
+<div class="article-wrap">
+
+  <!-- CHAPTER 1 -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">①</div>
+      <div class="chapter-title">The Problem With Every Ledger Before Bitcoin</div>
+    </div>
+
+    <div class="prose">
+      <p>Every financial system in history runs on a ledger — a record of who owns what and who sent what to whom. Your bank has one. The government has one. The stock exchange has one. They're all ledgers.</p>
+      <p>And every one of them shares the same fatal flaw: <strong>you have to trust whoever controls it.</strong></p>
+      <p>Trust that they won't change the records. Trust that they won't freeze your account. Trust that they won't get hacked, bribed, coerced, or simply make a mistake. The entire global financial system — trillions of dollars — rests on this trust. And as Step 2 showed us, that trust has been repeatedly broken throughout history.</p>
+      <p>Satoshi's insight wasn't just to create digital money. It was to create <em>a ledger that doesn't require trust in anyone.</em> The blockchain is that ledger.</p>
+    </div>
+
+    <div class="callout callout-chain reveal">
+      <div class="callout-title">⛓️ What a Blockchain Is, In One Sentence</div>
+      <p>A blockchain is a shared, public record book where every page (block) is mathematically linked to the previous page — so that changing any entry anywhere in history would visibly break every page that came after it, and the entire world would instantly know.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 — LIVE VISUALIZER -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">②</div>
+      <div class="chapter-title">What the Blockchain Looks Like — Right Now</div>
+    </div>
+
+    <div class="prose">
+      <p>The Bitcoin blockchain isn't an abstract concept — it's a living, breathing thing that grows every ten minutes. Every block contains thousands of real transactions. Every block is permanently linked to the one before it. Here's a simplified view of what it looks like:</p>
+    </div>
+
+    <div class="chain-visualizer reveal">
+      <div class="cv-header">
+        <div>
+          <h3>⛓️ Bitcoin Blockchain — Live Simplified View</h3>
+          <p>Each block contains transactions and is permanently chained to the previous one</p>
+        </div>
+        <div class="cv-live"><div class="cv-live-dot"></div>Growing every ~10 minutes</div>
+      </div>
+      <div class="cv-body">
+        <div class="cv-chain" id="cvChain">
+          <!-- Blocks injected by JS -->
+        </div>
+      </div>
+      <div class="cv-footer">
+        <div class="cv-stat"><strong id="cvBlockCount">0</strong> blocks mined</div>
+        <div class="cv-stat"><strong>~10 min</strong> per block</div>
+        <div class="cv-stat"><strong>Every block</strong> is permanent</div>
+        <div class="cv-legend">
+          <div class="cv-leg"><div class="cv-leg-dot" style="background:rgba(34,197,94,.5)"></div>Confirmed</div>
+          <div class="cv-leg"><div class="cv-leg-dot" style="background:rgba(59,130,246,.5)"></div>Latest</div>
+          <div class="cv-leg"><div class="cv-leg-dot" style="background:rgba(247,147,26,.5)"></div>Pending</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Each block has three critical pieces of information: its own unique fingerprint (called a <em>hash</em>), the fingerprint of the block that came before it, and a bundle of transactions. That connection — each block containing the previous block's fingerprint — is what creates the chain. And it's what makes tampering mathematically impossible.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 — HASHING -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">③</div>
+      <div class="chapter-title">The Magic Ingredient: Cryptographic Hashing</div>
+    </div>
+
+    <div class="prose">
+      <p>To understand why the blockchain can't be tampered with, you need to understand one concept: the <em>hash</em>. It sounds technical. It isn't. Here's all you need to know:</p>
+      <p>A hash function takes any piece of data — a word, a sentence, an entire novel, a financial record — and turns it into a unique string of characters. Think of it like a fingerprint for data. Every unique input produces a unique output. And crucially: <strong>change even one character of the input, and the entire output changes completely.</strong></p>
+    </div>
+
+    <div class="hash-explainer reveal">
+      <div class="he-header">
+        <h3>🔐 How Hashing Works — Real Examples</h3>
+        <p>Notice how changing even one character completely changes the output</p>
+      </div>
+      <div class="he-body">
+        <div class="he-row">
+          <div class="he-input">"Hello"</div>
+          <div class="he-arrow">→</div>
+          <div class="he-hash">185f8db32921bd46d35... (SHA-256)</div>
+        </div>
+        <div class="he-row">
+          <div class="he-input">"hello" (lowercase h)</div>
+          <div class="he-arrow">→</div>
+          <div class="he-hash">2cf24dba5fb0a30e26e... (completely different)</div>
+        </div>
+        <div class="he-row">
+          <div class="he-input">"Send $100 to Alice"</div>
+          <div class="he-arrow">→</div>
+          <div class="he-hash">9f86d081884c7d659a2... (unique fingerprint)</div>
+        </div>
+        <div class="he-row">
+          <div class="he-input">"Send $101 to Alice"</div>
+          <div class="he-arrow">→</div>
+          <div class="he-hash">7d793037a0760186574... (totally different)</div>
+        </div>
+        <div class="he-note"><strong>Key insight:</strong> You cannot reverse a hash to find the original data. And you cannot predict what hash a given input will produce — you have to calculate it. This makes hashes perfect for creating tamper-proof fingerprints.</div>
+      </div>
+    </div>
+
+    <!-- INTERACTIVE HASH TOY -->
+    <div class="hash-toy reveal">
+      <div class="ht-title">🎮 Try It Yourself — The Hash Toy</div>
+      <div class="ht-sub">Type anything below and watch its unique digital fingerprint generate in real time. Change even one letter — the entire hash changes.</div>
+      <div class="ht-input-wrap">
+        <input type="text" class="ht-input" id="hashInput" placeholder="Type anything here..." value="Bitcoin changes everything">
+      </div>
+      <div class="ht-output">
+        <div class="ht-out-label">SHA-256 Hash (simulated)</div>
+        <div class="ht-out-hash" id="hashOutput">--</div>
+      </div>
+      <div class="ht-insight">💡 <strong>Now try changing just one letter.</strong> Notice how the entire hash changes completely — not just the part you changed. This is why blockchain data is tamper-proof: any change, no matter how small, produces a totally different fingerprint that the network immediately detects.</div>
+    </div>
+
+    <div class="prose">
+      <p>Now here's why this matters for Bitcoin. Every block in the blockchain contains the hash of the previous block. So Block #850,001 contains Block #850,000's fingerprint. Which contains #849,999's fingerprint. All the way back to the Genesis Block in 2009.</p>
+      <p>If you tried to go back and change a transaction in Block #500,000 — say, to give yourself more Bitcoin — that block's hash would change completely. Which would break Block #500,001's record of the previous hash. Which would break #500,002. Which would break every single block that came after. <strong>The entire chain from your change forward would be visibly, instantly wrong.</strong></p>
+      <p>And every one of the 50,000+ nodes on the network would reject it immediately.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 4 — TAMPER DEMO -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">④</div>
+      <div class="chapter-title">Why Tampering Is Mathematically Impossible</div>
+    </div>
+
+    <div class="prose">
+      <p>Let's make this concrete. Imagine a fraudster tries to go back and change their transaction history — adding Bitcoin they never had. Here's exactly what happens:</p>
+    </div>
+
+    <div class="tamper-demo reveal">
+      <div class="td-header">
+        <h3>🔍 What Happens When Someone Tries to Tamper</h3>
+        <p>A fraudster tries to change Block #849,998. Watch the cascade.</p>
+      </div>
+      <div class="td-body">
+        <div class="td-scenario">
+          <div class="td-side bad">
+            <div class="td-side-label">❌ After Tampering</div>
+            <div class="td-block-mini">
+              Block #849,998<br>
+              Prev: a3f9...2c1<br>
+              Tx: Alice→Bob <span class="changed">1 BTC</span> <span class="cascade">→ 100 BTC ← FRAUD</span><br>
+              Hash: <span class="cascade">INVALID — changed</span>
+            </div>
+            <div class="td-block-mini">
+              Block #849,999<br>
+              Prev: <span class="cascade">WRONG HASH — broken</span><br>
+              Hash: <span class="cascade">INVALID — cascades</span>
+            </div>
+            <div class="td-block-mini">
+              Block #850,000<br>
+              Prev: <span class="cascade">WRONG HASH — broken</span><br>
+              Hash: <span class="cascade">INVALID — cascades</span>
+            </div>
+          </div>
+          <div class="td-arrow-center">💥</div>
+          <div class="td-side good">
+            <div class="td-side-label">✓ Honest Chain (50,000+ nodes)</div>
+            <div class="td-block-mini">
+              Block #849,998<br>
+              Prev: a3f9...2c1<br>
+              Tx: Alice→Bob <span class="correct">1 BTC ✓</span><br>
+              Hash: <span class="correct">8bc4...f22 ✓</span>
+            </div>
+            <div class="td-block-mini">
+              Block #849,999<br>
+              Prev: <span class="correct">8bc4...f22 ✓</span><br>
+              Hash: <span class="correct">d91a...77e ✓</span>
+            </div>
+            <div class="td-block-mini">
+              Block #850,000<br>
+              Prev: <span class="correct">d91a...77e ✓</span><br>
+              Hash: <span class="correct">3f08...c19 ✓</span>
+            </div>
+          </div>
+        </div>
+        <div class="td-explain">
+          <strong>Result:</strong> The fraudster's chain is instantly rejected by every node on the network. To succeed, they would need to redo the proof-of-work for Block #849,998, then #849,999, then every block after it — faster than the entire honest network is adding new blocks. With Bitcoin's current hashrate, this would require more computing power than currently exists on Earth. It is not just difficult. <strong>It is economically and physically impossible.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 — PROOF OF WORK -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑤</div>
+      <div class="chapter-title">Proof of Work — Why Cheating Costs a Fortune</div>
+    </div>
+
+    <div class="prose">
+      <p>So hashing makes tampering visible. But what stops someone from simply redoing all the hashes quickly and presenting a fraudulent chain? This is where <em>proof of work</em> comes in — Bitcoin's second great innovation.</p>
+      <p>Adding a block to the Bitcoin blockchain isn't free. It requires an enormous amount of real-world computation — and therefore real-world electricity and hardware. Miners worldwide compete to solve a puzzle that requires trillions of guesses per second. The winner gets newly minted Bitcoin. The work is the price of admission.</p>
+    </div>
+
+    <div class="pow-visual reveal">
+      <div class="pow-header">
+        <h3>⚡ How Proof of Work Secures the Network</h3>
+        <p>Why attacking Bitcoin costs more than it could ever gain</p>
+      </div>
+      <div class="pow-body">
+        <div class="pow-row">
+          <div class="pow-emoji">🎯</div>
+          <div class="pow-text">
+            <h4>The Puzzle</h4>
+            <p>To add a block, miners must find a hash that starts with a specific number of zeros. There's no shortcut — you must guess until you find it. The network adjusts difficulty every 2,016 blocks so it always takes ~10 minutes.</p>
+          </div>
+        </div>
+        <div class="pow-divider"></div>
+        <div class="pow-row">
+          <div class="pow-emoji">⚡</div>
+          <div class="pow-text">
+            <h4>The Cost</h4>
+            <p>Bitcoin miners collectively perform <strong>hundreds of exahashes per second</strong> — that's hundreds of quintillion calculations every second, consuming real electricity and real hardware. This work cannot be faked or shortcut.</p>
+          </div>
+        </div>
+        <div class="pow-divider"></div>
+        <div class="pow-row">
+          <div class="pow-emoji">🛡️</div>
+          <div class="pow-text">
+            <h4>The Defense</h4>
+            <p>To rewrite history, an attacker would need to redo all the proof-of-work for every block since their target — while the entire honest network keeps adding new blocks ahead of them. Estimates suggest a 51% attack on Bitcoin today would cost <strong>billions of dollars per hour</strong> — and still likely fail.</p>
+          </div>
+        </div>
+        <div class="pow-divider"></div>
+        <div class="pow-row">
+          <div class="pow-emoji">🏆</div>
+          <div class="pow-text">
+            <h4>The Incentive</h4>
+            <p>Honest miners earn Bitcoin rewards. Dishonest miners waste billions and gain nothing — because their fraudulent chain gets rejected instantly. The system makes honesty <strong>the most profitable strategy</strong>. Every time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-green reveal">
+      <div class="callout-title">✓ The Genius of the Design</div>
+      <p>Satoshi didn't just create a ledger. They created a system where the rational, self-interested behavior of thousands of independent actors — all trying to earn Bitcoin rewards — produces a perfectly honest, perfectly secure record that nobody controls. The incentives are the security. Greed becomes trustworthiness. This is perhaps the most elegant design in the history of computer science.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 — WHY IT MATTERS -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑥</div>
+      <div class="chapter-title">Why This Changes Everything</div>
+    </div>
+
+    <div class="prose">
+      <p>The blockchain isn't just a clever data structure. It's a fundamental shift in how human beings can coordinate — exchanging value without requiring any institution, authority, or trusted party in the middle. Here's what that actually means in practice:</p>
+    </div>
+
+    <div class="why-grid reveal">
+      <div class="wg-card">
+        <div class="wg-icon">🌍</div>
+        <div class="wg-title">No Borders</div>
+        <div class="wg-body">The blockchain has no jurisdiction. A transaction from Lagos to London to Lima follows the same rules, takes the same time, and costs the same fee. The first truly global financial ledger.</div>
+      </div>
+      <div class="wg-card">
+        <div class="wg-icon">👁️</div>
+        <div class="wg-title">Full Transparency</div>
+        <div class="wg-body">Every transaction ever made on Bitcoin is publicly visible on the blockchain — verifiable by anyone, anytime. It is the most transparent financial record ever created. More transparent than any bank, government, or exchange.</div>
+      </div>
+      <div class="wg-card">
+        <div class="wg-icon">♾️</div>
+        <div class="wg-title">Permanent History</div>
+        <div class="wg-body">Hal Finney's first Bitcoin receipt from Satoshi in 2009 is still there. Every transaction since. Nothing can be deleted, hidden, or revised. The blockchain is the most accurate financial history ever maintained.</div>
+      </div>
+      <div class="wg-card">
+        <div class="wg-icon">🚫</div>
+        <div class="wg-title">No Gatekeepers</div>
+        <div class="wg-body">No bank can reject your transaction. No government can freeze your balance. No payment processor can block your account. If the math checks out, it goes through. Period.</div>
+      </div>
+      <div class="wg-card">
+        <div class="wg-icon">🔐</div>
+        <div class="wg-title">Self-Custody</div>
+        <div class="wg-body">For the first time in monetary history, you can hold and transfer wealth that is truly yours — not held by a bank on your behalf. The blockchain enforces ownership through cryptography, not through legal agreements you hope someone honors.</div>
+      </div>
+      <div class="wg-card">
+        <div class="wg-icon">🤝</div>
+        <div class="wg-title">Trust Is Optional</div>
+        <div class="wg-body">You don't need to trust Satoshi, the miners, the developers, or anyone else. You can verify every rule yourself. Run your own node. Check every transaction. The system works whether or not you trust any participant.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 7 — COMPARISON TABLE -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑦</div>
+      <div class="chapter-title">Blockchain vs. Traditional Ledgers — Side by Side</div>
+    </div>
+
+    <div class="trust-table reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Bank Ledger</th>
+            <th>Government Records</th>
+            <th>Bitcoin Blockchain</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">Who controls it?</td>
+            <td class="cell-bad">One institution</td>
+            <td class="cell-bad">One government</td>
+            <td class="cell-good">Nobody / Everyone</td>
+          </tr>
+          <tr>
+            <td class="row-label">Can records be changed?</td>
+            <td class="cell-bad">Yes — internally</td>
+            <td class="cell-bad">Yes — with authority</td>
+            <td class="cell-good">Mathematically impossible</td>
+          </tr>
+          <tr>
+            <td class="row-label">Who can see it?</td>
+            <td class="cell-bad">Bank only</td>
+            <td class="cell-bad">Government only</td>
+            <td class="cell-good">Anyone on Earth</td>
+          </tr>
+          <tr>
+            <td class="row-label">Can accounts be frozen?</td>
+            <td class="cell-bad">Yes — anytime</td>
+            <td class="cell-bad">Yes — by court order</td>
+            <td class="cell-good">Never (self-custody)</td>
+          </tr>
+          <tr>
+            <td class="row-label">Uptime</td>
+            <td class="cell-mid">Business hours + maintenance</td>
+            <td class="cell-mid">Business hours</td>
+            <td class="cell-good">24/7/365 — never stopped</td>
+          </tr>
+          <tr>
+            <td class="row-label">Verification</td>
+            <td class="cell-bad">Trust the bank</td>
+            <td class="cell-bad">Trust the government</td>
+            <td class="cell-good">Verify yourself — always</td>
+          </tr>
+          <tr>
+            <td class="row-label">Cross-border</td>
+            <td class="cell-bad">Slow, expensive, restricted</td>
+            <td class="cell-bad">Requires approval</td>
+            <td class="cell-good">Instant, borderless, free</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pull-quote btc reveal">
+      <p>"Don't trust. Verify."</p>
+      <cite>— The Bitcoin community's operating principle — and the blockchain makes it possible for the first time in monetary history</cite>
+    </div>
+  </div>
+
+  <!-- BIG STAT -->
+  <div class="big-chain-stat reveal">
+    <div class="bcs-bg"></div>
+    <div class="bcs-icon">⛓️</div>
+    <div class="bcs-num">900,000+</div>
+    <div class="bcs-label">Blocks in the Bitcoin blockchain — and counting</div>
+    <div class="bcs-sub">Each one permanent. Each one mathematically linked to every block before it. The first block was mined on January 3rd, 2009. Every ~10 minutes since, the chain has grown — never paused, never reversed, never corrupted. The longest-running financial ledger ever maintained by no single entity.</div>
+  </div>
+
+  <!-- CHAPTER 8 — CLOSING -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑧</div>
+      <div class="chapter-title">What You Now Understand That Most People Don't</div>
+    </div>
+
+    <div class="prose">
+      <p>Most people hear "blockchain" and think it's a buzzword — something vague that companies slap on presentations to sound futuristic. You now know it's something far more specific and far more powerful.</p>
+      <p>The blockchain is a solution to a problem that has existed since the first humans kept records: <strong>how do you maintain a shared truth without trusting a single authority to maintain it?</strong> Every civilization in history solved this by creating institutions — kings, priests, banks, governments — and trusting them. Bitcoin solved it with mathematics for the first time.</p>
+      <p>That's not a technical achievement. It's a civilizational one.</p>
+    </div>
+
+    <div class="insight reveal">
+      <div class="insight-icon">🌅</div>
+      <div class="insight-body">
+        <h4>You're Ready for the Most Important Number in Finance</h4>
+        <p>You now understand what Bitcoin is, who built it, and how its blockchain makes it tamper-proof. Step 6 tackles the question that unlocks everything else: why exactly 21 million? Why not 100 million? Why not unlimited? The answer reveals the deepest genius of Bitcoin's design — and why that number alone makes it unlike any money ever created.</p>
+      </div>
+    </div>
+
+    <div class="key-takeaway">
+      <div class="kt-label">🏆 Step 5 — Key Takeaways</div>
+      <div class="kt-text">The blockchain doesn't ask you to trust anyone.<br><em>It makes trust unnecessary.</em></div>
+      <div class="kt-points">
+        <div class="kt-point"><span class="kt-point-icon">📖</span><span>A blockchain is a shared public ledger where every record is mathematically linked to every previous record — making tampering visible and reversing it computationally impossible.</span></div>
+        <div class="kt-point"><span class="kt-point-icon">🔐</span><span>Cryptographic hashing gives every block a unique fingerprint. Change anything, anywhere, and the fingerprint changes completely — instantly visible to every node on the network.</span></div>
+        <div class="kt-point"><span class="kt-point-icon">⚡</span><span>Proof of work makes adding fraudulent blocks prohibitively expensive — requiring more computing power than exists on Earth to rewrite history even a few blocks back.</span></div>
+        <div class="kt-point"><span class="kt-point-icon">🌍</span><span>The Bitcoin blockchain is publicly verifiable by anyone, runs 24/7/365, has never been successfully tampered with, and cannot be shut down by any authority.</span></div>
+        <div class="kt-point"><span class="kt-point-icon">🏦</span><span>For the first time in history, two strangers can exchange value without trusting a bank, government, or any institution. The math is the middleman — and math doesn't lie.</span></div>
+        <div class="kt-point"><span class="kt-point-icon">🔢</span><span>Step 6 explains the most important number in all of finance: why Bitcoin's supply is capped at exactly 21 million — and why that number alone changes everything.</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /article-wrap -->
+
+<!-- STEP NAV -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="btc-step-04.html" class="snb-prev reveal">
+      <div class="snb-icon">₿</div>
+      <div>
+        <div class="snb-label">← Step 4</div>
+        <div class="snb-title">What Is Bitcoin — Really?</div>
+        <div class="snb-desc">Strip away the noise. Here's the truth.</div>
+      </div>
+    </a>
+    <a href="btc-step-06.html" class="snb-next reveal">
+      <div class="snb-icon">🔢</div>
+      <div>
+        <div class="snb-label">Step 6 →</div>
+        <div class="snb-title">Why Only 21 Million?</div>
+        <div class="snb-desc">The number that changes everything</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- MINIMAP -->
+<div class="steps-minimap">
+  <div class="sm-card reveal">
+    <div class="sm-title">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step done" title="Step 1 — What Is Money?">1</a>
+      <a href="btc-step-02.html" class="sm-step done" title="Step 2 — The Problem With Fiat">2</a>
+      <a href="btc-step-03.html" class="sm-step done" title="Step 3 — Who Is Satoshi?">3</a>
+      <a href="btc-step-04.html" class="sm-step done" title="Step 4 — What Is Bitcoin?">4</a>
+      <a href="btc-step-05.html" class="sm-step current" title="Step 5 — The Blockchain">5</a>
+      <a href="btc-step-06.html" class="sm-step" title="Step 6 — Why 21 Million?">6</a>
+      <a href="btc-step-07.html" class="sm-step phase-2" title="Step 7 — Wallets & Keys">7</a>
+      <a href="btc-step-08.html" class="sm-step phase-2" title="Step 8 — Not Your Keys">8</a>
+      <a href="btc-step-09.html" class="sm-step phase-2" title="Step 9 — Buying Bitcoin">9</a>
+      <a href="btc-step-10.html" class="sm-step phase-2" title="Step 10 — What Is DCA?">10</a>
+      <a href="btc-step-11.html" class="sm-step phase-2" title="Step 11 — Bitcoin vs Gold">11</a>
+      <a href="btc-step-12.html" class="sm-step phase-2" title="Step 12 — Bitcoin vs Real Estate">12</a>
+      <a href="btc-step-13.html" class="sm-step phase-3" title="Step 13 — The Halving">13</a>
+      <a href="btc-step-14.html" class="sm-step phase-3" title="Step 14 — Network Effect">14</a>
+      <a href="btc-step-15.html" class="sm-step phase-3" title="Step 15 — Lightning Network">15</a>
+      <a href="btc-step-16.html" class="sm-step phase-3" title="Step 16 — Is Bitcoin Legal?">16</a>
+      <a href="btc-step-17.html" class="sm-step phase-3" title="Step 17 — Bitcoin & Taxes">17</a>
+      <a href="btc-step-18.html" class="sm-step phase-3" title="Step 18 — Bitcoin for Retirement">18</a>
+      <a href="btc-step-19.html" class="sm-step phase-4" title="Step 19 — Bitcoin & Freedom">19</a>
+      <a href="btc-step-20.html" class="sm-step phase-4" title="Step 20 — Every Objection Answered">20</a>
+      <a href="btc-step-21.html" class="sm-step phase-4" title="Step 21 — Your Path Forward">21</a>
+    </div>
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(34,197,94,.6)"></div>Completed</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--chain)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(247,147,26,.4)"></div>Phase 2</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(139,92,246,.4)"></div>Phase 3</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(255,107,0,.4)"></div>Phase 4</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+      <a href="raise-with-bitcoin.html">DCA Calculator</a>
+      <a href="real-estate-vs-bitcoin.html">RE vs BTC</a>
+      <a href="Keychain.html">Keychain</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n);
+  localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE BTC PRICE ──
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json())
+    .then(d => { document.getElementById('btcPriceNav').textContent = '$' + d.bitcoin.usd.toLocaleString(); })
+    .catch(() => {});
+}
+updatePrice(); setInterval(updatePrice, 10000);
+
+// ── SCROLL + READING ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── BLOCKCHAIN VISUALIZER ──
+const BASE_BLOCK = 895240;
+const blocks = [
+  { offset: -4, txs: 2847, mins: '41 min ago', status: 'confirmed' },
+  { offset: -3, txs: 3102, mins: '31 min ago', status: 'confirmed' },
+  { offset: -2, txs: 2644, mins: '21 min ago', status: 'confirmed' },
+  { offset: -1, txs: 2991, mins: '11 min ago', status: 'confirmed' },
+  { offset:  0, txs: 3214, mins: 'Latest',     status: 'active'     },
+  { offset:  1, txs: '---', mins: 'Pending',   status: 'pending'    },
+];
+
+function shortHash(seed) {
+  const chars = '0123456789abcdef';
+  let h = '';
+  for (let i = 0; i < 8; i++) h += chars[(seed * 7 + i * 13 + 3) % 16];
+  return '000000' + h + '…';
+}
+
+const chain = document.getElementById('cvChain');
+document.getElementById('cvBlockCount').textContent = (BASE_BLOCK).toLocaleString();
+
+blocks.forEach((b, i) => {
+  if (i > 0) {
+    const arrow = document.createElement('div');
+    arrow.className = 'cv-arrow';
+    arrow.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
+    chain.appendChild(arrow);
+  }
+  const num = BASE_BLOCK + b.offset;
+  const el = document.createElement('div');
+  el.className = `cv-block ${b.status}`;
+  el.innerHTML = `
+    ${b.status === 'active' ? '<div class="cv-block-badge">Latest</div>' : ''}
+    ${b.status === 'pending' ? '<div class="cv-block-badge">Pending</div>' : ''}
+    <div class="cv-block-num">Block #${num.toLocaleString()}</div>
+    <div class="cv-block-hash">${b.status === 'pending' ? 'Mining…' : shortHash(num)}</div>
+    <div class="cv-block-txcount">${typeof b.txs === 'number' ? b.txs.toLocaleString() + ' transactions' : 'Collecting txs…'}</div>
+    <div class="cv-block-time">${b.mins}</div>
+  `;
+  chain.appendChild(el);
+});
+
+// ── HASH TOY (deterministic simulation) ──
+function simHash(str) {
+  if (!str) return '(empty input — try typing something)';
+  // Simple but visually convincing deterministic hash simulation
+  let h1 = 0x6b86b273, h2 = 0xd4713d60, h3 = 0xb17ef6d3, h4 = 0x3f88e769;
+  for (let i = 0; i < str.length; i++) {
+    const c = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 0x9e3779b9) >>> 0;
+    h2 = Math.imul(h2 ^ (c << 3), 0x85ebca6b) >>> 0;
+    h3 = Math.imul(h3 ^ (c * 31), 0xc2b2ae35) >>> 0;
+    h4 = Math.imul(h4 ^ (c + i), 0x27d4eb2f) >>> 0;
+    h1 ^= h2 >> 7; h2 ^= h3 >> 9; h3 ^= h4 >> 11; h4 ^= h1 >> 13;
+  }
+  const toHex = n => n.toString(16).padStart(8, '0');
+  const raw = toHex(h1) + toHex(h2) + toHex(h3) + toHex(h4);
+  // Pad to 64 chars (SHA-256 length)
+  let full = raw;
+  let seed = h1;
+  while (full.length < 64) {
+    seed = Math.imul(seed ^ 0xdeadbeef, 0x9e3779b9) >>> 0;
+    full += seed.toString(16).padStart(8, '0');
+  }
+  return full.slice(0, 64);
+}
+
+const hashInput = document.getElementById('hashInput');
+const hashOutput = document.getElementById('hashOutput');
+
+function updateHash() {
+  hashOutput.textContent = simHash(hashInput.value);
+  hashOutput.style.color = hashInput.value ? 'var(--chain)' : 'var(--muted)';
+}
+hashInput.addEventListener('input', updateHash);
+updateHash();
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
