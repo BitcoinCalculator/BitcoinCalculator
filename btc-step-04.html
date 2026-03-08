@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 4: What Is Bitcoin — Really? | SATOLOGY</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;
+  --prose:#c8c8c8;--quote-bg:#0d0d10;
+}
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --prose:#3a3a3a;--quote-bg:#f0ede6;
+}
+:root{--btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;--red:#e63946;--mystery:#6366f1;--teal:#06b6d4;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── SCROLL PROGRESS ── */
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--btc),#ff9500,var(--green));width:0%}
+
+/* ── TICKER ── */
+.ticker{background:var(--btc);padding:9px 0;overflow:hidden;white-space:nowrap;z-index:201;position:relative}
+.ticker-inner{display:inline-flex;gap:64px;animation:tick 34s linear infinite;font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .35s,border-color .35s}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0;transition:all .3s}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+/* ── BREADCRUMB ── */
+.step-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px;transition:background .35s}
+.step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.step-nav-left a{color:var(--muted);text-decoration:none;transition:color .2s}
+.step-nav-left a:hover{color:var(--btc)}
+.step-nav-sep{opacity:.4}
+.step-nav-current{color:var(--text);font-weight:600}
+.step-nav-right{display:flex;align-items:center;gap:8px}
+.step-pill{background:var(--btc);color:#fff;border-radius:100px;padding:4px 14px;font-size:11px;font-weight:800;letter-spacing:.5px}
+.step-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:var(--btc);border-radius:2px;width:19.04%}
+
+/* ── READING PROGRESS ── */
+.reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
+.rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:var(--btc);border-radius:2px;height:0%;transition:height .15s}
+.rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
+
+/* ══ HERO ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;position:relative;overflow:hidden}
+
+/* Orbiting nodes background */
+.hero-nodes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.node{position:absolute;border-radius:50%;animation:nodeFloat ease-in-out infinite}
+@keyframes nodeFloat{0%,100%{transform:translateY(0) scale(1);opacity:.4}50%{transform:translateY(-20px) scale(1.1);opacity:.7}}
+
+.step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;animation:fadeUp .6s ease both;position:relative;z-index:1}
+.step-number{width:52px;height:52px;background:var(--btc);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 8px 32px rgba(247,147,26,.4)}
+.step-meta{display:flex;flex-direction:column;gap:3px}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--btc);font-weight:700}
+.step-meta-bottom{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.step-hero h1{font-size:clamp(32px,6vw,72px);font-weight:900;letter-spacing:-3px;line-height:1.02;margin-bottom:20px;animation:fadeUp .6s .08s ease both;position:relative;z-index:1}
+.step-hero h1 em{color:var(--btc);font-style:normal}
+.step-hero h1 .sub-em{color:var(--green);font-style:normal}
+
+.step-hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.75;max-width:680px;margin-bottom:36px;animation:fadeUp .6s .14s ease both;font-family:'Lora',serif;font-style:italic;position:relative;z-index:1}
+
+.key-lesson{display:inline-flex;align-items:flex-start;gap:10px;background:rgba(247,147,26,.07);border:1px solid rgba(247,147,26,.22);border-radius:14px;padding:14px 20px;font-size:14px;color:var(--text);line-height:1.6;margin-bottom:48px;animation:fadeUp .6s .18s ease both;max-width:680px;position:relative;z-index:1}
+.key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.key-lesson strong{color:var(--btc)}
+
+/* ── ARTICLE ── */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
+
+.chapter{margin-bottom:72px}
+.chapter-label{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.chapter-num{width:40px;height:40px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:var(--btc);flex-shrink:0}
+.chapter-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.8vw,19px);line-height:1.9;color:var(--prose);transition:color .35s}
+.prose p{margin-bottom:24px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--btc);font-style:italic}
+
+.pull-quote{border-left:4px solid var(--btc);margin:40px 0;padding:24px 28px;background:var(--quote-bg);border-radius:0 14px 14px 0;transition:background .35s}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(17px,2.3vw,23px);font-style:italic;color:var(--text);line-height:1.65;margin:0}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);font-style:normal;margin-top:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.pull-quote.green{border-left-color:var(--green)}
+.pull-quote.green p{color:var(--green)}
+
+.callout{border-radius:16px;padding:28px 32px;margin:36px 0;border:1px solid}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.2)}
+.callout-green{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)}
+.callout-red{background:rgba(230,57,70,.06);border-color:rgba(230,57,70,.2)}
+.callout-teal{background:rgba(6,182,212,.06);border-color:rgba(6,182,212,.2)}
+.callout-purple{background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.2)}
+.callout-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.callout-btc .callout-title{color:var(--btc)}
+.callout-green .callout-title{color:var(--green)}
+.callout-red .callout-title{color:var(--red)}
+.callout-teal .callout-title{color:var(--teal)}
+.callout-purple .callout-title{color:var(--purple)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.8;margin:0;font-family:'Inter',sans-serif}
+.callout p+p{margin-top:12px}
+
+.insight{display:flex;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin:36px 0;align-items:flex-start;transition:all .3s}
+.insight:hover{border-color:var(--btc)}
+.insight-icon{font-size:28px;flex-shrink:0}
+.insight-body h4{font-size:15px;font-weight:800;margin-bottom:7px;letter-spacing:-.2px}
+.insight-body p{font-size:13px;color:var(--muted);line-height:1.75;margin:0}
+
+/* ── LIGHTBULB MOMENT ── */
+.lightbulb-moment{text-align:center;padding:72px 24px;position:relative;overflow:hidden;margin:48px 0}
+.lm-glow{position:absolute;inset:0;background:radial-gradient(ellipse 55% 65% at 50% 50%,rgba(247,147,26,.09),transparent 70%);pointer-events:none}
+.lm-icon{font-size:clamp(64px,12vw,100px);line-height:1;margin-bottom:20px;animation:lightOn 2s ease-in-out infinite}
+@keyframes lightOn{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.3);transform:scale(1.05)}}
+.lm-title{font-size:clamp(22px,4vw,44px);font-weight:900;letter-spacing:-2px;line-height:1.1;margin-bottom:14px}
+.lm-title em{color:var(--btc);font-style:normal}
+.lm-sub{font-size:15px;color:var(--muted);max-width:560px;margin:0 auto;line-height:1.8}
+
+/* ── WHAT BITCOIN IS NOT ── */
+.misconceptions{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0}
+.mc-card{background:var(--card);border:1px solid rgba(230,57,70,.15);border-radius:14px;padding:22px;position:relative;overflow:hidden;transition:all .3s}
+.mc-card::before{content:'✗';position:absolute;top:14px;right:16px;font-size:28px;font-weight:900;color:var(--red);opacity:.15}
+.mc-card:hover{border-color:rgba(230,57,70,.3)}
+.mc-wrong{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:8px}
+.mc-claim{font-size:15px;font-weight:700;margin-bottom:8px;letter-spacing:-.2px}
+.mc-reality{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* ── WHAT BITCOIN ACTUALLY IS ── */
+.definitions{display:flex;flex-direction:column;gap:16px;margin:36px 0}
+.def-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 28px;display:flex;gap:20px;align-items:flex-start;transition:all .3s;position:relative;overflow:hidden}
+.def-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.def-card:nth-child(1)::before{background:var(--btc)}
+.def-card:nth-child(2)::before{background:var(--green)}
+.def-card:nth-child(3)::before{background:var(--purple)}
+.def-card:nth-child(4)::before{background:var(--teal)}
+.def-card:nth-child(5)::before{background:#ff6b00}
+.def-card:hover{transform:translateX(4px);border-color:var(--btc)}
+.def-num{font-size:22px;flex-shrink:0;line-height:1;margin-top:2px}
+.def-content{}
+.def-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--btc);margin-bottom:5px}
+.def-card:nth-child(2) .def-label{color:var(--green)}
+.def-card:nth-child(3) .def-label{color:var(--purple)}
+.def-card:nth-child(4) .def-label{color:var(--teal)}
+.def-card:nth-child(5) .def-label{color:#ff6b00}
+.def-title{font-size:17px;font-weight:800;margin-bottom:8px;letter-spacing:-.3px}
+.def-body{font-size:13px;color:var(--muted);line-height:1.8}
+
+/* ── HOW IT WORKS (SIMPLE) ── */
+.how-simple{background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;margin:40px 0;transition:all .35s}
+.hs-header{padding:28px 32px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(247,147,26,.07),transparent)}
+.hs-header h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.hs-header p{font-size:13px;color:var(--muted)}
+.hs-steps{padding:28px 32px;display:flex;flex-direction:column;gap:0}
+.hs-step{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid var(--border);position:relative}
+.hs-step:last-child{border-bottom:none}
+.hs-step-num{width:40px;height:40px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:var(--btc);flex-shrink:0}
+.hs-connector{position:absolute;left:19px;top:60px;width:2px;height:calc(100% - 40px);background:rgba(247,147,26,.15)}
+.hs-step:last-child .hs-connector{display:none}
+.hs-step-content{}
+.hs-step-title{font-size:15px;font-weight:800;margin-bottom:5px;letter-spacing:-.2px}
+.hs-step-body{font-size:13px;color:var(--muted);line-height:1.75}
+.hs-step-body strong{color:var(--text);font-weight:700}
+
+/* ── ANALOGY CARDS ── */
+.analogy-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:36px 0}
+.analogy-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s}
+.analogy-card:hover{border-color:var(--btc);transform:translateY(-3px)}
+.ac-top{height:80px;display:flex;align-items:center;justify-content:center;font-size:36px;gap:12px}
+.ac-top.email{background:linear-gradient(135deg,#001a33,#002244)}
+.ac-top.gold{background:linear-gradient(135deg,#1a1400,#2a2000)}
+.ac-top.internet{background:linear-gradient(135deg,#001a1a,#002233)}
+.ac-top.spreadsheet{background:linear-gradient(135deg,#0a001a,#12002a)}
+.ac-body{padding:18px 20px}
+.ac-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--btc);margin-bottom:6px}
+.ac-title{font-size:15px;font-weight:800;margin-bottom:7px;letter-spacing:-.2px}
+.ac-desc{font-size:12px;color:var(--muted);line-height:1.7}
+.ac-caveat{font-size:11px;color:rgba(247,147,26,.7);margin-top:8px;font-style:italic}
+
+/* ── BITCOIN IN NUMBERS ── */
+.numbers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--border);border-radius:20px;overflow:hidden;margin:40px 0}
+.ng-item{background:var(--bg);padding:28px 20px;text-align:center;transition:background .35s}
+.ng-num{font-size:clamp(24px,4vw,40px);font-weight:900;color:var(--btc);letter-spacing:-1.5px;line-height:1;margin-bottom:6px}
+.ng-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px}
+.ng-sub{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* ── COMMON QUESTIONS ── */
+.faq{display:flex;flex-direction:column;gap:12px;margin:36px 0}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .3s}
+.faq-item:hover{border-color:rgba(247,147,26,.3)}
+.faq-q{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:16px}
+.faq-q-text{font-size:15px;font-weight:700;letter-spacing:-.2px}
+.faq-toggle{font-size:20px;color:var(--btc);font-weight:900;flex-shrink:0;transition:transform .3s;line-height:1}
+.faq-item.open .faq-toggle{transform:rotate(45deg)}
+.faq-a{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:18px}
+.faq-a p{font-size:14px;color:var(--muted);line-height:1.8;font-family:'Inter',sans-serif;border-top:1px solid var(--border);padding-top:14px}
+
+/* ── BIG REALIZATION ── */
+.realization{text-align:center;padding:64px 24px;position:relative;overflow:hidden;margin:48px 0}
+.realization::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(247,147,26,.07),transparent 70%);pointer-events:none}
+.r-btc{font-size:clamp(80px,14vw,140px);font-weight:900;line-height:1;background:linear-gradient(135deg,var(--btc),#ff9500,var(--btc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px;animation:btcPulse 3s ease-in-out infinite}
+@keyframes btcPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.25)}}
+.r-title{font-size:clamp(18px,3vw,32px);font-weight:900;letter-spacing:-1px;margin-bottom:14px;line-height:1.2}
+.r-title em{color:var(--btc);font-style:normal}
+.r-sub{font-size:15px;color:var(--muted);max-width:580px;margin:0 auto;line-height:1.8}
+
+/* ── KEY TAKEAWAY ── */
+.key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
+.kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--btc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kt-text{font-size:clamp(17px,2.5vw,22px);font-weight:800;line-height:1.5;letter-spacing:-.3px;margin-bottom:20px}
+.kt-text em{color:var(--btc);font-style:normal}
+.kt-points{display:flex;flex-direction:column;gap:10px}
+.kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--prose);line-height:1.6}
+.kt-point-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── STEP NAV ── */
+.step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
+.snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 24px;text-decoration:none;color:var(--text);transition:all .3s}
+.snb-prev:hover,.snb-next:hover{border-color:var(--btc);transform:translateY(-3px);box-shadow:0 12px 32px rgba(247,147,26,.12)}
+.snb-next{flex-direction:row-reverse;text-align:right}
+.snb-icon{font-size:28px;flex-shrink:0}
+.snb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700;margin-bottom:3px}
+.snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ── MINIMAP ── */
+.steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
+.sm-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px}
+.sm-title{font-size:14px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.sm-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sm-step{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;text-decoration:none;transition:all .2s;border:1px solid var(--border);color:var(--muted);background:var(--bg2)}
+.sm-step:hover{border-color:var(--btc);color:var(--btc);transform:translateY(-2px)}
+.sm-step.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:var(--green)}
+.sm-step.current{background:var(--btc);border-color:var(--btc);color:#fff}
+.sm-step.phase-2{background:rgba(247,147,26,.08);border-color:rgba(247,147,26,.2)}
+.sm-step.phase-3{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)}
+.sm-step.phase-4{background:rgba(255,107,0,.08);border-color:rgba(255,107,0,.2)}
+.sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sm-leg-dot{width:10px;height:10px;border-radius:3px}
+
+/* ── FOOTER ── */
+.footer-wrap{border-top:1px solid var(--border)}
+footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  nav,.step-nav{padding:0 18px}
+  .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
+  .misconceptions,.analogy-grid{grid-template-columns:1fr}
+  .numbers-grid{grid-template-columns:1fr 1fr}
+  .snb-inner{grid-template-columns:1fr}
+  .snb-next{flex-direction:row;text-align:left}
+  .reading-progress{display:none}
+  footer{padding:28px 20px;flex-direction:column;text-align:center}
+}
+@media(max-width:540px){
+  .step-hero h1{letter-spacing:-1.5px}
+  .numbers-grid{grid-template-columns:1fr}
+  .sm-step{width:30px;height:30px;font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>₿ STEP 4 OF 21</span><span>·</span>
+    <span>💡 WHAT IS BITCOIN — REALLY?</span><span>·</span>
+    <span>🌐 RUNS ON 50,000+ NODES WORLDWIDE</span><span>·</span>
+    <span>⚡ 15+ YEARS — NEVER HACKED, NEVER STOPPED</span><span>·</span>
+    <span>🔢 21,000,000 — FIXED FOREVER</span><span>·</span>
+    <span>🌍 ANYONE ANYWHERE CAN USE IT</span><span>·</span>
+    <span>₿ STEP 4 OF 21</span><span>·</span>
+    <span>💡 WHAT IS BITCOIN — REALLY?</span><span>·</span>
+    <span>🌐 RUNS ON 50,000+ NODES WORLDWIDE</span><span>·</span>
+    <span>⚡ 15+ YEARS — NEVER HACKED, NEVER STOPPED</span><span>·</span>
+    <span>🔢 21,000,000 — FIXED FOREVER</span><span>·</span>
+    <span>🌍 ANYONE ANYWHERE CAN USE IT</span><span>·</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span><span id="btcPriceNav">$--</span></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="step-nav">
+  <div class="step-nav-left">
+    <a href="index.html">Home</a>
+    <span class="step-nav-sep">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <span class="step-nav-sep">›</span>
+    <span class="step-nav-current">Step 4 — What Is Bitcoin — Really?</span>
+  </div>
+  <div class="step-nav-right">
+    <div class="step-progress-mini">
+      <div class="spm-bar"><div class="spm-fill"></div></div>
+      <span>4 / 21</span>
+    </div>
+    <div class="step-pill">Step 4</div>
+  </div>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-progress">
+  <div class="rp-label">Reading</div>
+  <div class="rp-track"><div class="rp-fill" id="rpFill"></div></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<div class="step-hero">
+  <div class="hero-nodes" id="heroNodes"></div>
+
+  <div class="step-eyebrow">
+    <div class="step-number">₿</div>
+    <div class="step-meta">
+      <div class="step-meta-top">🟠 The Basics · Phase 1 of 4</div>
+      <div class="step-meta-bottom">
+        <span>⏱ 8 min read</span>
+        <span>·</span>
+        <span>🎯 Beginner</span>
+        <span>·</span>
+        <span>💡 Your lightbulb moment</span>
+      </div>
+    </div>
+  </div>
+
+  <h1>What Is<br><em>Bitcoin</em> —<br><span class="sub-em">Really?</span></h1>
+
+  <p class="step-hero-sub">You've heard the word thousands of times. You've seen the price on the news. You may have even bought some. But if someone asked you right now to explain what Bitcoin actually <em>is</em> — could you? Most people can't. That changes in the next 8 minutes.</p>
+
+  <div class="key-lesson">
+    <span class="key-lesson-icon">💡</span>
+    <span><strong>What you'll understand by the end of this step:</strong> What Bitcoin actually is (in plain English), what it is NOT, five ways to think about it that make it click, how it works at a human level, the numbers that define it, and answers to the questions everyone is too embarrassed to ask.</span>
+  </div>
+</div>
+
+<!-- ══ ARTICLE ══ -->
+<div class="article-wrap">
+
+  <!-- CHAPTER 1 -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">①</div>
+      <div class="chapter-title">The Most Misunderstood Thing in the World</div>
+    </div>
+
+    <div class="prose">
+      <p>Bitcoin is the most talked-about and least understood invention of the last 20 years. Billions of people have heard of it. Very few can actually explain it. And the gap between "heard of it" and "understands it" is exactly where confusion, fear, and missed opportunity live.</p>
+      <p>Part of the problem is how Bitcoin gets described. The media calls it a "cryptocurrency" — which is technically accurate but tells you almost nothing useful. Others call it "digital gold" — which captures something important but misses just as much. Some call it a "speculative asset" — which reduces it to its price and ignores everything that makes it remarkable.</p>
+      <p><strong>None of these descriptions are wrong. But none of them are complete.</strong> Bitcoin is genuinely new — and genuinely new things resist old categories. So let's start with what Bitcoin is NOT, before we get to what it actually is.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 — WHAT IT IS NOT -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">②</div>
+      <div class="chapter-title">What Bitcoin Is NOT</div>
+    </div>
+
+    <div class="prose">
+      <p>Clearing away the misconceptions is half the battle. Here are the six most common wrong ideas about Bitcoin:</p>
+    </div>
+
+    <div class="misconceptions reveal">
+      <div class="mc-card">
+        <div class="mc-wrong">✗ Wrong</div>
+        <div class="mc-claim">"Bitcoin is just a digital dollar"</div>
+        <div class="mc-reality">The dollar is issued by a central bank, has unlimited supply, and loses value over time. Bitcoin is issued by math, has a fixed supply of 21 million, and is designed to hold value. They are fundamentally opposite.</div>
+      </div>
+      <div class="mc-card">
+        <div class="mc-wrong">✗ Wrong</div>
+        <div class="mc-claim">"Bitcoin is controlled by someone"</div>
+        <div class="mc-reality">No company, government, or individual controls Bitcoin. Its rules are enforced by code running on tens of thousands of independent computers worldwide. Nobody can change the rules unilaterally.</div>
+      </div>
+      <div class="mc-card">
+        <div class="mc-wrong">✗ Wrong</div>
+        <div class="mc-claim">"Bitcoin is used mainly by criminals"</div>
+        <div class="mc-reality">Studies consistently show less than 1% of Bitcoin transactions are linked to illicit activity — far less than cash. Bitcoin's blockchain is completely public and traceable, making it arguably the worst tool for crime ever invented.</div>
+      </div>
+      <div class="mc-card">
+        <div class="mc-wrong">✗ Wrong</div>
+        <div class="mc-claim">"Bitcoin is one of thousands of equal cryptos"</div>
+        <div class="mc-reality">Bitcoin is categorically different from other cryptocurrencies. It has the longest track record, the most decentralized network, the most miners, the most nodes, and the only truly fixed supply. It is not "just another crypto."</div>
+      </div>
+      <div class="mc-card">
+        <div class="mc-wrong">✗ Wrong</div>
+        <div class="mc-claim">"You have to buy a whole Bitcoin"</div>
+        <div class="mc-reality">One Bitcoin divides into 100 million units called satoshis (sats). You can buy $5 worth of Bitcoin right now. You don't need to buy a whole one any more than you need a whole dollar to buy something that costs 50 cents.</div>
+      </div>
+      <div class="mc-card">
+        <div class="mc-wrong">✗ Wrong</div>
+        <div class="mc-claim">"Bitcoin has no intrinsic value"</div>
+        <div class="mc-reality">Bitcoin derives value from its properties: absolute scarcity, global portability, censorship resistance, and a 15-year track record of operating perfectly. The same people who said the internet had "no intrinsic value" in 1995 said this about Bitcoin in 2010.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 — WHAT IT ACTUALLY IS -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">③</div>
+      <div class="chapter-title">What Bitcoin Actually Is — Five Ways to Think About It</div>
+    </div>
+
+    <div class="prose">
+      <p>Bitcoin is genuinely new, so the best way to understand it is through multiple lenses. Each of these definitions is accurate. Together they paint the full picture.</p>
+    </div>
+
+    <div class="definitions reveal">
+      <div class="def-card">
+        <div class="def-num">₿</div>
+        <div class="def-content">
+          <div class="def-label">Definition 1 — The Simplest</div>
+          <div class="def-title">Bitcoin is the first form of money with a guaranteed, mathematically enforced fixed supply.</div>
+          <div class="def-body">21 million coins. No more. Ever. Not because a government promised — because the code makes it impossible. Every 10 minutes, new Bitcoin is created and distributed to miners as a reward. That reward halves every four years, until the last fraction of a Bitcoin is mined around the year 2140. After that: nothing. Forever.</div>
+        </div>
+      </div>
+      <div class="def-card">
+        <div class="def-num">🌐</div>
+        <div class="def-content">
+          <div class="def-label">Definition 2 — The Technical</div>
+          <div class="def-title">Bitcoin is a decentralized peer-to-peer network for transferring value without a trusted middleman.</div>
+          <div class="def-body">Right now, if you want to send money to someone across the world, you need a bank, a payment processor, a currency exchange, and possibly a government to approve it. Bitcoin lets two people transact directly — anywhere on Earth, any amount, in minutes — with no intermediary required and no one who can stop it.</div>
+        </div>
+      </div>
+      <div class="def-card">
+        <div class="def-num">🏔️</div>
+        <div class="def-content">
+          <div class="def-label">Definition 3 — The Financial</div>
+          <div class="def-title">Bitcoin is the hardest money ever created — a superior store of value for the digital age.</div>
+          <div class="def-body">Gold held its value for 5,000 years because it was hard to mine and couldn't be faked. Bitcoin is harder than gold — its supply is mathematically fixed, it can be verified instantly by anyone, it can be sent anywhere in minutes, and it cannot be debased under any circumstances. It is, by every financial metric, the hardest money that has ever existed.</div>
+        </div>
+      </div>
+      <div class="def-card">
+        <div class="def-num">🔐</div>
+        <div class="def-content">
+          <div class="def-label">Definition 4 — The Political</div>
+          <div class="def-title">Bitcoin is a tool for financial sovereignty — money that belongs to you and you alone.</div>
+          <div class="def-body">Every other form of money exists within a system that can freeze it, seize it, inflate it, or restrict it. A bank can freeze your account. A government can devalue your currency. A payment processor can block your transaction. Bitcoin held in your own wallet cannot be touched by anyone without your private key. For the first time in history, you can truly own money.</div>
+        </div>
+      </div>
+      <div class="def-card">
+        <div class="def-num">🌍</div>
+        <div class="def-content">
+          <div class="def-label">Definition 5 — The Civilizational</div>
+          <div class="def-title">Bitcoin is a new monetary protocol for humanity — like TCP/IP was for information.</div>
+          <div class="def-body">The internet gave humanity a common protocol for sharing information across all borders. Bitcoin gives humanity a common protocol for transferring value across all borders. Just as you don't need to know how TCP/IP works to use the internet, you don't need to understand Bitcoin's cryptography to use it. The protocol just works — for everyone, everywhere, equally.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-btc reveal">
+      <div class="callout-title">₿ The One-Sentence Definition</div>
+      <p>If you had to explain Bitcoin in one sentence to someone who'd never heard of it: <strong>"Bitcoin is digital money with a fixed supply of 21 million that no government, bank, or person can control, inflate, or stop."</strong> Everything else is detail on top of that foundation.</p>
+    </div>
+  </div>
+
+  <!-- LIGHTBULB MOMENT -->
+  <div class="lightbulb-moment reveal">
+    <div class="lm-glow"></div>
+    <div class="lm-icon">💡</div>
+    <div class="lm-title">The Moment It Clicks:<br><em>Scarcity + Network = Value</em></div>
+    <div class="lm-sub">Gold is valuable because it's scarce and everyone accepts it. The internet is powerful because everyone uses it. Bitcoin combines both — absolute scarcity AND a global network of users, miners, and developers. That combination has never existed before in monetary history.</div>
+  </div>
+
+  <!-- CHAPTER 4 — HOW IT WORKS -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">④</div>
+      <div class="chapter-title">How Bitcoin Works — The Human Version</div>
+    </div>
+
+    <div class="prose">
+      <p>You don't need to understand the cryptography to use Bitcoin — just like you don't need to understand TCP/IP to browse the internet. But understanding the basic mechanics makes everything else click. Here's how it works at a human level, in five steps:</p>
+    </div>
+
+    <div class="how-simple reveal">
+      <div class="hs-header">
+        <h3>⚙️ How a Bitcoin Transaction Actually Works</h3>
+        <p>From "I want to send Bitcoin" to "it's confirmed" — explained without a single line of code.</p>
+      </div>
+      <div class="hs-steps">
+        <div class="hs-step">
+          <div class="hs-connector"></div>
+          <div class="hs-step-num">1</div>
+          <div class="hs-step-content">
+            <div class="hs-step-title">You decide to send Bitcoin</div>
+            <div class="hs-step-body">You open your Bitcoin wallet and enter the recipient's address — a string of letters and numbers (like an email address for money). You specify the amount. Your wallet signs the transaction with your <strong>private key</strong> — mathematical proof that you own these coins.</div>
+          </div>
+        </div>
+        <div class="hs-step">
+          <div class="hs-connector"></div>
+          <div class="hs-step-num">2</div>
+          <div class="hs-step-content">
+            <div class="hs-step-title">The transaction is broadcast to the network</div>
+            <div class="hs-step-body">Your transaction is immediately broadcast to thousands of <strong>nodes</strong> — computers running Bitcoin software around the world. Each node independently checks: does this person actually own the Bitcoin they're trying to send? If yes, the transaction is valid and gets passed along.</div>
+          </div>
+        </div>
+        <div class="hs-step">
+          <div class="hs-connector"></div>
+          <div class="hs-step-num">3</div>
+          <div class="hs-step-content">
+            <div class="hs-step-title">Miners compete to add your transaction to the ledger</div>
+            <div class="hs-step-body">Specialized computers called <strong>miners</strong> compete to bundle your transaction — along with thousands of others — into a "block." To win, they must solve an extremely difficult mathematical puzzle. The winner gets newly created Bitcoin as a reward. This is called "proof of work."</div>
+          </div>
+        </div>
+        <div class="hs-step">
+          <div class="hs-connector"></div>
+          <div class="hs-step-num">4</div>
+          <div class="hs-step-content">
+            <div class="hs-step-title">Your transaction is permanently recorded</div>
+            <div class="hs-step-body">The winning miner's block — containing your transaction — is added to the <strong>blockchain</strong>: a permanent, public, tamper-proof record of every Bitcoin transaction ever made. Every node in the world updates their copy. Your transaction is now history — literally.</div>
+          </div>
+        </div>
+        <div class="hs-step">
+          <div class="hs-step-num">5</div>
+          <div class="hs-step-content">
+            <div class="hs-step-title">The recipient has their Bitcoin</div>
+            <div class="hs-step-body">Within 10–60 minutes, the Bitcoin has moved — permanently, irreversibly, globally. No bank approved it. No government could have stopped it. No fee went to a middleman. <strong>Just two people, and the math.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-green reveal">
+      <div class="callout-title">✓ Why This Matters</div>
+      <p>Every step in this process happens without a single trusted institution. The network of nodes checks each other's work. The miners are incentivized to be honest. The math is publicly verifiable by anyone. This is what "trustless" means — not that you have to trust everyone, but that you don't have to trust anyone in particular. The system works regardless.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 — ANALOGIES -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑤</div>
+      <div class="chapter-title">Four Analogies That Make Bitcoin Click</div>
+    </div>
+
+    <div class="prose">
+      <p>Bitcoin is genuinely new — but it shares properties with things you already understand. These four analogies each illuminate a different dimension of what Bitcoin is:</p>
+    </div>
+
+    <div class="analogy-grid reveal">
+      <div class="analogy-card">
+        <div class="ac-top email">📧 → ₿</div>
+        <div class="ac-body">
+          <div class="ac-label">Analogy 1</div>
+          <div class="ac-title">Bitcoin is to money what email was to letters</div>
+          <div class="ac-desc">Email didn't replace all communication — but it made sending a message to anyone on Earth instant and free. Bitcoin does the same for money: send any amount, to anyone, anywhere, in minutes, for pennies.</div>
+          <div class="ac-caveat">⚡ The difference: email can be copied. Bitcoin cannot.</div>
+        </div>
+      </div>
+      <div class="analogy-card">
+        <div class="ac-top gold">🥇 → ₿</div>
+        <div class="ac-body">
+          <div class="ac-label">Analogy 2</div>
+          <div class="ac-title">Bitcoin is gold — but better at being gold</div>
+          <div class="ac-desc">Gold is scarce, durable, and universally recognized. Bitcoin has all of these properties — but it's also perfectly divisible, instantly portable, and absolutely scarce in a way gold never was.</div>
+          <div class="ac-caveat">⚡ The difference: nobody can mine more Bitcoin. Someone can always mine more gold.</div>
+        </div>
+      </div>
+      <div class="analogy-card">
+        <div class="ac-top internet">🌐 → ₿</div>
+        <div class="ac-body">
+          <div class="ac-label">Analogy 3</div>
+          <div class="ac-title">Bitcoin is the internet's native money</div>
+          <div class="ac-desc">The internet was built to transfer information. But it never had a native way to transfer value — we bolted on banks and PayPal instead. Bitcoin is money that was built for the internet from the ground up.</div>
+          <div class="ac-caveat">⚡ The difference: you don't need a bank account to use Bitcoin. You just need internet.</div>
+        </div>
+      </div>
+      <div class="analogy-card">
+        <div class="ac-top spreadsheet">📊 → ₿</div>
+        <div class="ac-body">
+          <div class="ac-label">Analogy 4</div>
+          <div class="ac-title">Bitcoin is a shared spreadsheet nobody can cheat</div>
+          <div class="ac-desc">Imagine a spreadsheet that tracks who owns what — but instead of one bank maintaining it, 50,000 computers worldwide all hold identical copies and check each other's work. You can't change one copy without changing all of them.</div>
+          <div class="ac-caveat">⚡ The difference: this spreadsheet has never had an error in 15+ years.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 — THE NUMBERS -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑥</div>
+      <div class="chapter-title">Bitcoin in Numbers — The Stats That Define It</div>
+    </div>
+
+    <div class="numbers-grid reveal">
+      <div class="ng-item">
+        <div class="ng-num">21M</div>
+        <div class="ng-label">Maximum Supply</div>
+        <div class="ng-sub">Total Bitcoin that will ever exist. Fixed forever in the code.</div>
+      </div>
+      <div class="ng-item">
+        <div class="ng-num">100M</div>
+        <div class="ng-label">Satoshis per Bitcoin</div>
+        <div class="ng-sub">One Bitcoin = 100 million satoshis. You can own a fraction.</div>
+      </div>
+      <div class="ng-item">
+        <div class="ng-num">~10min</div>
+        <div class="ng-label">Block Time</div>
+        <div class="ng-sub">A new block — containing thousands of transactions — is added every ~10 minutes.</div>
+      </div>
+      <div class="ng-item">
+        <div class="ng-num">50,000+</div>
+        <div class="ng-label">Nodes Worldwide</div>
+        <div class="ng-sub">Independent computers enforcing Bitcoin's rules. No single point of failure.</div>
+      </div>
+      <div class="ng-item">
+        <div class="ng-num">15+</div>
+        <div class="ng-label">Years Running</div>
+        <div class="ng-sub">Bitcoin has operated continuously since January 2009. Zero downtime. Ever.</div>
+      </div>
+      <div class="ng-item">
+        <div class="ng-num">0</div>
+        <div class="ng-label">Times Hacked</div>
+        <div class="ng-sub">The Bitcoin protocol has never been hacked. Not once in 15+ years of operation.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-teal reveal">
+      <div class="callout-title">📡 The Uptime That No Bank Can Match</div>
+      <p>The Bitcoin network has been running continuously since January 3, 2009 — over 15 years with zero scheduled maintenance, zero downtime, and zero successful attacks on the protocol itself. For comparison: the NYSE closes every night. Banks go offline for maintenance. PayPal has outages. Bitcoin has never stopped. Not once. Not for a second.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 7 — FAQ -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑦</div>
+      <div class="chapter-title">Questions Everyone Has But Nobody Asks</div>
+    </div>
+
+    <div class="prose">
+      <p>Here are the questions people most want answered — but feel embarrassed to ask out loud. Ask them out loud. They're all good questions.</p>
+    </div>
+
+    <div class="faq reveal">
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">If Bitcoin is digital, can't someone just copy it?</div>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-a"><p>This is the double-spend problem Satoshi solved. A digital file CAN be copied — but the Bitcoin network keeps a public record of every coin and every transaction. If you try to "copy" your Bitcoin and spend it twice, every node in the network sees the attempted duplicate and rejects it. You can't counterfeit Bitcoin for the same reason you can't send the same email twice and have it arrive in two inboxes — the network tracks and verifies everything.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">What if the government bans it?</div>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-a"><p>Multiple governments have tried — China has "banned" Bitcoin at least five times. Each time, Bitcoin kept running without interruption. You can ban exchanges and make ownership legally risky, but you cannot turn off the Bitcoin network itself — it has no headquarters, no CEO, no servers to seize. Banning Bitcoin is like banning math. You can make it illegal to use, but you can't make it not exist.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">What if the internet goes down?</div>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-a"><p>Bitcoin can actually be transmitted without the internet — via radio, satellite, or mesh networks. Developers have already demonstrated sending Bitcoin transactions via amateur radio and SMS. The network is more resilient than the internet itself. And if the global internet truly "goes down" permanently — we have bigger problems than Bitcoin.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">Can Bitcoin be hacked?</div>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-a"><p>The Bitcoin protocol has never been successfully hacked. What gets hacked are the companies built ON TOP of Bitcoin — exchanges, custodians, and wallets with poor security. That's like saying email got hacked when Yahoo leaked passwords. The underlying protocol was fine. When you hold your own Bitcoin in your own wallet with a properly secured private key, there is nothing to hack. The math is sound.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">Is it too late to get into Bitcoin?</div>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-a"><p>Fewer than 5% of the world's population owns any Bitcoin. Global adoption of internet-scale technologies typically takes 20–30 years to reach saturation. Bitcoin is 15 years old. By historical comparison, buying Bitcoin today is like buying internet stocks in 1999 — not the very beginning, but still extraordinarily early relative to where this technology could go. The window is open. Nobody knows for how long.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <div class="faq-q-text">What actually gives Bitcoin its value?</div>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-a"><p>The same thing that gives gold its value — scarcity and collective agreement. The same thing that gives the dollar its value — a network of people who accept it. The same thing that gives any technology its value — usefulness. Bitcoin is scarce (21 million max), globally accepted and growing, useful (you can send value anywhere with no middleman), and has 15 years of proof that it works. That combination is the value.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE REALIZATION -->
+  <div class="realization reveal">
+    <div class="r-btc">₿</div>
+    <div class="r-title">Bitcoin isn't trying to be<br><em>better money.</em><br>It's trying to be<br><em>perfect money.</em></div>
+    <div class="r-sub">Fixed supply. No issuer. No borders. No permission required. Perfectly divisible. Perfectly portable. Perfectly verifiable. For the first time in human history, all five properties of good money exist in a single asset — enforced not by policy, but by mathematics.</div>
+  </div>
+
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">🏆 Step 4 — Key Takeaways</div>
+    <div class="kt-text">Bitcoin isn't digital dollars.<br><em>It's a completely new category of money.</em></div>
+    <div class="kt-points">
+      <div class="kt-point"><span class="kt-point-icon">💡</span><span>Bitcoin is the first money in history with an absolutely fixed supply — 21 million coins, enforced by mathematics, that no person or institution can ever change.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🌐</span><span>Bitcoin is a decentralized network — running on 50,000+ independent computers worldwide with no central authority, no headquarters, and no off switch.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🔐</span><span>Bitcoin held in your own wallet cannot be frozen, seized, or inflated by anyone. For the first time ever, you can truly own money — not just hold it at someone else's permission.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">⚡</span><span>The Bitcoin protocol has run for 15+ years with zero downtime and zero successful hacks. It is the most reliable financial infrastructure ever built.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🥇</span><span>Bitcoin is not "just another crypto." It has a unique combination of decentralization, security, fixed supply, and network size that no other digital asset comes close to matching.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">⛓️</span><span>Step 5 goes deeper into how the blockchain actually works — the technology that makes all of this possible without requiring trust in any single person or institution.</span></div>
+    </div>
+  </div>
+
+</div><!-- /article-wrap -->
+
+<!-- STEP NAV -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="btc-step-03.html" class="snb-prev reveal">
+      <div class="snb-icon">🕵️</div>
+      <div>
+        <div class="snb-label">← Step 3</div>
+        <div class="snb-title">Who Is Satoshi Nakamoto?</div>
+        <div class="snb-desc">The anonymous genius who built the exit</div>
+      </div>
+    </a>
+    <a href="btc-step-05.html" class="snb-next reveal">
+      <div class="snb-icon">⛓️</div>
+      <div>
+        <div class="snb-label">Step 5 →</div>
+        <div class="snb-title">The Blockchain Explained</div>
+        <div class="snb-desc">The technology that makes trust obsolete</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- MINIMAP -->
+<div class="steps-minimap">
+  <div class="sm-card reveal">
+    <div class="sm-title">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step done" title="Step 1 — What Is Money?">1</a>
+      <a href="btc-step-02.html" class="sm-step done" title="Step 2 — The Problem With Fiat">2</a>
+      <a href="btc-step-03.html" class="sm-step done" title="Step 3 — Who Is Satoshi?">3</a>
+      <a href="btc-step-04.html" class="sm-step current" title="Step 4 — What Is Bitcoin?">4</a>
+      <a href="btc-step-05.html" class="sm-step" title="Step 5 — The Blockchain">5</a>
+      <a href="btc-step-06.html" class="sm-step" title="Step 6 — Why 21 Million?">6</a>
+      <a href="btc-step-07.html" class="sm-step phase-2" title="Step 7 — Wallets & Keys">7</a>
+      <a href="btc-step-08.html" class="sm-step phase-2" title="Step 8 — Not Your Keys">8</a>
+      <a href="btc-step-09.html" class="sm-step phase-2" title="Step 9 — Buying Bitcoin">9</a>
+      <a href="btc-step-10.html" class="sm-step phase-2" title="Step 10 — What Is DCA?">10</a>
+      <a href="btc-step-11.html" class="sm-step phase-2" title="Step 11 — Bitcoin vs Gold">11</a>
+      <a href="btc-step-12.html" class="sm-step phase-2" title="Step 12 — Bitcoin vs Real Estate">12</a>
+      <a href="btc-step-13.html" class="sm-step phase-3" title="Step 13 — The Halving">13</a>
+      <a href="btc-step-14.html" class="sm-step phase-3" title="Step 14 — Network Effect">14</a>
+      <a href="btc-step-15.html" class="sm-step phase-3" title="Step 15 — Lightning Network">15</a>
+      <a href="btc-step-16.html" class="sm-step phase-3" title="Step 16 — Is Bitcoin Legal?">16</a>
+      <a href="btc-step-17.html" class="sm-step phase-3" title="Step 17 — Bitcoin & Taxes">17</a>
+      <a href="btc-step-18.html" class="sm-step phase-3" title="Step 18 — Bitcoin for Retirement">18</a>
+      <a href="btc-step-19.html" class="sm-step phase-4" title="Step 19 — Bitcoin & Freedom">19</a>
+      <a href="btc-step-20.html" class="sm-step phase-4" title="Step 20 — Every Objection Answered">20</a>
+      <a href="btc-step-21.html" class="sm-step phase-4" title="Step 21 — Your Path Forward">21</a>
+    </div>
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(34,197,94,.6)"></div>Completed</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--btc)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(247,147,26,.4)"></div>Phase 2</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(139,92,246,.4)"></div>Phase 3</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(255,107,0,.4)"></div>Phase 4</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+      <a href="raise-with-bitcoin.html">DCA Calculator</a>
+      <a href="real-estate-vs-bitcoin.html">RE vs BTC</a>
+      <a href="Keychain.html">Keychain</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n);
+  localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE BTC PRICE ──
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json())
+    .then(d => { document.getElementById('btcPriceNav').textContent = '$' + d.bitcoin.usd.toLocaleString(); })
+    .catch(() => {});
+}
+updatePrice();
+setInterval(updatePrice, 10000);
+
+// ── SCROLL + READING PROGRESS ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── FLOATING NODES (hero bg) ──
+(function() {
+  const container = document.getElementById('heroNodes');
+  const colors = ['rgba(247,147,26,', 'rgba(34,197,94,', 'rgba(99,102,241,'];
+  for (let i = 0; i < 12; i++) {
+    const node = document.createElement('div');
+    const size = 4 + Math.random() * 8;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    node.className = 'node';
+    node.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;top:${Math.random()*100}%;
+      background:${color}0.3);
+      animation-duration:${4+Math.random()*4}s;
+      animation-delay:${Math.random()*4}s;
+    `;
+    container.appendChild(node);
+  }
+})();
+
+// ── FAQ ACCORDION ──
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
