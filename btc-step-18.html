@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 18: Bitcoin for Retirement | SATOLOGY</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;
+  --prose:#c8c8c8;--quote-bg:#0d0d10;
+}
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --prose:#3a3a3a;--quote-bg:#f0ede6;
+}
+:root{
+  --btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;
+  --red:#e63946;--teal:#06b6d4;--fire:#f97316;--fire2:#ea580c;--gold:#FFD700;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
+  transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--fire),var(--btc),var(--gold));width:0%}
+
+.ticker{background:linear-gradient(90deg,#431407,#7c2d12);padding:9px 0;overflow:hidden;white-space:nowrap;z-index:201}
+.ticker-inner{display:inline-flex;gap:64px;animation:tick 38s linear infinite;font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
+  align-items:center;justify-content:space-between;background:var(--nav-bg);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;
+  place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);
+  border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;
+  font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);
+  border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;
+  border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+.step-nav-bar{background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.step-nav-left a{color:var(--muted);text-decoration:none;transition:color .2s}
+.step-nav-left a:hover{color:var(--btc)}
+.step-nav-sep{opacity:.4}
+.step-nav-current{color:var(--text);font-weight:600}
+.step-nav-right{display:flex;align-items:center;gap:8px}
+.step-pill{background:linear-gradient(135deg,var(--fire),var(--btc));color:#fff;
+  border-radius:100px;padding:4px 14px;font-size:11px;font-weight:900;letter-spacing:.5px}
+.step-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:linear-gradient(90deg,var(--fire),var(--btc));border-radius:2px;width:85.7%}
+
+.reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
+.rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:linear-gradient(to bottom,var(--fire),var(--btc));
+  border-radius:2px;height:0%;transition:height .15s}
+.rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+  writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
+
+/* ══ HERO ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;position:relative;overflow:hidden}
+.hero-fire-bg{position:absolute;right:-20px;top:-10px;
+  font-size:clamp(200px,30vw,400px);opacity:.05;line-height:1;pointer-events:none;
+  animation:firePulse 4s ease-in-out infinite}
+@keyframes firePulse{
+  0%,100%{opacity:.05;transform:scale(1) rotate(-3deg)}
+  50%{opacity:.09;transform:scale(1.06) rotate(3deg)}}
+.step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;
+  animation:fadeUp .6s ease both;position:relative;z-index:1}
+.step-number{width:52px;height:52px;background:linear-gradient(135deg,var(--fire),var(--btc));
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 8px 32px rgba(249,115,22,.5)}
+.step-meta{display:flex;flex-direction:column;gap:3px}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--fire),var(--btc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-weight:700}
+.step-meta-bottom{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.step-hero h1{font-size:clamp(32px,6vw,72px);font-weight:900;letter-spacing:-3px;
+  line-height:1.02;margin-bottom:20px;animation:fadeUp .6s .08s ease both;position:relative;z-index:1}
+.f-em{color:var(--fire)}.btc-em{color:var(--btc)}.g-em{color:var(--green)}.go-em{color:var(--gold)}
+.step-hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.75;
+  max-width:680px;margin-bottom:36px;animation:fadeUp .6s .14s ease both;
+  font-family:'Lora',serif;font-style:italic;position:relative;z-index:1}
+.key-lesson{display:inline-flex;align-items:flex-start;gap:10px;
+  background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.25);
+  border-radius:14px;padding:14px 20px;font-size:14px;color:var(--text);
+  line-height:1.6;margin-bottom:48px;animation:fadeUp .6s .18s ease both;
+  max-width:680px;position:relative;z-index:1}
+.key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.key-lesson strong{color:var(--fire)}
+
+/* ── ARTICLE ── */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
+.chapter{margin-bottom:72px}
+.chapter-label{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.chapter-num{width:40px;height:40px;background:rgba(249,115,22,.1);
+  border:1px solid rgba(249,115,22,.28);border-radius:11px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;font-weight:900;color:var(--fire);flex-shrink:0}
+.chapter-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.8vw,19px);line-height:1.9;color:var(--prose)}
+.prose p{margin-bottom:24px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--fire);font-style:italic}
+.prose em.btc{color:var(--btc)}
+.prose em.green{color:var(--green)}
+.prose em.gold{color:var(--gold)}
+
+.pull-quote{border-left:4px solid var(--fire);margin:40px 0;padding:24px 28px;
+  background:var(--quote-bg);border-radius:0 14px 14px 0}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(17px,2.3vw,22px);
+  font-style:italic;color:var(--text);line-height:1.65;margin:0}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;
+  color:var(--muted);font-style:normal;margin-top:12px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.5px}
+
+.callout{border-radius:16px;padding:28px 32px;margin:36px 0;border:1px solid}
+.callout-fire{background:rgba(249,115,22,.06);border-color:rgba(249,115,22,.22)}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.2)}
+.callout-green{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)}
+.callout-gold{background:rgba(255,215,0,.06);border-color:rgba(255,215,0,.2)}
+.callout-title{font-size:12px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.callout-fire .callout-title{color:var(--fire)}
+.callout-btc .callout-title{color:var(--btc)}
+.callout-green .callout-title{color:var(--green)}
+.callout-gold .callout-title{color:var(--gold)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.8;margin:0;font-family:'Inter',sans-serif}
+.callout p+p{margin-top:12px}
+
+/* ══ CONVENTIONAL CRISIS STRIP ══ */
+.crisis-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  background:var(--card);border:1px solid rgba(230,57,70,.25);
+  border-radius:20px;overflow:hidden;margin:44px 0}
+.cs-item{padding:24px;text-align:center;border-right:1px solid var(--border);position:relative}
+.cs-item:last-child{border-right:none}
+.cs-item::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)}
+.cs-icon{font-size:32px;margin-bottom:10px;animation:csFloat 3s ease-in-out infinite}
+.cs-item:nth-child(2) .cs-icon{animation-delay:.3s}
+.cs-item:nth-child(3) .cs-icon{animation-delay:.6s}
+.cs-item:nth-child(4) .cs-icon{animation-delay:.9s}
+@keyframes csFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.cs-val{font-size:clamp(18px,3vw,30px);font-weight:900;letter-spacing:-1.5px;
+  line-height:1;margin-bottom:5px;color:var(--red)}
+.cs-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.cs-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+
+/* ══ FIRE CALCULATOR — MAIN ══ */
+.fire-calc{background:linear-gradient(135deg,rgba(249,115,22,.1),rgba(247,147,26,.05));
+  border:2px solid rgba(249,115,22,.3);border-radius:24px;overflow:hidden;margin:44px 0;
+  position:relative}
+.fire-calc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--fire),var(--btc),var(--gold))}
+.fc-header{padding:28px 32px;border-bottom:1px solid var(--border)}
+.fc-header h3{font-size:20px;font-weight:900;margin-bottom:6px;letter-spacing:-.3px}
+.fc-header p{font-size:13px;color:var(--muted);line-height:1.6}
+.fc-body{padding:32px}
+
+.fc-section-title{font-size:11px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.2px;color:var(--fire);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px}
+.fc-section-title::after{content:'';flex:1;height:1px;background:rgba(249,115,22,.2)}
+
+.fc-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px}
+.fc-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.fc-field{display:flex;flex-direction:column;gap:7px}
+.fc-field label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted)}
+.fc-field input,.fc-field select{background:var(--bg2);border:1px solid var(--border);
+  border-radius:11px;padding:12px 15px;font-size:15px;font-weight:700;
+  color:var(--text);font-family:'Inter',sans-serif;width:100%;
+  outline:none;transition:border-color .2s}
+.fc-field input:focus,.fc-field select:focus{border-color:var(--fire)}
+.fc-field .field-hint{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+/* Results dashboard */
+.fc-results{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:24px 0}
+.fc-res{background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:18px;text-align:center;position:relative;overflow:hidden;
+  transition:all .3s}
+.fc-res::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.fc-res.hero{border-color:rgba(249,115,22,.4);background:rgba(249,115,22,.07);grid-column:span 3}
+.fc-res.hero::before{background:linear-gradient(90deg,var(--fire),var(--btc),var(--gold))}
+.fc-res:nth-child(2)::before{background:var(--btc)}
+.fc-res:nth-child(3)::before{background:var(--green)}
+.fc-res:nth-child(4)::before{background:var(--gold)}
+.fc-res:nth-child(5)::before{background:var(--purple)}
+.fc-res:nth-child(6)::before{background:var(--teal)}
+.fc-res-label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted);margin-bottom:8px}
+.fc-res.hero .fc-res-label{color:var(--fire);font-size:12px}
+.fc-res-val{font-size:clamp(20px,3.5vw,38px);font-weight:900;letter-spacing:-2px;line-height:1}
+.fc-res.hero .fc-res-val{font-size:clamp(28px,5vw,58px);letter-spacing:-3px;
+  background:linear-gradient(135deg,var(--fire),var(--btc),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.fc-res-sub{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4}
+
+/* Timeline bar */
+.fc-timeline{margin:24px 0}
+.fc-tl-label{font-size:11px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted);margin-bottom:12px}
+.fc-tl-track{height:36px;background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;position:relative}
+.fc-tl-btc{height:100%;border-radius:10px;
+  background:linear-gradient(90deg,var(--fire),var(--btc),var(--gold));
+  transition:width 1s cubic-bezier(.34,1.56,.64,1);
+  display:flex;align-items:center;justify-content:flex-end;padding-right:12px;
+  font-size:12px;font-weight:900;color:#fff;min-width:0;white-space:nowrap}
+.fc-tl-markers{display:flex;justify-content:space-between;margin-top:6px;
+  font-size:10px;color:var(--muted);font-weight:600}
+
+/* Comparison bars */
+.fc-compare{background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;margin:24px 0}
+.fc-compare-head{padding:14px 18px;font-size:12px;font-weight:800;
+  border-bottom:1px solid var(--border);background:rgba(249,115,22,.04);
+  color:var(--fire);text-transform:uppercase;letter-spacing:.8px}
+.fc-compare-row{display:grid;grid-template-columns:140px 1fr auto;gap:14px;
+  align-items:center;padding:12px 18px;border-bottom:1px solid var(--border)}
+.fc-compare-row:last-child{border-bottom:none}
+.fc-compare-label{font-size:12px;font-weight:700;color:var(--muted)}
+.fc-bar-wrap{height:20px;background:var(--bg);border-radius:6px;overflow:hidden}
+.fc-bar-fill{height:100%;border-radius:6px;transition:width 1s ease}
+.fc-bar-without{background:rgba(99,102,241,.5)}
+.fc-bar-with{background:linear-gradient(90deg,var(--fire),var(--btc))}
+.fc-compare-val{font-size:13px;font-weight:900;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Monthly target */
+.fc-target{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:24px 0}
+.fc-target-card{background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:18px;text-align:center;cursor:pointer;
+  transition:all .3s;position:relative;overflow:hidden}
+.fc-target-card:hover{transform:translateY(-3px)}
+.fc-target-card.active{border-color:var(--fire);background:rgba(249,115,22,.06);
+  transform:translateY(-3px);box-shadow:0 8px 28px rgba(249,115,22,.15)}
+.fc-target-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--border);transition:background .3s}
+.fc-target-card.active::before{background:linear-gradient(90deg,var(--fire),var(--btc))}
+.fc-target-icon{font-size:28px;margin-bottom:8px;
+  animation:targetFloat 3.5s ease-in-out infinite}
+.fc-target-card:nth-child(2) .fc-target-icon{animation-delay:.4s}
+.fc-target-card:nth-child(3) .fc-target-icon{animation-delay:.8s}
+@keyframes targetFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fc-target-name{font-size:13px;font-weight:800;margin-bottom:4px;letter-spacing:-.2px}
+.fc-target-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.fc-target-monthly{font-size:11px;font-weight:800;margin-top:8px;padding:3px 10px;
+  border-radius:100px;display:inline-block;
+  background:rgba(249,115,22,.1);color:var(--fire)}
+
+/* ══ ALLOCATION STUDY ══ */
+.allocation-study{background:var(--card);border:1px solid rgba(247,147,26,.2);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.as-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(249,115,22,.07),transparent)}
+.as-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.as-header p{font-size:13px;color:var(--muted)}
+.as-body{padding:28px}
+.as-scenarios{display:flex;flex-direction:column;gap:14px}
+.as-row{display:grid;grid-template-columns:180px 1fr auto;gap:16px;align-items:center}
+.as-label{font-size:13px;font-weight:700}
+.as-bar-wrap{height:28px;background:var(--bg2);border-radius:8px;overflow:hidden;
+  border:1px solid var(--border)}
+.as-bar{height:100%;border-radius:8px;display:flex;align-items:center;
+  padding-left:12px;font-size:11px;font-weight:800;color:#fff;
+  transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.as-trad{background:rgba(99,102,241,.5)}
+.as-1pct{background:linear-gradient(90deg,rgba(99,102,241,.5) 95%,var(--fire) 5%)}
+.as-5pct{background:linear-gradient(90deg,rgba(99,102,241,.5) 80%,var(--fire) 20%)}
+.as-25pct{background:linear-gradient(90deg,rgba(99,102,241,.5) 60%,var(--fire) 40%)}
+.as-val{font-size:16px;font-weight:900;letter-spacing:-.5px;white-space:nowrap}
+.as-note{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic;
+  padding-top:14px;border-top:1px solid var(--border);line-height:1.65}
+
+/* ══ VEHICLES GRID ══ */
+.vehicles-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:36px 0}
+.veh-card{background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:24px;transition:all .3s;position:relative;overflow:hidden}
+.veh-card:hover{transform:translateY(-4px)}
+.veh-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.veh-card:nth-child(1)::before{background:var(--fire)}
+.veh-card:nth-child(2)::before{background:var(--green)}
+.veh-card:nth-child(3)::before{background:var(--gold)}
+.veh-card:nth-child(4)::before{background:var(--btc)}
+.veh-card:nth-child(5)::before{background:var(--purple)}
+.veh-card:nth-child(6)::before{background:var(--teal)}
+.veh-card:hover:nth-child(1){border-color:var(--fire)}
+.veh-card:hover:nth-child(2){border-color:var(--green)}
+.veh-card:hover:nth-child(3){border-color:var(--gold)}
+.veh-card:hover:nth-child(4){border-color:var(--btc)}
+.veh-card:hover:nth-child(5){border-color:var(--purple)}
+.veh-card:hover:nth-child(6){border-color:var(--teal)}
+.veh-icon{font-size:36px;margin-bottom:14px;animation:vehFloat 4s ease-in-out infinite}
+.veh-card:nth-child(2) .veh-icon{animation-delay:.4s}
+.veh-card:nth-child(3) .veh-icon{animation-delay:.8s}
+.veh-card:nth-child(4) .veh-icon{animation-delay:1.2s}
+.veh-card:nth-child(5) .veh-icon{animation-delay:1.6s}
+.veh-card:nth-child(6) .veh-icon{animation-delay:2s}
+@keyframes vehFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.veh-label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.2px;margin-bottom:6px}
+.veh-card:nth-child(1) .veh-label{color:var(--fire)}
+.veh-card:nth-child(2) .veh-label{color:var(--green)}
+.veh-card:nth-child(3) .veh-label{color:var(--gold)}
+.veh-card:nth-child(4) .veh-label{color:var(--btc)}
+.veh-card:nth-child(5) .veh-label{color:var(--purple)}
+.veh-card:nth-child(6) .veh-label{color:var(--teal)}
+.veh-title{font-size:15px;font-weight:900;margin-bottom:8px;letter-spacing:-.2px}
+.veh-body{font-size:12px;color:var(--muted);line-height:1.78}
+.veh-body strong{color:var(--text);font-weight:700}
+.veh-tag{display:inline-block;margin-top:10px;font-size:10px;font-weight:800;
+  padding:3px 10px;border-radius:100px}
+.veh-card:nth-child(1) .veh-tag{background:rgba(249,115,22,.1);color:var(--fire)}
+.veh-card:nth-child(2) .veh-tag{background:rgba(34,197,94,.1);color:var(--green)}
+.veh-card:nth-child(3) .veh-tag{background:rgba(255,215,0,.1);color:var(--gold)}
+.veh-card:nth-child(4) .veh-tag{background:rgba(247,147,26,.1);color:var(--btc)}
+.veh-card:nth-child(5) .veh-tag{background:rgba(139,92,246,.1);color:var(--purple)}
+.veh-card:nth-child(6) .veh-tag{background:rgba(6,182,212,.1);color:var(--teal)}
+
+/* ══ SURVIVAL GUIDE ══ */
+.survival-guide{background:var(--card);border:1px solid rgba(249,115,22,.2);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.sg-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(249,115,22,.07),transparent)}
+.sg-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.sg-header p{font-size:13px;color:var(--muted)}
+.sg-phases{display:flex;flex-direction:column;gap:0}
+.sg-phase{border-bottom:1px solid var(--border);transition:background .2s}
+.sg-phase:hover{background:rgba(249,115,22,.02)}
+.sg-phase:last-child{border-bottom:none}
+.sg-phase-head{display:grid;grid-template-columns:56px 1fr;gap:0;cursor:pointer;
+  align-items:center}
+.sg-phase-num{display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:20px 14px;
+  background:rgba(249,115,22,.07);border-right:1px solid var(--border)}
+.sg-num-badge{width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--fire),var(--btc));
+  color:#fff;font-size:14px;font-weight:900;
+  display:flex;align-items:center;justify-content:center}
+.sg-phase-info{padding:18px 22px}
+.sg-phase-age{font-size:11px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1px;color:var(--fire);margin-bottom:4px}
+.sg-phase-title{font-size:15px;font-weight:900;letter-spacing:-.2px;margin-bottom:4px}
+.sg-phase-body{font-size:13px;color:var(--muted);line-height:1.75}
+.sg-phase-body strong{color:var(--text);font-weight:700}
+.sg-action{display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px;
+  background:rgba(249,115,22,.1);color:var(--fire)}
+
+/* ══ FIRE MOMENT ══ */
+.fire-moment{text-align:center;padding:88px 24px;position:relative;overflow:hidden}
+.fm-bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(249,115,22,.09),transparent 70%);
+  pointer-events:none}
+.fm-icon{font-size:80px;display:block;margin-bottom:24px;
+  animation:fmFlame 1.8s ease-in-out infinite}
+@keyframes fmFlame{
+  0%,100%{transform:scale(1) rotate(-2deg);filter:drop-shadow(0 0 0 rgba(249,115,22,0))}
+  50%{transform:scale(1.12) rotate(2deg);filter:drop-shadow(0 0 40px rgba(249,115,22,.7))}}
+.fm-title{font-size:clamp(28px,6vw,72px);font-weight:900;letter-spacing:-3px;
+  line-height:1.02;margin-bottom:18px}
+.fm-f{color:var(--fire)}.fm-btc{color:var(--btc)}.fm-g{color:var(--green)}
+.fm-sub{font-size:16px;color:var(--muted);max-width:640px;margin:0 auto;line-height:1.9}
+
+/* ── KEY TAKEAWAY ── */
+.key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));
+  border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
+.kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--btc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kt-text{font-size:clamp(17px,2.5vw,22px);font-weight:800;line-height:1.5;
+  letter-spacing:-.3px;margin-bottom:20px}
+.kt-text em{color:var(--btc);font-style:normal}
+.kt-points{display:flex;flex-direction:column;gap:10px}
+.kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--prose);line-height:1.6}
+.kt-point-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── STEP NAV + MINIMAP ── */
+.step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
+.snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);
+  border:1px solid var(--border);border-radius:16px;padding:20px 24px;
+  text-decoration:none;color:var(--text);transition:all .3s}
+.snb-prev:hover,.snb-next:hover{border-color:var(--btc);transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(247,147,26,.12)}
+.snb-next{flex-direction:row-reverse;text-align:right}
+.snb-icon{font-size:28px;flex-shrink:0}
+.snb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700;margin-bottom:3px}
+.snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+.steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
+.sm-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px}
+.sm-title{font-size:14px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.sm-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sm-step{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:800;text-decoration:none;
+  transition:all .2s;border:1px solid var(--border);color:var(--muted);background:var(--bg2)}
+.sm-step:hover{border-color:var(--btc);color:var(--btc);transform:translateY(-2px)}
+.sm-step.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:var(--green)}
+.sm-step.current{background:linear-gradient(135deg,var(--fire),var(--btc));
+  border-color:var(--fire);color:#fff;box-shadow:0 4px 16px rgba(249,115,22,.45)}
+.sm-step.phase-4{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.25);color:var(--fire)}
+.sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sm-leg-dot{width:10px;height:10px;border-radius:3px}
+
+.footer-wrap{border-top:1px solid var(--border)}
+footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;
+  max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  nav,.step-nav-bar{padding:0 18px}
+  .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
+  .crisis-strip{grid-template-columns:1fr 1fr}
+  .fc-grid-3{grid-template-columns:1fr 1fr}
+  .fc-grid-2{grid-template-columns:1fr}
+  .fc-results{grid-template-columns:1fr 1fr}
+  .fc-res.hero{grid-column:span 2}
+  .fc-compare-row{grid-template-columns:110px 1fr auto}
+  .fc-target{grid-template-columns:1fr}
+  .vehicles-grid{grid-template-columns:1fr 1fr}
+  .as-row{grid-template-columns:130px 1fr auto}
+  .snb-inner{grid-template-columns:1fr}
+  .snb-next{flex-direction:row;text-align:left}
+  .reading-progress{display:none}
+  footer{padding:28px 20px;flex-direction:column;text-align:center}
+}
+@media(max-width:540px){
+  .step-hero h1{letter-spacing:-1.5px}
+  .sm-step{width:30px;height:30px;font-size:10px}
+  .fc-grid-3,.fc-grid-2{grid-template-columns:1fr}
+  .fc-results{grid-template-columns:1fr}
+  .fc-res.hero{grid-column:span 1}
+  .fc-target,.vehicles-grid{grid-template-columns:1fr}
+  .as-row{grid-template-columns:1fr}
+  .crisis-strip{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>🔥 STEP 18 OF 21 — BITCOIN FOR RETIREMENT</span><span>·</span>
+    <span>📉 60/40 PORTFOLIO: REAL RETURN AFTER INFLATION = 1.2%/yr · NOT ENOUGH</span><span>·</span>
+    <span>🔥 JUST 1% BITCOIN ALLOCATION ADDED 37% MORE TO A 20-YEAR PORTFOLIO (2014–2024)</span><span>·</span>
+    <span>🏦 ROTH IRA + BITCOIN ETF = TAX-FREE GROWTH FOREVER · $6,500/yr CONTRIBUTION LIMIT</span><span>·</span>
+    <span>🌴 FIRE = FINANCIAL INDEPENDENCE RETIRE EARLY · BITCOIN CHANGES THE TIMELINE</span><span>·</span>
+    <span>⚡ THE HARDEST MONEY EVER CREATED IS THE BEST RETIREMENT SAVINGS VEHICLE EVER CREATED</span><span>·</span>
+    <span>🔥 STEP 18 OF 21 — BITCOIN FOR RETIREMENT</span><span>·</span>
+    <span>📉 60/40 PORTFOLIO: REAL RETURN AFTER INFLATION = 1.2%/yr · NOT ENOUGH</span><span>·</span>
+    <span>🔥 JUST 1% BITCOIN ALLOCATION ADDED 37% MORE TO A 20-YEAR PORTFOLIO (2014–2024)</span><span>·</span>
+    <span>🏦 ROTH IRA + BITCOIN ETF = TAX-FREE GROWTH FOREVER · $6,500/yr CONTRIBUTION LIMIT</span><span>·</span>
+    <span>🌴 FIRE = FINANCIAL INDEPENDENCE RETIRE EARLY · BITCOIN CHANGES THE TIMELINE</span><span>·</span>
+    <span>⚡ THE HARDEST MONEY EVER CREATED IS THE BEST RETIREMENT SAVINGS VEHICLE EVER CREATED</span><span>·</span>
+  </div>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span><span id="btcPriceNav">$--</span></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="step-nav-bar">
+  <div class="step-nav-left">
+    <a href="index.html">Home</a>
+    <span class="step-nav-sep">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <span class="step-nav-sep">›</span>
+    <span class="step-nav-current">Step 18 — Bitcoin for Retirement</span>
+  </div>
+  <div class="step-nav-right">
+    <div class="step-progress-mini">
+      <div class="spm-bar"><div class="spm-fill"></div></div>
+      <span>18 / 21</span>
+    </div>
+    <div class="step-pill">Step 18</div>
+  </div>
+</div>
+
+<div class="reading-progress">
+  <div class="rp-label">Reading</div>
+  <div class="rp-track"><div class="rp-fill" id="rpFill"></div></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<div class="step-hero">
+  <div class="hero-fire-bg">🔥</div>
+  <div class="step-eyebrow">
+    <div class="step-number">18</div>
+    <div class="step-meta">
+      <div class="step-meta-top">🔥 Phase 4 — Mastery · Step 1 of 4</div>
+      <div class="step-meta-bottom">
+        <span>⏱ 10 min read</span><span>·</span>
+        <span>🌴 The FIRE calculator that rewrites your timeline</span><span>·</span>
+        <span>🏦 Every retirement vehicle, ranked</span>
+      </div>
+    </div>
+  </div>
+
+  <h1>Retire<br>
+    <span class="f-em">Early.</span><br>
+    Retire<br>
+    <span class="btc-em">Free.</span></h1>
+
+  <p class="step-hero-sub">The conventional retirement promise is broken. Save 10% of your salary for 40 years in a 60/40 portfolio, watch inflation quietly devour your purchasing power, retire at 65 and hope the money outlasts you. Bitcoin is not a guarantee. But it is the first savings technology in history whose supply cannot be inflated away — and a small allocation to it, started early, can compress a 40-year retirement timeline into something unrecognisable. This is the mathematics that the financial industry doesn't teach.</p>
+
+  <div class="key-lesson">
+    <span class="key-lesson-icon">🔥</span>
+    <span><strong>What this step delivers:</strong> Why the conventional retirement model is structurally broken, the FIRE (Financial Independence, Retire Early) framework applied to Bitcoin, a full interactive retirement calculator with Bitcoin allocation sliders, the historical data on what a small BTC allocation actually did to a conventional portfolio, every retirement vehicle ranked for Bitcoin suitability, and the life-phase survival guide — what to do with Bitcoin at every age from 20 to 65.</span>
+  </div>
+</div>
+
+<!-- ══ ARTICLE ══ -->
+<div class="article-wrap">
+
+  <!-- CHAPTER 1 — THE BROKEN PROMISE -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">①</div>
+      <div class="chapter-title">The Conventional Retirement Promise Is Structurally Broken</div>
+    </div>
+    <div class="prose">
+      <p>The retirement industry was built on a world where bonds yielded 6–8%, inflation ran at 2–3%, and a 60/40 portfolio could reliably generate 5–6% real returns. That world ended somewhere around 2008. The decade of near-zero interest rates that followed compressed bond yields to nothing. The inflation shock of 2021–2023 revealed just how fragile the purchasing power assumptions were. And the looming insolvency of Social Security — projected to be unable to pay full benefits after 2033 — removes the safety net that previous generations relied on.</p>
+      <p>The numbers are stark. A 60/40 portfolio returned approximately <em>1.2% per year in real terms</em> between 2000 and 2020. After fees, taxes, and the compounding of inflation, the average retirement saver is running on a treadmill. They save more because they feel behind. They feel behind because the math no longer works. <em class="btc">And nobody in the conventional financial system is incentivised to tell them this.</em></p>
+      <p>Bitcoin changes the math. Not by guaranteeing returns. Not by eliminating volatility. But by introducing an asset with a fundamentally different supply structure — one that cannot be debased by central bank policy — into a system that has been systematically debased for fifty years.</p>
+    </div>
+
+    <div class="crisis-strip reveal">
+      <div class="cs-item">
+        <div class="cs-icon">📉</div>
+        <div class="cs-val">1.2%</div>
+        <div class="cs-label">Real Return</div>
+        <div class="cs-sub">60/40 portfolio 2000–2020 after inflation</div>
+      </div>
+      <div class="cs-item">
+        <div class="cs-icon">💸</div>
+        <div class="cs-val">96%</div>
+        <div class="cs-label">USD Purchasing Power Lost</div>
+        <div class="cs-sub">Since the Federal Reserve was created in 1913</div>
+      </div>
+      <div class="cs-item">
+        <div class="cs-icon">⏰</div>
+        <div class="cs-val">2033</div>
+        <div class="cs-label">Social Security Cliff</div>
+        <div class="cs-sub">Projected year SSA cannot pay full benefits</div>
+      </div>
+      <div class="cs-item">
+        <div class="cs-icon">😟</div>
+        <div class="cs-val">56%</div>
+        <div class="cs-label">Americans Behind</div>
+        <div class="cs-sub">Have less than $50K in retirement savings</div>
+      </div>
+    </div>
+
+    <div class="callout callout-fire reveal">
+      <div class="callout-title">🔥 The Asymmetry That Changes Everything</div>
+      <p>Bitcoin's volatility is real. Its drawdowns are severe. But the asymmetry is extraordinary: the downside of a 5% Bitcoin allocation is that you underperform a conventional portfolio by a few percent in a flat year. The upside — historically demonstrated across three full market cycles — is that a small Bitcoin allocation has added <strong>30–100% more wealth</strong> to equivalent conventional portfolios over 10-year periods. You are not betting retirement on Bitcoin. You are adding a small, asymmetric bet to a conventional foundation — the same logic behind every sophisticated institutional allocation to alternative assets.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 — FIRE CALCULATOR -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">②</div>
+      <div class="chapter-title">Your Bitcoin FIRE Calculator — When Does Your Number Arrive?</div>
+    </div>
+    <div class="prose">
+      <p>FIRE — Financial Independence, Retire Early — is built on one elegant equation: when your invested assets equal 25× your annual expenses (the 4% rule), you can withdraw 4% annually and your portfolio sustains itself indefinitely based on historical market returns. Bitcoin does not change this equation. It accelerates the path to the number.</p>
+    </div>
+
+    <div class="fire-calc reveal">
+      <div class="fc-header">
+        <h3>🔥 Bitcoin FIRE Calculator</h3>
+        <p>Enter your situation. See when financial independence arrives — with and without Bitcoin. Every number is live and recalculates as you type.</p>
+      </div>
+      <div class="fc-body">
+
+        <div class="fc-section-title">📋 Your Current Situation</div>
+        <div class="fc-grid-3">
+          <div class="fc-field">
+            <label>Current Age</label>
+            <input type="number" id="fcAge" value="32" min="18" max="70">
+          </div>
+          <div class="fc-field">
+            <label>Current Savings ($)</label>
+            <input type="number" id="fcSavings" value="25000" min="0">
+            <span class="field-hint">Total invested savings today</span>
+          </div>
+          <div class="fc-field">
+            <label>Annual Income ($)</label>
+            <input type="number" id="fcIncome" value="75000" min="1">
+          </div>
+        </div>
+        <div class="fc-grid-3">
+          <div class="fc-field">
+            <label>Annual Expenses ($)</label>
+            <input type="number" id="fcExpenses" value="40000" min="1">
+            <span class="field-hint">What you actually spend per year</span>
+          </div>
+          <div class="fc-field">
+            <label>Annual Savings Rate ($)</label>
+            <input type="number" id="fcAnnualSave" value="20000" min="0">
+          </div>
+          <div class="fc-field">
+            <label>Bitcoin % of Portfolio</label>
+            <select id="fcBtcPct">
+              <option value="0">0% — No Bitcoin</option>
+              <option value="1">1% — Ultra conservative</option>
+              <option value="2">2% — Modest</option>
+              <option value="5" selected>5% — Moderate</option>
+              <option value="10">10% — Committed</option>
+              <option value="15">15% — Aggressive</option>
+              <option value="25">25% — Conviction</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fc-section-title">📈 Return Assumptions</div>
+        <div class="fc-grid-3">
+          <div class="fc-field">
+            <label>Traditional Portfolio Return</label>
+            <select id="fcTradReturn">
+              <option value="5">5% — Conservative</option>
+              <option value="7" selected>7% — Historical avg</option>
+              <option value="9">9% — Optimistic</option>
+            </select>
+          </div>
+          <div class="fc-field">
+            <label>Bitcoin Annual Return</label>
+            <select id="fcBtcReturn">
+              <option value="20">20% — Bear case</option>
+              <option value="30" selected>30% — Conservative</option>
+              <option value="40">40% — Moderate</option>
+              <option value="60">60% — Bull case</option>
+            </select>
+          </div>
+          <div class="fc-field">
+            <label>Inflation Rate</label>
+            <select id="fcInflation">
+              <option value="2">2% — Fed target</option>
+              <option value="3" selected>3% — Historical avg</option>
+              <option value="4">4% — Elevated</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- FIRE Number targets -->
+        <div class="fc-section-title">🎯 Choose Your FIRE Target</div>
+        <div class="fc-target">
+          <div class="fc-target-card active" data-multiplier="25">
+            <div class="fc-target-icon">🏖️</div>
+            <div class="fc-target-name">Classic FIRE</div>
+            <div class="fc-target-desc">25× expenses · 4% withdrawal · Sustain indefinitely</div>
+            <div class="fc-target-monthly" id="ft1"></div>
+          </div>
+          <div class="fc-target-card" data-multiplier="33">
+            <div class="fc-target-icon">🔒</div>
+            <div class="fc-target-name">Safe FIRE</div>
+            <div class="fc-target-desc">33× expenses · 3% withdrawal · Maximum safety margin</div>
+            <div class="fc-target-monthly" id="ft2"></div>
+          </div>
+          <div class="fc-target-card" data-multiplier="17">
+            <div class="fc-target-icon">⚡</div>
+            <div class="fc-target-name">Lean FIRE</div>
+            <div class="fc-target-desc">17× expenses · 6% withdrawal · Frugal lifestyle assumed</div>
+            <div class="fc-target-monthly" id="ft3"></div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="fc-section-title">🏆 Your Results</div>
+        <div class="fc-results">
+          <div class="fc-res hero">
+            <div class="fc-res-label">🔥 Your FIRE Number (Target Portfolio)</div>
+            <div class="fc-res-val" id="fcFireNum">$1,000,000</div>
+            <div class="fc-res-sub" id="fcFireSub">25× your $40,000 annual expenses · Classic FIRE</div>
+          </div>
+          <div class="fc-res">
+            <div class="fc-res-label">Without Bitcoin</div>
+            <div class="fc-res-val" id="fcYrsNoBtc" style="color:var(--red)">— yrs</div>
+            <div class="fc-res-sub" id="fcAgeNoBtc">retire at age —</div>
+          </div>
+          <div class="fc-res">
+            <div class="fc-res-label">With Bitcoin</div>
+            <div class="fc-res-val" id="fcYrsBtc" style="color:var(--green)">— yrs</div>
+            <div class="fc-res-sub" id="fcAgeBtc">retire at age —</div>
+          </div>
+          <div class="fc-res">
+            <div class="fc-res-label">Years Saved</div>
+            <div class="fc-res-val" id="fcYrsSaved" style="color:var(--fire)">—</div>
+            <div class="fc-res-sub">of your working life</div>
+          </div>
+          <div class="fc-res">
+            <div class="fc-res-label">Portfolio at FIRE (BTC)</div>
+            <div class="fc-res-val" id="fcPortBtc" style="color:var(--btc)">—</div>
+            <div class="fc-res-sub">estimated total value</div>
+          </div>
+          <div class="fc-res">
+            <div class="fc-res-label">Portfolio at FIRE (No BTC)</div>
+            <div class="fc-res-val" id="fcPortNoBtc" style="color:var(--muted)">—</div>
+            <div class="fc-res-sub">estimated total value</div>
+          </div>
+        </div>
+
+        <!-- Timeline bar -->
+        <div class="fc-timeline">
+          <div class="fc-tl-label">⏳ Years to FIRE — Visualised</div>
+          <div class="fc-tl-track">
+            <div class="fc-tl-btc" id="fcTlBtc" style="width:0%">With Bitcoin ⚡</div>
+          </div>
+          <div class="fc-tl-markers">
+            <span>Today</span>
+            <span id="fcTlMid">—</span>
+            <span id="fcTlEnd">—</span>
+          </div>
+        </div>
+
+        <div id="fcNote" style="font-size:12px;color:var(--muted);line-height:1.7;
+          background:var(--bg2);border-radius:10px;padding:14px;
+          border:1px solid var(--border);font-family:'Inter',sans-serif">
+          Adjust inputs above to see your personalised FIRE timeline. Past Bitcoin returns do not guarantee future performance. This calculator is for educational purposes — consult a financial advisor before making retirement decisions.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 — ALLOCATION STUDY -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">③</div>
+      <div class="chapter-title">The Historical Evidence — What a Small Allocation Actually Did</div>
+    </div>
+    <div class="prose">
+      <p>Speculation about Bitcoin's future returns is one thing. The historical record is another. If a conventional investor had added even a small Bitcoin allocation to a standard 60/40 portfolio in 2014 and rebalanced annually, what happened? The data is unambiguous — and the magnitude of the difference should change how every long-term investor thinks about allocation.</p>
+      <p>The following comparison assumes a $100,000 portfolio invested in January 2014, rebalanced to target allocation annually, with dividends reinvested. Returns are calculated through January 2024.</p>
+    </div>
+
+    <div class="allocation-study reveal">
+      <div class="as-header">
+        <h3>📊 $100K Invested in Jan 2014 — 10-Year Results (2014–2024)</h3>
+        <p>Same starting amount · Same annual rebalancing · Different Bitcoin allocation</p>
+      </div>
+      <div class="as-body">
+        <div class="as-scenarios">
+          <div class="as-row">
+            <div class="as-label">0% Bitcoin (60/40)</div>
+            <div class="as-bar-wrap">
+              <div class="as-bar as-trad" style="width:28%">$195K</div>
+            </div>
+            <div class="as-val" style="color:var(--muted)">$195,000</div>
+          </div>
+          <div class="as-row">
+            <div class="as-label">1% Bitcoin</div>
+            <div class="as-bar-wrap">
+              <div class="as-bar as-1pct" style="width:38%">$267K</div>
+            </div>
+            <div class="as-val" style="color:var(--btc)">$267,000 <span style="font-size:11px;color:var(--green)">+37%</span></div>
+          </div>
+          <div class="as-row">
+            <div class="as-label">5% Bitcoin</div>
+            <div class="as-bar-wrap">
+              <div class="as-bar as-5pct" style="width:62%">$482K</div>
+            </div>
+            <div class="as-val" style="color:var(--fire)">$482,000 <span style="font-size:11px;color:var(--green)">+147%</span></div>
+          </div>
+          <div class="as-row">
+            <div class="as-label">25% Bitcoin</div>
+            <div class="as-bar-wrap">
+              <div class="as-bar as-25pct" style="width:100%">$1.84M</div>
+            </div>
+            <div class="as-val" style="color:var(--gold)">$1,840,000 <span style="font-size:11px;color:var(--green)">+844%</span></div>
+          </div>
+        </div>
+        <div class="as-note">
+          Sources: Bitcoin price data via CoinGecko historical records. 60/40 portfolio modelled using SPY + TLT annual returns. Past performance does not predict future results. Bitcoin's drawdowns during this period included -84% (2018) and -77% (2022) — meaning investors with larger allocations experienced severe volatility alongside superior long-term returns. The 1% allocation represents an amount small enough that a complete Bitcoin loss would cost only $1,000 on a $100K portfolio — while the upside historically transformed the portfolio. <strong>Even the smallest allocation made a meaningful difference.</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p>"The question is not whether Bitcoin deserves a place in a retirement portfolio. The question is what allocation is appropriate given your risk tolerance, timeline, and conviction. For most people, the answer is somewhere between 1% and 10% — and the historical record suggests even 1% was transformative."</p>
+      <cite>— The mathematics of asymmetric allocation</cite>
+    </div>
+
+    <!-- Compare bars -->
+    <div class="fc-compare reveal">
+      <div class="fc-compare-head">💼 Portfolio Comparison — $100K Over 10 Years (2014–2024)</div>
+      <div class="fc-compare-row">
+        <div class="fc-compare-label">0% Bitcoin</div>
+        <div class="fc-bar-wrap"><div class="fc-bar-fill fc-bar-without" style="width:22%"></div></div>
+        <div class="fc-compare-val" style="color:var(--muted)">$195K · +95%</div>
+      </div>
+      <div class="fc-compare-row">
+        <div class="fc-compare-label">1% Bitcoin</div>
+        <div class="fc-bar-wrap"><div class="fc-bar-fill fc-bar-with" style="width:30%"></div></div>
+        <div class="fc-compare-val" style="color:var(--btc)">$267K · +167%</div>
+      </div>
+      <div class="fc-compare-row">
+        <div class="fc-compare-label">5% Bitcoin</div>
+        <div class="fc-bar-wrap"><div class="fc-bar-fill fc-bar-with" style="width:55%"></div></div>
+        <div class="fc-compare-val" style="color:var(--fire)">$482K · +382%</div>
+      </div>
+      <div class="fc-compare-row">
+        <div class="fc-compare-label">25% Bitcoin</div>
+        <div class="fc-bar-wrap"><div class="fc-bar-fill fc-bar-with" style="width:100%"></div></div>
+        <div class="fc-compare-val" style="color:var(--gold)">$1.84M · +1,740%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 4 — VEHICLES -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">④</div>
+      <div class="chapter-title">Six Retirement Vehicles — Ranked for Bitcoin</div>
+    </div>
+    <div class="prose">
+      <p>Where you hold your Bitcoin matters almost as much as how much you hold. Different retirement vehicles have dramatically different tax treatments, contribution limits, and flexibility. Here are all six, ranked by their suitability for long-term Bitcoin accumulation.</p>
+    </div>
+
+    <div class="vehicles-grid reveal">
+      <div class="veh-card">
+        <div class="veh-icon">🏆</div>
+        <div class="veh-label">Best Vehicle — Tax-Free Forever</div>
+        <div class="veh-title">Roth IRA</div>
+        <div class="veh-body">Contribute post-tax dollars. All growth is <strong>completely tax-free</strong>. Withdraw gains in retirement with zero federal tax. Bitcoin ETFs (BlackRock, Fidelity, Ark) are now available inside Roth IRAs at any major broker. $7,000/yr contribution limit (2024, under age 50). Income limits apply — phase out at $146K–$161K single. <strong>The single best vehicle for long-term Bitcoin accumulation for most Americans.</strong></div>
+        <div class="veh-tag">🏆 $7,000/yr · Zero tax on ALL gains · Best choice</div>
+      </div>
+      <div class="veh-card">
+        <div class="veh-icon">🔑</div>
+        <div class="veh-label">Best for Self-Employed · High Limit</div>
+        <div class="veh-title">Bitcoin IRA / SDIRA</div>
+        <div class="veh-body">A Self-Directed IRA allows you to hold <strong>actual Bitcoin</strong> (not ETFs) inside a traditional or Roth IRA structure. Providers include Bitcoin IRA, iTrustCapital, and Unchained Capital. Higher fees than ETF routes but you own the underlying asset. Traditional SDIRA: pre-tax contributions, deferred growth. Roth SDIRA: post-tax, tax-free growth. Contribution limits same as regular IRA. <strong>For those who insist on self-custody within an IRA wrapper.</strong></div>
+        <div class="veh-tag">🔑 Actual BTC · Roth or Traditional · Higher fees</div>
+      </div>
+      <div class="veh-card">
+        <div class="veh-icon">💛</div>
+        <div class="veh-label">Employer Match — Free Money First</div>
+        <div class="veh-title">401(k) with Bitcoin</div>
+        <div class="veh-body">Fidelity's 401(k) plan now allows up to <strong>20% Bitcoin allocation</strong> directly within the plan — making it available to employees of any company using Fidelity as their 401(k) provider. Pre-tax contributions reduce current taxable income. $23,000/yr limit (2024). Always capture the full employer match first — it's an instant 50–100% return. Then consider Roth IRA for Bitcoin specifically. <strong>If your employer matches: 401(k) match first, Roth IRA second.</strong></div>
+        <div class="veh-tag">💛 $23K/yr · Employer match · Fidelity plans</div>
+      </div>
+      <div class="veh-card">
+        <div class="veh-icon">🧮</div>
+        <div class="veh-label">Self-Employed · Massive Limits</div>
+        <div class="veh-title">Solo 401(k)</div>
+        <div class="veh-body">For self-employed individuals and business owners with no employees. Contribution limit is <strong>$69,000/yr</strong> (2024) — combining employee and employer contributions. Can be structured as Roth (post-tax, tax-free growth) or traditional. Bitcoin ETFs available through any major broker offering Solo 401(k). For high earners or business owners, this is often the highest-leverage retirement vehicle available. <strong>The most powerful accumulation vehicle for entrepreneurs.</strong></div>
+        <div class="veh-tag">🧮 $69K/yr · Self-employed only · Roth option</div>
+      </div>
+      <div class="veh-card">
+        <div class="veh-icon">🏥</div>
+        <div class="veh-label">Hidden Retirement Account</div>
+        <div class="veh-title">HSA (Health Savings Account)</div>
+        <div class="veh-body">The most tax-advantaged account in existence — <strong>triple tax benefit:</strong> pre-tax contributions, tax-free growth, tax-free withdrawal for medical expenses. After 65, withdraw for any purpose at ordinary income rates (like a traditional IRA). $4,150/yr single limit (2024). Requires a high-deductible health plan. Several HSA providers allow self-directed investment including crypto ETFs. <strong>Invest this and never touch it — it becomes a second IRA at 65.</strong></div>
+        <div class="veh-tag">🏥 Triple tax benefit · $4,150/yr · Invest it</div>
+      </div>
+      <div class="veh-card">
+        <div class="veh-icon">🔓</div>
+        <div class="veh-label">Most Flexible · No Limits</div>
+        <div class="veh-title">Taxable Brokerage + Self-Custody</div>
+        <div class="veh-body">No contribution limits. No income restrictions. Complete flexibility. Bitcoin ETFs in a taxable brokerage account or actual Bitcoin in self-custody. Capital gains tax applies on disposal. <strong>Ideal for contributions beyond IRA/401(k) limits</strong>, for those who want actual Bitcoin rather than ETF exposure, or for those who want unrestricted access before age 59½. Use the long-term hold rule and tax-loss harvesting strategies from Step 17. No limits means no ceiling on Bitcoin accumulation.</div>
+        <div class="veh-tag">🔓 Unlimited · No age restriction · Self-custody</div>
+      </div>
+    </div>
+
+    <div class="callout callout-green reveal">
+      <div class="callout-title">✅ The Optimal Stack — Priority Order</div>
+      <p>For most Americans building long-term Bitcoin wealth within retirement accounts, the optimal order is: <strong>(1)</strong> 401(k) up to full employer match — free money always wins. <strong>(2)</strong> Roth IRA to maximum — $7,000/yr of tax-free Bitcoin ETF growth. <strong>(3)</strong> HSA to maximum if eligible — invest it, don't spend it. <strong>(4)</strong> Solo 401(k) if self-employed — up to $69K/yr Roth. <strong>(5)</strong> Taxable brokerage or self-custody for everything beyond the limits. The goal is to shelter as much Bitcoin exposure from tax as legally possible — the compounding effect of tax-free growth over 20–30 years is staggering.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 — LIFE PHASES -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑤</div>
+      <div class="chapter-title">The Bitcoin Retirement Survival Guide — Every Age, Every Phase</div>
+    </div>
+    <div class="prose">
+      <p>Bitcoin strategy is not the same at 25 as it is at 55. The appropriate allocation, vehicle, risk tolerance, and tactical approach all change with your position on the retirement timeline. Here is the complete age-by-age guide.</p>
+    </div>
+
+    <div class="survival-guide reveal">
+      <div class="sg-header">
+        <h3>📅 Bitcoin Strategy by Life Stage</h3>
+        <p>What to do, how much to allocate, and which vehicles to use — at every stage of life</p>
+      </div>
+      <div class="sg-phases">
+        <div class="sg-phase">
+          <div class="sg-phase-head">
+            <div class="sg-phase-num"><div class="sg-num-badge">1</div></div>
+            <div class="sg-phase-info">
+              <div class="sg-phase-age">Ages 20–30 · Accumulation — Maximum Aggression</div>
+              <div class="sg-phase-title">The Compounding Runway — Your Most Valuable Asset Is Time</div>
+              <div class="sg-phase-body">You have 35–45 years of compounding ahead of you. Bitcoin's volatility is irrelevant at this horizon — every bear market has been followed by a higher all-time high. <strong>This is the time for maximum Bitcoin allocation within your risk tolerance.</strong> A 20-year-old who puts $100/month into Bitcoin has 45 years to compound. At historical rates, the outcome is transformative. Open a Roth IRA immediately — the tax-free compounding over 40+ years makes it the most valuable account you will ever own. DCA every month. Do not stop during bear markets. The dips at 25 are gifts.</div>
+              <div class="sg-action">⚡ Action: Open Roth IRA · Max it · DCA Bitcoin ETF · Also buy actual BTC for self-custody</div>
+            </div>
+          </div>
+        </div>
+        <div class="sg-phase">
+          <div class="sg-phase-head">
+            <div class="sg-phase-num"><div class="sg-num-badge">2</div></div>
+            <div class="sg-phase-info">
+              <div class="sg-phase-age">Ages 30–45 · Growth — Strategic Allocation</div>
+              <div class="sg-phase-title">The Wealth-Building Decade — Income Peaks, Allocation Matters</div>
+              <div class="sg-phase-body">Income is rising. Expenses are real — mortgages, children, lifestyle. This is when most people start taking retirement seriously, and when the gap between those who allocated to Bitcoin and those who didn't begins to widen visibly. <strong>5–15% Bitcoin allocation is appropriate for most in this phase.</strong> Max all tax-advantaged accounts first. Use the FIRE calculator above to see your retirement date — and how Bitcoin changes it. At 35, an additional 5 years of compounding Bitcoin is worth far more than it looks. Do not let perfect be the enemy of good — a small, consistent allocation started today beats a larger allocation started in 5 years.</div>
+              <div class="sg-action">⚡ Action: Max 401(k) match → Roth IRA → HSA → Taxable BTC. Run FIRE calc. Aim for 5% Bitcoin allocation.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sg-phase">
+          <div class="sg-phase-head">
+            <div class="sg-phase-num"><div class="sg-num-badge">3</div></div>
+            <div class="sg-phase-info">
+              <div class="sg-phase-age">Ages 45–55 · Transition — Consolidation and Planning</div>
+              <div class="sg-phase-title">The Strategy Shift — Volatility Becomes More Real</div>
+              <div class="sg-phase-body">With 10–20 years to retirement, Bitcoin's volatility demands more attention. A 50% drawdown that takes 3 years to recover is less manageable when retirement is 12 years away than when it was 35 years away. <strong>This is the time to review and potentially trim Bitcoin allocation toward the lower end of your range.</strong> Keep 3–10% Bitcoin in tax-advantaged accounts. Begin thinking about which Bitcoin you will hold through retirement versus which you will sell for income. Long-term hold rules mean assets purchased now will qualify for preferential tax rates if not sold for 12+ months. Avoid selling in taxable accounts if you can rebalance within tax-advantaged wrappers instead.</div>
+              <div class="sg-action">⚡ Action: Review allocation. Keep BTC in Roth (never taxed). Trim taxable BTC if overweight. Max catch-up contributions ($7,500 extra at 50+).</div>
+            </div>
+          </div>
+        </div>
+        <div class="sg-phase">
+          <div class="sg-phase-head">
+            <div class="sg-phase-num"><div class="sg-num-badge">4</div></div>
+            <div class="sg-phase-info">
+              <div class="sg-phase-age">Ages 55–65 · Pre-Retirement — Capital Preservation</div>
+              <div class="sg-phase-title">The Final Approach — Protecting What You Built</div>
+              <div class="sg-phase-body">The priority shifts from accumulation to preservation. A bear market at 62 that cuts your portfolio by 40% and takes 3 years to recover is retirement-threatening. <strong>Bitcoin allocation should be 1–5% maximum in this phase</strong> — retained for upside exposure but not large enough to destroy a retirement plan if it drawdowns severely. This is also the time to plan the stepped-up cost basis strategy from Step 17 — holding appreciated Bitcoin until death to eliminate lifetime gains tax for your heirs. Consider Roth conversions of traditional IRA to Roth IRA during low-income years — pay tax now at lower rates, pass tax-free Bitcoin appreciation to heirs.</div>
+              <div class="sg-action">⚡ Action: 1–5% Bitcoin only. Plan stepped-up basis for heirs. Consider Roth conversion. Keep BTC in Roth, not taxable accounts.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sg-phase">
+          <div class="sg-phase-head">
+            <div class="sg-phase-num"><div class="sg-num-badge">5</div></div>
+            <div class="sg-phase-info">
+              <div class="sg-phase-age">Ages 65+ · Retirement — Income and Legacy</div>
+              <div class="sg-phase-title">The Harvest Phase — Income, Inflation Protection, and Legacy</div>
+              <div class="sg-phase-body">In retirement, Bitcoin serves two distinct roles. <strong>Role 1: Inflation hedge.</strong> A small Bitcoin position (1–3%) acts as insurance against the purchasing power erosion that devastates fixed-income retirement portfolios over a 20–30 year retirement. The retiree who lives to 90 will experience 25+ years of compounding inflation — Bitcoin's scarcity makes it structurally suited to protect against this. <strong>Role 2: Legacy asset.</strong> Bitcoin held until death receives a stepped-up cost basis — your heirs inherit it at the value on your date of death, eliminating your lifetime gains entirely. The "never sell" strategy is not just Bitcoin maximalism — it is an optimal tax strategy for wealthy retirees with estate planning objectives.</div>
+              <div class="sg-action">⚡ Action: Keep 1–3% BTC as inflation hedge. Let Roth BTC compound tax-free for heirs. Never sell if you don't need to — stepped-up basis eliminates the gain.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIRE MOMENT -->
+  <div class="fire-moment reveal">
+    <div class="fm-bg"></div>
+    <span class="fm-icon">🔥</span>
+    <div class="fm-title">
+      <span class="fm-f">Freedom</span><br>
+      <span class="fm-btc">is a number.</span><br>
+      <span class="fm-g">Bitcoin moves it closer.</span>
+    </div>
+    <div class="fm-sub">The retirement system was built in a different era, for a different kind of money, in a different world. Bitcoin didn't exist when your parents were told to save 10% of their salary in a 60/40 portfolio and wait 40 years. It exists now. The mathematics of a fixed supply asset — one that cannot be printed, diluted, or inflated away by any government or central bank — interacting with the mathematics of compounding, creates outcomes that the conventional system simply cannot match. You don't need to go all-in. You don't need to abandon your 401(k). You need to add one line to your portfolio allocation — and let time and scarcity do the rest. The FIRE number doesn't have to be 40 years away. The calculator above just showed you how far away it actually is. Now you know what to do next.</div>
+  </div>
+
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">🏆 Step 18 — Key Takeaways</div>
+    <div class="kt-text">The conventional retirement model is broken.<br><em>Bitcoin is the asymmetric fix.</em></div>
+    <div class="kt-points">
+      <div class="kt-point"><span class="kt-point-icon">📉</span><span>The conventional 60/40 portfolio returned approximately 1.2% per year in real terms from 2000–2020. After fees, taxes, and inflation, the average retirement saver is barely keeping up — and with Social Security facing a projected funding cliff in 2033, the conventional safety net is weakening.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📊</span><span>Historical data from 2014–2024: a $100,000 portfolio with just 1% Bitcoin allocation grew to $267,000 vs $195,000 without Bitcoin — a 37% improvement from a 1% allocation. At 5% Bitcoin, the portfolio reached $482,000. The asymmetry is not theoretical. It happened.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🏆</span><span>The optimal retirement vehicle for Bitcoin is the Roth IRA — post-tax contributions, zero tax on all growth, ever. $7,000/year in Bitcoin ETF inside a Roth IRA, compounding tax-free for 30 years at historical Bitcoin rates, generates wealth that the conventional system cannot replicate.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🔥</span><span>FIRE — Financial Independence Retire Early — is built on reaching 25× annual expenses. Bitcoin does not guarantee the returns needed, but historically it has dramatically accelerated the path to the number. The FIRE calculator above shows your personalised timeline with and without Bitcoin. The difference is often measured in years, not months.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📅</span><span>Bitcoin strategy changes with age. Aggressive accumulation in your 20s. Strategic allocation in your 30s–40s. Consolidation toward 50. Capital preservation approaching retirement. Inflation hedge and legacy asset in retirement. The allocation changes — the Bitcoin doesn't leave the portfolio entirely until there is no financial reason to hold it. For most, that reason never fully arrives.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🌅</span><span>Step 19 is where the journey transcends finance entirely. Bitcoin & Human Freedom — why the hardest money ever created is inseparable from the freedom to transact, to save, to opt out of systems that exploit you, and to pass sovereignty to the next generation. Three steps from the summit. The view from here is extraordinary.</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STEP NAV -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="btc-step-17.html" class="snb-prev reveal">
+      <div class="snb-icon">📊</div>
+      <div>
+        <div class="snb-label">← Step 17</div>
+        <div class="snb-title">Bitcoin &amp; Taxes</div>
+        <div class="snb-desc">Understand it. Report it. Master it.</div>
+      </div>
+    </a>
+    <a href="btc-step-19.html" class="snb-next reveal">
+      <div class="snb-icon">🗽</div>
+      <div>
+        <div class="snb-label">Step 19 →</div>
+        <div class="snb-title">Bitcoin &amp; Human Freedom</div>
+        <div class="snb-desc">Why money and freedom are inseparable</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- MINIMAP -->
+<div class="steps-minimap">
+  <div class="sm-card reveal">
+    <div class="sm-title">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step done">1</a>
+      <a href="btc-step-02.html" class="sm-step done">2</a>
+      <a href="btc-step-03.html" class="sm-step done">3</a>
+      <a href="btc-step-04.html" class="sm-step done">4</a>
+      <a href="btc-step-05.html" class="sm-step done">5</a>
+      <a href="btc-step-06.html" class="sm-step done">6</a>
+      <a href="btc-step-07.html" class="sm-step done">7</a>
+      <a href="btc-step-08.html" class="sm-step done">8</a>
+      <a href="btc-step-09.html" class="sm-step done">9</a>
+      <a href="btc-step-10.html" class="sm-step done">10</a>
+      <a href="btc-step-11.html" class="sm-step done">11</a>
+      <a href="btc-step-12.html" class="sm-step done">12</a>
+      <a href="btc-step-13.html" class="sm-step done">13</a>
+      <a href="btc-step-14.html" class="sm-step done">14</a>
+      <a href="btc-step-15.html" class="sm-step done">15</a>
+      <a href="btc-step-16.html" class="sm-step done">16</a>
+      <a href="btc-step-17.html" class="sm-step done">17</a>
+      <a href="btc-step-18.html" class="sm-step current">18</a>
+      <a href="btc-step-19.html" class="sm-step phase-4">19</a>
+      <a href="btc-step-20.html" class="sm-step phase-4">20</a>
+      <a href="btc-step-21.html" class="sm-step phase-4">21</a>
+    </div>
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(34,197,94,.6)"></div>Completed</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--fire)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(249,115,22,.4)"></div>Phase 4 — Final Ascent</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early Calculator</a>
+      <a href="raise-with-bitcoin.html">DCA Calculator</a>
+      <a href="LumpSumVSdcaVShybrid.html">Strategy Compare</a>
+      <a href="IntrinsicValue.html">Intrinsic Value</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n); localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE PRICE ──
+let liveBtcPrice = 100000;
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json()).then(d => {
+      liveBtcPrice = d.bitcoin.usd;
+      document.getElementById('btcPriceNav').textContent = '$' + liveBtcPrice.toLocaleString();
+    }).catch(() => {});
+}
+updatePrice(); setInterval(updatePrice, 10000);
+
+// ── SCROLL ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── FIRE CALCULATOR ──
+let fireMultiplier = 25;
+document.querySelectorAll('.fc-target-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.fc-target-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    fireMultiplier = parseInt(card.dataset.multiplier);
+    calcFIRE();
+  });
+});
+
+function fmt(n) {
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + Math.round(n / 1000) + 'K';
+  return '$' + Math.round(n).toLocaleString();
+}
+function fmtYrs(y) {
+  return y < 0 ? 'Already!' : y.toFixed(1);
+}
+
+function calcFIRE() {
+  const age        = parseInt(document.getElementById('fcAge').value)       || 32;
+  const savings    = parseFloat(document.getElementById('fcSavings').value) || 0;
+  const expenses   = parseFloat(document.getElementById('fcExpenses').value)|| 40000;
+  const annualSave = parseFloat(document.getElementById('fcAnnualSave').value)|| 20000;
+  const btcPct     = parseFloat(document.getElementById('fcBtcPct').value)  || 5;
+  const tradR      = parseFloat(document.getElementById('fcTradReturn').value)|| 7;
+  const btcR       = parseFloat(document.getElementById('fcBtcReturn').value) || 30;
+  const inflation  = parseFloat(document.getElementById('fcInflation').value) || 3;
+
+  const fireNum = expenses * fireMultiplier;
+  const blendedR = (btcPct / 100) * btcR + ((100 - btcPct) / 100) * tradR;
+  const tradOnlyR = tradR;
+
+  // Simulate year-by-year accumulation
+  function yearsToFire(annualReturn) {
+    let port = savings;
+    const r = annualReturn / 100;
+    for (let y = 0; y <= 60; y++) {
+      if (port >= fireNum) return y;
+      port = port * (1 + r) + annualSave;
+    }
+    return 60;
+  }
+
+  const yrsNoBtc = yearsToFire(tradOnlyR);
+  const yrsBtc   = yearsToFire(blendedR);
+  const saved    = yrsNoBtc - yrsBtc;
+
+  // Portfolio value at FIRE date
+  function portAtYear(yrs, annualReturn) {
+    let port = savings;
+    const r = annualReturn / 100;
+    for (let y = 0; y < yrs; y++) port = port * (1 + r) + annualSave;
+    return port;
+  }
+  const portBtc   = portAtYear(yrsBtc, blendedR);
+  const portNoBtc = portAtYear(yrsNoBtc, tradOnlyR);
+
+  // Update targets
+  const targets = [
+    {id:'ft1', mult:25, label:'Classic FIRE'},
+    {id:'ft2', mult:33, label:'Safe FIRE'},
+    {id:'ft3', mult:17, label:'Lean FIRE'}
+  ];
+  targets.forEach(t => {
+    const fn = expenses * t.mult;
+    const mo = fn / 12;
+    document.getElementById(t.id).textContent = fmt(fn) + ' target';
+  });
+
+  // Results
+  document.getElementById('fcFireNum').textContent = fmt(fireNum);
+  document.getElementById('fcFireSub').textContent = `${fireMultiplier}× your ${fmt(expenses)} annual expenses`;
+  document.getElementById('fcYrsNoBtc').textContent = fmtYrs(yrsNoBtc) + ' yrs';
+  document.getElementById('fcAgeNoBtc').textContent = `retire at age ${age + Math.round(yrsNoBtc)}`;
+  document.getElementById('fcYrsBtc').textContent = fmtYrs(yrsBtc) + ' yrs';
+  document.getElementById('fcAgeBtc').textContent = `retire at age ${age + Math.round(yrsBtc)}`;
+  document.getElementById('fcYrsSaved').textContent = saved > 0 ? saved.toFixed(1) + ' yrs' : '—';
+  document.getElementById('fcPortBtc').textContent = fmt(portBtc);
+  document.getElementById('fcPortNoBtc').textContent = fmt(portNoBtc);
+
+  // Timeline bar
+  const maxYrs = Math.max(yrsNoBtc, 40);
+  const btcPct2 = Math.min(100, (yrsBtc / maxYrs) * 100);
+  document.getElementById('fcTlBtc').style.width = btcPct2 + '%';
+  document.getElementById('fcTlMid').textContent = Math.round(maxYrs / 2) + ' yrs';
+  document.getElementById('fcTlEnd').textContent = Math.round(maxYrs) + ' yrs';
+
+  const noteEl = document.getElementById('fcNote');
+  if (saved > 0) {
+    noteEl.innerHTML = `🔥 With a <strong>${btcPct}% Bitcoin allocation</strong>, you could reach your FIRE number in <strong style="color:var(--green)">${fmtYrs(yrsBtc)} years</strong> — retiring at <strong style="color:var(--green)">age ${age + Math.round(yrsBtc)}</strong> instead of age ${age + Math.round(yrsNoBtc)}. That's <strong style="color:var(--fire)">${saved.toFixed(1)} years of your life reclaimed.</strong> These projections use historical return assumptions and are not financial advice. Bitcoin's past returns do not guarantee future performance.`;
+  } else {
+    noteEl.textContent = 'Adjust inputs above to see your personalised FIRE timeline. Past Bitcoin returns do not guarantee future performance.';
+  }
+}
+
+// Wire inputs
+['fcAge','fcSavings','fcIncome','fcExpenses','fcAnnualSave'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcFIRE));
+['fcBtcPct','fcTradReturn','fcBtcReturn','fcInflation'].forEach(id =>
+  document.getElementById(id).addEventListener('change', calcFIRE));
+
+calcFIRE();
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.05 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
