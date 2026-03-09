@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 17: Bitcoin & Taxes | SATOLOGY</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;
+  --prose:#c8c8c8;--quote-bg:#0d0d10;
+}
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --prose:#3a3a3a;--quote-bg:#f0ede6;
+}
+:root{
+  --btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;
+  --red:#e63946;--teal:#06b6d4;--tax:#6366f1;--tax2:#4f46e5;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
+  transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--tax),var(--btc),var(--green));width:0%}
+
+.ticker{background:linear-gradient(90deg,#1e1b4b,#312e81);padding:9px 0;overflow:hidden;white-space:nowrap;z-index:201}
+.ticker-inner{display:inline-flex;gap:64px;animation:tick 36s linear infinite;font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
+  align-items:center;justify-content:space-between;background:var(--nav-bg);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;
+  place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);
+  border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;
+  font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);
+  border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;
+  border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+.step-nav-bar{background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.step-nav-left a{color:var(--muted);text-decoration:none;transition:color .2s}
+.step-nav-left a:hover{color:var(--btc)}
+.step-nav-sep{opacity:.4}
+.step-nav-current{color:var(--text);font-weight:600}
+.step-nav-right{display:flex;align-items:center;gap:8px}
+.step-pill{background:linear-gradient(135deg,var(--tax),var(--btc));color:#fff;
+  border-radius:100px;padding:4px 14px;font-size:11px;font-weight:900;letter-spacing:.5px}
+.step-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:linear-gradient(90deg,var(--tax),var(--btc));border-radius:2px;width:81%}
+
+.reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
+.rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:linear-gradient(to bottom,var(--tax),var(--btc));
+  border-radius:2px;height:0%;transition:height .15s}
+.rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+  writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
+
+/* ══ HERO ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;position:relative;overflow:hidden}
+.hero-tax-bg{position:absolute;right:-10px;top:0;font-size:clamp(180px,28vw,340px);
+  opacity:.04;line-height:1;pointer-events:none;
+  animation:taxFloat 6s ease-in-out infinite;color:var(--tax)}
+@keyframes taxFloat{0%,100%{opacity:.04;transform:translateY(0)}50%{opacity:.07;transform:translateY(-20px)}}
+.step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;
+  animation:fadeUp .6s ease both;position:relative;z-index:1}
+.step-number{width:52px;height:52px;background:linear-gradient(135deg,var(--tax),var(--btc));
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 8px 32px rgba(99,102,241,.45)}
+.step-meta{display:flex;flex-direction:column;gap:3px}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--tax),var(--btc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+.step-meta-bottom{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.step-hero h1{font-size:clamp(32px,6vw,72px);font-weight:900;letter-spacing:-3px;
+  line-height:1.02;margin-bottom:20px;animation:fadeUp .6s .08s ease both;position:relative;z-index:1}
+.t-em{color:var(--tax)}.btc-em{color:var(--btc)}.g-em{color:var(--green)}.r-em{color:var(--red)}
+.step-hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.75;
+  max-width:680px;margin-bottom:36px;animation:fadeUp .6s .14s ease both;
+  font-family:'Lora',serif;font-style:italic;position:relative;z-index:1}
+.key-lesson{display:inline-flex;align-items:flex-start;gap:10px;
+  background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.25);
+  border-radius:14px;padding:14px 20px;font-size:14px;color:var(--text);
+  line-height:1.6;margin-bottom:48px;animation:fadeUp .6s .18s ease both;
+  max-width:680px;position:relative;z-index:1}
+.key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.key-lesson strong{color:var(--tax)}
+
+/* ── ARTICLE ── */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
+.chapter{margin-bottom:72px}
+.chapter-label{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.chapter-num{width:40px;height:40px;background:rgba(99,102,241,.1);
+  border:1px solid rgba(99,102,241,.28);border-radius:11px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;font-weight:900;color:var(--tax);flex-shrink:0}
+.chapter-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.8vw,19px);line-height:1.9;color:var(--prose)}
+.prose p{margin-bottom:24px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--tax);font-style:italic}
+.prose em.btc{color:var(--btc)}
+.prose em.green{color:var(--green)}
+.prose em.red{color:var(--red)}
+
+.pull-quote{border-left:4px solid var(--tax);margin:40px 0;padding:24px 28px;
+  background:var(--quote-bg);border-radius:0 14px 14px 0}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(17px,2.3vw,22px);
+  font-style:italic;color:var(--text);line-height:1.65;margin:0}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;
+  color:var(--muted);font-style:normal;margin-top:12px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.5px}
+
+.callout{border-radius:16px;padding:28px 32px;margin:36px 0;border:1px solid}
+.callout-tax{background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.22)}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.2)}
+.callout-green{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)}
+.callout-red{background:rgba(230,57,70,.06);border-color:rgba(230,57,70,.2)}
+.callout-title{font-size:12px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.callout-tax .callout-title{color:var(--tax)}
+.callout-btc .callout-title{color:var(--btc)}
+.callout-green .callout-title{color:var(--green)}
+.callout-red .callout-title{color:var(--red)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.8;margin:0;font-family:'Inter',sans-serif}
+.callout p+p{margin-top:12px}
+
+/* ══ TAXABLE EVENTS GRID ══ */
+.events-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0}
+.ev-card{border-radius:16px;padding:22px;border:2px solid;transition:all .3s;position:relative;overflow:hidden}
+.ev-card:hover{transform:translateY(-3px)}
+.ev-card.taxable{border-color:rgba(230,57,70,.3);background:rgba(230,57,70,.05)}
+.ev-card.taxable:hover{border-color:var(--red)}
+.ev-card.nontax{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.05)}
+.ev-card.nontax:hover{border-color:var(--green)}
+.ev-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.ev-card.taxable::before{background:var(--red)}
+.ev-card.nontax::before{background:var(--green)}
+.ev-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ev-icon{font-size:28px}
+.ev-badge{font-size:10px;font-weight:800;padding:3px 10px;border-radius:100px;
+  text-transform:uppercase;letter-spacing:.8px}
+.ev-card.taxable .ev-badge{background:rgba(230,57,70,.15);color:var(--red)}
+.ev-card.nontax .ev-badge{background:rgba(34,197,94,.15);color:var(--green)}
+.ev-title{font-size:15px;font-weight:900;margin-bottom:6px;letter-spacing:-.2px}
+.ev-body{font-size:12px;color:var(--muted);line-height:1.75}
+.ev-body strong{color:var(--text);font-weight:700}
+
+/* ══ CGT CALCULATOR ══ */
+.cgt-calc{background:linear-gradient(135deg,rgba(99,102,241,.09),rgba(247,147,26,.04));
+  border:1px solid rgba(99,102,241,.25);border-radius:22px;overflow:hidden;margin:44px 0}
+.cc-header{padding:24px 28px;border-bottom:1px solid var(--border)}
+.cc-header h3{font-size:17px;font-weight:900;margin-bottom:4px}
+.cc-header p{font-size:13px;color:var(--muted)}
+.cc-body{padding:28px}
+.cc-controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+.cc-field{display:flex;flex-direction:column;gap:7px}
+.cc-field label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.cc-field input,.cc-field select{background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:11px 14px;font-size:15px;font-weight:700;
+  color:var(--text);font-family:'Inter',sans-serif;width:100%;outline:none;transition:border-color .2s}
+.cc-field input:focus,.cc-field select:focus{border-color:var(--tax)}
+.cc-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.cc-results{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.cc-result{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.cc-result.hero-r{border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.06);grid-column:span 2}
+.cc-result-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:7px}
+.cc-result.hero-r .cc-result-label{color:var(--tax)}
+.cc-result-val{font-size:clamp(18px,3vw,28px);font-weight:900;letter-spacing:-1px;color:var(--text);line-height:1}
+.cc-result.hero-r .cc-result-val{color:var(--tax);font-size:clamp(22px,4vw,42px);letter-spacing:-2px}
+.cc-result-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+.val-good{color:var(--green)}.val-bad{color:var(--red)}.val-tax{color:var(--tax)}
+.cc-breakdown{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.cc-brow{display:flex;justify-content:space-between;padding:11px 16px;
+  border-bottom:1px solid var(--border);font-size:13px;transition:background .2s}
+.cc-brow:hover{background:rgba(99,102,241,.03)}
+.cc-brow:last-child{border-bottom:none}
+.cc-brow-label{color:var(--muted);font-size:12px}
+.cc-brow-val{font-weight:800}
+
+/* ══ STRATEGY CARDS ══ */
+.strategies{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0}
+.str-card{background:var(--card);border:1px solid var(--border);border-radius:18px;
+  padding:26px;transition:all .3s;position:relative;overflow:hidden}
+.str-card:hover{transform:translateY(-4px)}
+.str-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.str-card:nth-child(1)::before{background:var(--green)}
+.str-card:nth-child(2)::before{background:var(--btc)}
+.str-card:nth-child(3)::before{background:var(--tax)}
+.str-card:nth-child(4)::before{background:var(--teal)}
+.str-card:hover:nth-child(1){border-color:var(--green)}
+.str-card:hover:nth-child(2){border-color:var(--btc)}
+.str-card:hover:nth-child(3){border-color:var(--tax)}
+.str-card:hover:nth-child(4){border-color:var(--teal)}
+.str-icon{font-size:36px;margin-bottom:14px;animation:strFloat 4s ease-in-out infinite}
+.str-card:nth-child(2) .str-icon{animation-delay:.4s}
+.str-card:nth-child(3) .str-icon{animation-delay:.8s}
+.str-card:nth-child(4) .str-icon{animation-delay:1.2s}
+@keyframes strFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.str-title{font-size:16px;font-weight:900;margin-bottom:6px;letter-spacing:-.3px}
+.str-card:nth-child(1) .str-title{color:var(--green)}
+.str-card:nth-child(2) .str-title{color:var(--btc)}
+.str-card:nth-child(3) .str-title{color:var(--tax)}
+.str-card:nth-child(4) .str-title{color:var(--teal)}
+.str-body{font-size:13px;color:var(--muted);line-height:1.8}
+.str-body strong{color:var(--text);font-weight:700}
+.str-saving{display:inline-flex;align-items:center;gap:6px;margin-top:12px;
+  font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px}
+.str-card:nth-child(1) .str-saving{background:rgba(34,197,94,.1);color:var(--green)}
+.str-card:nth-child(2) .str-saving{background:rgba(247,147,26,.1);color:var(--btc)}
+.str-card:nth-child(3) .str-saving{background:rgba(99,102,241,.1);color:var(--tax)}
+.str-card:nth-child(4) .str-saving{background:rgba(6,182,212,.1);color:var(--teal)}
+
+/* ══ RECORD KEEPING ══ */
+.record-table{background:var(--card);border:1px solid rgba(99,102,241,.2);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.rt-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(99,102,241,.07),transparent)}
+.rt-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.rt-header p{font-size:13px;color:var(--muted)}
+.rt-cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;
+  padding:10px 20px;background:var(--bg);border-bottom:1px solid var(--border)}
+.rt-cols span{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.rt-body{max-height:280px;overflow-y:auto}
+.rt-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;
+  padding:12px 20px;border-bottom:1px solid var(--border);
+  font-size:13px;transition:background .2s}
+.rt-row:hover{background:rgba(99,102,241,.03)}
+.rt-row:last-child{border-bottom:none}
+.rt-row span{color:var(--prose)}
+.rt-row span.gain{color:var(--green);font-weight:700}
+.rt-row span.loss{color:var(--red);font-weight:700}
+.rt-row span.event-type{font-size:10px;font-weight:800;padding:2px 8px;
+  border-radius:100px;display:inline-block}
+.sell-badge{background:rgba(230,57,70,.1);color:var(--red)}
+.buy-badge{background:rgba(34,197,94,.1);color:var(--green)}
+.rt-add-row{padding:14px 20px;border-top:1px solid var(--border);
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:8px;background:var(--bg2)}
+.rt-add-row input{background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  padding:8px 10px;font-size:12px;color:var(--text);font-family:'Inter',sans-serif;
+  outline:none;transition:border-color .2s;width:100%}
+.rt-add-row input:focus{border-color:var(--tax)}
+.rt-add-btn{background:linear-gradient(135deg,var(--tax),var(--btc));color:#fff;
+  border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:800;
+  cursor:pointer;transition:all .3s;grid-column:span 1;white-space:nowrap}
+.rt-add-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(99,102,241,.3)}
+.rt-summary{padding:16px 20px;display:flex;gap:20px;flex-wrap:wrap;
+  background:rgba(99,102,241,.04);border-top:1px solid var(--border)}
+.rt-sum-item{display:flex;flex-direction:column;gap:3px}
+.rt-sum-label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted)}
+.rt-sum-val{font-size:18px;font-weight:900;letter-spacing:-1px}
+
+/* ══ MISTAKE CARDS ══ */
+.mistakes{display:flex;flex-direction:column;gap:12px;margin:36px 0}
+.mist-card{background:var(--card);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;transition:all .3s}
+.mist-card:hover{border-color:rgba(99,102,241,.3)}
+.mist-header{display:flex;align-items:center;gap:14px;padding:16px 20px;
+  cursor:pointer;transition:background .2s}
+.mist-header:hover{background:rgba(99,102,241,.03)}
+.mist-icon{font-size:24px;flex-shrink:0}
+.mist-q{font-size:14px;font-weight:800;letter-spacing:-.2px;flex:1}
+.mist-risk{font-size:10px;font-weight:800;padding:3px 10px;border-radius:100px;flex-shrink:0}
+.risk-high{background:rgba(230,57,70,.12);color:var(--red)}
+.risk-med{background:rgba(245,158,11,.12);color:#f59e0b}
+.mist-arrow{font-size:16px;color:var(--muted);transition:transform .3s;flex-shrink:0}
+.mist-card.open .mist-arrow{transform:rotate(180deg)}
+.mist-body{max-height:0;overflow:hidden;transition:max-height .45s ease}
+.mist-card.open .mist-body{max-height:320px}
+.mist-inner{padding:0 20px 18px;border-top:1px solid var(--border);padding-top:16px}
+.mist-answer{font-size:13px;color:var(--muted);line-height:1.85}
+.mist-answer strong{color:var(--text);font-weight:700}
+.mist-fix{display:flex;align-items:flex-start;gap:8px;margin-top:12px;
+  background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);
+  border-radius:10px;padding:12px 14px;font-size:12px;color:var(--green);
+  line-height:1.65;font-weight:600}
+
+/* ══ HOLD CALCULATOR ══ */
+.hold-calc{background:linear-gradient(135deg,rgba(34,197,94,.09),rgba(247,147,26,.04));
+  border:1px solid rgba(34,197,94,.22);border-radius:22px;overflow:hidden;margin:44px 0}
+.hc3-header{padding:24px 28px;border-bottom:1px solid var(--border)}
+.hc3-header h3{font-size:17px;font-weight:900;margin-bottom:4px}
+.hc3-header p{font-size:13px;color:var(--muted)}
+.hc3-body{padding:28px}
+.hc3-controls{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+.hc3-field{display:flex;flex-direction:column;gap:7px}
+.hc3-field label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.hc3-field input,.hc3-field select{background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:11px 14px;font-size:15px;font-weight:700;
+  color:var(--text);font-family:'Inter',sans-serif;width:100%;outline:none;transition:border-color .2s}
+.hc3-field input:focus,.hc3-field select:focus{border-color:var(--green)}
+.hc3-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.hc3-side{border-radius:16px;overflow:hidden;border:2px solid}
+.hc3-side.short{border-color:rgba(230,57,70,.3)}
+.hc3-side.long{border-color:rgba(34,197,94,.3)}
+.hc3-side-head{padding:14px 18px;font-size:13px;font-weight:800;
+  display:flex;align-items:center;gap:8px}
+.hc3-side.short .hc3-side-head{background:rgba(230,57,70,.1);color:var(--red)}
+.hc3-side.long .hc3-side-head{background:rgba(34,197,94,.1);color:var(--green)}
+.hc3-side-body{padding:14px 18px;display:flex;flex-direction:column;gap:8px}
+.hc3-row{display:flex;justify-content:space-between;font-size:13px;
+  padding:6px 0;border-bottom:1px solid var(--border)}
+.hc3-row:last-child{border-bottom:none}
+.hc3-row-label{color:var(--muted);font-size:12px}
+.hc3-row-val{font-weight:800}
+.hc3-saving{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);
+  border-radius:12px;padding:16px;text-align:center;font-size:14px;
+  color:var(--prose);line-height:1.75;font-family:'Inter',sans-serif}
+.hc3-saving strong{color:var(--green);font-weight:800}
+
+/* ══ CLARITY MOMENT ══ */
+.clarity-moment{text-align:center;padding:88px 24px;position:relative;overflow:hidden}
+.cm-bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(99,102,241,.08),transparent 70%);
+  pointer-events:none}
+.cm-icon{font-size:72px;display:block;margin-bottom:24px;
+  animation:cmPulse 2.5s ease-in-out infinite}
+@keyframes cmPulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(99,102,241,0))}
+  50%{transform:scale(1.1);filter:drop-shadow(0 0 35px rgba(99,102,241,.55))}}
+.cm-title{font-size:clamp(28px,6vw,66px);font-weight:900;letter-spacing:-3px;line-height:1.05;margin-bottom:18px}
+.cm-t{color:var(--tax)}.cm-btc{color:var(--btc)}.cm-g{color:var(--green)}
+.cm-sub{font-size:16px;color:var(--muted);max-width:640px;margin:0 auto;line-height:1.9}
+
+/* ── KEY TAKEAWAY ── */
+.key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));
+  border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
+.kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--btc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kt-text{font-size:clamp(17px,2.5vw,22px);font-weight:800;line-height:1.5;
+  letter-spacing:-.3px;margin-bottom:20px}
+.kt-text em{color:var(--btc);font-style:normal}
+.kt-points{display:flex;flex-direction:column;gap:10px}
+.kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--prose);line-height:1.6}
+.kt-point-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── STEP NAV + MINIMAP ── */
+.step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
+.snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);
+  border:1px solid var(--border);border-radius:16px;padding:20px 24px;
+  text-decoration:none;color:var(--text);transition:all .3s}
+.snb-prev:hover,.snb-next:hover{border-color:var(--btc);transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(247,147,26,.12)}
+.snb-next{flex-direction:row-reverse;text-align:right}
+.snb-icon{font-size:28px;flex-shrink:0}
+.snb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700;margin-bottom:3px}
+.snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+.steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
+.sm-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px}
+.sm-title{font-size:14px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.sm-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sm-step{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:800;text-decoration:none;
+  transition:all .2s;border:1px solid var(--border);color:var(--muted);background:var(--bg2)}
+.sm-step:hover{border-color:var(--btc);color:var(--btc);transform:translateY(-2px)}
+.sm-step.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:var(--green)}
+.sm-step.current{background:linear-gradient(135deg,var(--tax),var(--btc));
+  border-color:var(--tax);color:#fff;box-shadow:0 4px 16px rgba(99,102,241,.4)}
+.sm-step.phase-4{background:rgba(255,107,0,.08);border-color:rgba(255,107,0,.2)}
+.sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sm-leg-dot{width:10px;height:10px;border-radius:3px}
+
+.footer-wrap{border-top:1px solid var(--border)}
+footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;
+  max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  nav,.step-nav-bar{padding:0 18px}
+  .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
+  .events-grid,.strategies{grid-template-columns:1fr}
+  .cc-controls{grid-template-columns:1fr 1fr}
+  .cc-results{grid-template-columns:1fr 1fr}
+  .cc-result.hero-r{grid-column:span 2}
+  .hc3-controls{grid-template-columns:1fr 1fr}
+  .hc3-compare{grid-template-columns:1fr}
+  .rt-cols,.rt-row{grid-template-columns:2fr 1fr 1fr}
+  .rt-cols span:nth-child(4),.rt-cols span:nth-child(5),
+  .rt-row span:nth-child(4),.rt-row span:nth-child(5){display:none}
+  .rt-add-row{grid-template-columns:1fr 1fr 1fr}
+  .snb-inner{grid-template-columns:1fr}
+  .snb-next{flex-direction:row;text-align:left}
+  .reading-progress{display:none}
+  footer{padding:28px 20px;flex-direction:column;text-align:center}
+}
+@media(max-width:540px){
+  .step-hero h1{letter-spacing:-1.5px}
+  .sm-step{width:30px;height:30px;font-size:10px}
+  .cc-controls,.hc3-controls{grid-template-columns:1fr}
+  .cc-results{grid-template-columns:1fr}
+  .cc-result.hero-r{grid-column:span 1}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>📊 STEP 17 OF 21</span><span>·</span>
+    <span>🇺🇸 IRS: BITCOIN IS PROPERTY — CAPITAL GAINS TAX APPLIES ON DISPOSAL</span><span>·</span>
+    <span>⏳ HOLD 1 YEAR+ FOR LONG-TERM RATES: 0%, 15%, OR 20% vs SHORT-TERM 10–37%</span><span>·</span>
+    <span>📉 TAX-LOSS HARVESTING: SELL AT A LOSS · REBUY · OFFSET OTHER GAINS LEGALLY</span><span>·</span>
+    <span>🔑 SIMPLY BUYING AND HOLDING BITCOIN IS NOT A TAXABLE EVENT</span><span>·</span>
+    <span>📋 EVERY DISPOSAL MUST BE REPORTED — RECORD YOUR COST BASIS FROM DAY ONE</span><span>·</span>
+    <span>📊 STEP 17 OF 21</span><span>·</span>
+    <span>🇺🇸 IRS: BITCOIN IS PROPERTY — CAPITAL GAINS TAX APPLIES ON DISPOSAL</span><span>·</span>
+    <span>⏳ HOLD 1 YEAR+ FOR LONG-TERM RATES: 0%, 15%, OR 20% vs SHORT-TERM 10–37%</span><span>·</span>
+    <span>📉 TAX-LOSS HARVESTING: SELL AT A LOSS · REBUY · OFFSET OTHER GAINS LEGALLY</span><span>·</span>
+    <span>🔑 SIMPLY BUYING AND HOLDING BITCOIN IS NOT A TAXABLE EVENT</span><span>·</span>
+    <span>📋 EVERY DISPOSAL MUST BE REPORTED — RECORD YOUR COST BASIS FROM DAY ONE</span><span>·</span>
+  </div>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span><span id="btcPriceNav">$--</span></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="step-nav-bar">
+  <div class="step-nav-left">
+    <a href="index.html">Home</a>
+    <span class="step-nav-sep">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <span class="step-nav-sep">›</span>
+    <span class="step-nav-current">Step 17 — Bitcoin &amp; Taxes</span>
+  </div>
+  <div class="step-nav-right">
+    <div class="step-progress-mini">
+      <div class="spm-bar"><div class="spm-fill"></div></div>
+      <span>17 / 21</span>
+    </div>
+    <div class="step-pill">Step 17</div>
+  </div>
+</div>
+
+<div class="reading-progress">
+  <div class="rp-label">Reading</div>
+  <div class="rp-track"><div class="rp-fill" id="rpFill"></div></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<div class="step-hero">
+  <div class="hero-tax-bg">📊</div>
+  <div class="step-eyebrow">
+    <div class="step-number">17</div>
+    <div class="step-meta">
+      <div class="step-meta-top">📊 Phase 3 — Deep Dive · Step 5 of 6</div>
+      <div class="step-meta-bottom">
+        <span>⏱ 10 min read</span><span>·</span>
+        <span>💡 Clarity kills the fear</span><span>·</span>
+        <span>📋 Tools that do the work for you</span>
+      </div>
+    </div>
+  </div>
+
+  <h1>Bitcoin<br>
+    <span class="t-em">&amp; Taxes.</span><br>
+    Understand it.<br>
+    <span class="g-em">Master it.</span></h1>
+
+  <p class="step-hero-sub">Tax confusion has cost Bitcoin holders more than bear markets. People don't report because they don't understand. They don't understand because nobody explained it simply. Then the IRS sends a letter and the fear becomes real. This step ends that cycle. We cover exactly what triggers a tax event, how to calculate what you owe, four legal strategies to reduce your bill, and the record-keeping system that makes compliance effortless — starting today.</p>
+
+  <div class="key-lesson">
+    <span class="key-lesson-icon">📊</span>
+    <span><strong>What this step delivers:</strong> The definitive list of what is and isn't a taxable event, a live capital gains calculator, the four legal tax-reduction strategies every Bitcoin holder should know, a built-in transaction log you can start filling in right now, the five most expensive tax mistakes and how to avoid them, and the long-term hold calculator that shows exactly how much the one-year rule saves you. All US-focused with notes for UK, EU, Canada, and Australia.</span>
+  </div>
+</div>
+
+<!-- ══ ARTICLE ══ -->
+<div class="article-wrap">
+
+  <!-- CHAPTER 1 — THE SINGLE RULE -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">①</div>
+      <div class="chapter-title">The Single Rule That Explains 90% of Bitcoin Taxation</div>
+    </div>
+    <div class="prose">
+      <p>The IRS treats Bitcoin as property. This single classification — established in Notice 2014-21 and confirmed in every subsequent ruling — means Bitcoin taxes work almost identically to stock taxes. You buy shares of Apple, you hold them, you sell them — the gain is taxable. You buy Bitcoin, you hold it, you sell it — the gain is taxable. The amount you paid is your <em>cost basis</em>. The difference between what you paid and what you received is your <em>capital gain or loss</em>.</p>
+      <p>That's it. Everything else is detail. <strong>The fear around Bitcoin taxes is almost entirely caused by not knowing this one thing.</strong> Once you understand that Bitcoin is taxed like property, the system becomes logical, predictable, and manageable.</p>
+      <p>The critical corollary: <em class="green">simply buying Bitcoin and holding it is not a taxable event.</em> You can buy $10,000 of Bitcoin today, watch it grow to $100,000, and owe exactly zero in taxes — until the moment you dispose of it. The tax clock starts ticking at disposal, not at purchase. This is the most important sentence in this entire step.</p>
+    </div>
+
+    <div class="callout callout-green reveal">
+      <div class="callout-title">✅ The Most Important Sentence in Bitcoin Tax Law</div>
+      <p><strong>Buying Bitcoin is not a taxable event. Holding Bitcoin is not a taxable event. Watching it go up is not a taxable event.</strong> Tax is triggered only at disposal — when you sell, spend, swap, or gift above the annual exclusion. If your strategy is DCA and hold for the long term — as most Bitcoin advocates recommend — your annual tax footprint can be close to zero until you choose to realise gains.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 — TAXABLE vs NOT -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">②</div>
+      <div class="chapter-title">Taxable vs. Non-Taxable — The Complete Event Map</div>
+    </div>
+    <div class="prose">
+      <p>Not all Bitcoin activity triggers a tax event. Knowing exactly which actions create tax obligations — and which don't — is the foundation of smart compliance. Here is the complete map.</p>
+    </div>
+
+    <div class="events-grid reveal">
+      <div class="ev-card taxable">
+        <div class="ev-header">
+          <div class="ev-icon">💸</div>
+          <div class="ev-badge">Taxable Event</div>
+        </div>
+        <div class="ev-title">Selling Bitcoin for Fiat</div>
+        <div class="ev-body">Converting Bitcoin to USD (or any fiat currency) triggers a capital gain or loss. <strong>Gain = sale price minus cost basis.</strong> Hold under 1 year: short-term rates. Hold over 1 year: long-term rates. Every single sale must be reported on Form 8949.</div>
+      </div>
+      <div class="ev-card taxable">
+        <div class="ev-header">
+          <div class="ev-icon">☕</div>
+          <div class="ev-badge">Taxable Event</div>
+        </div>
+        <div class="ev-title">Spending Bitcoin on Goods/Services</div>
+        <div class="ev-body">Buying a coffee with Bitcoin is a disposal. The IRS treats it as if you sold Bitcoin at the market price at the moment of purchase. <strong>If that Bitcoin appreciated since you bought it, you owe tax on the gain.</strong> This is why Lightning micropayments and spending wallets should be funded with recently purchased Bitcoin where possible.</div>
+      </div>
+      <div class="ev-card taxable">
+        <div class="ev-header">
+          <div class="ev-icon">🔄</div>
+          <div class="ev-badge">Taxable Event</div>
+        </div>
+        <div class="ev-title">Trading Bitcoin for Other Crypto</div>
+        <div class="ev-body">Swapping Bitcoin for Ethereum (or any other asset) is a taxable disposal of Bitcoin at fair market value. <strong>The "like-kind exchange" exemption does not apply to crypto</strong> — this was clarified in the Tax Cuts and Jobs Act 2017. Even if you never touched fiat, the crypto-to-crypto swap creates a taxable event.</div>
+      </div>
+      <div class="ev-card taxable">
+        <div class="ev-header">
+          <div class="ev-icon">⛏️</div>
+          <div class="ev-badge">Taxable as Income</div>
+        </div>
+        <div class="ev-title">Mining &amp; Earning Bitcoin</div>
+        <div class="ev-body">Bitcoin received through mining, staking rewards, or as payment for services is taxed as <strong>ordinary income</strong> at the fair market value on the day received. Your cost basis is set at that income value. When you later sell those coins, the gain or loss is calculated from that cost basis date.</div>
+      </div>
+      <div class="ev-card nontax">
+        <div class="ev-header">
+          <div class="ev-icon">📥</div>
+          <div class="ev-badge">Not Taxable</div>
+        </div>
+        <div class="ev-title">Buying Bitcoin with Fiat</div>
+        <div class="ev-body">Purchasing Bitcoin with cash, bank transfer, or card creates your <strong>cost basis</strong> — the price you paid. This is not a taxable event. Record the date, amount in BTC, and USD price paid. This record is essential for calculating future gains when you eventually dispose of it.</div>
+      </div>
+      <div class="ev-card nontax">
+        <div class="ev-header">
+          <div class="ev-icon">🔑</div>
+          <div class="ev-badge">Not Taxable</div>
+        </div>
+        <div class="ev-title">Moving Bitcoin Between Your Own Wallets</div>
+        <div class="ev-body">Transferring Bitcoin from one wallet you own to another — from exchange to hardware wallet, or between two hardware wallets — is <strong>not a taxable event.</strong> It is simply moving your property. The cost basis and holding period carry over. Keep records of these transfers to prove they were wallet-to-wallet, not disposals.</div>
+      </div>
+      <div class="ev-card nontax">
+        <div class="ev-header">
+          <div class="ev-icon">🎁</div>
+          <div class="ev-badge">Not Taxable (Giver)</div>
+        </div>
+        <div class="ev-title">Gifting Bitcoin (Under Annual Exclusion)</div>
+        <div class="ev-body">Gifting Bitcoin up to <strong>$18,000 per person per year (2024)</strong> is not a taxable event for the giver. The recipient inherits your cost basis. Gifts above this amount may trigger gift tax reporting (Form 709) but not necessarily tax payment unless lifetime exemptions are exceeded. A powerful estate planning tool.</div>
+      </div>
+      <div class="ev-card nontax">
+        <div class="ev-header">
+          <div class="ev-icon">⚡</div>
+          <div class="ev-badge">Not Taxable</div>
+        </div>
+        <div class="ev-title">Opening/Closing Lightning Channels</div>
+        <div class="ev-body">Opening and closing Lightning payment channels is <strong>generally treated as wallet-to-wallet transfer</strong> — not a disposal — by most tax professionals, since the same Bitcoin is simply being moved in and out of a time-locked contract. The routing fees paid are small enough to be immaterial in most cases. Keep records.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 — CGT CALCULATOR -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">③</div>
+      <div class="chapter-title">The Capital Gains Calculator — Know Exactly What You Owe</div>
+    </div>
+
+    <div class="cgt-calc reveal">
+      <div class="cc-header">
+        <h3>📊 Bitcoin Capital Gains Calculator (US)</h3>
+        <p>Enter your trade details — get your exact tax liability, short-term vs long-term comparison, and net proceeds</p>
+      </div>
+      <div class="cc-body">
+        <div class="cc-controls">
+          <div class="cc-field">
+            <label>Purchase Price ($/BTC)</label>
+            <input type="number" id="ccBuyPrice" value="30000" min="1">
+          </div>
+          <div class="cc-field">
+            <label>Sale Price ($/BTC)</label>
+            <input type="number" id="ccSellPrice" value="100000" min="1">
+          </div>
+          <div class="cc-field">
+            <label>Amount Sold (BTC)</label>
+            <input type="number" id="ccAmount" value="0.1" min="0.00000001" step="0.001">
+          </div>
+        </div>
+        <div class="cc-row2">
+          <div class="cc-field">
+            <label>Holding Period</label>
+            <select id="ccHolding">
+              <option value="short">Short-Term (under 1 year)</option>
+              <option value="long" selected>Long-Term (1 year or more)</option>
+            </select>
+          </div>
+          <div class="cc-field">
+            <label>Income Tax Bracket (for ST rates)</label>
+            <select id="ccBracket">
+              <option value="10">10% bracket (&lt;$11,600)</option>
+              <option value="12">12% bracket ($11,600–$47,150)</option>
+              <option value="22" selected>22% bracket ($47,150–$100,525)</option>
+              <option value="24">24% bracket ($100,525–$191,950)</option>
+              <option value="32">32% bracket ($191,950–$243,725)</option>
+              <option value="35">35% bracket ($243,725–$609,350)</option>
+              <option value="37">37% bracket ($609,350+)</option>
+            </select>
+          </div>
+        </div>
+        <div class="cc-results">
+          <div class="cc-result">
+            <div class="cc-result-label">Cost Basis</div>
+            <div class="cc-result-val" id="ccCostBasis">$3,000</div>
+            <div class="cc-result-sub">what you paid</div>
+          </div>
+          <div class="cc-result">
+            <div class="cc-result-label">Sale Proceeds</div>
+            <div class="cc-result-val" id="ccProceeds">$10,000</div>
+            <div class="cc-result-sub">what you received</div>
+          </div>
+          <div class="cc-result hero-r">
+            <div class="cc-result-label">📊 Capital Gain / (Loss)</div>
+            <div class="cc-result-val" id="ccGain">$7,000</div>
+            <div class="cc-result-sub" id="ccGainSub">long-term gain</div>
+          </div>
+          <div class="cc-result">
+            <div class="cc-result-label">Tax Rate</div>
+            <div class="cc-result-val" id="ccRate">15%</div>
+            <div class="cc-result-sub" id="ccRateSub">long-term CGT</div>
+          </div>
+          <div class="cc-result">
+            <div class="cc-result-label">Tax Owed</div>
+            <div class="cc-result-val val-bad" id="ccTaxOwed">$1,050</div>
+            <div class="cc-result-sub">federal only</div>
+          </div>
+          <div class="cc-result">
+            <div class="cc-result-label">Net Proceeds</div>
+            <div class="cc-result-val val-good" id="ccNet">$8,950</div>
+            <div class="cc-result-sub">after federal tax</div>
+          </div>
+          <div class="cc-result">
+            <div class="cc-result-label">Effective Gain %</div>
+            <div class="cc-result-val val-tax" id="ccEffGain">+233%</div>
+            <div class="cc-result-sub">on your capital</div>
+          </div>
+        </div>
+        <div class="cc-breakdown">
+          <div class="cc-brow"><span class="cc-brow-label">Short-term tax (if sold before 1yr)</span><span class="cc-brow-val val-bad" id="ccSTtax">$1,540</span></div>
+          <div class="cc-brow"><span class="cc-brow-label">Long-term tax (if held 1yr+)</span><span class="cc-brow-val val-good" id="ccLTtax">$1,050</span></div>
+          <div class="cc-brow"><span class="cc-brow-label">Tax saved by holding 1 year+</span><span class="cc-brow-val val-good" id="ccSaved">$490</span></div>
+          <div class="cc-brow"><span class="cc-brow-label">LT CGT rate applied</span><span class="cc-brow-val" id="ccLTrate">15% (income $47K–$518K)</span></div>
+          <div class="cc-brow"><span class="cc-brow-label">Note</span><span class="cc-brow-val" style="font-size:11px;color:var(--muted)">Federal tax only. Add state tax where applicable. Consult a CPA.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 4 — STRATEGIES -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">④</div>
+      <div class="chapter-title">Four Legal Strategies to Legally Reduce Your Bitcoin Tax Bill</div>
+    </div>
+    <div class="prose">
+      <p>The same tax code that requires you to report Bitcoin gains provides tools to minimise them — legally, transparently, and intentionally. These are not loopholes. They are standard tax planning strategies used by every sophisticated investor. Applied to Bitcoin, they can reduce your effective tax rate dramatically.</p>
+    </div>
+
+    <div class="strategies reveal">
+      <div class="str-card">
+        <div class="str-icon">⏳</div>
+        <div class="str-title">The One-Year Hold Rule</div>
+        <div class="str-body">The single most powerful tool available. Holding Bitcoin for more than 12 months before selling qualifies your gains for long-term capital gains rates: <strong>0%, 15%, or 20%</strong> — compared to short-term rates of up to 37%. For someone in the 22% income bracket selling with a $70,000 gain, this difference is <strong>$4,900 in tax saved</strong> on a single sale. Multiply that over a lifetime of Bitcoin accumulation and the number is staggering. DCA buyers who simply hold naturally benefit from this.</div>
+        <div class="str-saving">⏳ Save up to 37% → 15%/20% on gains</div>
+      </div>
+      <div class="str-card">
+        <div class="str-icon">📉</div>
+        <div class="str-title">Tax-Loss Harvesting</div>
+        <div class="str-body">In a bear market or after a correction, you can <strong>sell Bitcoin at a loss to realise a capital loss</strong> — which can offset capital gains from other investments (stocks, real estate). The crucial distinction: Bitcoin has no <em>wash-sale rule</em> (as of 2024 — legislation pending). This means you can sell Bitcoin at a loss and <strong>immediately buy back</strong> at the same price, booking the loss for tax purposes while maintaining your position. No 30-day waiting period required (unlike stocks). This strategy is aggressively used by sophisticated holders.</div>
+        <div class="str-saving">📉 Offset gains · Rebuy immediately · No wash-sale (yet)</div>
+      </div>
+      <div class="str-card">
+        <div class="str-icon">🏦</div>
+        <div class="str-title">Bitcoin in Tax-Advantaged Accounts</div>
+        <div class="str-body">Bitcoin ETFs are now available inside <strong>IRAs, Roth IRAs, and 401(k)s</strong>. A Roth IRA is particularly powerful: contributions are post-tax, but all growth is <strong>completely tax-free</strong> — you pay zero on gains, ever. A $6,500 annual Roth IRA contribution in Bitcoin ETF that grows 10x in 20 years generates $65,000 completely tax-free. In Canada, Bitcoin ETFs inside a TFSA achieve the same result. In Australia, Bitcoin in an SMSF benefits from the super tax environment (15% in accumulation, 0% in pension phase).</div>
+        <div class="str-saving">🏦 Roth IRA: zero tax on ALL gains forever</div>
+      </div>
+      <div class="str-card">
+        <div class="str-icon">🎁</div>
+        <div class="str-title">Strategic Gifting &amp; Inheritance</div>
+        <div class="str-body">You can gift up to <strong>$18,000 per person per year tax-free</strong> (2024 annual exclusion). For couples, that's $36,000 per recipient. Gifting appreciated Bitcoin to family members in lower tax brackets — who then sell it — can dramatically reduce the effective tax rate on gains. Additionally, Bitcoin inherited at death receives a <strong>stepped-up cost basis</strong> to the fair market value on the date of death — potentially eliminating lifetime gains entirely. This "buy, hold, bequeath" strategy is one of the most powerful wealth transfer tools available.</div>
+        <div class="str-saving">🎁 $18K/yr per person · Stepped-up basis at death</div>
+      </div>
+    </div>
+
+    <div class="callout callout-btc reveal">
+      <div class="callout-title">₿ The Strategy Most People Miss</div>
+      <p>The stepped-up cost basis at death is the most under-discussed Bitcoin tax strategy. Here's how it works: you buy Bitcoin at $10,000. It grows to $500,000. You hold it your entire life — paying zero tax because you never sold. At death, your heirs receive it with a cost basis of <strong>$500,000</strong> — the value at the date of death. If they sell it for $500,000, they owe zero tax. Your $490,000 gain evaporated from a tax perspective. This is fully legal, identical to how appreciated stock works, and is one of the most powerful reasons that long-term Bitcoin holders say "number go up, never sell."</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 — LONG HOLD CALC -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑤</div>
+      <div class="chapter-title">The One-Year Rule Calculator — What Patience Actually Saves</div>
+    </div>
+
+    <div class="hold-calc reveal">
+      <div class="hc3-header">
+        <h3>⏳ Short-Term vs Long-Term CGT Calculator</h3>
+        <p>See exactly how much the 12-month holding rule saves in real dollars</p>
+      </div>
+      <div class="hc3-body">
+        <div class="hc3-controls">
+          <div class="hc3-field">
+            <label>Buy Price ($/BTC)</label>
+            <input type="number" id="hcBuy" value="40000" min="1">
+          </div>
+          <div class="hc3-field">
+            <label>Sell Price ($/BTC)</label>
+            <input type="number" id="hcSell" value="120000" min="1">
+          </div>
+          <div class="hc3-field">
+            <label>BTC Amount</label>
+            <input type="number" id="hcBtcAmt" value="0.25" min="0.00000001" step="0.01">
+          </div>
+          <div class="hc3-field">
+            <label>Income Bracket</label>
+            <select id="hcBracket">
+              <option value="22" selected>22% ($47K–$100K)</option>
+              <option value="24">24% ($100K–$192K)</option>
+              <option value="32">32% ($192K–$244K)</option>
+              <option value="35">35% ($244K–$609K)</option>
+              <option value="37">37% ($609K+)</option>
+            </select>
+          </div>
+        </div>
+        <div class="hc3-compare">
+          <div class="hc3-side short">
+            <div class="hc3-side-head">⚡ Short-Term (Sold &lt; 1 Year)</div>
+            <div class="hc3-side-body">
+              <div class="hc3-row"><span class="hc3-row-label">Gain</span><span class="hc3-row-val" id="hcGain">$20,000</span></div>
+              <div class="hc3-row"><span class="hc3-row-label">Tax rate</span><span class="hc3-row-val val-bad" id="hcSTrate">22%</span></div>
+              <div class="hc3-row"><span class="hc3-row-label">Tax owed</span><span class="hc3-row-val val-bad" id="hcSTtax">$4,400</span></div>
+              <div class="hc3-row"><span class="hc3-row-label">Net proceeds</span><span class="hc3-row-val" id="hcSTnet">$25,600</span></div>
+            </div>
+          </div>
+          <div class="hc3-side long">
+            <div class="hc3-side-head">⏳ Long-Term (Held 1 Year+)</div>
+            <div class="hc3-side-body">
+              <div class="hc3-row"><span class="hc3-row-label">Gain</span><span class="hc3-row-val" id="hcGainLT">$20,000</span></div>
+              <div class="hc3-row"><span class="hc3-row-label">Tax rate</span><span class="hc3-row-val val-good" id="hcLTrate">15%</span></div>
+              <div class="hc3-row"><span class="hc3-row-label">Tax owed</span><span class="hc3-row-val val-good" id="hcLTtax">$3,000</span></div>
+              <div class="hc3-row"><span class="hc3-row-label">Net proceeds</span><span class="hc3-row-val" id="hcLTnet">$27,000</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="hc3-saving">
+          Waiting 12 months saves you <strong id="hcSaving">$1,400</strong> in federal tax on this transaction — a <strong id="hcSavingPct">31.8%</strong> reduction in your tax bill. For Bitcoin holders with multi-year DCA positions, this saving compounds across every future disposal. <strong>Patience is a tax strategy.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 — RECORD KEEPING -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑥</div>
+      <div class="chapter-title">The Transaction Log — Your Tax-Ready Record Keeper</div>
+    </div>
+    <div class="prose">
+      <p>The IRS requires you to know your cost basis for every unit of Bitcoin you sell. Without records, you cannot prove your cost basis — and the IRS may assume it is zero, taxing you on the full sale proceeds. <em>Good records are not optional.</em> They are the difference between paying the correct amount and overpaying catastrophically.</p>
+      <p>Start your log below. Add every purchase and sale. This tool calculates your running gain/loss automatically. For real tax preparation, export this data to dedicated software like Koinly, CoinTracker, or TaxBit — but starting here builds the habit.</p>
+    </div>
+
+    <div class="record-table reveal">
+      <div class="rt-header">
+        <h3>📋 Bitcoin Transaction Log</h3>
+        <p>Track every buy and sell — your cost basis record for tax purposes</p>
+      </div>
+      <div class="rt-cols">
+        <span>Date &amp; Description</span>
+        <span>Type</span>
+        <span>BTC Amount</span>
+        <span>Price ($/BTC)</span>
+        <span>Gain / Loss</span>
+      </div>
+      <div class="rt-body" id="rtBody"></div>
+      <div class="rt-add-row">
+        <input type="text" id="rtDate" placeholder="Date / description" style="grid-column:span 1">
+        <select id="rtType" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text);font-family:'Inter',sans-serif;outline:none">
+          <option value="buy">Buy</option>
+          <option value="sell">Sell</option>
+        </select>
+        <input type="number" id="rtBtc" placeholder="BTC amt" step="0.00001" min="0">
+        <input type="number" id="rtPrice" placeholder="$/BTC" min="1">
+        <button class="rt-add-btn" id="rtAddBtn">+ Add</button>
+      </div>
+      <div class="rt-summary">
+        <div class="rt-sum-item">
+          <div class="rt-sum-label">Total BTC Held</div>
+          <div class="rt-sum-val" id="rtHeld" style="color:var(--btc)">0.00000</div>
+        </div>
+        <div class="rt-sum-item">
+          <div class="rt-sum-label">Avg Cost Basis</div>
+          <div class="rt-sum-val" id="rtAvgBasis" style="color:var(--tax)">$—</div>
+        </div>
+        <div class="rt-sum-item">
+          <div class="rt-sum-label">Realised Gain/Loss</div>
+          <div class="rt-sum-val" id="rtRealised">$0</div>
+        </div>
+        <div class="rt-sum-item">
+          <div class="rt-sum-label">Unrealised Gain (Live)</div>
+          <div class="rt-sum-val" id="rtUnrealised">$—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 7 — MISTAKES -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑦</div>
+      <div class="chapter-title">Five Costly Mistakes — And the Fixes That Cost Nothing</div>
+    </div>
+
+    <div class="mistakes reveal">
+      <div class="mist-card">
+        <div class="mist-header">
+          <div class="mist-icon">😱</div>
+          <div class="mist-q">"I didn't know I had to report — I never cashed out to my bank."</div>
+          <span class="mist-risk risk-high">High Risk</span>
+          <div class="mist-arrow">▼</div>
+        </div>
+        <div class="mist-body"><div class="mist-inner">
+          <div class="mist-answer">This is the most common and most expensive misunderstanding. <strong>"Cashing out to a bank" is not the trigger — disposal is.</strong> Selling Bitcoin on an exchange, even if you leave the proceeds in your exchange account, is a taxable event. Trading BTC for another crypto is a taxable event. Buying a product with Bitcoin is a taxable event. The IRS does not require a bank transfer to trigger tax. Exchanges now issue 1099 forms to both you and the IRS — they already know.</div>
+          <div class="mist-fix">✅ Fix: Report every disposal on Form 8949, regardless of whether proceeds stayed on exchange or moved to a bank. Koinly, CoinTracker, and TaxBit automatically import exchange data and generate pre-filled 8949 forms.</div>
+        </div></div>
+      </div>
+      <div class="mist-card">
+        <div class="mist-header">
+          <div class="mist-icon">📉</div>
+          <div class="mist-q">"I lost money in the 2022 bear market. I don't need to report losses."</div>
+          <span class="mist-risk risk-med">Missing Opportunity</span>
+          <div class="mist-arrow">▼</div>
+        </div>
+        <div class="mist-body"><div class="mist-inner">
+          <div class="mist-answer">Capital losses are valuable — they offset gains and reduce your tax bill. <strong>Not reporting losses is leaving money on the table.</strong> Up to $3,000 in net capital losses can be deducted against ordinary income annually. Excess losses carry forward to future years indefinitely. Someone who realised $20,000 in Bitcoin losses in 2022 can offset $3,000/year for nearly 7 years — reducing their tax bill by hundreds of dollars annually. Report every loss. They are assets.</div>
+          <div class="mist-fix">✅ Fix: Report all disposals — gains and losses. Net losses carry forward. Every dollar of realised loss is a future tax deduction. Use them.</div>
+        </div></div>
+      </div>
+      <div class="mist-card">
+        <div class="mist-header">
+          <div class="mist-icon">📁</div>
+          <div class="mist-q">"I lost my purchase records — I don't know my cost basis."</div>
+          <span class="mist-risk risk-high">High Risk</span>
+          <div class="mist-arrow">▼</div>
+        </div>
+        <div class="mist-body"><div class="mist-inner">
+          <div class="mist-answer">Without a documented cost basis, the IRS can and sometimes does treat your cost basis as zero — meaning you're taxed on the full sale proceeds as a gain. However, <strong>you can reconstruct cost basis</strong> from exchange emails, bank statements, credit card records, and blockchain explorers (which record every transaction permanently). If you genuinely cannot prove a non-zero cost basis, use the actual price on the date of purchase from historical price data (CoinGecko provides full history) and document your reconstruction.</div>
+          <div class="mist-fix">✅ Fix: Start your record-keeping today using the log above. For past transactions, use CoinGecko historical data + your exchange's transaction history (downloadable as CSV from most exchanges).</div>
+        </div></div>
+      </div>
+      <div class="mist-card">
+        <div class="mist-header">
+          <div class="mist-icon">⏰</div>
+          <div class="mist-q">"I sold Bitcoin that I'd held for 11 months and 3 weeks."</div>
+          <span class="mist-risk risk-high">Expensive</span>
+          <div class="mist-arrow">▼</div>
+        </div>
+        <div class="mist-body"><div class="mist-inner">
+          <div class="mist-answer">The one-year threshold for long-term CGT treatment is absolute — not approximate. Selling one day before the 12-month mark means paying short-term rates (up to 37%) instead of long-term rates (15-20%). On a $50,000 gain, that impatience could cost <strong>$8,500 in additional federal tax</strong>. The date you need to hold until is calculable from the moment you buy. Set a calendar reminder. It is one of the most expensive single-day mistakes a Bitcoin holder can make.</div>
+          <div class="mist-fix">✅ Fix: Know your 365-day date for every significant purchase. Add it to your calendar. The calculator above shows exactly what waiting costs vs. saves.</div>
+        </div></div>
+      </div>
+      <div class="mist-card">
+        <div class="mist-header">
+          <div class="mist-icon">🤐</div>
+          <div class="mist-q">"I'll just not report it — the IRS will never know about a small amount."</div>
+          <span class="mist-risk risk-high">Serious Risk</span>
+          <div class="mist-arrow">▼</div>
+        </div>
+        <div class="mist-body"><div class="mist-inner">
+          <div class="mist-answer">The IRS has been aggressively pursuing crypto non-compliance since 2019. <strong>Coinbase, Kraken, and Gemini have all received John Doe summonses</strong> — court orders requiring them to hand over user data. The IRS now adds a crypto question to the front page of Form 1040 that must be answered under penalty of perjury. Blockchain analytics companies (Chainalysis, Elliptic) are contracted by the IRS to trace on-chain activity. The "they won't find out" bet is increasingly risky — and the penalties for wilful non-compliance include fines and imprisonment.</div>
+          <div class="mist-fix">✅ Fix: Report everything. The compliance tools (Koinly, CoinTracker) cost $50–$200/year and auto-generate your 8949 form. The cost of the software is infinitely less than the cost of an IRS audit or penalty.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLARITY MOMENT -->
+  <div class="clarity-moment reveal">
+    <div class="cm-bg"></div>
+    <span class="cm-icon">📊</span>
+    <div class="cm-title">
+      <span class="cm-t">Understand it.</span><br>
+      <span class="cm-btc">Report it.</span><br>
+      <span class="cm-g">Master it.</span>
+    </div>
+    <div class="cm-sub">Taxes are not the enemy of Bitcoin wealth. They are evidence of it. You only pay capital gains tax when you profit. The strategies in this step — holding one year, using Roth IRAs, harvesting losses, gifting strategically — are not cheats. They are the tools that every sophisticated investor uses. The Bitcoin holder who understands them pays less tax, keeps more gains, and builds wealth faster. The one who avoids the topic pays maximum rates, misses every saving, and eventually faces the IRS with no records. The choice is made right now, by building the habit of recording every transaction from this moment forward.</div>
+  </div>
+
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">🏆 Step 17 — Key Takeaways</div>
+    <div class="kt-text">Tax compliance is not complicated.<br><em>It just requires starting today.</em></div>
+    <div class="kt-points">
+      <div class="kt-point"><span class="kt-point-icon">📊</span><span>Bitcoin is property under US tax law. Capital gains tax applies at disposal — selling, spending, or swapping. Simply buying and holding Bitcoin generates zero tax liability until you choose to sell. The fear is almost always worse than the reality.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">⏳</span><span>The single most powerful tax strategy available to every Bitcoin holder is free: hold for 12 months before selling. This moves you from short-term rates (up to 37%) to long-term rates (0%, 15%, or 20%). On meaningful gains, this saves thousands of dollars per transaction.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📉</span><span>Bitcoin has no wash-sale rule (as of 2024) — meaning you can sell at a loss, immediately rebuy, and claim the loss as a tax deduction while maintaining your full position. This is tax-loss harvesting, and it is completely legal and actively used by sophisticated holders.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🏦</span><span>Bitcoin ETFs inside Roth IRAs grow completely tax-free. A Roth IRA funded with $6,500/year in Bitcoin ETF, held for 30 years at historical returns, could generate millions in completely tax-free wealth. This is the most underutilised Bitcoin tax strategy in existence.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📋</span><span>Record every transaction from today. Date, BTC amount, price paid, description. Use Koinly or CoinTracker for full automation. This 60-second habit per transaction prevents hours of reconstruction work at tax time — and protects you from IRS scrutiny.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🔥</span><span>Step 18 — the penultimate step of Phase 3 — is Bitcoin for Retirement. We show how to use Bitcoin specifically as a retirement vehicle, the FIRE calculation with Bitcoin, and exactly why a 1–5% Bitcoin allocation transforms a conventional retirement portfolio's expected outcome.</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STEP NAV -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="btc-step-16.html" class="snb-prev reveal">
+      <div class="snb-icon">⚖️</div>
+      <div>
+        <div class="snb-label">← Step 16</div>
+        <div class="snb-title">Is Bitcoin Legal?</div>
+        <div class="snb-desc">What governments can — and can't — do</div>
+      </div>
+    </a>
+    <a href="btc-step-18.html" class="snb-next reveal">
+      <div class="snb-icon">🏖️</div>
+      <div>
+        <div class="snb-label">Step 18 →</div>
+        <div class="snb-title">Bitcoin for Retirement</div>
+        <div class="snb-desc">The FIRE calculation that changes your timeline</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- MINIMAP -->
+<div class="steps-minimap">
+  <div class="sm-card reveal">
+    <div class="sm-title">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step done">1</a>
+      <a href="btc-step-02.html" class="sm-step done">2</a>
+      <a href="btc-step-03.html" class="sm-step done">3</a>
+      <a href="btc-step-04.html" class="sm-step done">4</a>
+      <a href="btc-step-05.html" class="sm-step done">5</a>
+      <a href="btc-step-06.html" class="sm-step done">6</a>
+      <a href="btc-step-07.html" class="sm-step done">7</a>
+      <a href="btc-step-08.html" class="sm-step done">8</a>
+      <a href="btc-step-09.html" class="sm-step done">9</a>
+      <a href="btc-step-10.html" class="sm-step done">10</a>
+      <a href="btc-step-11.html" class="sm-step done">11</a>
+      <a href="btc-step-12.html" class="sm-step done">12</a>
+      <a href="btc-step-13.html" class="sm-step done">13</a>
+      <a href="btc-step-14.html" class="sm-step done">14</a>
+      <a href="btc-step-15.html" class="sm-step done">15</a>
+      <a href="btc-step-16.html" class="sm-step done">16</a>
+      <a href="btc-step-17.html" class="sm-step current">17</a>
+      <a href="btc-step-18.html" class="sm-step phase-4">18</a>
+      <a href="btc-step-19.html" class="sm-step phase-4">19</a>
+      <a href="btc-step-20.html" class="sm-step phase-4">20</a>
+      <a href="btc-step-21.html" class="sm-step phase-4">21</a>
+    </div>
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(34,197,94,.6)"></div>Completed</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--tax)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(255,107,0,.4)"></div>Phase 4 — Mastery</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+      <a href="raise-with-bitcoin.html">DCA Calculator</a>
+      <a href="LumpSumVSdcaVShybrid.html">Strategy Compare</a>
+      <a href="Keychain.html">Keychain</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n); localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE PRICE ──
+let liveBtcPrice = 100000;
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json()).then(d => {
+      liveBtcPrice = d.bitcoin.usd;
+      document.getElementById('btcPriceNav').textContent = '$' + liveBtcPrice.toLocaleString();
+      updateUnrealised();
+    }).catch(() => {});
+}
+updatePrice(); setInterval(updatePrice, 10000);
+
+// ── SCROLL ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── CGT CALCULATOR ──
+function getLTrate(income) {
+  // 2024 LT CGT rates (single filer)
+  if (income <= 47025) return 0;
+  if (income <= 518900) return 15;
+  return 20;
+}
+function calcCGT() {
+  const buyPrice = parseFloat(document.getElementById('ccBuyPrice').value) || 0;
+  const sellPrice = parseFloat(document.getElementById('ccSellPrice').value) || 0;
+  const amount = parseFloat(document.getElementById('ccAmount').value) || 0;
+  const holding = document.getElementById('ccHolding').value;
+  const bracket = parseInt(document.getElementById('ccBracket').value) || 22;
+
+  const costBasis = buyPrice * amount;
+  const proceeds = sellPrice * amount;
+  const gain = proceeds - costBasis;
+
+  // LT rate based on rough income estimate from bracket midpoints
+  const bracketMidpoints = {10:8000,12:29000,22:73000,24:145000,32:217000,35:400000,37:700000};
+  const income = bracketMidpoints[bracket] || 73000;
+  const ltRate = getLTrate(income);
+  const stRate = bracket;
+
+  const stTax = gain > 0 ? gain * stRate / 100 : 0;
+  const ltTax = gain > 0 ? gain * ltRate / 100 : 0;
+  const chosenTax = holding === 'long' ? ltTax : stTax;
+  const chosenRate = holding === 'long' ? ltRate : stRate;
+  const net = proceeds - chosenTax;
+  const saved = stTax - ltTax;
+  const effGain = costBasis > 0 ? ((proceeds - costBasis) / costBasis * 100) : 0;
+
+  const fmt = v => v >= 0 ? '$' + Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:0})
+    : '-$' + Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:0});
+
+  document.getElementById('ccCostBasis').textContent = fmt(costBasis);
+  document.getElementById('ccProceeds').textContent = fmt(proceeds);
+  const gainEl = document.getElementById('ccGain');
+  gainEl.textContent = (gain >= 0 ? '+' : '') + fmt(gain);
+  gainEl.style.color = gain >= 0 ? 'var(--tax)' : 'var(--red)';
+  document.getElementById('ccGainSub').textContent = holding === 'long' ? 'long-term gain' : 'short-term gain';
+  document.getElementById('ccRate').textContent = chosenRate + '%';
+  document.getElementById('ccRateSub').textContent = holding === 'long' ? 'long-term CGT' : 'short-term (ordinary income)';
+  document.getElementById('ccTaxOwed').textContent = fmt(chosenTax);
+  document.getElementById('ccNet').textContent = fmt(net);
+  document.getElementById('ccEffGain').textContent = effGain.toFixed(1) + '%';
+  document.getElementById('ccSTtax').textContent = fmt(stTax);
+  document.getElementById('ccLTtax').textContent = fmt(ltTax);
+  document.getElementById('ccSaved').textContent = saved >= 0 ? fmt(saved) : '$0';
+  document.getElementById('ccLTrate').textContent = ltRate + '% (LT rate at est. income)';
+}
+['ccBuyPrice','ccSellPrice','ccAmount','ccHolding','ccBracket'].forEach(id =>
+  document.getElementById(id).addEventListener(id.includes('cc') && !id.includes('Bracket') && !id.includes('Holding') ? 'input' : 'change', calcCGT));
+document.getElementById('ccHolding').addEventListener('change', calcCGT);
+document.getElementById('ccBracket').addEventListener('change', calcCGT);
+['ccBuyPrice','ccSellPrice','ccAmount'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcCGT));
+calcCGT();
+
+// ── HOLD CALC ──
+function calcHold() {
+  const buy = parseFloat(document.getElementById('hcBuy').value) || 0;
+  const sell = parseFloat(document.getElementById('hcSell').value) || 0;
+  const amt = parseFloat(document.getElementById('hcBtcAmt').value) || 0;
+  const bracket = parseInt(document.getElementById('hcBracket').value) || 22;
+
+  const gain = (sell - buy) * amt;
+  const bracketMidpoints = {22:73000,24:145000,32:217000,35:400000,37:700000};
+  const income = bracketMidpoints[bracket] || 73000;
+  const ltRate = getLTrate(income);
+  const proceeds = sell * amt;
+
+  const stTax = Math.max(0, gain * bracket / 100);
+  const ltTax = Math.max(0, gain * ltRate / 100);
+  const saving = stTax - ltTax;
+  const savingPct = stTax > 0 ? (saving / stTax * 100).toFixed(1) : '0';
+
+  const fmt = v => '$' + Math.round(Math.abs(v)).toLocaleString();
+  document.getElementById('hcGain').textContent = fmt(gain);
+  document.getElementById('hcGainLT').textContent = fmt(gain);
+  document.getElementById('hcSTrate').textContent = bracket + '%';
+  document.getElementById('hcLTrate').textContent = ltRate + '%';
+  document.getElementById('hcSTtax').textContent = fmt(stTax);
+  document.getElementById('hcLTtax').textContent = fmt(ltTax);
+  document.getElementById('hcSTnet').textContent = fmt(proceeds - stTax);
+  document.getElementById('hcLTnet').textContent = fmt(proceeds - ltTax);
+  document.getElementById('hcSaving').textContent = fmt(saving);
+  document.getElementById('hcSavingPct').textContent = savingPct + '%';
+}
+['hcBuy','hcSell','hcBtcAmt'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcHold));
+document.getElementById('hcBracket').addEventListener('change', calcHold);
+calcHold();
+
+// ── TRANSACTION LOG ──
+let transactions = [];
+let totalBtcHeld = 0;
+let totalCostBasis = 0;
+let realisedGain = 0;
+
+function renderTransactions() {
+  const body = document.getElementById('rtBody');
+  body.innerHTML = '';
+  transactions.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'rt-row';
+    const gainText = t.gainLoss !== null
+      ? (t.gainLoss >= 0
+        ? '<span class="gain">+$' + Math.abs(t.gainLoss).toFixed(2) + '</span>'
+        : '<span class="loss">-$' + Math.abs(t.gainLoss).toFixed(2) + '</span>')
+      : '<span style="color:var(--muted)">—</span>';
+    const badge = t.type === 'sell'
+      ? '<span class="event-type sell-badge">SELL</span>'
+      : '<span class="event-type buy-badge">BUY</span>';
+    row.innerHTML = `
+      <span>${t.date}</span>
+      <span>${badge}</span>
+      <span>${t.btc.toFixed(6)}</span>
+      <span>$${t.price.toLocaleString()}</span>
+      <span>${gainText}</span>
+    `;
+    body.appendChild(row);
+  });
+
+  document.getElementById('rtHeld').textContent = totalBtcHeld.toFixed(6);
+  document.getElementById('rtAvgBasis').textContent = totalBtcHeld > 0
+    ? '$' + (totalCostBasis / totalBtcHeld).toLocaleString(undefined,{maximumFractionDigits:0})
+    : '$—';
+  const rEl = document.getElementById('rtRealised');
+  rEl.textContent = (realisedGain >= 0 ? '+' : '') + '$' + Math.round(Math.abs(realisedGain)).toLocaleString();
+  rEl.style.color = realisedGain >= 0 ? 'var(--green)' : 'var(--red)';
+  updateUnrealised();
+}
+
+function updateUnrealised() {
+  if (totalBtcHeld <= 0) { document.getElementById('rtUnrealised').textContent = '$—'; return; }
+  const avgBasis = totalCostBasis / totalBtcHeld;
+  const unrealised = (liveBtcPrice - avgBasis) * totalBtcHeld;
+  const el = document.getElementById('rtUnrealised');
+  el.textContent = (unrealised >= 0 ? '+' : '') + '$' + Math.round(Math.abs(unrealised)).toLocaleString();
+  el.style.color = unrealised >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
+document.getElementById('rtAddBtn').addEventListener('click', () => {
+  const date = document.getElementById('rtDate').value || new Date().toLocaleDateString();
+  const type = document.getElementById('rtType').value;
+  const btc = parseFloat(document.getElementById('rtBtc').value) || 0;
+  const price = parseFloat(document.getElementById('rtPrice').value) || 0;
+  if (!btc || !price) return;
+
+  let gainLoss = null;
+  if (type === 'sell' && totalBtcHeld > 0) {
+    const avgBasis = totalCostBasis / totalBtcHeld;
+    gainLoss = (price - avgBasis) * btc;
+    realisedGain += gainLoss;
+    totalBtcHeld -= btc;
+    totalCostBasis -= avgBasis * btc;
+    if (totalBtcHeld < 0) totalBtcHeld = 0;
+  } else if (type === 'buy') {
+    totalBtcHeld += btc;
+    totalCostBasis += btc * price;
+  }
+
+  transactions.push({ date, type, btc, price, gainLoss });
+  renderTransactions();
+  document.getElementById('rtDate').value = '';
+  document.getElementById('rtBtc').value = '';
+  document.getElementById('rtPrice').value = '';
+});
+
+// Seed with example
+transactions.push({ date: 'Jan 2024', type: 'buy', btc: 0.05, price: 42000, gainLoss: null });
+totalBtcHeld = 0.05; totalCostBasis = 2100;
+renderTransactions();
+
+// ── MISTAKE ACCORDIONS ──
+document.querySelectorAll('.mist-header').forEach(h => {
+  h.addEventListener('click', () => {
+    const card = h.parentElement;
+    const wasOpen = card.classList.contains('open');
+    document.querySelectorAll('.mist-card').forEach(c => c.classList.remove('open'));
+    if (!wasOpen) card.classList.add('open');
+  });
+});
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.05 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
