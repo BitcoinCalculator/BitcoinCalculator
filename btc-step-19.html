@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 19: Bitcoin & Human Freedom | SATOLOGY</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;
+  --prose:#c8c8c8;--quote-bg:#0d0d10;
+}
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --prose:#3a3a3a;--quote-bg:#f0ede6;
+}
+:root{
+  --btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;
+  --red:#e63946;--teal:#06b6d4;--soul:#7c3aed;--soul2:#6d28d9;--gold:#FFD700;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
+  transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--soul),var(--btc),var(--gold));width:0%}
+
+.ticker{background:linear-gradient(90deg,#2e1065,#4c1d95);padding:9px 0;overflow:hidden;white-space:nowrap;z-index:201}
+.ticker-inner{display:inline-flex;gap:64px;animation:tick 42s linear infinite;font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
+  align-items:center;justify-content:space-between;background:var(--nav-bg);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;
+  place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);
+  border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;
+  font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);
+  border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;
+  border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+.step-nav-bar{background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.step-nav-left a{color:var(--muted);text-decoration:none;transition:color .2s}
+.step-nav-left a:hover{color:var(--btc)}
+.step-nav-sep{opacity:.4}
+.step-nav-current{color:var(--text);font-weight:600}
+.step-nav-right{display:flex;align-items:center;gap:8px}
+.step-pill{background:linear-gradient(135deg,var(--soul),var(--btc));color:#fff;
+  border-radius:100px;padding:4px 14px;font-size:11px;font-weight:900;letter-spacing:.5px}
+.step-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:linear-gradient(90deg,var(--soul),var(--btc));border-radius:2px;width:90.5%}
+
+.reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
+.rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:linear-gradient(to bottom,var(--soul),var(--btc));
+  border-radius:2px;height:0%;transition:height .15s}
+.rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+  writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
+
+/* ══ COSMIC HERO ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;position:relative;overflow:hidden;min-height:600px}
+
+/* Starfield canvas */
+#starCanvas{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.7}
+
+.hero-symbol-bg{position:absolute;right:-40px;top:-30px;
+  font-size:clamp(220px,36vw,480px);opacity:.035;line-height:1;pointer-events:none;
+  animation:symbolBreath 8s ease-in-out infinite;z-index:1;
+  background:linear-gradient(135deg,var(--soul),var(--btc),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-weight:900;font-family:'Inter',sans-serif}
+@keyframes symbolBreath{
+  0%,100%{opacity:.035;transform:scale(1)}
+  50%{opacity:.07;transform:scale(1.04)}}
+
+.step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;
+  animation:fadeUp .6s ease both;position:relative;z-index:2}
+.step-number{width:52px;height:52px;
+  background:linear-gradient(135deg,var(--soul),var(--btc));
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 8px 40px rgba(124,58,237,.55)}
+.step-meta{display:flex;flex-direction:column;gap:3px}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--soul),var(--btc),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-weight:700}
+.step-meta-bottom{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.step-hero h1{font-size:clamp(36px,7vw,88px);font-weight:900;letter-spacing:-4px;
+  line-height:.97;margin-bottom:22px;animation:fadeUp .6s .07s ease both;
+  position:relative;z-index:2}
+.s-em{color:var(--soul)}.btc-em{color:var(--btc)}.g-em{color:var(--green)}.go-em{color:var(--gold)}
+.step-hero-sub{font-size:clamp(16px,2vw,21px);color:var(--muted);line-height:1.8;
+  max-width:700px;margin-bottom:36px;animation:fadeUp .6s .13s ease both;
+  font-family:'Lora',serif;font-style:italic;position:relative;z-index:2}
+.key-lesson{display:inline-flex;align-items:flex-start;gap:10px;
+  background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.28);
+  border-radius:14px;padding:14px 20px;font-size:14px;color:var(--text);
+  line-height:1.65;margin-bottom:48px;animation:fadeUp .6s .18s ease both;
+  max-width:680px;position:relative;z-index:2}
+.key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.key-lesson strong{color:var(--soul)}
+
+/* ── ARTICLE ── */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
+.chapter{margin-bottom:80px}
+.chapter-label{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.chapter-num{width:40px;height:40px;background:rgba(124,58,237,.1);
+  border:1px solid rgba(124,58,237,.28);border-radius:11px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;font-weight:900;
+  color:var(--soul);flex-shrink:0}
+.chapter-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.85vw,20px);line-height:1.95;color:var(--prose)}
+.prose p{margin-bottom:28px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--soul);font-style:italic}
+.prose em.btc{color:var(--btc)}
+.prose em.green{color:var(--green)}
+.prose em.gold{color:var(--gold)}
+
+.pull-quote{border-left:4px solid var(--soul);margin:48px 0;padding:28px 32px;
+  background:var(--quote-bg);border-radius:0 16px 16px 0;position:relative}
+.pull-quote::before{content:'❝';position:absolute;top:-16px;left:24px;
+  font-size:64px;color:var(--soul);opacity:.15;line-height:1;font-family:serif}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(18px,2.5vw,25px);
+  font-style:italic;color:var(--text);line-height:1.65;margin:0}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;
+  color:var(--muted);font-style:normal;margin-top:14px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.5px}
+
+.callout{border-radius:18px;padding:30px 34px;margin:40px 0;border:1px solid}
+.callout-soul{background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.22)}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.2)}
+.callout-green{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)}
+.callout-gold{background:rgba(255,215,0,.06);border-color:rgba(255,215,0,.2)}
+.callout-red{background:rgba(230,57,70,.06);border-color:rgba(230,57,70,.2)}
+.callout-title{font-size:12px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.callout-soul .callout-title{color:var(--soul)}
+.callout-btc .callout-title{color:var(--btc)}
+.callout-green .callout-title{color:var(--green)}
+.callout-gold .callout-title{color:var(--gold)}
+.callout-red .callout-title{color:var(--red)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.85;margin:0;font-family:'Inter',sans-serif}
+.callout p+p{margin-top:14px}
+
+/* ══ MONEY = FREEDOM equation ══ */
+.money-eq{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;
+  gap:0;margin:44px 0;align-items:center}
+.meq-block{background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:28px 20px;text-align:center;
+  transition:all .4s;position:relative;overflow:hidden}
+.meq-block:hover{transform:translateY(-5px)}
+.meq-block::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.meq-block:nth-child(1)::before{background:var(--soul)}
+.meq-block:nth-child(3)::before{background:var(--btc)}
+.meq-block:nth-child(5)::before{background:var(--green)}
+.meq-block:hover:nth-child(1){border-color:var(--soul);box-shadow:0 12px 36px rgba(124,58,237,.15)}
+.meq-block:hover:nth-child(3){border-color:var(--btc);box-shadow:0 12px 36px rgba(247,147,26,.15)}
+.meq-block:hover:nth-child(5){border-color:var(--green);box-shadow:0 12px 36px rgba(34,197,94,.15)}
+.meq-icon{font-size:44px;margin-bottom:12px;animation:meqFloat 4s ease-in-out infinite}
+.meq-block:nth-child(3) .meq-icon{animation-delay:.5s}
+.meq-block:nth-child(5) .meq-icon{animation-delay:1s}
+@keyframes meqFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.meq-title{font-size:15px;font-weight:900;margin-bottom:6px;letter-spacing:-.3px}
+.meq-block:nth-child(1) .meq-title{color:var(--soul)}
+.meq-block:nth-child(3) .meq-title{color:var(--btc)}
+.meq-block:nth-child(5) .meq-title{color:var(--green)}
+.meq-body{font-size:12px;color:var(--muted);line-height:1.7}
+.meq-op{font-size:36px;font-weight:900;color:var(--muted);
+  text-align:center;padding:0 8px;flex-shrink:0}
+
+/* ══ FREEDOM STORIES ══ */
+.freedom-stories{display:flex;flex-direction:column;gap:0;margin:44px 0;
+  background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:22px;overflow:hidden}
+.fs-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(124,58,237,.08),transparent)}
+.fs-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.fs-header p{font-size:13px;color:var(--muted)}
+.fs-story{display:grid;grid-template-columns:72px 1fr;gap:0;
+  border-bottom:1px solid var(--border);transition:background .2s;cursor:pointer}
+.fs-story:hover{background:rgba(124,58,237,.03)}
+.fs-story:last-child{border-bottom:none}
+.fs-story.open{background:rgba(124,58,237,.04)}
+.fs-flag-col{display:flex;flex-direction:column;align-items:center;
+  padding:20px 0 20px 20px;position:relative}
+.fs-flag{font-size:36px;margin-bottom:4px}
+.fs-flag-line{flex:1;width:2px;background:rgba(124,58,237,.15);margin-top:8px}
+.fs-story:last-child .fs-flag-line{display:none}
+.fs-content{padding:18px 22px 18px 18px}
+.fs-content-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+.fs-title{font-size:15px;font-weight:900;letter-spacing:-.3px;flex:1}
+.fs-tag{font-size:10px;font-weight:800;padding:3px 10px;border-radius:100px;flex-shrink:0;white-space:nowrap}
+.fs-preview{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:8px}
+.fs-expand{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.fs-story.open .fs-expand{max-height:400px}
+.fs-full{font-size:13px;color:var(--prose);line-height:1.85;
+  padding-top:12px;border-top:1px solid var(--border);margin-top:8px;
+  font-family:'Lora',serif}
+.fs-full strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.fs-arrow{font-size:14px;color:var(--muted);transition:transform .3s;flex-shrink:0;margin-top:2px}
+.fs-story.open .fs-arrow{transform:rotate(180deg)}
+
+/* ══ CONTROL SPECTRUM ══ */
+.control-spectrum{background:var(--card);border:1px solid rgba(124,58,237,.2);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.csp-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(124,58,237,.08),transparent)}
+.csp-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.csp-header p{font-size:13px;color:var(--muted)}
+.csp-body{padding:28px;display:flex;flex-direction:column;gap:20px}
+.csp-row{display:grid;grid-template-columns:160px 1fr 1fr;gap:16px;align-items:start}
+.csp-label{font-size:13px;font-weight:800;color:var(--text);padding-top:4px}
+.csp-side{background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:14px 16px;font-size:12px;line-height:1.7}
+.csp-side.controlled{border-color:rgba(230,57,70,.2);background:rgba(230,57,70,.04)}
+.csp-side.free{border-color:rgba(34,197,94,.2);background:rgba(34,197,94,.04)}
+.csp-side-label{font-size:9px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:6px}
+.csp-side.controlled .csp-side-label{color:var(--red)}
+.csp-side.free .csp-side-label{color:var(--green)}
+.csp-side-body{color:var(--muted)}
+.csp-side.controlled .csp-side-body{color:var(--red);opacity:.8}
+.csp-side.free .csp-side-body{color:var(--green);opacity:.9}
+.csp-cols-head{display:grid;grid-template-columns:160px 1fr 1fr;gap:16px;
+  padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.csp-col-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.csp-col-title.red{color:var(--red)}.csp-col-title.green{color:var(--green)}
+
+/* ══ MANIFESTO ══ */
+.manifesto{margin:60px 0;position:relative}
+.manifesto-bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(124,58,237,.07),transparent 70%);
+  pointer-events:none;border-radius:28px}
+.manifesto-inner{border:2px solid rgba(124,58,237,.3);border-radius:28px;
+  padding:56px 48px;position:relative;overflow:hidden}
+.manifesto-inner::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(124,58,237,.04),rgba(247,147,26,.02),transparent);
+  pointer-events:none}
+.manifesto-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;
+  letter-spacing:2.5px;color:var(--soul);margin-bottom:28px;
+  display:flex;align-items:center;gap:12px}
+.manifesto-eyebrow::after{content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(124,58,237,.4),transparent)}
+.manifesto-lines{display:flex;flex-direction:column;gap:0}
+.mf-line{font-size:clamp(22px,4vw,42px);font-weight:900;letter-spacing:-2px;
+  line-height:1.15;padding:14px 0;border-bottom:1px solid rgba(124,58,237,.1);
+  position:relative;overflow:hidden;cursor:default;transition:all .3s}
+.mf-line:last-child{border-bottom:none}
+.mf-line:hover{padding-left:16px}
+.mf-line::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;
+  background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(247,147,26,.05));
+  transition:width .4s ease;border-radius:0 8px 8px 0}
+.mf-line:hover::before{width:100%}
+.mf-line span{position:relative;z-index:1}
+.mf-soul{color:var(--soul)}.mf-btc{color:var(--btc)}.mf-green{color:var(--green)}
+.mf-gold{color:var(--gold)}.mf-muted{color:var(--muted)}
+
+/* ══ DIMENSION CARDS ══ */
+.dimensions{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:44px 0}
+.dim-card{background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:28px;transition:all .35s;position:relative;overflow:hidden}
+.dim-card:hover{transform:translateY(-5px)}
+.dim-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  opacity:0;transition:opacity .3s}
+.dim-card:hover::after{opacity:1}
+.dim-card:nth-child(1)::after{background:var(--soul)}
+.dim-card:nth-child(2)::after{background:var(--btc)}
+.dim-card:nth-child(3)::after{background:var(--green)}
+.dim-card:nth-child(4)::after{background:var(--gold)}
+.dim-card:hover:nth-child(1){border-color:var(--soul);box-shadow:0 16px 48px rgba(124,58,237,.12)}
+.dim-card:hover:nth-child(2){border-color:var(--btc);box-shadow:0 16px 48px rgba(247,147,26,.12)}
+.dim-card:hover:nth-child(3){border-color:var(--green);box-shadow:0 16px 48px rgba(34,197,94,.12)}
+.dim-card:hover:nth-child(4){border-color:var(--gold);box-shadow:0 16px 48px rgba(255,215,0,.12)}
+.dim-num{font-size:48px;font-weight:900;letter-spacing:-3px;line-height:1;
+  margin-bottom:12px;opacity:.15}
+.dim-card:nth-child(1) .dim-num{color:var(--soul)}
+.dim-card:nth-child(2) .dim-num{color:var(--btc)}
+.dim-card:nth-child(3) .dim-num{color:var(--green)}
+.dim-card:nth-child(4) .dim-num{color:var(--gold)}
+.dim-title{font-size:19px;font-weight:900;margin-bottom:10px;letter-spacing:-.4px}
+.dim-card:nth-child(1) .dim-title{color:var(--soul)}
+.dim-card:nth-child(2) .dim-title{color:var(--btc)}
+.dim-card:nth-child(3) .dim-title{color:var(--green)}
+.dim-card:nth-child(4) .dim-title{color:var(--gold)}
+.dim-body{font-size:13px;color:var(--muted);line-height:1.85;font-family:'Lora',serif;font-style:italic}
+.dim-body strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-style:normal;font-size:.9em}
+.dim-insight{margin-top:16px;font-size:12px;font-weight:700;
+  padding:8px 14px;border-radius:10px;line-height:1.6;font-style:normal;font-family:'Inter',sans-serif}
+.dim-card:nth-child(1) .dim-insight{background:rgba(124,58,237,.08);color:var(--soul)}
+.dim-card:nth-child(2) .dim-insight{background:rgba(247,147,26,.08);color:var(--btc)}
+.dim-card:nth-child(3) .dim-insight{background:rgba(34,197,94,.08);color:var(--green)}
+.dim-card:nth-child(4) .dim-insight{background:rgba(255,215,0,.08);color:var(--gold)}
+
+/* ══ THE UNBANKED ══ */
+.unbanked-viz{background:var(--card);border:1px solid rgba(247,147,26,.2);
+  border-radius:22px;overflow:hidden;margin:44px 0}
+.uv-header{padding:22px 28px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(124,58,237,.07),rgba(247,147,26,.04),transparent)}
+.uv-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.uv-header p{font-size:13px;color:var(--muted)}
+.uv-body{padding:28px}
+.uv-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.uv-stat{text-align:center;padding:20px 14px;background:var(--bg2);
+  border-radius:14px;border:1px solid var(--border);transition:all .3s}
+.uv-stat:hover{transform:translateY(-3px);border-color:var(--btc)}
+.uv-val{font-size:clamp(20px,3.5vw,36px);font-weight:900;letter-spacing:-2px;
+  line-height:1;margin-bottom:6px;
+  background:linear-gradient(135deg,var(--soul),var(--btc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.uv-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.uv-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+.uv-profiles{display:flex;flex-direction:column;gap:12px}
+.uv-profile{display:grid;grid-template-columns:56px 1fr auto;gap:14px;
+  align-items:center;background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;padding:16px;transition:all .3s}
+.uv-profile:hover{border-color:rgba(124,58,237,.3);transform:translateX(4px)}
+.uv-profile-flag{font-size:32px;text-align:center}
+.uv-profile-info strong{display:block;font-size:14px;font-weight:800;margin-bottom:4px}
+.uv-profile-info p{font-size:12px;color:var(--muted);line-height:1.6}
+.uv-profile-info p strong{color:var(--text);font-weight:700;font-size:12px}
+.uv-impact{text-align:right;flex-shrink:0}
+.uv-impact-val{font-size:15px;font-weight:900;color:var(--green);display:block}
+.uv-impact-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+/* ══ PHILOSOPHICAL ACCORDION ══ */
+.phil-accordion{display:flex;flex-direction:column;gap:12px;margin:40px 0}
+.ph-card{background:var(--card);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;transition:border-color .3s}
+.ph-card:hover{border-color:rgba(124,58,237,.3)}
+.ph-header{display:flex;align-items:flex-start;gap:14px;padding:18px 22px;
+  cursor:pointer;transition:background .2s}
+.ph-header:hover{background:rgba(124,58,237,.03)}
+.ph-q-icon{font-size:26px;flex-shrink:0;margin-top:1px}
+.ph-q-text{flex:1}
+.ph-q-main{font-size:15px;font-weight:800;letter-spacing:-.2px;margin-bottom:3px}
+.ph-q-sub{font-size:12px;color:var(--muted)}
+.ph-arrow{font-size:16px;color:var(--muted);transition:transform .3s;flex-shrink:0;margin-top:4px}
+.ph-card.open .ph-arrow{transform:rotate(180deg)}
+.ph-body{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.ph-card.open .ph-body{max-height:500px}
+.ph-inner{padding:0 22px 22px;border-top:1px solid var(--border);padding-top:18px}
+.ph-answer{font-size:14px;color:var(--muted);line-height:1.9;
+  font-family:'Lora',serif;font-style:italic}
+.ph-answer strong{color:var(--text);font-weight:700;font-style:normal;
+  font-family:'Inter',sans-serif;font-size:.9em}
+.ph-answer em{color:var(--soul)}
+.ph-insight{margin-top:14px;padding:14px 16px;
+  background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.2);
+  border-radius:12px;font-size:13px;color:var(--soul);
+  line-height:1.7;font-weight:600;font-style:normal;font-family:'Inter',sans-serif}
+
+/* ══ LETTER TO THE FUTURE ══ */
+.future-letter{position:relative;margin:60px 0;overflow:hidden}
+.fl-paper{background:var(--card);border:1px solid rgba(124,58,237,.3);
+  border-radius:24px;padding:52px;position:relative;overflow:hidden}
+.fl-paper::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(145deg,rgba(124,58,237,.05),rgba(247,147,26,.03),transparent 60%);
+  pointer-events:none}
+.fl-watermark{position:absolute;bottom:-20px;right:-20px;
+  font-size:200px;opacity:.025;line-height:1;pointer-events:none;
+  color:var(--btc);font-weight:900;transform:rotate(-12deg)}
+.fl-eyebrow{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:2px;color:var(--soul);margin-bottom:24px;
+  display:flex;align-items:center;gap:10px}
+.fl-eyebrow::after{content:'';flex:1;height:1px;background:rgba(124,58,237,.3)}
+.fl-salutation{font-size:22px;font-weight:900;letter-spacing:-.5px;
+  margin-bottom:28px;color:var(--text)}
+.fl-body{font-family:'Lora',serif;font-size:clamp(15px,1.9vw,18px);
+  line-height:2;color:var(--prose)}
+.fl-body p{margin-bottom:22px}
+.fl-body p:last-child{margin-bottom:0}
+.fl-body strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.fl-body em{color:var(--soul)}
+.fl-signature{margin-top:36px;padding-top:28px;border-top:1px solid var(--border)}
+.fl-sig-name{font-size:20px;font-weight:900;letter-spacing:-.5px;
+  background:linear-gradient(135deg,var(--soul),var(--btc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.fl-sig-sub{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600;
+  text-transform:uppercase;letter-spacing:1px}
+
+/* ══ SOUL MOMENT ══ */
+.soul-moment{text-align:center;padding:100px 24px;position:relative;overflow:hidden}
+.sm-cosmos{position:absolute;inset:0;pointer-events:none}
+.sm-ring{position:absolute;border-radius:50%;border:1px solid;
+  top:50%;left:50%;transform:translate(-50%,-50%)}
+.sm-ring:nth-child(1){width:200px;height:200px;border-color:rgba(124,58,237,.15);animation:ringExpand 4s ease-in-out infinite}
+.sm-ring:nth-child(2){width:360px;height:360px;border-color:rgba(124,58,237,.08);animation:ringExpand 4s .8s ease-in-out infinite}
+.sm-ring:nth-child(3){width:520px;height:520px;border-color:rgba(247,147,26,.06);animation:ringExpand 4s 1.6s ease-in-out infinite}
+.sm-ring:nth-child(4){width:700px;height:700px;border-color:rgba(34,197,94,.04);animation:ringExpand 4s 2.4s ease-in-out infinite}
+@keyframes ringExpand{
+  0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+.sm-icon{font-size:88px;display:block;margin-bottom:28px;position:relative;z-index:2;
+  animation:soulPulse 3s ease-in-out infinite}
+@keyframes soulPulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(124,58,237,0))}
+  50%{transform:scale(1.1);filter:drop-shadow(0 0 48px rgba(124,58,237,.65))}}
+.sm-title{font-size:clamp(32px,7vw,80px);font-weight:900;letter-spacing:-4px;
+  line-height:1.0;margin-bottom:22px;position:relative;z-index:2}
+.sm-s{color:var(--soul)}.sm-btc{color:var(--btc)}.sm-g{color:var(--green)}
+.sm-sub{font-size:clamp(15px,2vw,19px);color:var(--muted);max-width:720px;
+  margin:0 auto;line-height:1.95;font-family:'Lora',serif;font-style:italic;
+  position:relative;z-index:2}
+
+/* ── KEY TAKEAWAY ── */
+.key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));
+  border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
+.kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--btc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kt-text{font-size:clamp(17px,2.5vw,22px);font-weight:800;line-height:1.5;
+  letter-spacing:-.3px;margin-bottom:20px}
+.kt-text em{color:var(--btc);font-style:normal}
+.kt-points{display:flex;flex-direction:column;gap:10px}
+.kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--prose);line-height:1.65}
+.kt-point-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+
+/* ── STEP NAV + MINIMAP ── */
+.step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
+.snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);
+  border:1px solid var(--border);border-radius:16px;padding:20px 24px;
+  text-decoration:none;color:var(--text);transition:all .3s}
+.snb-prev:hover,.snb-next:hover{border-color:var(--btc);transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(247,147,26,.12)}
+.snb-next{flex-direction:row-reverse;text-align:right}
+.snb-icon{font-size:28px;flex-shrink:0}
+.snb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700;margin-bottom:3px}
+.snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+.steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
+.sm-card-mm{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px}
+.sm-title-mm{font-size:14px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.sm-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sm-step{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:800;text-decoration:none;
+  transition:all .2s;border:1px solid var(--border);color:var(--muted);background:var(--bg2)}
+.sm-step:hover{border-color:var(--btc);color:var(--btc);transform:translateY(-2px)}
+.sm-step.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:var(--green)}
+.sm-step.current{background:linear-gradient(135deg,var(--soul),var(--btc));
+  border-color:var(--soul);color:#fff;box-shadow:0 4px 20px rgba(124,58,237,.5)}
+.sm-step.upcoming{background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.2);color:var(--soul)}
+.sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sm-leg-dot{width:10px;height:10px;border-radius:3px}
+
+.footer-wrap{border-top:1px solid var(--border)}
+footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;
+  max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  nav,.step-nav-bar{padding:0 18px}
+  .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
+  .money-eq{grid-template-columns:1fr;gap:8px}
+  .meq-op{display:none}
+  .dimensions{grid-template-columns:1fr}
+  .uv-stat-row{grid-template-columns:1fr 1fr}
+  .csp-row,.csp-cols-head{grid-template-columns:1fr}
+  .csp-cols-head span:first-child,.csp-row .csp-label{display:none}
+  .snb-inner{grid-template-columns:1fr}
+  .snb-next{flex-direction:row;text-align:left}
+  .reading-progress{display:none}
+  footer{padding:28px 20px;flex-direction:column;text-align:center}
+  .manifesto-inner{padding:36px 24px}
+  .fl-paper{padding:36px 24px}
+}
+@media(max-width:540px){
+  .step-hero h1{letter-spacing:-2px}
+  .sm-step{width:30px;height:30px;font-size:10px}
+  .uv-stat-row{grid-template-columns:1fr 1fr}
+  .uv-profile{grid-template-columns:40px 1fr}
+  .uv-impact{display:none}
+  .mf-line{font-size:clamp(18px,5vw,28px);letter-spacing:-1px}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>🗽 STEP 19 OF 21</span><span>·</span>
+    <span>🌍 1.7 BILLION PEOPLE HAVE NO BANK ACCOUNT · BITCOIN NEEDS ONLY A PHONE</span><span>·</span>
+    <span>💜 MONEY IS NOT NEUTRAL · WHOEVER CONTROLS THE MONEY CONTROLS THE PEOPLE</span><span>·</span>
+    <span>🔑 BITCOIN SEPARATES MONEY FROM STATE · THE FIRST TIME IN HUMAN HISTORY</span><span>·</span>
+    <span>🇦🇫 AFGHAN WOMEN USED BITCOIN TO SAVE WHEN BANKS WERE CLOSED TO THEM</span><span>·</span>
+    <span>🇺🇦 UKRAINIANS CARRIED THEIR LIFE SAVINGS ACROSS THE BORDER IN A SEED PHRASE</span><span>·</span>
+    <span>⚡ BITCOIN IS A HUMAN RIGHT · NOT AN INVESTMENT THESIS</span><span>·</span>
+    <span>🗽 STEP 19 OF 21</span><span>·</span>
+    <span>🌍 1.7 BILLION PEOPLE HAVE NO BANK ACCOUNT · BITCOIN NEEDS ONLY A PHONE</span><span>·</span>
+    <span>💜 MONEY IS NOT NEUTRAL · WHOEVER CONTROLS THE MONEY CONTROLS THE PEOPLE</span><span>·</span>
+    <span>🔑 BITCOIN SEPARATES MONEY FROM STATE · THE FIRST TIME IN HUMAN HISTORY</span><span>·</span>
+    <span>🇦🇫 AFGHAN WOMEN USED BITCOIN TO SAVE WHEN BANKS WERE CLOSED TO THEM</span><span>·</span>
+    <span>🇺🇦 UKRAINIANS CARRIED THEIR LIFE SAVINGS ACROSS THE BORDER IN A SEED PHRASE</span><span>·</span>
+    <span>⚡ BITCOIN IS A HUMAN RIGHT · NOT AN INVESTMENT THESIS</span><span>·</span>
+  </div>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span><span id="btcPriceNav">$--</span></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="step-nav-bar">
+  <div class="step-nav-left">
+    <a href="index.html">Home</a>
+    <span class="step-nav-sep">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <span class="step-nav-sep">›</span>
+    <span class="step-nav-current">Step 19 — Bitcoin &amp; Human Freedom</span>
+  </div>
+  <div class="step-nav-right">
+    <div class="step-progress-mini">
+      <div class="spm-bar"><div class="spm-fill"></div></div>
+      <span>19 / 21</span>
+    </div>
+    <div class="step-pill">Step 19</div>
+  </div>
+</div>
+
+<div class="reading-progress">
+  <div class="rp-label">Reading</div>
+  <div class="rp-track"><div class="rp-fill" id="rpFill"></div></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<div class="step-hero">
+  <canvas id="starCanvas"></canvas>
+  <div class="hero-symbol-bg">₿</div>
+
+  <div class="step-eyebrow">
+    <div class="step-number">19</div>
+    <div class="step-meta">
+      <div class="step-meta-top">💜 Phase 4 — Mastery · Step 2 of 4</div>
+      <div class="step-meta-bottom">
+        <span>⏱ 11 min read</span><span>·</span>
+        <span>🌍 The step that changes everything</span><span>·</span>
+        <span>💜 Finance becomes philosophy</span>
+      </div>
+    </div>
+  </div>
+
+  <h1><span class="s-em">Money</span><br>
+      is<br>
+      <span class="btc-em">Power.</span><br>
+      <span class="g-em">Until now.</span></h1>
+
+  <p class="step-hero-sub">For five thousand years, whoever controlled the money supply controlled the people. Kings debased coins. Central banks printed currencies into dust. Governments froze accounts, seized assets, and cut enemies off from the financial system. Money was never neutral. It was always a tool of power — wielded by the few over the many. Bitcoin is the first money in human history where that is no longer true. This step is not about investment returns. It is about what Bitcoin means for human dignity, freedom, and the future of civilisation.</p>
+
+  <div class="key-lesson">
+    <span class="key-lesson-icon">💜</span>
+    <span><strong>What this step explores:</strong> The inseparable link between money and freedom throughout history, the four dimensions of financial freedom that Bitcoin unlocks, real stories of people whose lives were changed by Bitcoin's censorship resistance, the 1.7 billion unbanked and why Bitcoin is their only viable path, the philosophical case for separating money from state, and a letter to the generation that will inherit a world built on sound money.</span>
+  </div>
+</div>
+
+<!-- ══ ARTICLE ══ -->
+<div class="article-wrap">
+
+  <!-- CHAPTER 1 — MONEY IS POWER -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">①</div>
+      <div class="chapter-title">The Most Important Sentence About Money Ever Written</div>
+    </div>
+    <div class="prose">
+      <p>Money is not a neutral medium of exchange. It is power — crystallised, portable, and accumulated. Every civilisation that has ever existed learned this truth, often through catastrophe. The Roman Empire debased its silver denarius until it was copper-plated tin. Weimar Germany printed marks until wheelbarrows of them couldn't buy bread. Zimbabwe issued hundred-trillion-dollar notes. Venezuela watched the bolívar lose 99.9% of its value in a decade. Argentina has restructured its debt nine times. In every case, the same pattern: <em>governments in need of money discovered they could manufacture it</em>, and in doing so, quietly stole from everyone who held it.</p>
+      <p>This is not accident. It is structure. Fiat currency — money backed by government decree rather than anything scarce — <em class="btc">is a technology of control as much as a technology of exchange.</em> When a state can create money, it can fund wars without taxation, silence dissidents by freezing accounts, reward allies and punish enemies through the financial system, and inflate away debts it cannot pay by stealing purchasing power from savers. The power to create money is the power to control behaviour. And until January 3rd, 2009, that power had never been meaningfully challenged.</p>
+      <p>Satoshi Nakamoto created Bitcoin in the shadow of the 2008 financial crisis — a crisis caused by exactly this dynamic: institutions that could create money, backed by governments that would bail them out, taking risks they would never have taken with their own resources. The Genesis Block was stamped with a newspaper headline: <em>"Chancellor on brink of second bailout for banks."</em> It was not an accident. It was a thesis. Bitcoin was not built to get rich. It was built to take the power to create money away from the institutions that had abused it — and give it, permanently and irrevocably, to mathematics.</p>
+    </div>
+
+    <div class="money-eq reveal">
+      <div class="meq-block">
+        <div class="meq-icon">💸</div>
+        <div class="meq-title">Fiat Money</div>
+        <div class="meq-body">Created by decree. Supply controlled by institutions. Debased at will. Every holder bears the hidden tax of inflation.</div>
+      </div>
+      <div class="meq-op">→</div>
+      <div class="meq-block">
+        <div class="meq-icon">🏛️</div>
+        <div class="meq-title">State Control</div>
+        <div class="meq-body">Whoever controls the money controls behaviour. Wars. Sanctions. Censorship. Surveillance. Freeze. Seize. Delete.</div>
+      </div>
+      <div class="meq-op">≠</div>
+      <div class="meq-block">
+        <div class="meq-icon">🔑</div>
+        <div class="meq-title">Bitcoin</div>
+        <div class="meq-body">21 million. Fixed forever. No issuer. No controller. No permission required. Mathematics governs. No one rules.</div>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p>"Give me control of a nation's money supply and I care not who makes its laws."</p>
+      <cite>— Attributed to Mayer Amschel Rothschild, 1838 — the most honest description of monetary power ever recorded</cite>
+    </div>
+
+    <div class="callout callout-soul reveal">
+      <div class="callout-title">💜 The Separation of Money and State</div>
+      <p>History records the separation of church and state as one of the great liberating achievements of the Enlightenment. Before it, religious institutions held power over kings. After it, governance became secular — imperfect, but no longer theocratic. <strong>The separation of money and state is the next great liberating achievement.</strong> Before Bitcoin, no such separation was possible — money required an issuer, and issuers required power. Bitcoin eliminates the issuer. It is the first monetary system in history that is not controlled by any human institution. Not a nation. Not a bank. Not a corporation. Not a person. The rules are written in mathematics and enforced by cryptography. For the first time in five thousand years, the money cannot be debased. And that changes everything.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 — FOUR DIMENSIONS -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">②</div>
+      <div class="chapter-title">The Four Dimensions of Freedom That Bitcoin Unlocks</div>
+    </div>
+    <div class="prose">
+      <p>Financial freedom is not a single thing. It has four distinct dimensions — each one suppressed by conventional financial systems in ways so familiar they've become invisible. Bitcoin restores all four.</p>
+    </div>
+
+    <div class="dimensions reveal">
+      <div class="dim-card">
+        <div class="dim-num">01</div>
+        <div class="dim-title">The Freedom to Transact</div>
+        <div class="dim-body">Every conventional payment passes through intermediaries who can block, reverse, report, or refuse it. PayPal freezes accounts of sex workers, gun dealers, political activists, and cryptocurrency companies — often without explanation. Banks report transactions to government agencies. Credit card companies terminate accounts of businesses they find distasteful. <strong>The freedom to transact — to exchange value with another willing party — is conditional on the approval of institutions.</strong> Bitcoin transactions are peer-to-peer. No intermediary can refuse them. No institution can block them. If you have the private key and the recipient has an address, the transaction executes. Mathematics does not have opinions about what you're paying for.</div>
+        <div class="dim-insight">💜 Every censored payment is a freedom violated. Bitcoin makes censorship of individual transactions technically impossible.</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-num">02</div>
+        <div class="dim-title">The Freedom to Save</div>
+        <div class="dim-body">Inflation is a tax on savings. It is not announced. It is not voted on. It is simply imposed — by printing money that dilutes the value of every existing unit. A worker who saves $10,000 in a bank account earning 0.5% while inflation runs at 7% loses $650 in purchasing power that year. Silently. Invisibly. Over a lifetime of savings, the losses are catastrophic. <strong>Bitcoin's fixed supply of 21 million — enforced not by promise but by mathematics — makes inflation structurally impossible.</strong> You cannot print more Bitcoin. No central bank meeting can vote to dilute existing holders. The Bitcoin you hold today will still be 1/21,000,000th of the total supply in a hundred years. The freedom to save — to defer consumption and preserve purchasing power — is restored.</div>
+        <div class="dim-insight">₿ Every sat you hold today represents exactly the same fraction of Bitcoin's total supply it will represent in 2100. That is unprecedented in monetary history.</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-num">03</div>
+        <div class="dim-title">The Freedom to Flee</div>
+        <div class="dim-body">Historically, refugees and political dissidents faced a terrible choice: leave their wealth behind or risk death carrying it. A family fleeing Nazi Germany in 1938 could not take their bank account with them. A Venezuelan fleeing hyperinflation in 2018 could carry cash, but it was worthless. A Ukrainian family crossing into Poland in 2022 could bring what fit in a suitcase. <strong>Bitcoin changes this calculus completely.</strong> A 24-word seed phrase memorised in the mind carries any amount of wealth across any border. It cannot be confiscated at checkpoints. It cannot be detected by scanners. It cannot be seized by corrupt officials. The Ukrainian programmer who memorised their seed phrase and walked across the border carried their life savings in their mind. That is not hyperbole. That happened.</div>
+        <div class="dim-insight">🌍 Bitcoin is the first bearer asset that can cross any border invisibly, in unlimited amounts, with nothing but memory.</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-num">04</div>
+        <div class="dim-title">The Freedom to Opt Out</div>
+        <div class="dim-body">Perhaps the most profound freedom Bitcoin offers is the one least discussed: the ability to opt out of a monetary system you did not choose and cannot change. You were born into a currency. You cannot vote on its supply. You cannot audit its creation. You must use it to pay taxes, receive wages, and participate in commerce. The alternative — until Bitcoin — was barter. <strong>Bitcoin offers for the first time a voluntary monetary system.</strong> No one forces you to hold it. No one forces you to use it. Its rules are transparent, immutable, and identical for every participant — from Satoshi's first wallet to a phone in rural Nigeria. The system does not distinguish between rich and poor, citizen and refugee, politically approved and disapproved. It is, for the first time, truly neutral money.</div>
+        <div class="dim-insight">🗽 The ability to opt out of a monetary system is the most radical financial freedom ever created. Bitcoin makes it real.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 — REAL STORIES -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">③</div>
+      <div class="chapter-title">When Bitcoin Was Not Optional — Real Stories of Survival</div>
+    </div>
+    <div class="prose">
+      <p>These are not investment case studies. These are stories of people for whom Bitcoin was not a portfolio decision — it was survival. They are told here because they are real, because they happened, and because every person who understands them understands Bitcoin differently afterwards.</p>
+    </div>
+
+    <div class="freedom-stories reveal">
+      <div class="fs-header">
+        <h3>📖 Stories Where Bitcoin Changed Everything</h3>
+        <p>Six moments when the freedom to transact was the difference between survival and catastrophe</p>
+      </div>
+
+      <div class="fs-story">
+        <div class="fs-flag-col"><div class="fs-flag">🇺🇦</div><div class="fs-flag-line"></div></div>
+        <div class="fs-content">
+          <div class="fs-content-head">
+            <div class="fs-title">Ukraine, 2022 — The Seed Phrase Crossing</div>
+            <span class="fs-tag" style="background:rgba(34,197,94,.1);color:var(--green)">Verified</span>
+            <div class="fs-arrow">▼</div>
+          </div>
+          <div class="fs-preview">Families fled with everything they owned in 24 words.</div>
+          <div class="fs-expand"><div class="fs-full">
+            When Russia invaded Ukraine in February 2022, millions fled within days. Banks closed. ATM queues stretched around blocks. The Ukrainian government had frozen certain financial transactions to prevent capital flight. <strong>But Bitcoin doesn't close.</strong> Ukrainian crypto holders — many of whom had accumulated Bitcoin precisely because of the country's history of financial instability — transferred their holdings to hardware wallets and memorised their seed phrases. They crossed checkpoints in Poland, Germany, and Slovakia with no physical wealth, no detectable assets, and no dependence on any banking system that might be suspended or seized. The Ukrainian government itself received over $100 million in Bitcoin and crypto donations in the first weeks of the war — faster and with lower fees than any wire transfer could have managed. <strong>Bitcoin processed transactions while bombs fell and banks shuttered.</strong> The network had no opinion about the war. It just worked.
+          </div></div>
+        </div>
+      </div>
+
+      <div class="fs-story">
+        <div class="fs-flag-col"><div class="fs-flag">🇦🇫</div><div class="fs-flag-line"></div></div>
+        <div class="fs-content">
+          <div class="fs-content-head">
+            <div class="fs-title">Afghanistan, 2021 — Women's Financial Resistance</div>
+            <span class="fs-tag" style="background:rgba(124,58,237,.1);color:var(--soul)">Documented</span>
+            <div class="fs-arrow">▼</div>
+          </div>
+          <div class="fs-preview">When the Taliban took power and banned women from banking, Bitcoin offered another way.</div>
+          <div class="fs-expand"><div class="fs-full">
+            When the Taliban seized control of Afghanistan in August 2021, one of their first acts was effectively barring women from accessing bank accounts — requiring a male guardian for financial transactions, and in many cases simply refusing service to women entirely. NGOs operating in the country faced a crisis: how do you pay female employees and aid recipients when the banking system excludes them? <strong>The answer was Bitcoin.</strong> Organisations including Code to Inspire — which had been teaching Afghan women to code — shifted to Bitcoin payments. Women who had never had bank accounts received Bitcoin on phones, self-custodied it, and used peer-to-peer exchange to convert to local currency. Bitcoin did not ask for a guardian's permission. The private key belonged to whoever held it. <strong>In a country where women were being erased from the financial system, Bitcoin saw no gender.</strong> It saw only public keys.
+          </div></div>
+        </div>
+      </div>
+
+      <div class="fs-story">
+        <div class="fs-flag-col"><div class="fs-flag">🇻🇪</div><div class="fs-flag-line"></div></div>
+        <div class="fs-content">
+          <div class="fs-content-head">
+            <div class="fs-title">Venezuela — Surviving Hyperinflation</div>
+            <span class="fs-tag" style="background:rgba(247,147,26,.1);color:var(--btc)">Ongoing</span>
+            <div class="fs-arrow">▼</div>
+          </div>
+          <div class="fs-preview">The bolívar lost 99.9% of its value. Bitcoin did not.</div>
+          <div class="fs-expand"><div class="fs-full">
+            Venezuela's hyperinflation peaked at 1,700,000% in 2018. The government printed money to fund spending it could not tax its way to. Every Venezuelan who held bolívars watched their savings evaporate. A teacher who saved for twenty years found her pension bought a week of groceries. <strong>Venezuelans who had discovered Bitcoin before the crisis discovered something extraordinary: their savings were intact.</strong> The Bitcoin they held in 2016 was still worth what it was worth in 2016 — and more. Bitcoin became so widely used in Venezuela that local Localbitcoins volume consistently ranked among the highest in the world per capita. Street vendors learned to quote prices in sats. Remittances from Venezuelan diaspora arrived via Lightning Network, bypassing the dollar-starved banking system. <strong>For millions of Venezuelans, Bitcoin was not a speculative investment. It was the only savings technology that the government could not destroy.</strong>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="fs-story">
+        <div class="fs-flag-col"><div class="fs-flag">🇨🇦</div><div class="fs-flag-line"></div></div>
+        <div class="fs-content">
+          <div class="fs-content-head">
+            <div class="fs-title">Canada, 2022 — The Trucker Convoy Freeze</div>
+            <span class="fs-tag" style="background:rgba(230,57,70,.1);color:var(--red)">Alarming</span>
+            <div class="fs-arrow">▼</div>
+          </div>
+          <div class="fs-preview">A G7 democracy froze bank accounts of peaceful protesters. Bitcoin was immune.</div>
+          <div class="fs-expand"><div class="fs-full">
+            In February 2022, the Canadian government invoked the Emergencies Act to freeze the bank accounts of participants in the Freedom Convoy — a trucker protest against vaccine mandates in Ottawa. <strong>This was not Iran. This was not Russia. This was Canada</strong> — ranked consistently among the world's freest democracies — freezing the bank accounts of citizens engaged in political protest, without court order, within 48 hours of the Act's invocation. Accounts of truck drivers, small business owners, and donors were frozen. Mortgages could not be paid. Credit cards stopped working. The message was explicit: financial participation is conditional on political compliance. Bitcoin donations that had already been received in self-custodied wallets were unaffected. The government could not freeze a private key. <strong>This event was the single most powerful demonstration, in a Western democracy, of why Bitcoin exists.</strong> If it can happen in Canada, it can happen anywhere.
+          </div></div>
+        </div>
+      </div>
+
+      <div class="fs-story">
+        <div class="fs-flag-col"><div class="fs-flag">🇳🇬</div><div class="fs-flag-line"></div></div>
+        <div class="fs-content">
+          <div class="fs-content-head">
+            <div class="fs-title">Nigeria — The #EndSARS Movement</div>
+            <span class="fs-tag" style="background:rgba(124,58,237,.1);color:var(--soul)">Documented</span>
+            <div class="fs-arrow">▼</div>
+          </div>
+          <div class="fs-preview">When the government froze protest fundraising accounts, Bitcoin stepped in within hours.</div>
+          <div class="fs-expand"><div class="fs-full">
+            In October 2020, Nigerian youth launched the #EndSARS movement — protests against police brutality by the SARS (Special Anti-Robbery Squad) unit. Organisers used a feminist coalition's bank accounts to fund protests: food, medical care, bail money for arrested protesters. <strong>The Central Bank of Nigeria froze those accounts within days.</strong> Within hours of the freeze, the Feminist Coalition — with no prior Bitcoin experience — had set up a Bitcoin wallet, shared the address on Twitter, and received donations from around the world. The Bitcoin flowed. The food was purchased. The medical care continued. The bail money was paid. The CBN could freeze a bank account with a phone call. It could not freeze a Bitcoin address. <strong>The protesters had discovered, under fire, exactly what Bitcoin was built for.</strong>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="fs-story">
+        <div class="fs-flag-col"><div class="fs-flag">🇧🇾</div><div class="fs-flag-line"></div></div>
+        <div class="fs-content">
+          <div class="fs-content-head">
+            <div class="fs-title">Belarus, 2020 — Paying the Opposition Underground</div>
+            <span class="fs-tag" style="background:rgba(34,197,94,.1);color:var(--green)">Verified</span>
+            <div class="fs-arrow">▼</div>
+          </div>
+          <div class="fs-preview">Lukashenko's regime could seize bank accounts but not private keys.</div>
+          <div class="fs-expand"><div class="fs-full">
+            Following the disputed 2020 Belarusian election, mass protests erupted against Lukashenko. Workers who went on strike faced termination, and many lost access to their salaries. Opposition figures had their bank accounts frozen and assets seized. International supporters who wanted to fund the resistance faced a problem: any wire transfer to a Belarusian bank account was visible to the regime and could result in arrest. <strong>Bitcoin solved the problem.</strong> Strike funds were raised internationally in Bitcoin. Belarusian workers with cold wallets received payments the regime could not trace or stop. Journalists operating underground received Bitcoin micropayments for reporting that risked their lives. <strong>Every transaction that funded the resistance against a dictator was a Bitcoin transaction the dictator could not stop.</strong>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 4 — THE UNBANKED -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">④</div>
+      <div class="chapter-title">1.7 Billion People — The Unbanked and Bitcoin's Moral Imperative</div>
+    </div>
+    <div class="prose">
+      <p>The stories above involve people in crisis. But there is a quieter, larger crisis that touches 1.7 billion people every day — not the dramatic crisis of war or dictatorship, but the grinding, invisible crisis of financial exclusion. Nearly a quarter of the world's adult population has no bank account. They cannot save securely. They cannot receive international payments. They cannot build credit. They cannot participate in the global economy on equal terms. They are not poor because they lack money — many work hard for wages. They are poor in part because the infrastructure of money was not built for them and has no incentive to reach them.</p>
+      <p>The reasons for exclusion are structural: <em>no government ID, no fixed address, no credit history, too rural, too poor to meet minimum balance requirements, banking infrastructure absent.</em> The conventional financial system has had 150 years to solve financial inclusion. It has not. <em class="btc">Bitcoin needs only a phone and an internet connection.</em> No ID. No address. No minimum balance. No credit check. No approval. No exclusion based on nationality, gender, religion, or political belief. The private key is the identity. The address is the account. The network is the bank.</p>
+    </div>
+
+    <div class="unbanked-viz reveal">
+      <div class="uv-header">
+        <h3>🌍 The Unbanked — The Numbers Behind the Moral Case</h3>
+        <p>1.7 billion people excluded from finance. Bitcoin needs only a phone.</p>
+      </div>
+      <div class="uv-body">
+        <div class="uv-stat-row">
+          <div class="uv-stat">
+            <div class="uv-val">1.7B</div>
+            <div class="uv-label">Unbanked Adults</div>
+            <div class="uv-sub">No bank account globally</div>
+          </div>
+          <div class="uv-stat">
+            <div class="uv-val">54%</div>
+            <div class="uv-label">In 7 Countries</div>
+            <div class="uv-sub">Bangladesh, China, India, Indonesia, Mexico, Nigeria, Pakistan</div>
+          </div>
+          <div class="uv-stat">
+            <div class="uv-val">5.5B</div>
+            <div class="uv-label">Smartphone Users</div>
+            <div class="uv-sub">Bitcoin needs only this — no bank required</div>
+          </div>
+          <div class="uv-stat">
+            <div class="uv-val">$630B</div>
+            <div class="uv-label">Remittances Sent</div>
+            <div class="uv-sub">Annual global total, avg 6% fee taken by intermediaries</div>
+          </div>
+        </div>
+        <div class="uv-profiles">
+          <div class="uv-profile">
+            <div class="uv-profile-flag">👩🏽‍🌾</div>
+            <div class="uv-profile-info">
+              <strong>Maria, Philippines</strong>
+              <p>Her son works in Qatar. He sends $300/month. Western Union charges $18 (6%) and takes 3 days. <strong>Lightning Network: $0.003 fee, 3 seconds.</strong> That $18 monthly saving is $216/year — 4 months of her electricity bill.</p>
+            </div>
+            <div class="uv-impact"><span class="uv-impact-val">-$216/yr</span><span class="uv-impact-label">fees saved</span></div>
+          </div>
+          <div class="uv-profile">
+            <div class="uv-profile-flag">👨🏿‍💼</div>
+            <div class="uv-profile-info">
+              <strong>Kwame, Ghana</strong>
+              <p>A freelance developer paid in USD by US clients. His bank charges 4% currency conversion. Payoneer charges 2% + fees. <strong>Bitcoin: receives full amount, converts locally at market rate.</strong> On $2,000/month income, saves $80–$100 in fees.</p>
+            </div>
+            <div class="uv-impact"><span class="uv-impact-val">-$1,200/yr</span><span class="uv-impact-label">fees saved</span></div>
+          </div>
+          <div class="uv-profile">
+            <div class="uv-profile-flag">👩🏽‍💻</div>
+            <div class="uv-profile-info">
+              <strong>Fatima, Afghanistan</strong>
+              <p>No access to banking under Taliban restrictions. Receives payment from international employer via Bitcoin. Converts to local currency via peer-to-peer exchange. <strong>Bitcoin is her only viable payroll solution</strong> in a country where women have been systematically excluded from finance.</p>
+            </div>
+            <div class="uv-impact"><span class="uv-impact-val">Only option</span><span class="uv-impact-label">no alternative</span></div>
+          </div>
+          <div class="uv-profile">
+            <div class="uv-profile-flag">👨🏽‍🔧</div>
+            <div class="uv-profile-info">
+              <strong>Diego, El Salvador</strong>
+              <p>Uses Chivo Lightning wallet — the government-issued Bitcoin wallet — to receive wages, pay bills, buy groceries. Sends money to family in rural areas instantly. <strong>Never had a bank account. Now participates fully in digital commerce.</strong> $30 government bonus when he signed up paid his first week of groceries.</p>
+            </div>
+            <div class="uv-impact"><span class="uv-impact-val">First account</span><span class="uv-impact-label">ever in life</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 — CONTROL SPECTRUM -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑤</div>
+      <div class="chapter-title">The Control Spectrum — What Fiat Enables vs What Bitcoin Prevents</div>
+    </div>
+    <div class="prose">
+      <p>The power of money-as-control is most visible in its extremes — dictatorships, war, hyperinflation. But it operates on a spectrum, and even in stable democracies the mechanisms of financial control are present and active. Understanding the spectrum is understanding why Bitcoin's properties matter to everyone, not just those living under authoritarian regimes.</p>
+    </div>
+
+    <div class="control-spectrum reveal">
+      <div class="csp-header">
+        <h3>⚖️ Fiat Control vs Bitcoin Freedom — The Full Spectrum</h3>
+        <p>Every row is a real capability. The left column has been used. The right column is Bitcoin's answer.</p>
+      </div>
+      <div class="csp-body">
+        <div class="csp-cols-head">
+          <span></span>
+          <span class="csp-col-title red">🏛️ Fiat / Centralised System CAN:</span>
+          <span class="csp-col-title green">₿ Bitcoin CANNOT Be Made To:</span>
+        </div>
+        <div class="csp-row">
+          <div class="csp-label">Inflation</div>
+          <div class="csp-side controlled"><div class="csp-side-label">Fiat Reality</div><div class="csp-side-body">Print unlimited currency, silently diluting every holder's savings. No consent required. No announcement necessary.</div></div>
+          <div class="csp-side free"><div class="csp-side-label">Bitcoin Reality</div><div class="csp-side-body">Issue new Bitcoin beyond the 21M cap. The supply schedule is enforced by mathematics, not by promise.</div></div>
+        </div>
+        <div class="csp-row">
+          <div class="csp-label">Censorship</div>
+          <div class="csp-side controlled"><div class="csp-side-label">Fiat Reality</div><div class="csp-side-body">Block payments to specific individuals, organisations, or countries. SWIFT exclusions. Sanctions. Account freezes.</div></div>
+          <div class="csp-side free"><div class="csp-side-label">Bitcoin Reality</div><div class="csp-side-body">Prevent a valid transaction between two parties with correct keys. The network routes around censorship by design.</div></div>
+        </div>
+        <div class="csp-row">
+          <div class="csp-label">Seizure</div>
+          <div class="csp-side controlled"><div class="csp-side-label">Fiat Reality</div><div class="csp-side-body">Civil asset forfeiture. Frozen accounts. Seized property. Governments confiscated $4.5B in assets in the US alone in 2022.</div></div>
+          <div class="csp-side free"><div class="csp-side-label">Bitcoin Reality</div><div class="csp-side-body">Seize Bitcoin in self-custody without the private key. The key is the asset. Without it, the coins cannot be moved.</div></div>
+        </div>
+        <div class="csp-row">
+          <div class="csp-label">Surveillance</div>
+          <div class="csp-side controlled"><div class="csp-side-label">Fiat Reality</div><div class="csp-side-body">Monitor all transactions above reporting thresholds. FinCEN SARs. Bank Secrecy Act. Every digital payment is logged.</div></div>
+          <div class="csp-side free"><div class="csp-side-label">Bitcoin Reality</div><div class="csp-side-body">Know the identities behind addresses without blockchain analysis. Base layer is pseudonymous. Lightning adds additional privacy.</div></div>
+        </div>
+        <div class="csp-row">
+          <div class="csp-label">Exclusion</div>
+          <div class="csp-side controlled"><div class="csp-side-label">Fiat Reality</div><div class="csp-side-body">Debank individuals and businesses for legal but politically disfavoured activities. Operation Choke Point. Deplatforming.</div></div>
+          <div class="csp-side free"><div class="csp-side-label">Bitcoin Reality</div><div class="csp-side-body">Exclude any person, entity, or nation from the network. The protocol is permissionless. No KYC for the base layer.</div></div>
+        </div>
+        <div class="csp-row">
+          <div class="csp-label">Expiration</div>
+          <div class="csp-side controlled"><div class="csp-side-label">Fiat Reality</div><div class="csp-side-body">China's digital yuan has literal expiration dates. Use it or lose it. Governments can programme money to prevent saving.</div></div>
+          <div class="csp-side free"><div class="csp-side-label">Bitcoin Reality</div><div class="csp-side-body">Expire. Bitcoin in a wallet from 2009 is as valid today as the day it was mined. Satoshi's coins still exist unchanged.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 — THE MANIFESTO -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑥</div>
+      <div class="chapter-title">The Bitcoin Manifesto — Fifteen Truths</div>
+    </div>
+
+    <div class="manifesto reveal">
+      <div class="manifesto-bg"></div>
+      <div class="manifesto-inner">
+        <div class="manifesto-eyebrow">₿ Fifteen Truths — What Bitcoin Stands For</div>
+        <div class="manifesto-lines">
+          <div class="mf-line"><span><span class="mf-soul">Sound money</span> is a <span class="mf-btc">human right.</span></span></div>
+          <div class="mf-line"><span>No one should need <span class="mf-soul">permission</span> to <span class="mf-green">save.</span></span></div>
+          <div class="mf-line"><span>Inflation is <span class="mf-soul">theft.</span> <span class="mf-muted">It just wears a suit.</span></span></div>
+          <div class="mf-line"><span>The <span class="mf-btc">Genesis Block</span> was a declaration of <span class="mf-green">independence.</span></span></div>
+          <div class="mf-line"><span>A seed phrase is <span class="mf-soul">sovereignty</span> in 24 words.</span></div>
+          <div class="mf-line"><span>Bitcoin sees no <span class="mf-muted">borders,</span> no <span class="mf-muted">gender,</span> no <span class="mf-muted">race.</span></span></div>
+          <div class="mf-line"><span>The <span class="mf-soul">unbanked</span> deserve money that works for <span class="mf-green">them.</span></span></div>
+          <div class="mf-line"><span>21 million. <span class="mf-btc">Forever.</span> <span class="mf-muted">No exceptions.</span></span></div>
+          <div class="mf-line"><span>Code is law. <span class="mf-soul">Mathematics</span> does not lie.</span></div>
+          <div class="mf-line"><span>Censorship resistance is not a <span class="mf-btc">feature.</span> It is the <span class="mf-green">point.</span></span></div>
+          <div class="mf-line"><span>Every <span class="mf-soul">refugee</span> deserves money that <span class="mf-green">crosses borders.</span></span></div>
+          <div class="mf-line"><span>The separation of <span class="mf-btc">money</span> and <span class="mf-soul">state</span> is long overdue.</span></div>
+          <div class="mf-line"><span>Self-custody is not <span class="mf-muted">paranoia.</span> It is <span class="mf-green">prudence.</span></span></div>
+          <div class="mf-line"><span>Bitcoin was not built for <span class="mf-btc">bulls.</span> It was built for <span class="mf-soul">believers.</span></span></div>
+          <div class="mf-line"><span>The <span class="mf-gold">future</span> of money is <span class="mf-btc">open,</span> <span class="mf-green">free,</span> and <span class="mf-soul">unstoppable.</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 7 — PHILOSOPHICAL QUESTIONS -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑦</div>
+      <div class="chapter-title">The Deep Questions — Answers That Changed How People Think</div>
+    </div>
+
+    <div class="phil-accordion reveal">
+      <div class="ph-card">
+        <div class="ph-header">
+          <div class="ph-q-icon">🤔</div>
+          <div class="ph-q-text">
+            <div class="ph-q-main">"Isn't Bitcoin just used by criminals? Isn't it dangerous?"</div>
+            <div class="ph-q-sub">The most common objection to Bitcoin's freedom argument</div>
+          </div>
+          <div class="ph-arrow">▼</div>
+        </div>
+        <div class="ph-body"><div class="ph-inner">
+          <div class="ph-answer">Consider what this objection actually says. Cash is used by criminals. Cars are used in crimes. The internet is used by criminals. <strong>The argument that a technology should be restricted because some people misuse it proves too much — it would ban every technology ever invented.</strong> More importantly, the data is decisive: the overwhelming majority of Bitcoin transactions are entirely legal — investment, savings, remittances, purchases, business payments. Chainalysis estimates illegal activity represents less than <em>0.3% of cryptocurrency transactions</em>. Compare this to cash, which the United Nations estimates funds 90%+ of illegal transactions globally. The dangerous financial system — the one actually used by cartels, terrorists, and corrupt governments — is the fiat system. Bitcoin's transparent, immutable blockchain is in fact the most auditable financial system ever created. Every transaction is public. Nothing is hidden forever. The criminals who tried Bitcoin found that out.</div>
+          <div class="ph-insight">💜 The irony: Bitcoin's blockchain is the most transparent financial ledger in history. Cash has no ledger at all. The "criminals use it" argument has the comparison backwards.</div>
+        </div></div>
+      </div>
+
+      <div class="ph-card">
+        <div class="ph-header">
+          <div class="ph-q-icon">🌱</div>
+          <div class="ph-q-text">
+            <div class="ph-q-main">"Bitcoin uses too much energy. Isn't it bad for the planet?"</div>
+            <div class="ph-q-sub">The environmental objection — and why it misses the deeper point</div>
+          </div>
+          <div class="ph-arrow">▼</div>
+        </div>
+        <div class="ph-body"><div class="ph-inner">
+          <div class="ph-answer">The energy question deserves a serious answer. Bitcoin mining does consume significant energy — approximately 130–150 TWh per year as of 2024. This is comparable to countries like Argentina or Norway. The question is whether that energy is being used for something valuable. <strong>The global banking system — buildings, data centres, ATMs, armoured vehicles, branches — consumes an estimated 700+ TWh annually.</strong> Gold mining consumes approximately 130+ TWh. Neither comparison suggests Bitcoin's energy use is disproportionate to the monetary utility it provides. More importantly, Bitcoin miners are uniquely incentivised to seek the cheapest energy available — which is almost always renewable energy that would otherwise be curtailed. Over 50% of Bitcoin mining now uses sustainable energy sources. <em>Bitcoin is becoming one of the largest buyers of otherwise wasted renewable energy on the planet.</em> The deeper philosophical point: deciding that a technology's energy use makes it "not worth it" requires a value judgement about what is worth the energy. For 1.7 billion unbanked people, that judgement looks very different.</div>
+          <div class="ph-insight">🌱 Bitcoin mining creates demand for cheap surplus energy — which incentivises renewable energy investment. The environmental story is more complex and more positive than the headline suggests.</div>
+        </div></div>
+      </div>
+
+      <div class="ph-card">
+        <div class="ph-header">
+          <div class="ph-q-icon">🏛️</div>
+          <div class="ph-q-text">
+            <div class="ph-q-main">"Don't we need central banks to manage the economy?"</div>
+            <div class="ph-q-sub">The macroeconomic objection — monetary policy vs sound money</div>
+          </div>
+          <div class="ph-arrow">▼</div>
+        </div>
+        <div class="ph-body"><div class="ph-inner">
+          <div class="ph-answer">The argument for central banking is that flexible monetary policy allows governments to smooth economic cycles — stimulating in downturns, tightening in booms. The argument sounds compelling. The record is not. <strong>Since the Federal Reserve was created in 1913, the dollar has lost 96% of its purchasing power. Financial crises have occurred approximately every 8–12 years.</strong> The 2008 crisis was caused directly by the moral hazard created by the implicit promise that central banks would bail out failed institutions — a promise that only exists because central banks can create unlimited money. The honest question is not "do central banks help?" but "compared to what?" Bitcoin offers an alternative hypothesis: that a money whose supply cannot be manipulated, whose rules are transparent and identical for all participants, whose value cannot be artificially inflated or deflated by institutional decision, might produce a more stable and equitable economic order than the one we have. <em>That hypothesis has not been proven at scale. But the track record of central banking does not make the hypothesis seem unreasonable.</em></div>
+          <div class="ph-insight">🏛️ The Cantillon Effect: when money is printed, those closest to the source of new money benefit first — banks, governments, wealthy asset owners. Those furthest away — workers and savers — see inflation before they see the benefits. Bitcoin eliminates the Cantillon Effect entirely.</div>
+        </div></div>
+      </div>
+
+      <div class="ph-card">
+        <div class="ph-header">
+          <div class="ph-q-icon">⏳</div>
+          <div class="ph-q-text">
+            <div class="ph-q-main">"Isn't this all just temporary? Won't governments just ban it eventually?"</div>
+            <div class="ph-q-sub">The existential question — and why time is Bitcoin's ally</div>
+          </div>
+          <div class="ph-arrow">▼</div>
+        </div>
+        <div class="ph-body"><div class="ph-inner">
+          <div class="ph-answer">Step 16 covered the empirical record of bans — every comprehensive Bitcoin prohibition has failed or been reversed. But the deeper question is about trajectory. <strong>In 2009, Bitcoin had no users, no market cap, no institutional support, no regulatory framework, and no ETFs. In 2026, it has 500 million+ users, a $2 trillion market cap, ETFs from BlackRock and Fidelity, legal tender status in two countries, regulatory frameworks in the US, EU, UK, Japan, Singapore, Australia, Canada, and Brazil, and holdings on the balance sheets of sovereign governments.</strong> The direction of travel is unambiguous. Bitcoin doesn't need to defeat governments. It just needs to continue existing — which it has done, every 10 minutes, without pause, for 15+ years. Every halving makes the supply argument stronger. Every institution that adopts it makes the ban argument weaker. Every year that passes increases the Lindy Effect. <em>Time is not Bitcoin's enemy. It is Bitcoin's greatest ally.</em></div>
+          <div class="ph-insight">⏳ 15 years of uninterrupted operation. 479 obituaries written. Every one of them wrong. The Lindy Effect says: for every year Bitcoin survives, its expected future lifespan increases. It is now very, very old for a technology that was supposed to die.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LETTER TO THE FUTURE -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑧</div>
+      <div class="chapter-title">A Letter to the Generation That Will Inherit Sound Money</div>
+    </div>
+
+    <div class="future-letter reveal">
+      <div class="fl-paper">
+        <div class="fl-watermark">₿</div>
+        <div class="fl-eyebrow">Written January 2026 · For those who come after</div>
+        <div class="fl-salutation">To the generation that will never know fiat money as we knew it —</div>
+        <div class="fl-body">
+          <p>You will grow up in a world where the idea of a central authority printing unlimited money will seem as strange as the idea of a king owning all the land. You may not know this. The system you inherit will feel normal, because it will be the only system you have known. But there was another world before yours, and it is worth knowing what it was like.</p>
+          <p>In our world, money was made of promises. Governments promised that the paper in your wallet had value — and then, when they needed more than they could take in taxes, they quietly printed more of it and the paper in your wallet bought a little less. They called this <em>monetary policy.</em> We called it survival. Most people never noticed until their savings stopped being enough — until the house they saved for moved just slightly further out of reach each year, until the retirement they planned arrived twenty percent short, until the children they were trying to leave something for inherited debts instead of wealth.</p>
+          <p>The people who understood what was happening tried to opt out. They bought gold. They bought land. They moved money to stronger currencies. But these were imperfect escapes — gold could be confiscated, land could be taxed into loss, stronger currencies had their own central banks. <strong>There was no exit. Until there was.</strong></p>
+          <p>A person — or persons — whose identity we still do not know, writing under the name Satoshi Nakamoto, published nine pages in October 2008 that changed everything. Not immediately. Not obviously. But permanently. Those nine pages described a system where money was created by mathematics, not by institutions. Where the supply was fixed, not flexible. Where the rules applied equally to everyone and could not be changed by anyone. Where you did not need permission to participate, to send, to receive, to save.</p>
+          <p>We lived through the years when this was controversial. When serious people wrote that it was a scam, a tulip mania, a tool of criminals. When governments threatened to ban it and found they could not. When it went up ten times and down eighty percent and up again and most people sold in fear and others held in conviction. <strong>We lived through the chaos of a new money being born.</strong> You inherited the order that came after.</p>
+          <p>What we want you to know is this: <em>the freedom to save is not obvious.</em> The freedom to transact without permission is not obvious. The freedom to carry your wealth across a border in your mind is not obvious. These things did not exist for most of human history, and their existence is not guaranteed. They exist because of mathematics, because of code written by people you will never meet, and because of millions of individuals who chose to hold, to run nodes, to build, to explain, and to refuse to sell when the world said it was over.</p>
+          <p><strong>Sound money is a choice that every generation must recommit to.</strong> We made ours. Now it is yours.</p>
+        </div>
+        <div class="fl-signature">
+          <div class="fl-sig-name">The Bitcoin Holders of 2009–2026</div>
+          <div class="fl-sig-sub">Written in the 17th year of the Bitcoin Standard · Block 883,000+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOUL MOMENT -->
+  <div class="soul-moment reveal">
+    <div class="sm-cosmos">
+      <div class="sm-ring"></div>
+      <div class="sm-ring"></div>
+      <div class="sm-ring"></div>
+      <div class="sm-ring"></div>
+    </div>
+    <span class="sm-icon">₿</span>
+    <div class="sm-title">
+      <span class="sm-s">Freedom.</span><br>
+      <span class="sm-btc">Encoded.</span><br>
+      <span class="sm-g">Forever.</span>
+    </div>
+    <div class="sm-sub">This is the step where Bitcoin stops being a number on a screen and becomes something else entirely. A technology for human dignity. A tool for the oppressed. A letter written to the future by people who believed that the world could have better money — and that better money could make a freer world. You now know what Bitcoin is technically. You now know what it is financially. You now know what it is philosophically. There is only one question left: what are you going to do with that knowledge? Two steps remain. The objections will be answered. The call to action will be given. The maximalist was always in there. These 19 steps just helped them find the door.</div>
+  </div>
+
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">🏆 Step 19 — Key Takeaways</div>
+    <div class="kt-text">Bitcoin is not an asset class.<br><em>It is an act of sovereignty.</em></div>
+    <div class="kt-points">
+      <div class="kt-point"><span class="kt-point-icon">💜</span><span>Money has never been neutral. Whoever controls the money supply controls behaviour. Bitcoin is the first monetary system in history where that control belongs to mathematics rather than to any human institution — making inflation, censorship, and seizure structurally impossible at the protocol level.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🌍</span><span>1.7 billion people are excluded from the global financial system. Not by choice. By structural barriers of identity, geography, and poverty. Bitcoin needs only a phone and a signal. It does not ask for ID. It does not require a minimum balance. It does not close on weekends. It is the first monetary system ever built that is equally available to every human being on earth.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📖</span><span>The stories in this step are real. Afghan women paid through Bitcoin when banks were closed to them. Nigerian protesters funded through Bitcoin after their accounts were frozen. Ukrainians who crossed war-zone borders carrying their life savings in 24 words. These are not edge cases. They are the proof of concept.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🏛️</span><span>The separation of money and state is the next great liberating achievement after the separation of church and state. It does not require permission. It does not require legislation. It is being accomplished, block by block, by every node that validates, every person who self-custodies, every developer who builds, and every holder who refuses to sell.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">⏳</span><span>Bitcoin's trajectory over 15 years is unambiguous: from nothing to two trillion dollars, from zero countries to two legal tender adoptions, from no ETFs to BlackRock. The direction of history is clear. The only question is whether you will be part of it from here, or look back later and wish you had been.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🔥</span><span>Step 20 — Every Objection Answered — is the final intellectual reckoning. Every criticism, every doubt, every "but what about..." that has ever been raised against Bitcoin, answered with precision and evidence. Then Step 21 gives the call to action. The summit is one step away. Come.</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STEP NAV -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="btc-step-18.html" class="snb-prev reveal">
+      <div class="snb-icon">🔥</div>
+      <div>
+        <div class="snb-label">← Step 18</div>
+        <div class="snb-title">Bitcoin for Retirement</div>
+        <div class="snb-desc">The FIRE number that changes your timeline</div>
+      </div>
+    </a>
+    <a href="btc-step-20.html" class="snb-next reveal">
+      <div class="snb-icon">⚔️</div>
+      <div>
+        <div class="snb-label">Step 20 →</div>
+        <div class="snb-title">Every Objection Answered</div>
+        <div class="snb-desc">The final intellectual reckoning</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- MINIMAP -->
+<div class="steps-minimap">
+  <div class="sm-card-mm reveal">
+    <div class="sm-title-mm">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step done">1</a>
+      <a href="btc-step-02.html" class="sm-step done">2</a>
+      <a href="btc-step-03.html" class="sm-step done">3</a>
+      <a href="btc-step-04.html" class="sm-step done">4</a>
+      <a href="btc-step-05.html" class="sm-step done">5</a>
+      <a href="btc-step-06.html" class="sm-step done">6</a>
+      <a href="btc-step-07.html" class="sm-step done">7</a>
+      <a href="btc-step-08.html" class="sm-step done">8</a>
+      <a href="btc-step-09.html" class="sm-step done">9</a>
+      <a href="btc-step-10.html" class="sm-step done">10</a>
+      <a href="btc-step-11.html" class="sm-step done">11</a>
+      <a href="btc-step-12.html" class="sm-step done">12</a>
+      <a href="btc-step-13.html" class="sm-step done">13</a>
+      <a href="btc-step-14.html" class="sm-step done">14</a>
+      <a href="btc-step-15.html" class="sm-step done">15</a>
+      <a href="btc-step-16.html" class="sm-step done">16</a>
+      <a href="btc-step-17.html" class="sm-step done">17</a>
+      <a href="btc-step-18.html" class="sm-step done">18</a>
+      <a href="btc-step-19.html" class="sm-step current">19</a>
+      <a href="btc-step-20.html" class="sm-step upcoming">20</a>
+      <a href="btc-step-21.html" class="sm-step upcoming">21</a>
+    </div>
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(34,197,94,.6)"></div>Completed</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--soul)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(124,58,237,.3)"></div>Final two — the summit</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="Unstoppable.html">Unstoppable</a>
+      <a href="IntrinsicValue.html">Intrinsic Value</a>
+      <a href="why-bitcoin-wins.html">Why Bitcoin Wins</a>
+      <a href="Keychain.html">Keychain</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n); localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE PRICE ──
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json()).then(d => {
+      document.getElementById('btcPriceNav').textContent = '$' + d.bitcoin.usd.toLocaleString();
+    }).catch(() => {});
+}
+updatePrice(); setInterval(updatePrice, 10000);
+
+// ── SCROLL ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── STARFIELD ──
+(function() {
+  const canvas = document.getElementById('starCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let W, H, animId;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    stars = Array.from({length: 120}, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.4 + 0.3,
+      o: Math.random() * 0.6 + 0.1,
+      s: Math.random() * 0.0008 + 0.0003,
+      phase: Math.random() * Math.PI * 2,
+      drift: (Math.random() - 0.5) * 0.06
+    }));
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.x += s.drift;
+      if (s.x < 0) s.x = W;
+      if (s.x > W) s.x = 0;
+      const opacity = s.o * (0.5 + 0.5 * Math.sin(t * s.s * 1000 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      ctx.fillStyle = isDark
+        ? `rgba(180,160,255,${opacity})`
+        : `rgba(100,80,180,${opacity * 0.4})`;
+      ctx.fill();
+    });
+    animId = requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(draw);
+})();
+
+// ── FREEDOM STORIES ──
+document.querySelectorAll('.fs-story').forEach(story => {
+  story.addEventListener('click', () => {
+    const wasOpen = story.classList.contains('open');
+    document.querySelectorAll('.fs-story').forEach(s => s.classList.remove('open'));
+    if (!wasOpen) story.classList.add('open');
+  });
+});
+
+// ── PHILOSOPHICAL ACCORDIONS ──
+document.querySelectorAll('.ph-header').forEach(h => {
+  h.addEventListener('click', () => {
+    const card = h.parentElement;
+    const wasOpen = card.classList.contains('open');
+    document.querySelectorAll('.ph-card').forEach(c => c.classList.remove('open'));
+    if (!wasOpen) card.classList.add('open');
+  });
+});
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Animate allocation bars when they come into view
+      if (e.target.classList.contains('fc-compare')) {
+        e.target.querySelectorAll('.fc-bar-fill').forEach((bar, i) => {
+          setTimeout(() => { bar.style.transition = 'width 1.2s ease'; }, i * 150);
+        });
+      }
+    }
+  });
+}, { threshold: 0.05 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
