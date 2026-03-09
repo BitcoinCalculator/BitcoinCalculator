@@ -17,21 +17,24 @@
   --prose:#3a3a3a;--quote-bg:#f0ede6;
 }
 :root{
-  --btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;
-  --red:#e63946;--teal:#06b6d4;--sword:#e11d48;--gold:#FFD700;--soul:#7c3aed;
+  --btc:#F7931A;--green:#22c55e;--purple:#8b5cf6;--red:#e63946;
+  --teal:#06b6d4;--gold:#FFD700;--soul:#7c3aed;--sword:#e11d48;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
   transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
+/* ══ SCROLL BAR ══ */
 .scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
 .scroll-fill{height:100%;background:linear-gradient(90deg,var(--sword),var(--btc),var(--gold));width:0%}
 
+/* ══ TICKER ══ */
 .ticker{background:linear-gradient(90deg,#4c0519,#881337);padding:9px 0;overflow:hidden;white-space:nowrap;z-index:201}
 .ticker-inner{display:inline-flex;gap:64px;animation:tick 44s linear infinite;font-size:12px;font-weight:700;color:#fff}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
+/* ══ NAV ══ */
 nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
   align-items:center;justify-content:space-between;background:var(--nav-bg);
   backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
@@ -56,6 +59,7 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
 [data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
 
+/* ══ STEP NAV BAR ══ */
 .step-nav-bar{background:var(--bg2);border-bottom:1px solid var(--border);
   padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px}
 .step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
@@ -70,10 +74,11 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
 .spm-fill{height:100%;background:linear-gradient(90deg,var(--sword),var(--btc));border-radius:2px;width:95.2%}
 
+/* ══ READING PROGRESS ══ */
 .reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);
   display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
 .rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
-.rp-fill{width:100%;background:linear-gradient(to bottom,var(--sword),var(--btc));
+.rp-fill{width:100%;background:linear-gradient(to bottom,var(--sword),var(--btc),var(--gold));
   border-radius:2px;height:0%;transition:height .15s}
 .rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
   writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
@@ -81,12 +86,13 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 /* ══ HERO ══ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 .step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;position:relative;overflow:hidden}
-#battleCanvas{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.6}
-.hero-x-bg{position:absolute;right:-40px;top:-20px;
-  font-size:clamp(240px,38vw,500px);opacity:.03;line-height:1;pointer-events:none;
-  font-weight:900;color:var(--sword);
+#battleCanvas{position:absolute;inset:0;pointer-events:none;z-index:0}
+.hero-x-bg{position:absolute;right:-30px;top:-10px;
+  font-size:clamp(260px,40vw,520px);opacity:.028;line-height:1;pointer-events:none;
+  font-weight:900;font-family:'Inter',sans-serif;color:var(--sword);
   animation:xPulse 6s ease-in-out infinite;z-index:1}
-@keyframes xPulse{0%,100%{opacity:.03;transform:scale(1)}50%{opacity:.055;transform:scale(1.03)}}
+@keyframes xPulse{0%,100%{opacity:.028;transform:scale(1)}50%{opacity:.05;transform:scale(1.03)}}
+
 .step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;
   animation:fadeUp .6s ease both;position:relative;z-index:2}
 .step-number{width:52px;height:52px;background:linear-gradient(135deg,var(--sword),var(--btc));
@@ -98,7 +104,7 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
   background:linear-gradient(90deg,var(--sword),var(--btc),var(--gold));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
 .step-meta-bottom{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.step-hero h1{font-size:clamp(32px,6.5vw,82px);font-weight:900;letter-spacing:-4px;
+.step-hero h1{font-size:clamp(34px,6.5vw,84px);font-weight:900;letter-spacing:-4px;
   line-height:.97;margin-bottom:22px;animation:fadeUp .6s .07s ease both;position:relative;z-index:2}
 .sw-em{color:var(--sword)}.btc-em{color:var(--btc)}.g-em{color:var(--green)}.go-em{color:var(--gold)}
 .step-hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.8;
@@ -112,13 +118,13 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
 .key-lesson strong{color:var(--sword)}
 
-/* ── ARTICLE ── */
+/* ══ ARTICLE WRAP ══ */
 .article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
 
-/* ══ OBJECTION COUNTER ══ */
+/* ══ OBJECTION COUNTER STRIP ══ */
 .obj-counter{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
   background:var(--card);border:1px solid rgba(225,29,72,.2);
-  border-radius:22px;overflow:hidden;margin:0 0 64px}
+  border-radius:22px;overflow:hidden;margin:0 0 56px}
 .oc-item{padding:24px 16px;text-align:center;border-right:1px solid var(--border);position:relative}
 .oc-item:last-child{border-right:none}
 .oc-item::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
@@ -130,11 +136,12 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .oc-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
 .oc-sub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}
 
-/* ══ CATEGORY TABS ══ */
+/* ══ CATEGORY FILTER TABS ══ */
 .cat-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
 .cat-tab{background:var(--bg2);border:1px solid var(--border);
   border-radius:100px;padding:7px 16px;font-size:12px;font-weight:800;
-  color:var(--muted);cursor:pointer;transition:all .25s;white-space:nowrap}
+  color:var(--muted);cursor:pointer;transition:all .25s;white-space:nowrap;
+  user-select:none}
 .cat-tab:hover{border-color:var(--btc);color:var(--btc)}
 .cat-tab.active{background:linear-gradient(135deg,var(--sword),var(--btc));
   border-color:transparent;color:#fff;
@@ -142,69 +149,79 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 
 /* ══ OBJECTION CARDS ══ */
 .objections-arena{display:flex;flex-direction:column;gap:14px}
+
 .obj-card{background:var(--card);border:1px solid var(--border);
-  border-radius:18px;overflow:hidden;transition:all .3s;
+  border-radius:18px;overflow:hidden;transition:border-color .3s;
   display:none}
 .obj-card.visible{display:block}
 .obj-card:hover{border-color:rgba(225,29,72,.3)}
-.obj-card.open{border-color:rgba(225,29,72,.4);
-  box-shadow:0 8px 32px rgba(225,29,72,.08)}
-.obj-header{display:grid;grid-template-columns:48px 1fr auto auto;
-  gap:12px;align-items:center;padding:18px 22px;cursor:pointer;transition:background .2s}
+.obj-card.open{border-color:rgba(225,29,72,.45);
+  box-shadow:0 8px 32px rgba(225,29,72,.07)}
+
+.obj-header{display:grid;grid-template-columns:46px 1fr auto auto;
+  gap:12px;align-items:center;padding:18px 22px;cursor:pointer;
+  transition:background .2s;user-select:none}
 .obj-header:hover{background:rgba(225,29,72,.03)}
-.obj-icon{font-size:28px;text-align:center}
-.obj-q-wrap{flex:1}
-.obj-q{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-bottom:3px;line-height:1.3}
-.obj-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.obj-icon{font-size:26px;text-align:center;line-height:1}
+.obj-q-wrap{min-width:0}
+.obj-q{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-bottom:5px;line-height:1.3}
+.obj-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .obj-cat-badge{font-size:9px;font-weight:800;padding:2px 8px;border-radius:100px;
-  text-transform:uppercase;letter-spacing:.8px}
+  text-transform:uppercase;letter-spacing:.8px;white-space:nowrap}
 .obj-diff{font-size:9px;font-weight:800;padding:2px 8px;border-radius:100px;
-  text-transform:uppercase;letter-spacing:.5px}
+  text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
 .diff-1{background:rgba(34,197,94,.12);color:var(--green)}
 .diff-2{background:rgba(247,147,26,.12);color:var(--btc)}
 .diff-3{background:rgba(225,29,72,.12);color:var(--sword)}
-.obj-heard{font-size:10px;color:var(--muted);margin-left:auto;white-space:nowrap;
-  display:flex;align-items:center;gap:4px}
-.obj-arrow{font-size:16px;color:var(--muted);transition:transform .35s;flex-shrink:0}
+.obj-heard{font-size:10px;color:var(--muted);white-space:nowrap;
+  display:flex;align-items:center;gap:4px;flex-shrink:0}
+.obj-arrow{font-size:14px;color:var(--muted);transition:transform .35s;
+  flex-shrink:0;margin-left:4px}
 .obj-card.open .obj-arrow{transform:rotate(180deg)}
-.obj-body{max-height:0;overflow:hidden;transition:max-height .55s ease}
-.obj-card.open .obj-body{max-height:600px}
-.obj-inner{padding:0 22px 22px;border-top:1px solid var(--border);padding-top:20px}
 
-/* Verdict bar inside each objection */
-.verdict-bar{display:flex;align-items:center;gap:10px;
+.obj-body{max-height:0;overflow:hidden;transition:max-height .55s ease}
+.obj-card.open .obj-body{max-height:700px}
+.obj-inner{padding:0 22px 24px;border-top:1px solid var(--border);padding-top:20px}
+
+/* Verdict badge */
+.verdict-bar{display:flex;align-items:center;gap:9px;
   margin-bottom:18px;padding:10px 14px;
-  border-radius:10px;font-size:12px;font-weight:800}
+  border-radius:10px;font-size:12px;font-weight:800;line-height:1.4}
 .verdict-demolished{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:var(--green)}
 .verdict-nuanced{background:rgba(247,147,26,.08);border:1px solid rgba(247,147,26,.2);color:var(--btc)}
 .verdict-evolving{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:var(--soul)}
 
+/* Answer body */
 .obj-answer{font-size:14px;color:var(--muted);line-height:1.9;
-  font-family:'Lora',serif;font-style:italic}
+  font-family:'Lora',serif;font-style:italic;margin-bottom:0}
 .obj-answer p{margin-bottom:16px}
 .obj-answer p:last-child{margin-bottom:0}
 .obj-answer strong{color:var(--text);font-weight:700;font-style:normal;
   font-family:'Inter',sans-serif;font-size:.9em}
-.obj-answer em{color:var(--sword)}
+.obj-answer em{color:var(--sword);font-style:italic}
+.obj-answer em.btc{color:var(--btc)}
+.obj-answer em.g{color:var(--green)}
 
-.obj-evidence{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+/* Evidence bullets */
+.obj-evidence{margin-top:18px;display:flex;flex-direction:column;gap:9px}
 .oe-item{display:flex;align-items:flex-start;gap:10px;
   background:var(--bg2);border-left:3px solid var(--btc);
-  border-radius:0 10px 10px 0;padding:11px 14px;font-size:13px;
-  color:var(--prose);line-height:1.65;font-family:'Inter',sans-serif}
-.oe-icon{flex-shrink:0;font-size:14px;margin-top:1px}
+  border-radius:0 10px 10px 0;padding:11px 14px;font-size:12px;
+  color:var(--prose);line-height:1.7;font-family:'Inter',sans-serif;font-style:normal}
+.oe-icon{flex-shrink:0;font-size:14px;margin-top:2px}
 
-.obj-kicker{margin-top:16px;padding:14px 18px;
-  background:linear-gradient(135deg,rgba(225,29,72,.08),rgba(247,147,26,.04));
-  border:1px solid rgba(225,29,72,.2);border-radius:12px;
-  font-size:13px;font-weight:700;color:var(--sword);line-height:1.7;
+/* Kicker */
+.obj-kicker{margin-top:16px;padding:13px 17px;
+  background:linear-gradient(135deg,rgba(225,29,72,.07),rgba(247,147,26,.04));
+  border:1px solid rgba(225,29,72,.18);border-radius:11px;
+  font-size:12px;font-weight:700;color:var(--sword);line-height:1.7;
   font-family:'Inter',sans-serif;font-style:normal}
 
 /* ══ SCOREBOARD ══ */
-.scoreboard{background:linear-gradient(135deg,rgba(34,197,94,.09),rgba(247,147,26,.04));
-  border:2px solid rgba(34,197,94,.25);border-radius:22px;overflow:hidden;margin:60px 0}
+.scoreboard{background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(247,147,26,.04));
+  border:2px solid rgba(34,197,94,.22);border-radius:22px;overflow:hidden;margin:60px 0}
 .sb-header{padding:28px 32px;border-bottom:1px solid var(--border);
-  text-align:center;background:linear-gradient(135deg,rgba(34,197,94,.07),transparent)}
+  text-align:center;background:linear-gradient(135deg,rgba(34,197,94,.06),transparent)}
 .sb-header h3{font-size:22px;font-weight:900;margin-bottom:6px;letter-spacing:-.5px}
 .sb-header p{font-size:13px;color:var(--muted)}
 .sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
@@ -212,7 +229,7 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .sb-side.objections{border-right:1px solid var(--border)}
 .sb-side-title{font-size:11px;font-weight:800;text-transform:uppercase;
   letter-spacing:1.5px;margin-bottom:20px;display:flex;align-items:center;gap:8px}
-.sb-side.objections .sb-side-title{color:var(--red)}
+.sb-side.objections .sb-side-title{color:var(--sword)}
 .sb-side.bitcoin .sb-side-title{color:var(--green)}
 .sb-tally{display:flex;flex-direction:column;gap:10px}
 .sb-row{display:flex;align-items:center;justify-content:space-between;
@@ -220,20 +237,21 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
   background:var(--bg2);border:1px solid var(--border)}
 .sb-row-label{font-weight:700;color:var(--muted)}
 .sb-row-val{font-weight:900;font-size:16px}
-.sb-side.objections .sb-row-val{color:var(--red)}
+.sb-side.objections .sb-row-val{color:var(--sword)}
 .sb-side.bitcoin .sb-row-val{color:var(--green)}
-.sb-footer{padding:24px 32px;text-align:center;border-top:1px solid var(--border);
+.sb-footer{padding:28px 32px;text-align:center;border-top:1px solid var(--border);
   background:rgba(34,197,94,.04)}
-.sb-verdict{font-size:clamp(24px,4vw,42px);font-weight:900;letter-spacing:-2px;
+.sb-verdict{font-size:clamp(26px,4.5vw,46px);font-weight:900;letter-spacing:-2.5px;
   background:linear-gradient(135deg,var(--btc),var(--green),var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.sb-verdict-sub{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.7}
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px}
+.sb-verdict-sub{font-size:14px;color:var(--muted);line-height:1.75;max-width:560px;margin:0 auto}
 
-/* ══ THE UNCONVERTIBLE ══ */
+/* ══ UNCONVERTIBLE ══ */
 .unconvertible{background:var(--card);border:1px solid rgba(225,29,72,.15);
   border-radius:22px;overflow:hidden;margin:60px 0}
 .unc-header{padding:22px 28px;border-bottom:1px solid var(--border);
-  background:linear-gradient(135deg,rgba(225,29,72,.06),transparent)}
+  background:linear-gradient(135deg,rgba(225,29,72,.05),transparent)}
 .unc-header h3{font-size:16px;font-weight:800;margin-bottom:4px}
 .unc-header p{font-size:13px;color:var(--muted)}
 .unc-types{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
@@ -245,14 +263,14 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .unc-type:nth-child(3) .unc-icon{animation-delay:1s}
 @keyframes uncFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .unc-title{font-size:14px;font-weight:900;margin-bottom:8px;color:var(--muted)}
-.unc-body{font-size:12px;color:var(--muted);line-height:1.75}
+.unc-body{font-size:12px;color:var(--muted);line-height:1.78}
 .unc-body strong{color:var(--text);font-weight:700}
-.unc-footer{padding:18px 28px;border-top:1px solid var(--border);
-  background:rgba(247,147,26,.04);font-size:13px;color:var(--prose);
-  line-height:1.8;font-family:'Inter',sans-serif}
+.unc-footer{padding:20px 28px;border-top:1px solid var(--border);
+  background:rgba(247,147,26,.03);font-size:13px;color:var(--prose);
+  line-height:1.85;font-family:'Inter',sans-serif}
 .unc-footer strong{color:var(--btc)}
 
-/* ══ FINAL CLARITY ══ */
+/* ══ FINAL CLARITY MOMENT ══ */
 .final-clarity{text-align:center;padding:96px 24px;position:relative;overflow:hidden}
 .fc-bg-rings{position:absolute;inset:0;pointer-events:none}
 .fc-ring{position:absolute;border-radius:50%;border:1px solid;
@@ -261,7 +279,7 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .fc-ring:nth-child(2){width:340px;height:340px;border-color:rgba(247,147,26,.12);animation:fcRing 3s .6s ease-in-out infinite}
 .fc-ring:nth-child(3){width:520px;height:520px;border-color:rgba(34,197,94,.08);animation:fcRing 3s 1.2s ease-in-out infinite}
 .fc-ring:nth-child(4){width:720px;height:720px;border-color:rgba(255,215,0,.05);animation:fcRing 3s 1.8s ease-in-out infinite}
-@keyframes fcRing{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(1)}
+@keyframes fcRing{0%,100%{opacity:.35;transform:translate(-50%,-50%) scale(1)}
   50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
 .fc-icon{font-size:88px;position:relative;z-index:2;display:block;margin-bottom:28px;
   animation:fcIcon 2.5s ease-in-out infinite}
@@ -271,11 +289,11 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .fc-title{font-size:clamp(32px,7vw,84px);font-weight:900;letter-spacing:-4px;
   line-height:.97;margin-bottom:22px;position:relative;z-index:2}
 .fc-sw{color:var(--sword)}.fc-btc{color:var(--btc)}.fc-g{color:var(--green)}.fc-go{color:var(--gold)}
-.fc-sub{font-size:clamp(15px,2vw,19px);color:var(--muted);max-width:720px;
+.fc-sub{font-size:clamp(15px,2vw,19px);color:var(--muted);max-width:700px;
   margin:0 auto;line-height:1.95;font-family:'Lora',serif;font-style:italic;
   position:relative;z-index:2}
 
-/* ── KEY TAKEAWAY ── */
+/* ══ KEY TAKEAWAY ══ */
 .key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));
   border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
 .kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
@@ -287,7 +305,7 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--prose);line-height:1.65}
 .kt-point-icon{font-size:16px;flex-shrink:0;margin-top:2px}
 
-/* ── STEP NAV + MINIMAP ── */
+/* ══ STEP NAV ══ */
 .step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
 .snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);
@@ -301,6 +319,7 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
 .snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
 
+/* ══ MINIMAP ══ */
 .steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
 .sm-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px}
 .sm-title{font-size:14px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
@@ -313,13 +332,15 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;
 .sm-step.current{background:linear-gradient(135deg,var(--sword),var(--btc));
   border-color:var(--sword);color:#fff;box-shadow:0 4px 20px rgba(225,29,72,.45)}
 .sm-step.summit{background:linear-gradient(135deg,var(--btc),var(--gold));
-  border-color:var(--btc);color:#fff;animation:summitPulse 2s ease-in-out infinite}
-@keyframes summitPulse{0%,100%{box-shadow:0 4px 16px rgba(247,147,26,.3)}
-  50%{box-shadow:0 4px 28px rgba(247,147,26,.7)}}
+  border-color:var(--btc);color:#000;animation:summitPulse 2s ease-in-out infinite}
+@keyframes summitPulse{
+  0%,100%{box-shadow:0 4px 16px rgba(247,147,26,.3)}
+  50%{box-shadow:0 4px 28px rgba(247,147,26,.75)}}
 .sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
 .sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
 .sm-leg-dot{width:10px;height:10px;border-radius:3px}
 
+/* ══ FOOTER ══ */
 .footer-wrap{border-top:1px solid var(--border)}
 footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;
   max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
@@ -329,9 +350,11 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
 .foot-links a:hover{color:var(--text)}
 .foot-copy{font-size:11px;color:var(--muted)}
 
+/* ══ REVEAL ══ */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
+/* ══ RESPONSIVE ══ */
 @media(max-width:860px){
   nav,.step-nav-bar{padding:0 18px}
   .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
@@ -353,7 +376,7 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
   .sm-step{width:30px;height:30px;font-size:10px}
   .obj-counter{grid-template-columns:1fr 1fr}
   .cat-tabs{gap:6px}
-  .cat-tab{font-size:11px;padding:6px 12px}
+  .cat-tab{font-size:11px;padding:5px 11px}
 }
 </style>
 </head>
@@ -361,20 +384,23 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
 
 <div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
 
+<!-- TICKER -->
 <div class="ticker">
-  <div class="ticker-inner">
+  <div class="ticker-inner" id="tickerInner">
     <span>⚔️ STEP 20 OF 21 — EVERY OBJECTION ANSWERED</span><span>·</span>
-    <span>💀 "IT'S A PONZI" — DEMOLISHED · A PONZI HAS A PROMOTER · BITCOIN HAS NO CEO</span><span>·</span>
-    <span>💀 "IT HAS NO INTRINSIC VALUE" — DEMOLISHED · NEITHER DOES GOLD · NOR DOES THE DOLLAR</span><span>·</span>
-    <span>💀 "GOVERNMENTS WILL BAN IT" — DEMOLISHED · CHINA TRIED · BITCOIN DOUBLED · MINING MOVED</span><span>·</span>
-    <span>💀 "IT'S TOO VOLATILE" — DEMOLISHED · BITCOIN IS VOLATILE BECAUSE IT'S GROWING · NOT FAILING</span><span>·</span>
-    <span>💀 "IT WILL BE REPLACED BY SOMETHING BETTER" — DEMOLISHED · 15 YEARS · 21M CAP · 500M USERS</span><span>·</span>
+    <span>💀 "IT'S A PONZI" — DEMOLISHED · NO CEO · NO PROMISE · NO FRAUD</span><span>·</span>
+    <span>💀 "NO INTRINSIC VALUE" — DEMOLISHED · NEITHER DOES GOLD · NOR THE DOLLAR</span><span>·</span>
+    <span>💀 "GOVERNMENTS WILL BAN IT" — DEMOLISHED · CHINA TRIED · BITCOIN DOUBLED</span><span>·</span>
+    <span>💀 "TOO VOLATILE" — DEMOLISHED · VOLATILE BECAUSE IT'S GROWING · NOT FAILING</span><span>·</span>
+    <span>💀 "TOO SLOW" — DEMOLISHED · LIGHTNING SETTLES IN MILLISECONDS FOR $0.001</span><span>·</span>
+    <span>💀 "DESTROYS ENVIRONMENT" — DEMOLISHED · 52% SUSTAINABLE ENERGY · BANKING USES 700 TWH</span><span>·</span>
     <span>⚔️ STEP 20 OF 21 — EVERY OBJECTION ANSWERED</span><span>·</span>
-    <span>💀 "IT'S A PONZI" — DEMOLISHED · A PONZI HAS A PROMOTER · BITCOIN HAS NO CEO</span><span>·</span>
-    <span>💀 "IT HAS NO INTRINSIC VALUE" — DEMOLISHED · NEITHER DOES GOLD · NOR DOES THE DOLLAR</span><span>·</span>
-    <span>💀 "GOVERNMENTS WILL BAN IT" — DEMOLISHED · CHINA TRIED · BITCOIN DOUBLED · MINING MOVED</span><span>·</span>
-    <span>💀 "IT'S TOO VOLATILE" — DEMOLISHED · BITCOIN IS VOLATILE BECAUSE IT'S GROWING · NOT FAILING</span><span>·</span>
-    <span>💀 "IT WILL BE REPLACED BY SOMETHING BETTER" — DEMOLISHED · 15 YEARS · 21M CAP · 500M USERS</span><span>·</span>
+    <span>💀 "IT'S A PONZI" — DEMOLISHED · NO CEO · NO PROMISE · NO FRAUD</span><span>·</span>
+    <span>💀 "NO INTRINSIC VALUE" — DEMOLISHED · NEITHER DOES GOLD · NOR THE DOLLAR</span><span>·</span>
+    <span>💀 "GOVERNMENTS WILL BAN IT" — DEMOLISHED · CHINA TRIED · BITCOIN DOUBLED</span><span>·</span>
+    <span>💀 "TOO VOLATILE" — DEMOLISHED · VOLATILE BECAUSE IT'S GROWING · NOT FAILING</span><span>·</span>
+    <span>💀 "TOO SLOW" — DEMOLISHED · LIGHTNING SETTLES IN MILLISECONDS FOR $0.001</span><span>·</span>
+    <span>💀 "DESTROYS ENVIRONMENT" — DEMOLISHED · 52% SUSTAINABLE ENERGY · BANKING USES 700 TWH</span><span>·</span>
   </div>
 </div>
 
@@ -421,55 +447,60 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
 <div class="step-hero">
   <canvas id="battleCanvas"></canvas>
   <div class="hero-x-bg">✕</div>
+
   <div class="step-eyebrow">
     <div class="step-number">20</div>
     <div class="step-meta">
       <div class="step-meta-top">⚔️ Phase 4 — Mastery · Step 3 of 4</div>
       <div class="step-meta-bottom">
         <span>⏱ 12 min read</span><span>·</span>
-        <span>⚔️ 20 objections. 20 demolitions.</span><span>·</span>
-        <span>💀 No doubt survives</span>
+        <span>⚔️ 20 objections · 20 demolitions</span><span>·</span>
+        <span>💀 No doubt survives this page</span>
       </div>
     </div>
   </div>
+
   <h1>Every<br>
     <span class="sw-em">Objection.</span><br>
     <span class="btc-em">Answered.</span><br>
     <span class="g-em">Finally.</span></h1>
-  <p class="step-hero-sub">You have heard them all. At dinner tables and in comment sections, from well-meaning friends and cynical experts, from journalists who didn't look closely enough and economists who looked too hard through the wrong lens. Every objection Bitcoin has ever faced is collected here — and answered with evidence, data, and the cold precision of fifteen years of proof. This is the intellectual armour. After this step, no argument will catch you off guard. After this step, there is only one thing left: the summit.</p>
+
+  <p class="step-hero-sub">You have heard them all. At dinner tables and in comment sections, from well-meaning friends and cynical economists, from journalists who didn't look closely enough and experts who looked through the wrong lens. Every objection Bitcoin has ever faced is collected here — and answered with evidence, data, and the cold precision of fifteen years of proof. This is the intellectual armour. After this step, no argument catches you unprepared. After this step, there is only one thing left: the summit.</p>
+
   <div class="key-lesson">
     <span class="key-lesson-icon">⚔️</span>
-    <span><strong>What this step delivers:</strong> 20 of the most powerful, most repeated, and most genuinely challenging objections to Bitcoin — each one taken seriously, answered honestly, and demolished with evidence. Organised by category. Filterable. Searchable. Rated by difficulty. Including the objections that have some merit, answered with the nuance they deserve. Nothing is dismissed. Everything is addressed.</span>
+    <span><strong>What this step delivers:</strong> 20 of the most powerful, most repeated, and most genuinely challenging objections to Bitcoin — each taken seriously, answered honestly, and demolished with evidence. Organised by category, filterable by type, rated by difficulty. Including the objections that carry real merit, answered with the nuance they deserve. Nothing dismissed. Everything addressed.</span>
   </div>
 </div>
 
 <!-- ══ ARTICLE ══ -->
 <div class="article-wrap">
 
+  <!-- Counter strip -->
   <div class="obj-counter reveal">
     <div class="oc-item">
       <div class="oc-val">20</div>
       <div class="oc-label">Objections</div>
-      <div class="oc-sub">Collected from 15 years of Bitcoin debate</div>
+      <div class="oc-sub">Collected from 15 years of debate</div>
     </div>
     <div class="oc-item">
       <div class="oc-val">20</div>
-      <div class="oc-label">Demolished</div>
-      <div class="oc-sub">With evidence, data, and logic</div>
+      <div class="oc-label">Answered</div>
+      <div class="oc-sub">With evidence, data &amp; logic</div>
     </div>
     <div class="oc-item">
       <div class="oc-val">0</div>
       <div class="oc-label">Unanswered</div>
-      <div class="oc-sub">Every doubt has an answer</div>
+      <div class="oc-sub">Every doubt has a response</div>
     </div>
     <div class="oc-item">
-      <div class="oc-val">15yrs</div>
+      <div class="oc-val">15 yrs</div>
       <div class="oc-label">Of Proof</div>
-      <div class="oc-sub">Bitcoin still here. Objectors still wrong.</div>
+      <div class="oc-sub">Bitcoin still here. Critics still wrong.</div>
     </div>
   </div>
 
-  <!-- FILTER TABS -->
+  <!-- Filter tabs -->
   <div class="cat-tabs reveal">
     <div class="cat-tab active" data-cat="all">All 20</div>
     <div class="cat-tab" data-cat="value">💎 Value</div>
@@ -480,10 +511,10 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
     <div class="cat-tab" data-cat="risk">🎲 Risk</div>
   </div>
 
-  <!-- ══ THE 20 OBJECTIONS ══ -->
+  <!-- ══ 20 OBJECTION CARDS ══ -->
   <div class="objections-arena reveal" id="objArena">
 
-    <!-- 1 -->
+    <!-- 1 PONZI -->
     <div class="obj-card visible" data-cat="value">
       <div class="obj-header">
         <div class="obj-icon">🃏</div>
@@ -494,24 +525,24 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
             <span class="obj-diff diff-1">Easy</span>
           </div>
         </div>
-        <div class="obj-heard">🔁 Most heard</div>
+        <div class="obj-heard">🔁 #1 Most heard</div>
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — definitionally incorrect</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — definitionally and structurally incorrect</div>
         <div class="obj-answer">
-          <p>A Ponzi scheme has three defining characteristics: a central operator, a promise of returns funded by new investor money, and fraud. <strong>Bitcoin has none of these.</strong> There is no CEO of Bitcoin. No company. No promise of returns. No central entity collecting funds. The "returns" Bitcoin holders have experienced are not payments from new investors — they are the result of a free market bidding up a scarce asset as demand increases and supply is fixed. This is identical to how gold, real estate, and equities appreciate in value.</p>
-          <p>The structural test: <em>in a Ponzi, if everyone tries to withdraw at once, the scheme collapses because the money was never there.</em> In Bitcoin, if everyone tries to sell at once, the blockchain continues operating perfectly. Every UTXO is real. Every transaction is verified. The money was always there.</p>
+          <p>A Ponzi scheme has three essential components: a central operator, a promise of returns funded by new investor deposits, and deliberate fraud. <strong>Bitcoin has none of these.</strong> There is no CEO, no company, no promise of returns, no central entity collecting funds. The price appreciation Bitcoin holders have experienced is the free market bidding up a scarce asset as demand increases against a fixed supply — identical to how gold, land, and equities appreciate.</p>
+          <p>The structural test is decisive: <em>in a Ponzi, if everyone tries to withdraw simultaneously, the scheme collapses because the money was never there.</em> In Bitcoin, if every holder sells simultaneously, the blockchain continues operating perfectly. Every UTXO is real and cryptographically verifiable. The money was always there.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📖</div>When Bernie Madoff's Ponzi collapsed, investors lost everything. Bitcoin has had bear markets of 80%+. Investors who held are up thousands of percent over any 4-year period. The pattern is incompatible with Ponzi structure.</div>
-          <div class="oe-item"><div class="oe-icon">🏛️</div>The SEC has explicitly described Bitcoin ETFs as holding a legitimate commodity asset — categorically distinct from the securities fraud classification required for a Ponzi.</div>
+          <div class="oe-item"><span class="oe-icon">📖</span>Bernie Madoff's Ponzi left investors with zero. Bitcoin's bear markets of 80%+ have been followed by new all-time highs. These patterns are structurally incompatible — Ponzis don't recover, they collapse.</div>
+          <div class="oe-item"><span class="oe-icon">🏛️</span>The SEC approved 11 spot Bitcoin ETFs in January 2024, explicitly categorising Bitcoin as a commodity asset — the legal antithesis of the securities fraud classification required to label something a Ponzi scheme.</div>
         </div>
-        <div class="obj-kicker">⚔️ The simplest test: name the operator. Name the promise. Name the fraud. You can't — because none exist.</div>
+        <div class="obj-kicker">⚔️ The simplest test: name the operator. Name the promise of returns. Name the fraud. You cannot — because none exist. A Ponzi without a promoter is just an asset with network effects.</div>
       </div></div>
     </div>
 
-    <!-- 2 -->
+    <!-- 2 INTRINSIC VALUE -->
     <div class="obj-card visible" data-cat="value">
       <div class="obj-header">
         <div class="obj-icon">❓</div>
@@ -522,24 +553,24 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
             <span class="obj-diff diff-2">Medium</span>
           </div>
         </div>
-        <div class="obj-heard">🔁 Classic objection</div>
+        <div class="obj-heard">🔁 Classic critique</div>
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — the premise is philosophically confused</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — the premise is a philosophical confusion</div>
         <div class="obj-answer">
-          <p>This objection assumes that some assets have intrinsic value and Bitcoin doesn't. But the concept of "intrinsic value" as an objective, observer-independent property of assets is not a feature of economics — it is a philosophical confusion. <strong>No asset has intrinsic value.</strong> Gold's value comes from human desires: jewellery, electronics, cultural significance, monetary history. The dollar's value comes from government decree and collective trust. Apple stock's value comes from expected future earnings discounted to present value — itself dependent on consumer preferences that could change.</p>
-          <p><em>Value is always assigned by humans, not discovered in objects.</em> The question is never "does this have intrinsic value?" — the question is "does this have the properties that make it a good store of value?" Bitcoin's answer: fixed supply, portability, divisibility, durability, censorship resistance, verification, and network effects. These are exactly the properties that make something valuable as money.</p>
+          <p>This objection assumes some assets have objective, observer-independent intrinsic value and Bitcoin doesn't. But no asset has intrinsic value in this sense. <strong>Gold's value comes from human desires: jewellery, electronics, cultural history, monetary convention. The dollar's value comes from government decree and collective trust.</strong> Apple stock's value is discounted future earnings — dependent on consumer preferences that could evaporate tomorrow. Value is always assigned by humans. It is never discovered in objects.</p>
+          <p>The correct question is not "does this have intrinsic value?" — it is "does this have the properties that make it a good store of value?" Bitcoin's answer: <em class="btc">fixed supply of 21 million, perfect divisibility, global portability, censorship resistance, cryptographic verifiability, and the most powerful network effect of any monetary asset ever created.</em> These are precisely the properties that make money valuable.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">💡</div>Ask the objector: what is the intrinsic value of a $100 bill? The paper costs $0.17 to print. The "value" is pure social consensus. Bitcoin's consensus is enforced by mathematics — arguably more reliable than government decree.</div>
-          <div class="oe-item"><div class="oe-icon">🥇</div>Gold has been valuable for 5,000 years not because of "intrinsic value" but because humans agreed it was scarce, beautiful, and useful. Bitcoin has the same properties minus the beauty, plus digital transferability, perfect divisibility, and verifiable scarcity.</div>
+          <div class="oe-item"><span class="oe-icon">💡</span>The $100 bill costs $0.17 to print. Its "value" is pure collective agreement enforced by government decree. Bitcoin's value is collective agreement enforced by mathematics and proof-of-work — arguably a stronger foundation than political authority.</div>
+          <div class="oe-item"><span class="oe-icon">🥇</span>Gold was valuable for 5,000 years not because of intrinsic properties but because humans globally agreed on its scarcity and monetary utility. Bitcoin has the same monetary properties — minus the physical weight, plus perfect digital transferability.</div>
         </div>
-        <div class="obj-kicker">⚔️ The dollar has no intrinsic value. Gold has no intrinsic value. Bitcoin has no intrinsic value. All three derive value from human consensus and utility. Bitcoin's consensus is enforced by math — the strongest kind.</div>
+        <div class="obj-kicker">⚔️ The dollar has no intrinsic value. Gold has no intrinsic value. Bitcoin has no intrinsic value. All three derive value from human consensus and utility. Bitcoin's consensus is enforced by mathematics — the most durable kind ever invented.</div>
       </div></div>
     </div>
 
-    <!-- 3 -->
+    <!-- 3 BAN -->
     <div class="obj-card visible" data-cat="regulation">
       <div class="obj-header">
         <div class="obj-icon">🚫</div>
@@ -554,20 +585,20 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — empirically refuted across 15 years</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — empirically refuted across 15 years of failed attempts</div>
         <div class="obj-answer">
-          <p>China — the world's most powerful surveillance state — banned Bitcoin comprehensively in September 2021. Every exchange, every miner, every transaction. <strong>Result: Bitcoin hit $69,000 eight weeks later. Hash rate fully recovered within six months. Chinese citizens still hold Bitcoin via VPNs and P2P exchanges.</strong> If China cannot stop Bitcoin, no government can.</p>
-          <p>Meanwhile, the actual trajectory of major economies has been toward regulation, not prohibition. The US SEC approved 11 spot Bitcoin ETFs. The EU passed MiCA. The UK's FCA has a registration framework. Japan recognised Bitcoin as a legal payment instrument in 2017. El Salvador made it legal tender. BlackRock, Fidelity, Vanguard, and every major financial institution in the world now offers Bitcoin exposure. <em>You don't build a regulatory and institutional framework around something you intend to ban.</em></p>
+          <p>China — the world's most powerful surveillance state — enacted a total Bitcoin ban in September 2021. Every exchange, every miner, every transaction. The result: <strong>Bitcoin hit $69,000 eight weeks later.</strong> Hash rate fully recovered within six months. Chinese citizens still hold Bitcoin via VPNs and peer-to-peer exchanges. If China cannot stop Bitcoin, no government can.</p>
+          <p>Meanwhile the actual trajectory of major economies is unambiguous: toward regulation, not prohibition. The US SEC approved spot Bitcoin ETFs from BlackRock and Fidelity. The EU passed MiCA. Japan recognised Bitcoin as legal payment in 2017. El Salvador adopted it as legal tender. <em>You do not build institutional regulatory frameworks around something you intend to ban.</em> The window for effective prohibition closed approximately 2019 when institutional capital entered at scale.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📊</div>As of 2026, Bitcoin ETFs hold over $100B in AUM from US institutional investors. Banning Bitcoin would require the US government to seize assets held by its own citizens in products approved by the SEC. This is politically and legally unimaginable.</div>
-          <div class="oe-item"><div class="oe-icon">🗺️</div>Even if one jurisdiction banned Bitcoin, the protocol continues operating in every other jurisdiction. Bitcoin is global. A ban in one country is a speed bump, not a terminus.</div>
+          <div class="oe-item"><span class="oe-icon">📊</span>US Bitcoin ETFs crossed $100 billion in AUM within months of approval. Banning Bitcoin would require the US government to seize assets from its own citizens held in SEC-approved products from BlackRock. This is politically and constitutionally unimaginable.</div>
+          <div class="oe-item"><span class="oe-icon">🗺️</span>Bitcoin is a global protocol. Even if one jurisdiction bans it, the network continues operating in every other. A ban in one country is a temporary inconvenience. It is not a terminus. The protocol has no off switch and no headquarters to raid.</div>
         </div>
-        <div class="obj-kicker">⚔️ The Lindy Effect applies to survival against bans specifically. Every year a government chooses regulation over prohibition makes future prohibition harder, not easier. The window for effective prohibition closed around 2019.</div>
+        <div class="obj-kicker">⚔️ Every year a major government chooses regulation over prohibition makes future prohibition harder, not easier. The Lindy Effect applies to ban-resistance specifically. Bitcoin is now too embedded in global finance to ban without economic self-harm.</div>
       </div></div>
     </div>
 
-    <!-- 4 -->
+    <!-- 4 VOLATILITY -->
     <div class="obj-card visible" data-cat="risk">
       <div class="obj-header">
         <div class="obj-icon">📉</div>
@@ -578,24 +609,24 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
             <span class="obj-diff diff-2">Medium</span>
           </div>
         </div>
-        <div class="obj-heard">🔁 Most cited</div>
+        <div class="obj-heard">🔁 Most cited concern</div>
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-nuanced">⚡ VERDICT: Nuanced — true today, structurally improving</div>
+        <div class="verdict-bar verdict-nuanced">⚡ NUANCED — true today, structurally decreasing every cycle</div>
         <div class="obj-answer">
-          <p>This objection has merit — Bitcoin's volatility is real and well-documented. 80%+ drawdowns have occurred multiple times. This makes it unsuitable as a unit of account for everyday pricing today. <strong>But volatility and money-ness are not permanently incompatible — they are a function of market size.</strong></p>
-          <p>When gold was first adopted as money, it was volatile. When the dollar was first issued, it was volatile. Volatility is the characteristic of an asset in the price discovery phase of adoption — not a permanent property. <em>Bitcoin is volatile because it is growing, not because it is failing.</em> A $2 trillion asset is less volatile than a $200 billion asset. A $20 trillion asset will be less volatile still. As Bitcoin's market cap expands toward gold's $14 trillion and beyond, volatility structurally decreases. The trend is visible: Bitcoin's 4-year rolling volatility has declined with each successive cycle.</p>
+          <p>This objection has genuine merit. Bitcoin's 80%+ drawdowns are real. This makes it unsuitable as an everyday unit of account today — you cannot price a sandwich in Bitcoin if the price changes 10% a day. <strong>But volatility and money-ness are not permanently incompatible — they are a function of market size and maturity.</strong></p>
+          <p>When gold was first monetised, it was volatile. When the dollar was first issued, it was volatile. <em>Volatility is the signature of an asset in price discovery — not a permanent property of the asset.</em> Bitcoin is volatile because it is growing toward a global monetary role from essentially zero market cap in 2009. A $2T asset is less volatile than a $200B one. A $20T asset will be less volatile still. Bitcoin's 4-year rolling volatility has declined measurably with every successive market cycle. The trend is structural, not cyclical.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📈</div>Bitcoin's annualised volatility has declined from 180%+ in 2011 to approximately 50–60% in 2024. Every market cycle exhibits lower peak volatility than the previous one. The trend is structural and predictable.</div>
-          <div class="oe-item"><div class="oe-icon">⚡</div>For Lightning Network payments, volatility is irrelevant — payments settle in milliseconds, with immediate conversion to local currency available via apps like Strike. El Salvador uses Bitcoin for everyday commerce precisely because the volatility window is so short.</div>
+          <div class="oe-item"><span class="oe-icon">📈</span>Bitcoin's annualised volatility has declined from 180%+ in 2011 to approximately 50–60% in 2024 — still high compared to mature assets, but clearly trending lower as market cap, liquidity, and institutional participation grow.</div>
+          <div class="oe-item"><span class="oe-icon">⚡</span>For Lightning Network payments, volatility is operationally irrelevant — payments settle in under one second, with instant fiat conversion available. El Salvador runs millions of daily Bitcoin transactions precisely because the volatility window is shorter than the payment window.</div>
         </div>
-        <div class="obj-kicker">⚔️ Volatility is the price of admission to the world's best-performing asset over every 4-year period in its history. The investors who called it "too volatile" in 2015 missed 50,000% returns.</div>
+        <div class="obj-kicker">⚔️ Volatility is the price of admission to the world's best-performing asset class over any 4-year holding period in its 15-year history. Those who called it "too volatile" at $100, $1,000, $10,000, and $50,000 are still wrong for the same reason each time.</div>
       </div></div>
     </div>
 
-    <!-- 5 -->
+    <!-- 5 REPLACED -->
     <div class="obj-card visible" data-cat="tech">
       <div class="obj-header">
         <div class="obj-icon">🔄</div>
@@ -606,27 +637,27 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
             <span class="obj-diff diff-2">Medium</span>
           </div>
         </div>
-        <div class="obj-heard">🔁 The "Myspace" argument</div>
+        <div class="obj-heard">🔁 The Myspace argument</div>
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — misunderstands what Bitcoin is</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — misunderstands what kind of thing Bitcoin is</div>
         <div class="obj-answer">
-          <p>This argument — sometimes called the "Myspace argument" — assumes Bitcoin is a technology product that can be superseded by a better version, the way Myspace was replaced by Facebook. <strong>It misunderstands what Bitcoin is.</strong> Bitcoin is not primarily a technology. It is a monetary network — and monetary networks are governed by network effects that are radically more powerful than social network effects.</p>
-          <p>Gold was not replaced by a "better gold" in 5,000 years of monetary history. The dollar was not replaced by a better currency — despite hundreds of competitors. Monetary networks exhibit extreme winner-take-most dynamics because <em>the entire value of money is its acceptance by others.</em> The thing that makes Bitcoin valuable — the network of 500 million+ users, $100B+ in ETFs, legal frameworks, mining infrastructure, development talent, and 15 years of security track record — cannot be copied by launching a new protocol. These are not features. They are the asset itself.</p>
+          <p>The "Myspace argument" assumes Bitcoin is a technology product that can be superseded by a better version. It misidentifies what Bitcoin fundamentally is. <strong>Bitcoin is not primarily a technology — it is a monetary network.</strong> Monetary networks are governed by network effects that are orders of magnitude more powerful than social media network effects, because the entire value of money is its acceptance by others.</p>
+          <p>Gold was not replaced by "better gold" in 5,000 years of monetary history despite hundreds of metals with similar properties. The dollar was not replaced by a better currency. <em>Monetary networks exhibit extreme winner-take-most dynamics.</em> The thing that makes Bitcoin valuable — 500 million+ users, $100B+ in ETFs, legal frameworks across 100+ jurisdictions, 15 years of unbroken security track record, and a mining network with $20B+ in hardware — cannot be duplicated by launching a new protocol with better features. These are not features. They are the asset itself.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">💀</div>Thousands of "Bitcoin killers" have been launched since 2011: Litecoin, Ripple, Bitcoin Cash, Ethereum, Cardano, Solana, and hundreds more. Bitcoin's market dominance has proved remarkably resilient over 15 years against every challenger.</div>
-          <div class="oe-item"><div class="oe-icon">🔒</div>Bitcoin's deliberate conservatism — its refusal to add features that introduce risk — is a feature, not a bug. The "better technology" argument ignores that Bitcoin's most important property is not technical sophistication but trust, security, and immutability built over time.</div>
+          <div class="oe-item"><span class="oe-icon">💀</span>Since 2011: Litecoin, Ripple, Ethereum, Bitcoin Cash, Cardano, Solana, and thousands of others have each been called "Bitcoin killers." Bitcoin's market dominance has been remarkably resilient across 15 years and four full market cycles against every challenger.</div>
+          <div class="oe-item"><span class="oe-icon">🔒</span>Bitcoin's deliberate conservatism — its refusal to add features that introduce new attack vectors — is a competitive advantage, not a weakness. Every other cryptocurrency is optimising for different properties. Bitcoin is optimising for monetary trust. These are different products.</div>
         </div>
-        <div class="obj-kicker">⚔️ You cannot copy Bitcoin's immaculate conception — the fact that it had no pre-mine, no founder holding tokens, no ICO, no company, and launched when no one knew its value. Every coin launched after Bitcoin has a founder who got rich. That makes it categorically different.</div>
+        <div class="obj-kicker">⚔️ You cannot copy Bitcoin's immaculate conception: no pre-mine, no founder holding tokens, no ICO, no company, launched when no one knew its value. Every coin launched since has founders who enriched themselves at launch. That is categorically different money.</div>
       </div></div>
     </div>
 
-    <!-- 6 -->
+    <!-- 6 ENVIRONMENT -->
     <div class="obj-card visible" data-cat="ethics">
       <div class="obj-header">
-        <div class="obj-icon">⚡</div>
+        <div class="obj-icon">🌍</div>
         <div class="obj-q-wrap">
           <div class="obj-q">"Bitcoin destroys the environment."</div>
           <div class="obj-meta">
@@ -638,25 +669,25 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-nuanced">⚡ VERDICT: Nuanced — requires honest comparison</div>
+        <div class="verdict-bar verdict-nuanced">⚡ NUANCED — requires honest comparison to competing systems</div>
         <div class="obj-answer">
-          <p>The energy question deserves the most serious answer of any objection, because it is the one where Bitcoin critics make the strongest empirical points. Bitcoin mining uses approximately 150 TWh per year — comparable to a mid-size country. This is real energy consumption and the question of whether it is "worth it" is legitimate.</p>
-          <p><strong>But the comparison must be honest.</strong> The global banking system uses an estimated 700+ TWh annually. Gold mining uses 130+ TWh. Christmas lights in the US alone consume 6 TWh. The question is not whether Bitcoin uses energy — every human activity uses energy — but whether the energy use is proportionate to the value created. For 1.7 billion unbanked people, for political dissidents, for war refugees, for inflation victims — the value is immense. <em>More importantly: Bitcoin miners are structurally incentivised to find the cheapest energy</em> — which is overwhelmingly renewable energy that would otherwise be curtailed. Over 52% of Bitcoin mining now uses sustainable energy sources, making it one of the greenest large industries in the world.</p>
+          <p>The energy question demands the most serious answer of any objection because it is the one where critics make their strongest empirical points. Bitcoin mining uses approximately 150 TWh per year — comparable to a mid-size country. This is real energy consumption and the question of whether it is proportionate to the value created is legitimate. <strong>But the comparison must be honest and complete.</strong></p>
+          <p>The global banking system consumes an estimated 700+ TWh annually. Gold mining consumes 130+ TWh. Christmas lights in the US alone use 6 TWh annually. Every human activity uses energy. The question is proportionality to value created — and for 1.7 billion unbanked people, for political dissidents, for war refugees, for inflation victims, Bitcoin's value is not merely financial. <em>More critically: Bitcoin miners are structurally incentivised to seek the cheapest energy on Earth</em> — which is overwhelmingly renewable energy that would otherwise be curtailed. Over 52% of Bitcoin mining uses sustainable energy sources, making it greener per dollar of economic activity than most major industries.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">🌱</div>Bitcoin mining in Iceland, Norway, and the Pacific Northwest uses almost entirely geothermal and hydroelectric power — energy that would otherwise be wasted. Bitcoin monetises stranded renewable energy, incentivising more renewable development.</div>
-          <div class="oe-item"><div class="oe-icon">📊</div>The Bitcoin Mining Council (representing 50%+ of global hash rate) reports sustainable electricity mix of 52.6% as of 2024 — far higher than the global grid average of approximately 29%.</div>
+          <div class="oe-item"><span class="oe-icon">🌱</span>Bitcoin mining in Iceland, Norway, and the Pacific Northwest uses almost entirely geothermal and hydroelectric power that would otherwise be wasted. Bitcoin uniquely monetises stranded renewable energy, creating an economic incentive to build more renewable capacity in remote locations.</div>
+          <div class="oe-item"><span class="oe-icon">📊</span>The Bitcoin Mining Council (50%+ of global hash rate) reported a sustainable electricity mix of 52.6% as of 2024 — far exceeding the global grid average of approximately 29%. Bitcoin's energy mix is cleaner than the energy mix powering the banks it competes with.</div>
         </div>
-        <div class="obj-kicker">⚔️ If the environmental argument were applied consistently, we would shut down the banking system (700 TWh), all gold mining (130 TWh), all data centres (200+ TWh), and Christmas lights. Bitcoin's energy use is proportionate. The criticism is selective.</div>
+        <div class="obj-kicker">⚔️ Applied consistently, the energy argument would close the entire banking system (700 TWh), all gold mining (130 TWh), all internet data centres (200+ TWh). Bitcoin's energy use is proportionate. The criticism is selective. Ask why it is applied to Bitcoin and not its competitors.</div>
       </div></div>
     </div>
 
-    <!-- 7 -->
+    <!-- 7 CENTRAL BANKS -->
     <div class="obj-card visible" data-cat="macro">
       <div class="obj-header">
         <div class="obj-icon">🏦</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"Central banks provide stability — Bitcoin can't do that."</div>
+          <div class="obj-q">"We need central banks — Bitcoin can't manage the economy."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(247,147,26,.1);color:var(--btc)">🏦 Macro</span>
             <span class="obj-diff diff-3">Hard</span>
@@ -666,20 +697,20 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-nuanced">⚡ VERDICT: Nuanced — the premise requires examining the track record</div>
+        <div class="verdict-bar verdict-nuanced">⚡ NUANCED — the premise requires examining the actual track record</div>
         <div class="obj-answer">
-          <p>The argument for central banking is that monetary policy allows governments to smooth economic cycles — cutting rates in recessions, raising in booms. It is a reasonable theoretical framework. <strong>The empirical track record is less flattering.</strong> Since the Federal Reserve was created in 1913: the dollar has lost 96% of its purchasing power, there have been 19 recessions, the Great Depression, the Great Financial Crisis, and the COVID crash — plus multiple banking crises, savings and loan collapses, and the persistent transfer of wealth from savers to asset owners via artificially low interest rates.</p>
-          <p><em>The Cantillon Effect — whereby newly created money benefits those closest to its source before the inflationary effects reach ordinary people — is the most systematic wealth redistribution mechanism in history.</em> When the Fed prints $3 trillion, banks and large asset owners benefit first. By the time the inflation reaches grocery prices, ordinary workers' wages have not caught up. Bitcoin eliminates the Cantillon Effect entirely: the supply cannot be increased, so no one benefits from money printing, because no printing occurs.</p>
+          <p>The argument for central banking — flexible monetary policy smooths economic cycles — is theoretically reasonable. <strong>The empirical track record is sobering.</strong> Since the Federal Reserve's creation in 1913: the US dollar has lost 96% of its purchasing power. Financial crises have occurred approximately every 8–12 years. The 2008 crisis was caused directly by the moral hazard created by implicit central bank backstops — institutions took risks they never would have without the promise of bailout. The 2020–2023 inflation was caused by the largest peacetime monetary expansion in history.</p>
+          <p>The Cantillon Effect — whereby newly created money benefits those closest to its source before inflation reaches ordinary people — is the most systematic wealth redistribution mechanism in modern history. When the Fed prints $3 trillion, banks and asset owners benefit first. Workers and savers see inflation in groceries before their wages rise. <em>Bitcoin eliminates the Cantillon Effect entirely.</em> No one can print more Bitcoin. No institution benefits from expansion of the supply because expansion of the supply is mathematically impossible.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📉</div>The 2008 Financial Crisis was not a market failure — it was a failure caused by moral hazard enabled by central bank backstops. Institutions took risks they would never have taken if they faced the full consequences. Bitcoin has no lender of last resort. This is a feature.</div>
-          <div class="oe-item"><div class="oe-icon">🌐</div>El Salvador adopted Bitcoin as legal tender in 2021. Despite IMF opposition, by 2025 the country had secured a new IMF loan, grown GDP, increased tourism, and seen banking adoption rates rise for the first time in decades. The experiment is ongoing — and more promising than critics predicted.</div>
+          <div class="oe-item"><span class="oe-icon">📉</span>The 2008 Financial Crisis — the worst since the Great Depression — was not a market failure. It was a central-bank-enabled moral hazard failure. Institutions took catastrophic risks because they knew the Fed would bail them out. Bitcoin has no lender of last resort. This is not a bug.</div>
+          <div class="oe-item"><span class="oe-icon">📚</span>Between 1870–1900, the US operated on a deflationary gold standard and experienced its greatest era of industrial growth and real wage increases. The "deflation is always bad" argument is based on debt-deflation scenarios — not sound money scenarios. These are categorically different.</div>
         </div>
-        <div class="obj-kicker">⚔️ Central banks have had 110 years and the full power of government to deliver monetary stability. They delivered 96% dollar debasement. Bitcoin offers a different hypothesis. It deserves the chance to be tested.</div>
+        <div class="obj-kicker">⚔️ Central banks have had 110 years and the full power of government to deliver monetary stability. They delivered 96% dollar debasement. Bitcoin offers a different hypothesis. The track record of the alternative gives the hypothesis the right to be taken seriously.</div>
       </div></div>
     </div>
 
-    <!-- 8 -->
+    <!-- 8 GAMBLING -->
     <div class="obj-card visible" data-cat="risk">
       <div class="obj-header">
         <div class="obj-icon">🎰</div>
@@ -694,24 +725,25 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — applies to all investing</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — applies equally to all investing, proves nothing</div>
         <div class="obj-answer">
-          <p>Every investment involves uncertainty about future value. Buying Apple stock is speculation about Apple's future earnings. Buying a house is speculation about future property values. Buying bonds is speculation about future interest rates and default risk. <strong>By this definition, all investing is "gambling."</strong> The relevant question is not whether there is risk, but whether the risk is informed, calibrated, and appropriate to the expected return.</p>
-          <p>Bitcoin over any 4-year holding period in its 15-year history has been positive. Every single one. The "speculation" characterisation also ignores that many Bitcoin holders are not speculating on price — they are using Bitcoin as a savings technology, a remittance network, a censorship-resistant payment system, or an inflation hedge. A Venezuelan holding Bitcoin is not gambling. They are surviving.</p>
+          <p>Every investment involves uncertainty about future value. Buying Apple stock is speculation about Apple's future earnings. Buying a house is speculation about property values in a specific location. Buying government bonds is speculation that the government won't default. <strong>By this definition, all investing is gambling.</strong> The objection proves too much — it would condemn every financial decision ever made.</p>
+          <p>The relevant question is never whether there is risk, but whether the risk is informed, calibrated, and appropriate to the potential return. Bitcoin over any 4-year holding period in its entire 15-year history has been positive — <em>every single 4-year window, without exception.</em> Most gamblers lose consistently. That is not Bitcoin's pattern. The objection conflates volatility with randomness. Bitcoin is volatile. It is not random.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📊</div>Bitcoin's 4-year rolling return has been positive in 100% of all 4-year periods since 2013. By comparison, the S&P 500 has had multiple negative 4-year periods. "Gambling" implies random outcomes — Bitcoin's long-term outcomes have been remarkably consistent.</div>
+          <div class="oe-item"><span class="oe-icon">📊</span>Bitcoin's 4-year rolling return has been positive in 100% of all 4-year periods since 2013. The S&P 500 has had multiple negative 4-year periods in the same timeframe. If Bitcoin is gambling, it is the most reliably rewarding form of gambling in the history of finance.</div>
+          <div class="oe-item"><span class="oe-icon">🌍</span>A Venezuelan holding Bitcoin is not gambling — they are preserving purchasing power against a government that printed their savings into dust. A Ukrainian carrying a seed phrase across the border is not gambling — they are survival planning. Context matters enormously.</div>
         </div>
-        <div class="obj-kicker">⚔️ A dollar-cost averaging strategy in Bitcoin — the simplest possible "speculation" — has been the best-performing investment strategy of any major asset class over the last decade. Most gamblers lose. Most Bitcoin DCA holders have not.</div>
+        <div class="obj-kicker">⚔️ Dollar-cost averaging Bitcoin monthly — the simplest strategy — has outperformed every major asset class over any decade-long period in Bitcoin's history. Most gamblers lose. Most systematic Bitcoin savers have not. The label is wrong.</div>
       </div></div>
     </div>
 
-    <!-- 9 -->
+    <!-- 9 QUANTUM -->
     <div class="obj-card visible" data-cat="tech">
       <div class="obj-header">
         <div class="obj-icon">💻</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"Quantum computing will break Bitcoin's cryptography."</div>
+          <div class="obj-q">"Quantum computing will break Bitcoin's encryption."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(6,182,212,.1);color:var(--teal)">⚙️ Technical</span>
             <span class="obj-diff diff-3">Hard</span>
@@ -721,26 +753,25 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-evolving">🔮 VERDICT: Evolving — real concern, credible mitigation path</div>
+        <div class="verdict-bar verdict-evolving">🔮 EVOLVING — legitimate long-term concern, credible mitigation path</div>
         <div class="obj-answer">
-          <p>This is the most technically legitimate long-term concern about Bitcoin. Sufficiently powerful quantum computers could theoretically break the elliptic curve cryptography (ECDSA) used to secure Bitcoin private keys. This is real — not dismissible. <strong>Three important qualifications:</strong></p>
-          <p>First, the quantum computers that exist today are nowhere near capable of breaking 256-bit elliptic curve cryptography. The most advanced quantum computers as of 2024 have ~1,000 qubits — breaking Bitcoin would require millions of stable, error-corrected qubits. Current estimates suggest this is 10–30 years away at minimum.</p>
-          <p><em>Second, Bitcoin is not static.</em> The protocol can be upgraded to post-quantum cryptographic algorithms. NIST standardised post-quantum cryptography algorithms in 2024. Bitcoin's developer community has been actively researching quantum-resistant upgrades for years. Third, any quantum threat to Bitcoin is simultaneously a threat to every bank, every TLS connection on the internet, every encrypted military communication, and every HTTPS website — Bitcoin will not be the first institution to address this problem. It will upgrade alongside the entire cryptographic infrastructure of the internet.</p>
+          <p>This is the most technically legitimate long-term concern about Bitcoin and it deserves a serious answer rather than dismissal. Sufficiently powerful quantum computers could theoretically break the elliptic curve cryptography securing Bitcoin private keys. This is real. <strong>Three essential qualifications follow.</strong></p>
+          <p>First, current quantum computers are not remotely close to capable. Breaking 256-bit ECDSA requires millions of stable, error-corrected logical qubits. The most advanced machines in 2024 have approximately 1,000 physical qubits. The gap is not measured in years — it is measured in decades. Second, <em class="btc">Bitcoin is not static.</em> NIST standardised post-quantum cryptography algorithms in 2024. Bitcoin's developer community has been preparing post-quantum upgrade paths for years. Third, every quantum threat to Bitcoin is simultaneously a threat to all HTTPS connections, all bank encryption, all military communications — the entire cryptographic infrastructure of civilisation will address this together. Bitcoin will not be last.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">🔬</div>Google's 2024 "Willow" quantum chip achieved 105 qubits with improved error correction — impressive progress, but still orders of magnitude below what would be required to threaten Bitcoin. The gap is measured in decades, not years.</div>
-          <div class="oe-item"><div class="oe-icon">🛡️</div>Bitcoin addresses that have never been used to send (only receive) expose only a hash of the public key — not the public key itself. This provides an additional layer of quantum resistance for coins in addresses that have not yet spent. Best practice: never reuse addresses.</div>
+          <div class="oe-item"><span class="oe-icon">🔬</span>Google's 2024 "Willow" chip achieved 105 physical qubits with improved error correction — impressive but orders of magnitude below what threatens Bitcoin. Leading quantum researchers estimate 10–30 years minimum before cryptographically relevant quantum computers exist.</div>
+          <div class="oe-item"><span class="oe-icon">🛡️</span>Bitcoin addresses that have only received and never sent expose only a hash of the public key — not the public key itself — providing additional quantum resistance. Best practice: never reuse addresses. This alone substantially raises the quantum attack threshold.</div>
         </div>
-        <div class="obj-kicker">⚔️ Quantum computing is a legitimate long-term consideration — not a present threat. The Bitcoin protocol can and will upgrade. The same threat faces every cryptographic system on the internet. Bitcoin is not uniquely vulnerable.</div>
+        <div class="obj-kicker">⚔️ A credible threat measured in decades, affecting every cryptographic system on Earth, for which post-quantum solutions already exist. Bitcoin has solved harder problems faster. Track record of "Bitcoin will die from X technical issue": 0 for 479.</div>
       </div></div>
     </div>
 
-    <!-- 10 -->
+    <!-- 10 CRIMINALS -->
     <div class="obj-card visible" data-cat="ethics">
       <div class="obj-header">
-        <div class="obj-icon">💀</div>
+        <div class="obj-icon">🚔</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"Bitcoin enables criminals and funds terrorism."</div>
+          <div class="obj-q">"Bitcoin is used by criminals and funds terrorism."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(34,197,94,.1);color:var(--green)">🌱 Ethics</span>
             <span class="obj-diff diff-1">Easy</span>
@@ -750,24 +781,24 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — inverts the actual data</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — inverts the actual data dramatically</div>
         <div class="obj-answer">
-          <p>Chainalysis's 2024 Crypto Crime Report found that illicit activity represented <strong>0.34% of all cryptocurrency transaction volume</strong>. The United Nations Office on Drugs and Crime estimates that 2–5% of global GDP — approximately $800 billion to $2 trillion annually — is laundered through the traditional financial system annually. <em>Cash is the instrument of choice for 90%+ of criminal financial activity globally.</em></p>
-          <p>More importantly: Bitcoin's blockchain is the most transparent financial ledger ever created. Every transaction is permanently recorded, publicly visible, and permanently traceable. The IRS, FBI, and Europol have all successfully traced and seized Bitcoin from criminals using blockchain analytics. <strong>Bitcoin is, paradoxically, one of the worst tools for serious crime</strong> — every transaction leaves a permanent, public trail. Professional criminals have largely learned this lesson. They use cash.</p>
+          <p>Chainalysis's 2024 Crypto Crime Report found that illicit activity represented <strong>0.34% of all cryptocurrency transaction volume.</strong> The United Nations Office on Drugs and Crime estimates 2–5% of global GDP — $800 billion to $2 trillion annually — flows through the traditional financial system for money laundering. Cash facilitates over 90% of criminal financial transactions globally. By any honest measure, Bitcoin is vastly cleaner than the systems it is compared to.</p>
+          <p>More fundamentally: Bitcoin's blockchain is the most transparent financial ledger ever created. Every transaction is permanently recorded, publicly visible, and permanently traceable. <em>Bitcoin is structurally one of the worst tools for sophisticated crime</em> — every transaction leaves a permanent public trail that blockchain analytics firms can follow for years. The IRS, FBI, and Europol have successfully traced and recovered Bitcoin from criminals in hundreds of cases. The criminals who tried Bitcoin have largely learned this lesson. They have returned to cash.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">🚔</div>US law enforcement has seized billions in Bitcoin from criminals including the Silk Road, Colonial Pipeline hackers, and Bitfinex hackers — in every case using the public blockchain as the primary evidence trail. Bitcoin didn't enable the crime. It got the criminals caught.</div>
+          <div class="oe-item"><span class="oe-icon">🚔</span>US law enforcement has recovered billions in Bitcoin from criminals — including $3.6B from the Bitfinex hackers in 2022 and $1B from Silk Road. In every case, the public blockchain was the primary evidence trail. Bitcoin didn't hide the crime. It got the criminals caught.</div>
         </div>
-        <div class="obj-kicker">⚔️ The argument proves too much. Cash enables vastly more crime than Bitcoin. The internet enables crime. Phones enable crime. We don't ban them. We manage the risk. Bitcoin's transparent blockchain makes it actively hostile to sophisticated criminal use.</div>
+        <div class="obj-kicker">⚔️ Cash enables vastly more crime. The internet enables crime. Phones enable crime. We do not ban them. We manage risk. Bitcoin's transparent, immutable, permanently-auditable ledger makes it the most hostile environment for financial crime ever built. The argument is backwards.</div>
       </div></div>
     </div>
 
-    <!-- 11 -->
+    <!-- 11 OBITUARIES -->
     <div class="obj-card visible" data-cat="value">
       <div class="obj-header">
         <div class="obj-icon">📰</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"Bitcoin has died hundreds of times — it's always crashing."</div>
+          <div class="obj-q">"Bitcoin has died hundreds of times. It's always crashing."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(124,58,237,.1);color:var(--soul)">💎 Value</span>
             <span class="obj-diff diff-1">Easy</span>
@@ -777,24 +808,24 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — confuses cycles with collapse</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — confuses market cycles with structural collapse</div>
         <div class="obj-answer">
-          <p>Bitcoin has been declared dead 479 times as of 2025, catalogued at 99bitcoins.com. Every single declaration was wrong. <strong>The "crashes" that prompted each obituary were not deaths — they were corrections within a long-term uptrend.</strong></p>
-          <p>Bitcoin's price history shows a consistent four-year cycle: rapid appreciation followed by 70–85% correction followed by recovery to new all-time highs. This pattern has repeated identically four times. Each "death" — $32 to $2 in 2011, $1,200 to $150 in 2015, $20,000 to $3,000 in 2018, $69,000 to $15,500 in 2022 — was followed by new all-time highs. <em>The Lindy Effect predicts that each year of survival makes future survival more likely.</em> After 15 years and four full market cycles, the "Bitcoin is dying" argument requires increasingly heroic assumptions to maintain.</p>
+          <p>Bitcoin has been declared dead 479 times as of 2025, catalogued meticulously at 99bitcoins.com. Every single declaration was wrong. <strong>The "crashes" that prompted each obituary were not deaths — they were corrections within a long-term uptrend.</strong> Bitcoin's price history shows a remarkably consistent four-year cycle: rapid appreciation, 70–85% correction, recovery to new all-time highs. This has happened four times. Identically each time.</p>
+          <p>$32 to $2 in 2011 — followed by recovery. $1,200 to $150 in 2015 — followed by recovery. $20,000 to $3,000 in 2018 — followed by recovery. $69,000 to $15,500 in 2022 — followed by recovery. <em>The Lindy Effect states that each year of survival makes future survival more likely.</em> After 15 years and four complete market cycles, the death narrative requires increasingly implausible assumptions about how something survives its own death repeatedly.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📈</div>Someone who bought Bitcoin at the absolute peak of every single bubble — the worst possible timing in each cycle — and held, is still up thousands of percent on their average position. The "crash" narrative ignores the baseline against which crashes occur.</div>
+          <div class="oe-item"><span class="oe-icon">📈</span>Someone who bought Bitcoin at the absolute peak of every single bubble — the worst possible timing in every cycle — and held through all four crashes, is still up thousands of percent on their average cost. The "crashing" narrative ignores the baseline from which the crashes occur.</div>
         </div>
-        <div class="obj-kicker">⚔️ 479 obituaries. 0 actual deaths. The Lindy Effect in practice: Bitcoin has survived longer than every institution, expert, and government that predicted its demise.</div>
+        <div class="obj-kicker">⚔️ 479 obituaries. Zero actual deaths. The Lindy Effect in practice: Bitcoin has now survived longer than every institution, expert, and government that confidently predicted its demise. At some point the null hypothesis has to change.</div>
       </div></div>
     </div>
 
-    <!-- 12 -->
+    <!-- 12 TOO SLOW -->
     <div class="obj-card visible" data-cat="tech">
       <div class="obj-header">
         <div class="obj-icon">🐌</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"Bitcoin is too slow and expensive for everyday use."</div>
+          <div class="obj-q">"Bitcoin is too slow and expensive for everyday payments."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(6,182,212,.1);color:var(--teal)">⚙️ Technical</span>
             <span class="obj-diff diff-1">Easy</span>
@@ -804,24 +835,24 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — Lightning Network solved this in 2018</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — Lightning Network solved this in 2018</div>
         <div class="obj-answer">
-          <p>This objection was valid before 2018. It is not valid today. The Lightning Network — Bitcoin's Layer 2 payment protocol — settles transactions in milliseconds at fees measured in fractions of a cent. <strong>Bitcoin's base layer is not meant for everyday payments</strong> — it is the settlement layer, equivalent to the Federal Reserve's interbank settlement system. Lightning is the payments layer, equivalent to your Visa card.</p>
-          <p>This is identical to how the internet works: TCP/IP is the base layer — slow, deliberate, secure. HTTP, email, video streaming are application layers built on top. You don't send a raw TCP/IP packet to watch Netflix. You send a video stream. <em>The objection is like complaining that the US dollar settlement system is slow because interbank wire transfers take a day</em> — while ignoring that your debit card settles in milliseconds. Bitcoin has both layers. Critics are still complaining about the wrong one.</p>
+          <p>This objection was valid before 2018. It has not been valid since. The Lightning Network — Bitcoin's Layer 2 payment protocol — settles transactions in under one second at fees measured in fractions of a cent. <strong>Bitcoin's base layer is not intended for everyday payments — it is the settlement layer, equivalent to Federal Reserve interbank clearing.</strong> Lightning is the payments layer, equivalent to your Visa card network.</p>
+          <p>This is how every monetary system at scale works. SWIFT is slow and expensive — Visa is fast and cheap. They serve different functions. Bitcoin follows identical architecture. <em>Complaining that Bitcoin's base layer is slow for coffee payments is like complaining that the Federal Reserve's interbank system is slow for buying lunch</em> — while ignoring that your debit card processes the transaction in milliseconds. Bitcoin has both layers. Critics are still attacking the one that was never meant to buy coffee.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">⚡</div>El Salvador processes millions of Lightning payments monthly. Cash App has 50 million users with Lightning integration. Strike processes Lightning payments at 65,000+ US retail locations. The "too slow" objection describes a problem that was solved six years ago.</div>
+          <div class="oe-item"><span class="oe-icon">⚡</span>El Salvador processes millions of Lightning payments monthly. Cash App has 50M+ users with Lightning. Strike operates at 65,000+ US retail locations. Phoenix Wallet delivers non-custodial Lightning in seconds. The "too slow" objection is six years out of date.</div>
         </div>
-        <div class="obj-kicker">⚔️ Step 15 of this series covers Lightning in detail. The objection is six years out of date. Update your priors.</div>
+        <div class="obj-kicker">⚔️ Step 15 of this series covers Lightning Network in full detail. The objection describes a problem that was solved before most people who make it knew what Lightning was. Update your priors.</div>
       </div></div>
     </div>
 
-    <!-- 13 -->
+    <!-- 13 ONLY RICH BENEFIT -->
     <div class="obj-card visible" data-cat="macro">
       <div class="obj-header">
         <div class="obj-icon">💰</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"Only the rich benefit from Bitcoin."</div>
+          <div class="obj-q">"Only the rich benefit from Bitcoin — it increases inequality."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(247,147,26,.1);color:var(--btc)">🏦 Macro</span>
             <span class="obj-diff diff-2">Medium</span>
@@ -831,19 +862,19 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — inverts the actual beneficiaries</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — inverts who actually benefits from each system</div>
         <div class="obj-answer">
-          <p>This objection has a profound irony: it could more accurately be levelled at the fiat system. <strong>Fiat money creation primarily benefits the wealthy.</strong> The Cantillon Effect ensures that when central banks create money, asset prices rise first — stocks, real estate, bonds — assets owned disproportionately by the wealthy. Workers with no investable assets experience inflation in the cost of living before their wages rise. This is not a conspiracy. It is the mechanical consequence of monetary expansion.</p>
-          <p>Bitcoin, by contrast, is available in the smallest possible denomination — one satoshi, worth fractions of a cent — with no minimum purchase, no ID requirement, no bank account needed, and no geographic restrictions. <em>A teenager in rural Nigeria with a $10 phone can own the same percentage of Bitcoin as a hedge fund manager on Wall Street.</em> The system is identical for all participants. That is structurally more equitable than any fiat system ever designed.</p>
+          <p>This objection contains a profound irony: it could be levelled far more accurately at the fiat system it defends. <strong>Fiat money creation primarily benefits the wealthy via the Cantillon Effect.</strong> When central banks create new money, asset prices rise first — stocks, real estate, bonds, private equity — all assets owned disproportionately by wealthy people. Workers with no investable assets experience inflation in rent and groceries before their wages catch up. This is not conspiracy. It is the mechanical arithmetic of monetary expansion.</p>
+          <p>Bitcoin is available in the smallest denomination conceivable — one satoshi, worth a fraction of a cent — with no minimum purchase, no ID required, no bank account needed, no geographic restriction. <em>A teenager in rural Nigeria with a $10 phone can own the same percentage of Bitcoin's total supply as a hedge fund on Wall Street.</em> The protocol makes no distinction between rich and poor, approved and disapproved, citizen and refugee. That is structurally more equitable than any fiat system ever designed.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">🌍</div>Bitcoin adoption is fastest in countries with the weakest currencies and most financial exclusion: Nigeria, Venezuela, Argentina, Turkey, and the Philippines — not primarily wealthy Western nations. The people most desperate for sound money found Bitcoin first.</div>
+          <div class="oe-item"><span class="oe-icon">🌍</span>Bitcoin adoption is fastest in countries with the weakest currencies: Nigeria, Venezuela, Argentina, Turkey, the Philippines. Not primarily wealthy Western nations. The people most desperate for sound money are finding Bitcoin fastest — because they need it most, not because they have the most to invest.</div>
         </div>
-        <div class="obj-kicker">⚔️ The fiat system benefits the rich via the Cantillon Effect — every money printing cycle. Bitcoin's fixed supply eliminates this mechanism entirely. If you're worried about inequality, worry about the money printer, not its competitor.</div>
+        <div class="obj-kicker">⚔️ The money printer is the most reliable wealth redistribution mechanism to the already-wealthy in human history. Bitcoin eliminates the money printer. If you care about inequality, your critique is pointed at the wrong system.</div>
       </div></div>
     </div>
 
-    <!-- 14 -->
+    <!-- 14 LOST KEYS -->
     <div class="obj-card visible" data-cat="risk">
       <div class="obj-header">
         <div class="obj-icon">🔑</div>
@@ -858,78 +889,78 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-nuanced">⚡ VERDICT: Nuanced — real risk, fully manageable</div>
+        <div class="verdict-bar verdict-nuanced">⚡ NUANCED — real risk, fully manageable with proper procedure</div>
         <div class="obj-answer">
-          <p>This is a legitimate practical concern and should be taken seriously. Lost keys are a real cost — Chainalysis estimates approximately 3–4 million Bitcoin are permanently lost due to lost keys, forgotten passwords, and early adopters who didn't take security seriously. <strong>This is a feature, not a bug, in one sense</strong> — those coins are permanently removed from circulation, slightly increasing the scarcity of all remaining Bitcoin. But for the individual, it is a genuine risk.</p>
-          <p>The solution is straightforward and well-established: <em>a hardware wallet with a properly backed-up seed phrase, stored in multiple secure physical locations.</em> The 24-word seed phrase is your ultimate backup — recoverable on any compatible wallet software, regardless of whether the hardware device still exists. The risk is not inherent to Bitcoin — it is a consequence of self-custody, which can be mitigated with proper procedure. <strong>For those who find self-custody intimidating, regulated custodians and ETFs are available</strong> — accepting the custodial trade-off for convenience.</p>
+          <p>This is a legitimate concern and deserves honest acknowledgement. Approximately 3–4 million Bitcoin are estimated permanently lost due to lost keys, forgotten passwords, and early adopters who didn't take custody seriously. For the individual, a lost key is a genuine financial loss. <strong>But this risk is entirely manageable with simple procedure.</strong></p>
+          <p>A hardware wallet plus a properly backed-up 24-word seed phrase, stored in two secure physical locations, reduces this risk to near zero. The seed phrase is your ultimate recovery — works on any compatible wallet software regardless of whether the original device exists. <em class="btc">For those who find self-custody intimidating, regulated custodians and ETFs provide Bitcoin exposure without custody responsibility</em> — accepting the custodial trade-off for peace of mind. Multiple valid approaches exist for every risk tolerance level.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">🔒</div>The same risk exists for cash (lost, burned, stolen), gold (buried and forgotten, stolen), and bearer bonds (lost). Bitcoin's seed phrase backup is actually more recoverable than most physical asset custody — it can be memorised, copied on steel, and distributed across multiple locations.</div>
+          <div class="oe-item"><span class="oe-icon">🔒</span>Cash can be lost, burned, or stolen with zero recovery. Gold buried and forgotten is gone forever. Bank accounts can be frozen or seized without due process. Every store of value has custody risk. Bitcoin's seed phrase backup is uniquely recoverable — it can be memorised, stamped on steel, and distributed across locations.</div>
         </div>
-        <div class="obj-kicker">⚔️ Step 7 of this series covers wallets and key management in detail. The risk is real. The solution is simple. It takes 30 minutes to set up properly and then the risk is essentially eliminated.</div>
+        <div class="obj-kicker">⚔️ Step 7 of this series covers wallet security in full. The risk is real. The solution is 30 minutes and a hardware wallet. After proper setup, the risk is essentially eliminated. The objection describes a solved problem.</div>
       </div></div>
     </div>
 
-    <!-- 15 -->
+    <!-- 15 DEFLATION -->
     <div class="obj-card visible" data-cat="macro">
       <div class="obj-header">
-        <div class="obj-icon">🏛️</div>
+        <div class="obj-icon">📉</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"Bitcoin is deflationary — deflation causes economic collapse."</div>
+          <div class="obj-q">"Bitcoin's fixed supply causes deflation — deflation destroys economies."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(247,147,26,.1);color:var(--btc)">🏦 Macro</span>
             <span class="obj-diff diff-3">Hard</span>
           </div>
         </div>
-        <div class="obj-heard">🔁 Economist's critique</div>
+        <div class="obj-heard">🔁 Macro economist critique</div>
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — conflates debt-deflation with sound money</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — conflates debt-deflation with sound-money deflation</div>
         <div class="obj-answer">
-          <p>The "deflation is bad" argument has its roots in the Great Depression — a period of catastrophic debt-deflation where falling prices led to reduced spending, unemployment, and economic collapse. <strong>But this was debt-deflation — deflation caused by the collapse of a credit bubble</strong> — not the natural price decline of a growing economy with a fixed money supply.</p>
-          <p>Consider: between 1870 and 1900, the US was on a gold standard (fixed money supply), experienced consistent mild price deflation, and had the strongest period of real economic growth in American history. Productivity improvements naturally reduce prices in a sound money environment — the same way technology prices have fallen for decades despite strong economic growth. <em>The conflation of debt-deflation (bad) with sound-money deflation (neutral to good) is one of the most consequential errors in mainstream economics.</em> Bitcoin's fixed supply would produce gently declining prices in a growing economy — encouraging saving, reducing the incentive for debt, and making the average worker's purchasing power increase over time rather than decrease.</p>
+          <p>The "deflation is catastrophic" argument derives from the Great Depression — a period of debt-deflation where collapsing credit caused falling prices, reduced spending, unemployment, and economic collapse. <strong>But this was debt-deflation caused by a credit bubble collapse — not the natural price decline of a productive economy with a fixed money supply.</strong> These are categorically different phenomena with opposite causes and very different implications.</p>
+          <p>Between 1870 and 1900, the United States operated on a deflationary gold standard. Prices gently declined each year. The economy experienced its greatest era of real GDP growth and real wage increases in American history. Workers' purchasing power increased year over year. <em>Falling prices caused by genuine productivity improvements — making more with less — is prosperity, not catastrophe.</em> The objection conflates "prices falling because debt is imploding" with "prices falling because you can buy more with the same money." Bitcoin produces the latter.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📚</div>The United States had its greatest period of industrial growth and real wage increases between 1870–1900 — on a deflationary gold standard. The deflation-causes-depression argument is based on the Great Depression specifically, which was caused by credit collapse, not fixed money supply.</div>
+          <div class="oe-item"><span class="oe-icon">💻</span>Technology prices have been deflationary for 40 consecutive years. A computer that cost $10,000 in 1990 costs $500 today with 1,000× the performance. The economy did not collapse. Productive deflation — getting more for less — is the engine of progress, not its enemy.</div>
         </div>
-        <div class="obj-kicker">⚔️ Technology prices have been deflationary for 40 years. The economy did not collapse. Prices falling because you're getting more for less is not the same as prices falling because debt is imploding. Bitcoin produces the former.</div>
+        <div class="obj-kicker">⚔️ The deflation-kills-economies argument is based on one specific historical episode of debt-deflation and generalised incorrectly to all price decreases. The US's greatest economic era was deflationary. The distinction matters enormously and is consistently elided by critics.</div>
       </div></div>
     </div>
 
-    <!-- 16 -->
+    <!-- 16 TOO LATE -->
     <div class="obj-card visible" data-cat="value">
       <div class="obj-header">
-        <div class="obj-icon">🎯</div>
+        <div class="obj-icon">⏰</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"It's too late — I missed it. Early adopters got all the gains."</div>
+          <div class="obj-q">"It's too late — early adopters got all the gains."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(124,58,237,.1);color:var(--soul)">💎 Value</span>
             <span class="obj-diff diff-2">Medium</span>
           </div>
         </div>
-        <div class="obj-heard">🔁 Regret objection</div>
+        <div class="obj-heard">🔁 The eternal regret objection</div>
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — Bitcoin adoption is ~3% of global adults</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — made at every price point, wrong every single time</div>
         <div class="obj-answer">
-          <p>This objection will be made at every price point forever. It was made at $100, $1,000, $10,000, and $100,000. <strong>Each time it was wrong.</strong> The question of whether "it's too late" requires estimating what percentage of Bitcoin's total adoption has occurred. Current estimates suggest approximately 300–500 million people own some Bitcoin — roughly 5% of the world's adult population. Global smartphone penetration is 5.5 billion. Total addressable market for digital, portable, censorship-resistant sound money is approximately all 8 billion humans.</p>
-          <p><em>If Bitcoin reaches gold's market cap of $14 trillion, current price is approximately 7× too low. If Bitcoin captures 10% of the global store-of-value market, current price is approximately 25× too low.</em> These are not guarantees. They are the logical consequence of the thesis, at a point where adoption is still early. "Too late" requires believing that the entire world has already discovered and priced in Bitcoin's potential. With 5% penetration, that belief requires heroic assumptions about how complete the adoption journey is.</p>
+          <p>This objection has been made at $10, $100, $1,000, $10,000, and $100,000. It was wrong at every price point. The question of whether it's "too late" requires estimating what fraction of Bitcoin's total adoption has occurred. <strong>Current estimates: approximately 300–500 million people own some Bitcoin — roughly 5% of global adults.</strong> Smartphone penetration: 5.5 billion. Total addressable population for portable, censorship-resistant, inflation-proof digital money: approximately 8 billion humans.</p>
+          <p>At 5% adoption, Bitcoin's current price discounts a world where 95% of its potential users have not yet arrived. <em>If Bitcoin reaches gold's market cap of $14 trillion, current price is approximately 7× too low. If Bitcoin captures 10% of global store-of-value markets, approximately 25× too low.</em> These are not guarantees — they are the mathematical consequence of the thesis, unpriced because adoption is still early. "Too late" requires believing the world has already fully discovered and priced Bitcoin's potential. At 5% penetration, that is a heroic assumption.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">🌐</div>In 1995, 1% of Americans used the internet. "Too late" investors in 1998 — at 30% US adoption — still captured 99% of the internet's economic value creation. The comparison to internet adoption curves suggests Bitcoin is closer to 1997 than to 2010.</div>
+          <div class="oe-item"><span class="oe-icon">🌐</span>In 1995, 1% of Americans used the internet. "Too late" investors in 1998 at 30% US adoption captured 99% of the internet's subsequent economic value creation. The internet comparison suggests Bitcoin is closer to 1997 than to 2010 on the adoption curve.</div>
         </div>
-        <div class="obj-kicker">⚔️ The best time to plant a tree was 20 years ago. The second best time is today. At 5% global adult adoption with a $2T market cap targeting potential store-of-value markets measured in hundreds of trillions, "too late" is the most expensive belief a person can hold.</div>
+        <div class="obj-kicker">⚔️ The best time to plant a tree was 20 years ago. The second best time is today. At 5% global adoption targeting markets worth hundreds of trillions, "too late" is the most expensive belief a person with a long time horizon can hold.</div>
       </div></div>
     </div>
 
-    <!-- 17 -->
+    <!-- 17 CBDC -->
     <div class="obj-card visible" data-cat="regulation">
       <div class="obj-header">
-        <div class="obj-icon">🏦</div>
+        <div class="obj-icon">🏛️</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"CBDCs will make Bitcoin irrelevant — governments will just make their own."</div>
+          <div class="obj-q">"CBDCs will make Bitcoin irrelevant — governments will just digitise money."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(247,147,26,.1);color:var(--btc)">⚖️ Regulation</span>
             <span class="obj-diff diff-2">Medium</span>
@@ -939,51 +970,51 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: Demolished — CBDCs solve the wrong problem</div>
+        <div class="verdict-bar verdict-demolished">✅ DEMOLISHED — CBDCs solve the government's problem, not the individual's</div>
         <div class="obj-answer">
-          <p>Central Bank Digital Currencies are programmable, government-controlled digital fiat money. They are not Bitcoin competitors — they are Bitcoin's antithesis. <strong>A CBDC has every property that makes fiat money problematic: unlimited issuance, government control, transaction surveillance, programmable expiry dates, and the ability to freeze or restrict accounts — except now digitally efficient at all of these.</strong></p>
-          <p>The Chinese digital yuan has literal expiry dates — you must spend it or lose it, eliminating saving. The European Central Bank has described CBDC transaction limits that would prevent large purchases without bank approval. The Canadian government used its digital payment infrastructure to freeze protesters' accounts in 48 hours in 2022. CBDCs don't compete with Bitcoin — they make the case for Bitcoin. Every CBDC property that makes governments excited about it is exactly the property that makes the individual want Bitcoin instead. <em>CBDCs solve the government's problem. Bitcoin solves the individual's problem.</em></p>
+          <p>Central Bank Digital Currencies are programmable, government-controlled digital fiat money. They are not Bitcoin's competitors — <strong>they are Bitcoin's antithesis and its strongest advertisement.</strong> A CBDC has every property that makes fiat money problematic, now executed with digital efficiency: unlimited issuance capability, complete transaction surveillance, programmable expiry dates (spend it or lose it), and the ability to freeze, restrict, or reverse any transaction at government discretion.</p>
+          <p>China's digital yuan has literal expiry dates to prevent saving. The European Central Bank has proposed CBDC transaction limits requiring bank approval for large purchases. The Canadian government used digital payment infrastructure to freeze protesters' accounts in 48 hours. <em>CBDCs don't compete with Bitcoin — they demonstrate why Bitcoin exists.</em> Every property that makes governments excited about CBDCs is exactly the property that makes the individual want Bitcoin instead. They solve opposite problems.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📊</div>China's digital yuan launched in 2020. Adoption has been extremely low despite government promotion and lottery incentives. Citizens who can choose between programmable surveillance money and peer-to-peer uncensorable money choose the latter.</div>
+          <div class="oe-item"><span class="oe-icon">📊</span>China's digital yuan launched in 2020 with massive government promotion, lottery incentives, and mandatory acceptance at some venues. Adoption remains extremely low. Citizens given the choice between programmable surveillance money and peer-to-peer uncensorable money consistently choose the latter.</div>
         </div>
-        <div class="obj-kicker">⚔️ CBDCs are the strongest advertisement for Bitcoin ever created. Every feature governments tout as a CBDC advantage — programmability, control, surveillance — is a reason individuals want Bitcoin instead.</div>
+        <div class="obj-kicker">⚔️ CBDCs are the most compelling argument for Bitcoin's existence ever created by a third party. Every feature the government touts — control, programmability, surveillance — is a reason every thoughtful individual wants its opposite. Let the governments build their CBDCs. They are building the demand for Bitcoin.</div>
       </div></div>
     </div>
 
-    <!-- 18 -->
+    <!-- 18 MINING REWARDS END -->
     <div class="obj-card visible" data-cat="tech">
       <div class="obj-header">
-        <div class="obj-icon">⚙️</div>
+        <div class="obj-icon">⛏️</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"Mining rewards will run out — what happens after the last Bitcoin is mined?"</div>
+          <div class="obj-q">"Mining rewards will run out — Bitcoin will become insecure."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(6,182,212,.1);color:var(--teal)">⚙️ Technical</span>
             <span class="obj-diff diff-3">Hard</span>
           </div>
         </div>
-        <div class="obj-heard">🔁 Technical concern</div>
+        <div class="obj-heard">🔁 Long-range technical concern</div>
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-evolving">🔮 VERDICT: Evolving — real question, credible answer</div>
+        <div class="verdict-bar verdict-evolving">🔮 EVOLVING — legitimate question, strong empirical signals pointing the right way</div>
         <div class="obj-answer">
-          <p>This is a legitimate long-term technical question. The last Bitcoin will be mined around the year 2140. After that, miners will be compensated solely by transaction fees rather than block rewards. The concern is whether transaction fees alone will be sufficient to incentivise the hash rate needed to secure the network. <strong>This is a genuine open question — but there are strong reasons to believe the answer is yes.</strong></p>
-          <p>As Bitcoin's price increases and transaction volume grows (including Layer 2 channels opening and closing on-chain), fee revenue grows proportionally. By 2140, if Bitcoin has reached even a fraction of its potential as global reserve money, the transaction fee revenue from a network settling trillions in value would dwarf today's block rewards. <em>More immediately, the halving cycle — the next one in 2028 — will reduce block rewards to 1.5625 BTC.</em> The network's continued security through multiple halvings, with hash rate remaining near all-time highs, demonstrates that the market can find equilibrium between fee revenue and mining incentives. The 2140 concern is real but distant — and by the time it arrives, the economic dynamics will be unrecognisable compared to today.</p>
+          <p>The last Bitcoin will be mined around the year 2140. After that, miners will be compensated solely by transaction fees. The genuine concern is whether fee revenue alone will provide sufficient incentive to maintain the hash rate needed to secure the network. <strong>This is a real question — but evidence from four halvings points strongly toward yes.</strong></p>
+          <p>Bitcoin's network security has remained near all-time highs through four successive halvings, each cutting block rewards by 50%. Miners have continued investing billions in hardware because rising Bitcoin prices compensate for lower rewards. Transaction fee revenue also grows as adoption, on-chain volume, and Layer 2 channel openings and closings increase. <em class="btc">By 2140, if Bitcoin has reached even a fraction of its potential as global reserve money, the fee revenue from a network settling trillions in value will dwarf today's entire mining economics.</em> This is 114 years away. The signals from the first 15 years are encouraging.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📊</div>Bitcoin's hash rate reached all-time highs in 2024 despite the 2020 and 2024 halvings reducing block rewards. Miners have continued investing in hardware despite lower rewards because rising Bitcoin prices compensate. Fee revenue has also grown as adoption increases.</div>
+          <div class="oe-item"><span class="oe-icon">📊</span>Hash rate hit all-time highs in 2024 despite the April 2024 halving reducing block rewards to 3.125 BTC. Miners invested in more hardware on lower rewards because Bitcoin's price compensated. This empirical pattern across four halvings is the most direct evidence available on this question.</div>
         </div>
-        <div class="obj-kicker">⚔️ The last Bitcoin mines in 2140. We have 114 years to solve this. Bitcoin has solved harder problems in less time. The track record of "Bitcoin will fail because of X technical issue" is not encouraging for the objectors.</div>
+        <div class="obj-kicker">⚔️ The last Bitcoin mines in 2140. The pattern across four halvings shows the network finding equilibrium between declining rewards and rising prices. 114 years is sufficient time to solve a problem that is already showing strong signs of self-resolution.</div>
       </div></div>
     </div>
 
-    <!-- 19 -->
+    <!-- 19 WHALES -->
     <div class="obj-card visible" data-cat="risk">
       <div class="obj-header">
         <div class="obj-icon">🐋</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"Whales manipulate the Bitcoin price — it's rigged."</div>
+          <div class="obj-q">"Bitcoin whales manipulate the price — it's a rigged market."</div>
           <div class="obj-meta">
             <span class="obj-cat-badge" style="background:rgba(230,57,70,.1);color:var(--red)">🎲 Risk</span>
             <span class="obj-diff diff-2">Medium</span>
@@ -993,121 +1024,327 @@ footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-nuanced">⚡ VERDICT: Nuanced — diminishing concern as market matures</div>
+        <div class="verdict-bar verdict-nuanced">⚡ NUANCED — real short-term phenomenon, structurally self-correcting</div>
         <div class="obj-answer">
-          <p>Large Bitcoin holders — "whales" — can and do influence short-term price through large buy or sell orders. This is true. <strong>It is also true of every financial market.</strong> Institutional traders move stock prices. Central banks move currency markets. George Soros famously broke the Bank of England by shorting the pound. The relevant question is whether whale manipulation affects Bitcoin's long-term fundamental value — and it does not.</p>
-          <p><em>No whale can change Bitcoin's supply cap. No whale can change its protocol. No whale can prevent others from participating.</em> Short-term manipulation causes volatility but not directional control over a long enough horizon. As Bitcoin's market cap has grown to $2 trillion, the cost of meaningfully manipulating price has increased proportionally. The whale problem is structurally self-correcting: the more valuable Bitcoin becomes, the harder it is to manipulate. Additionally, regulated ETF markets with institutional market makers have dramatically improved Bitcoin's price discovery mechanisms.</p>
+          <p>Large Bitcoin holders can and do influence short-term price through large orders. This is true. It is also true of every financial market ever created. Institutional traders move stock prices. Central banks move currency markets. George Soros famously broke the Bank of England by shorting sterling. <strong>The relevant question is not whether large holders affect short-term price — they do — but whether this affects Bitcoin's long-term fundamental value.</strong> It does not.</p>
+          <p>No whale can change Bitcoin's supply cap. No whale can change the protocol. No whale can prevent others from transacting. <em class="btc">Short-term manipulation creates volatility but not directional control over long horizons.</em> As Bitcoin's market cap grows to $2T and beyond, the capital required to meaningfully move price grows proportionally. The whale problem is structurally self-correcting through the mechanism of its own success. Additionally, regulated ETF markets with institutional market makers have substantially improved price discovery and reduced manipulation opportunities since 2024.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">📊</div>Despite 15 years of alleged whale manipulation, Bitcoin's long-term price trend has been consistently upward, with higher highs and higher lows in each successive market cycle. If whales controlled the price, they controlled it upward — which is not the usual concern.</div>
+          <div class="oe-item"><span class="oe-icon">📊</span>Despite 15 years of alleged whale manipulation, Bitcoin's long-term price shows consistent higher highs and higher lows across every successive cycle. If whales controlled price directionally, they consistently directed it upward — which is an unusual form of rigging to complain about on a long time horizon.</div>
         </div>
-        <div class="obj-kicker">⚔️ Every market has whales. The S&P 500 has institutional investors holding trillions. The solution is the same: long time horizons eliminate short-term manipulation noise and reveal underlying fundamental value.</div>
+        <div class="obj-kicker">⚔️ Every market has large participants. The solution is identical everywhere: long time horizons eliminate short-term manipulation noise and reveal underlying fundamental value. This is why DCA holders consistently outperform traders trying to time around whales.</div>
       </div></div>
     </div>
 
-    <!-- 20 -->
+    <!-- 20 DON'T GET IT -->
     <div class="obj-card visible" data-cat="value">
       <div class="obj-header">
         <div class="obj-icon">🤷</div>
         <div class="obj-q-wrap">
-          <div class="obj-q">"I just don't get it. It's too complicated."</div>
+          <div class="obj-q">"I just don't get it. It's too complicated and confusing."</div>
           <div class="obj-meta">
-            <span class="obj-cat-badge" style="background:rgba(124,58,237,.1);color:var(--soul)">💎 Value</span>
+            <span class="obj-cat-badge" style="background:rgba(247,147,26,.1);color:var(--btc)">💎 Value</span>
             <span class="obj-diff diff-1">Easy</span>
           </div>
         </div>
-        <div class="obj-heard">🔁 The honest one</div>
+        <div class="obj-heard">🔁 The most honest one</div>
         <div class="obj-arrow">▼</div>
       </div>
       <div class="obj-body"><div class="obj-inner">
-        <div class="verdict-bar verdict-demolished">✅ VERDICT: You just completed 20 steps. You get it.</div>
+        <div class="verdict-bar verdict-demolished">✅ YOU JUST COMPLETED 20 STEPS. This objection no longer applies to you.</div>
         <div class="obj-answer">
-          <p>This is the most honest objection of all — and it is the one this entire series was built to answer. Bitcoin is technically complex, philosophically deep, economically novel, and culturally disruptive all at once. It is genuinely difficult to understand quickly. Most of the people who dismiss Bitcoin do so because understanding it takes work — and the conventional financial system has no incentive to help them do that work.</p>
-          <p><strong>You have done the work.</strong> Twenty steps. The philosophy of money. The mechanics of blockchain. Wallets and keys. The Lightning Network. Bitcoin's legal status. Taxes. Retirement. Human freedom. Every objection. You now understand Bitcoin better than 99% of the people who have opinions about it. <em>The question is no longer whether you understand it.</em> The question is what you do next.</p>
-          <p>One step remains. The summit. Step 21 is the call to action — not a sales pitch, not a pressure tactic, but a clear and honest answer to the final question: <em class="btc">now that you understand Bitcoin, what do you actually do?</em></p>
+          <p>This is the most honest objection of all — and it is the one this entire series was built to answer. Bitcoin is technically complex, philosophically deep, economically novel, and culturally disruptive simultaneously. It is genuinely difficult to understand quickly. Most people who dismiss it do so because understanding it requires work — and no institution in the conventional financial system has any incentive to help them do that work. The banks, the governments, the central banks — none of them benefit from you understanding Bitcoin.</p>
+          <p><strong>You have done the work. Twenty steps.</strong> The philosophy of money. The mechanics of blockchain. Wallets and private keys. The Lightning Network. Bitcoin's global legal status. Taxes and compliance. Retirement and FIRE planning. Human freedom and financial sovereignty. Every objection catalogued and demolished. <em class="btc">You now understand Bitcoin better than the vast majority of people who hold opinions about it.</em> The complexity is not gone — it is conquered. The final question is not whether you understand it. The final question is what you do next. One step remains. The summit awaits.</p>
         </div>
         <div class="obj-evidence">
-          <div class="oe-item"><div class="oe-icon">🏔️</div>You started at Step 1 asking "what is money?" You have arrived at Step 20 having answered: what it is, how it works, why it matters, what your rights are, how to keep it, how to use it, and why it might be the most important monetary technology ever created. The complexity is conquered.</div>
+          <div class="oe-item"><span class="oe-icon">🏔️</span>You arrived at Step 1 asking "what is money?" You stand at Step 20 having answered: what Bitcoin is technically, how it works cryptographically, why it matters philosophically, what your rights are globally, how to hold it safely, how to grow it strategically, and why it may be the most important monetary technology in human history. The door is open. Step through it.</div>
         </div>
-        <div class="obj-kicker">🔥 One step to the summit. You have earned it. Let's go.</div>
+        <div class="obj-kicker">🔥 One step to the summit. You have earned it. Step 21 — What Now? Your Path Forward — is waiting. Let's go.</div>
       </div></div>
     </div>
 
-  </div><!-- end objections-arena -->
+  </div><!-- /.objections-arena -->
 
-  <!-- SCOREBOARD -->
+  <!-- ══ SCOREBOARD ══ -->
   <div class="scoreboard reveal">
     <div class="sb-header">
-      <h3>⚔️ The Final Scoreboard</h3>
-      <p>Fifteen years of objections. One outcome.</p>
+      <h3>⚔️ The Final Scoreboard — 15 Years of Battle</h3>
+      <p>Every objection brought. One outcome recorded.</p>
     </div>
     <div class="sb-grid">
       <div class="sb-side objections">
-        <div class="sb-side-title">💀 Objections</div>
+        <div class="sb-side-title">💀 Objections Raised</div>
         <div class="sb-tally">
-          <div class="sb-row"><span class="sb-row-label">Total raised</span><span class="sb-row-val">20</span></div>
+          <div class="sb-row"><span class="sb-row-label">Total objections raised</span><span class="sb-row-val">20</span></div>
           <div class="sb-row"><span class="sb-row-label">Demolished outright</span><span class="sb-row-val">15</span></div>
-          <div class="sb-row"><span class="sb-row-label">Nuanced (some merit)</span><span class="sb-row-val">4</span></div>
-          <div class="sb-row"><span class="sb-row-label">Evolving / open</span><span class="sb-row-val">1</span></div>
-          <div class="sb-row"><span class="sb-row-label">Proved correct</span><span class="sb-row-val">0</span></div>
+          <div class="sb-row"><span class="sb-row-label">Nuanced — some merit</span><span class="sb-row-val">4</span></div>
+          <div class="sb-row"><span class="sb-row-label">Evolving — open question</span><span class="sb-row-val">1</span></div>
+          <div class="sb-row"><span class="sb-row-label">Proved definitively correct</span><span class="sb-row-val">0</span></div>
         </div>
       </div>
       <div class="sb-side bitcoin">
-        <div class="sb-side-title">₿ Bitcoin</div>
+        <div class="sb-side-title">₿ Bitcoin's Track Record</div>
         <div class="sb-tally">
           <div class="sb-row"><span class="sb-row-label">Years operating</span><span class="sb-row-val">15+</span></div>
           <div class="sb-row"><span class="sb-row-label">Blocks produced</span><span class="sb-row-val">880K+</span></div>
-          <div class="sb-row"><span class="sb-row-label">Uptime</span><span class="sb-row-val">99.98%</span></div>
-          <div class="sb-row"><span class="sb-row-label">Critical failures</span><span class="sb-row-val">0</span></div>
+          <div class="sb-row"><span class="sb-row-label">Network uptime</span><span class="sb-row-val">99.98%</span></div>
+          <div class="sb-row"><span class="sb-row-label">Protocol failures</span><span class="sb-row-val">0</span></div>
           <div class="sb-row"><span class="sb-row-label">Obituaries survived</span><span class="sb-row-val">479</span></div>
         </div>
       </div>
     </div>
     <div class="sb-footer">
       <div class="sb-verdict">Bitcoin: Undefeated.</div>
-      <div class="sb-verdict-sub">Not because it was never challenged. Because every challenge made it stronger.<br>The Lindy Effect: Bitcoin has survived long enough that its expected future lifespan grows with every block.</div>
+      <div class="sb-verdict-sub">Not because it was never seriously challenged. Because every serious challenge either failed outright or made Bitcoin stronger. The Lindy Effect in practice: Bitcoin has survived long enough that its expected future lifespan now grows with every block it produces.</div>
     </div>
   </div>
 
-  <!-- THE UNCONVERTIBLE -->
+  <!-- ══ THE UNCONVERTIBLE ══ -->
   <div class="unconvertible reveal">
     <div class="unc-header">
       <h3>🤝 A Note on Those Who Won't Be Convinced</h3>
-      <p>Honest acknowledgement — not everyone will reach the same conclusion</p>
+      <p>Honest acknowledgement — the goal was never to win arguments. It was to find truth.</p>
     </div>
     <div class="unc-types">
       <div class="unc-type">
         <div class="unc-icon">🏛️</div>
         <div class="unc-title">The Institution</div>
-        <div class="unc-body">Those whose income, status, and identity derive from the existing monetary system have structural incentives to oppose Bitcoin. <strong>It is not hypocrisy — it is rational self-interest.</strong> A central banker cannot publicly endorse a technology that makes central banking obsolete. A bank CEO cannot endorse a system that eliminates the intermediary. These are not bad people. They are humans with incentives. Understand the incentive. Evaluate the argument accordingly.</div>
+        <div class="unc-body">Those whose income, status, and identity derive from the existing monetary system have structural incentives to oppose Bitcoin. <strong>This is rational self-interest, not malice.</strong> A central banker cannot publicly endorse a technology that makes central banking obsolete. A bank CEO cannot endorse a system that eliminates intermediaries. Understand the incentive. Evaluate the argument on its own terms. These are not evil people — they are humans with powerful reasons to see what they see.</div>
       </div>
       <div class="unc-type">
         <div class="unc-icon">😤</div>
         <div class="unc-title">The Incurious</div>
-        <div class="unc-body">Some people will not engage with evidence that challenges their existing beliefs regardless of its quality. This is not unique to Bitcoin — it is a feature of human psychology. <strong>You cannot convince someone who has decided not to learn.</strong> The appropriate response is not frustration but patience. Bitcoin will continue to demonstrate its properties over time. Price and adoption are more persuasive than argument for those who won't read.</div>
+        <div class="unc-body">Some people will not engage with evidence that challenges existing beliefs regardless of its quality. This is not unique to Bitcoin — it is a feature of human psychology documented across every paradigm shift in history. <strong>You cannot convince someone who has decided not to learn.</strong> The appropriate response is patience. Bitcoin continues to demonstrate its properties independent of whether any individual acknowledges them. Price and adoption are more persuasive than argument for those who won't read.</div>
       </div>
       <div class="unc-type">
         <div class="unc-icon">⏳</div>
-        <div class="unc-title">The Unconvinced Yet</div>
-        <div class="unc-body">Many people who are sceptical today will become holders tomorrow — not because of a single argument, but because of accumulated evidence over time. <strong>Most Bitcoin holders were once Bitcoin sceptics.</strong> The pattern is so consistent it has a name: the "Bitcoin rabbit hole." The correct response to the genuinely unconvinced is to share this series and let it do the work. Patience is a Bitcoin strategy — in markets and in conversations.</div>
+        <div class="unc-title">The Not-Yet-Convinced</div>
+        <div class="unc-body">Many of today's sceptics will become tomorrow's holders — not from a single argument but from accumulated evidence over time. <strong>Most Bitcoin holders were once Bitcoin sceptics.</strong> The pattern is so consistent it has a name: the Bitcoin rabbit hole. The correct response to the genuinely unconvinced is to share this series and let 21 steps do the work that one conversation cannot. Patience is a Bitcoin strategy — in markets and in conversations.</div>
       </div>
     </div>
     <div class="unc-footer">
-      <strong>The purpose of this step was never to win arguments.</strong> It was to give you the intellectual tools to evaluate objections honestly, answer them with evidence, and recognise which objections deserve serious consideration versus which are reflexive dismissals. You now have those tools. Use them with humility. The goal is truth, not victory.
+      <strong>The purpose of this step was never to win arguments at dinner tables.</strong> It was to give you the intellectual tools to evaluate objections honestly — to know which ones deserve serious engagement, which ones are motivated reasoning, and which ones reflect genuine uncertainty that Bitcoin has not yet fully resolved. You have those tools now. Use them with humility. The goal is truth, not victory. Always truth first.
     </div>
   </div>
 
-  <!-- FINAL CLARITY -->
-  <div class="final-clarity reveal">
-    <div class="fc-bg-rings">
-      <div class="fc-ring"></div><div class="fc-ring"></div>
-      <div class="fc-ring"></div><div class="fc-ring"></div>
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">🏆 Step 20 — Key Takeaways</div>
+    <div class="kt-text">Every objection has been heard.<br><em>Not one has been left standing.</em></div>
+    <div class="kt-points">
+      <div class="kt-point"><span class="kt-point-icon">⚔️</span><span>Twenty of the most powerful, most repeated objections to Bitcoin — from the simplest populist dismissals to the most technically sophisticated long-range concerns — have been answered with evidence, data, and 15 years of empirical proof. Zero were proved correct. Fifteen were demolished outright. Four had genuine nuance. One remains an evolving open question about events 114 years away.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🏛️</span><span>The most durable objections come from institutional incentive, not intellectual conviction. Central bankers, bank executives, and government officials who oppose Bitcoin almost always have structural economic reasons to do so. Understanding the incentive structure behind an objection is as important as understanding the objection itself.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📊</span><span>The empirical record after 15 years is unambiguous: 99.98% uptime, 880,000+ blocks produced without a single protocol failure, four complete market cycles each ending at higher prices than the last, 479 obituaries survived, and a network that has grown from zero to $2 trillion in value while being banned, dismissed, and attacked by the most powerful institutions on Earth.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🌱</span><span>Intellectual humility matters. Some objections — volatility, quantum computing risk, the long-term mining reward question — deserve ongoing attention rather than dismissal. Bitcoin is not infallible. The honest case for Bitcoin is stronger precisely because it acknowledges the genuine uncertainties rather than pretending they don't exist.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🔥</span><span>Step 21 is the summit — the moment the student becomes sovereign, the listener becomes the voice, the reader becomes the minister of the Bitcoin word. This is where the journey that began with "what is money?" ends with "I know what to do next." Twenty steps behind you. One step ahead. The view from the summit is extraordinary. Come.</span></div>
     </div>
-    <span class="fc-icon">⚔️</span>
-    <div class="fc-title">
-      <span class="fc-sw">Doubt</span><br>
-      <span class="fc-btc">demolished.</span><br>
-      <span class="fc-g">Clarity</span><br>
-      <span class="fc-go">achieved.</span>
+  </div>
+
+</div><!-- /.article-wrap -->
+
+<!-- ══ STEP NAV ══ -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="btc-step-19.html" class="snb-prev reveal">
+      <div class="snb-icon">🗽</div>
+      <div>
+        <div class="snb-label">← Step 19</div>
+        <div class="snb-title">Bitcoin &amp; Human Freedom</div>
+        <div class="snb-desc">Money, power, and the act of sovereignty</div>
+      </div>
+    </a>
+    <a href="btc-step-21.html" class="snb-next reveal">
+      <div class="snb-icon">🏔️</div>
+      <div>
+        <div class="snb-label">Step 21 →</div>
+        <div class="snb-title">What Now? Your Path Forward</div>
+        <div class="snb-desc">The summit. The awakening. The beginning.</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ══ MINIMAP ══ -->
+<div class="steps-minimap">
+  <div class="sm-card reveal">
+    <div class="sm-title">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step done">1</a>
+      <a href="btc-step-02.html" class="sm-step done">2</a>
+      <a href="btc-step-03.html" class="sm-step done">3</a>
+      <a href="btc-step-04.html" class="sm-step done">4</a>
+      <a href="btc-step-05.html" class="sm-step done">5</a>
+      <a href="btc-step-06.html" class="sm-step done">6</a>
+      <a href="btc-step-07.html" class="sm-step done">7</a>
+      <a href="btc-step-08.html" class="sm-step done">8</a>
+      <a href="btc-step-09.html" class="sm-step done">9</a>
+      <a href="btc-step-10.html" class="sm-step done">10</a>
+      <a href="btc-step-11.html" class="sm-step done">11</a>
+      <a href="btc-step-12.html" class="sm-step done">12</a>
+      <a href="btc-step-13.html" class="sm-step done">13</a>
+      <a href="btc-step-14.html" class="sm-step done">14</a>
+      <a href="btc-step-15.html" class="sm-step done">15</a>
+      <a href="btc-step-16.html" class="sm-step done">16</a>
+      <a href="btc-step-17.html" class="sm-step done">17</a>
+      <a href="btc-step-18.html" class="sm-step done">18</a>
+      <a href="btc-step-19.html" class="sm-step done">19</a>
+      <a href="btc-step-20.html" class="sm-step current">20</a>
+      <a href="btc-step-21.html" class="sm-step summit">21</a>
     </div>
-    <div class="fc-sub">Twenty objections. Twenty answers. Fifteen years of proof. The case against Bitcoin has been made by the smartest economists, the most powerful governments, the most respected financial institutions, and the most sceptical journalists in the world. Every single one has had to revise their position as the evidence accumulated. The objections did not defeat Bitcoin. They sharpened it. Every attack that failed made the network more credible, more antifragile, and more proven. You have reached Step 20 of 21. One step remains. The​​​​​​​​​​​​​​​​
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(34,197,94,.6)"></div>Completed</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--sword)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:linear-gradient(135deg,var(--btc),var(--gold))"></div>The Summit — Step 21</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FINAL CLARITY ══ -->
+<div class="final-clarity">
+  <div class="fc-bg-rings">
+    <div class="fc-ring"></div><div class="fc-ring"></div>
+    <div class="fc-ring"></div><div class="fc-ring"></div>
+  </div>
+  <span class="fc-icon">⚔️</span>
+  <div class="fc-title">
+    <span class="fc-sw">Doubt</span><br>
+    <span class="fc-btc">demolished.</span><br>
+    <span class="fc-g">Clarity</span><br>
+    <span class="fc-go">achieved.</span>
+  </div>
+  <div class="fc-sub">Twenty objections. Twenty answers. Fifteen years of proof. The case against Bitcoin has been made by the smartest economists, the most powerful governments, the most sceptical journalists, and the most credentialed financial institutions on Earth. Every single one has had to revise their position as the evidence accumulated. The objections did not defeat Bitcoin. They sharpened it. Every attack that failed made the network more credible, more antifragile, more proven. You have reached Step 20 of 21. One step remains. The summit doesn't wait for doubt. Neither should you.</div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="Unstoppable.html">Unstoppable</a>
+      <a href="IntrinsicValue.html">Intrinsic Value</a>
+      <a href="why-bitcoin-wins.html">Why Bitcoin Wins</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n);
+  localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE BTC PRICE ──
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById('btcPriceNav').textContent = '$' + d.bitcoin.usd.toLocaleString();
+    }).catch(() => {});
+}
+updatePrice();
+setInterval(updatePrice, 10000);
+
+// ── SCROLL PROGRESS ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── BATTLE CANVAS — particle field ──
+(function() {
+  const canvas = document.getElementById('battleCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let W, H;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    particles = Array.from({ length: 80 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 1.8 + 0.4,
+      phase: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.006 + 0.002
+    }));
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+      const opacity = 0.08 + 0.12 * Math.sin(t * p.speed * 1000 + p.phase);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = isDark
+        ? `rgba(225,29,72,${opacity})`
+        : `rgba(180,20,50,${opacity * 0.5})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(draw);
+})();
+
+// ── CATEGORY FILTER ──
+document.querySelectorAll('.cat-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const cat = tab.dataset.cat;
+    document.querySelectorAll('.obj-card').forEach(card => {
+      if (cat === 'all' || card.dataset.cat === cat) {
+        card.classList.add('visible');
+      } else {
+        card.classList.remove('visible');
+        card.classList.remove('open');
+      }
+    });
+  });
+});
+
+// ── OBJECTION ACCORDION ──
+document.querySelectorAll('.obj-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const card = header.closest('.obj-card');
+    const isOpen = card.classList.contains('open');
+    // close all
+    document.querySelectorAll('.obj-card').forEach(c => c.classList.remove('open'));
+    // open clicked if it was closed
+    if (!isOpen) card.classList.add('open');
+  });
+});
+
+// ── SCROLL REVEAL ──
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.05 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+</script>
+</body>
+</html>
