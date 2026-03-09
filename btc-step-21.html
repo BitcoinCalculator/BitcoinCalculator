@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 21: The Summit — Your Path Forward | SATOLOGY</title>
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('satology-theme')||'dark')</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{--bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;--text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;--prose:#c8c8c8;--quote-bg:#0d0d10}
+[data-theme="light"]{--bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;--text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;--prose:#3a3a3a;--quote-bg:#f0ede6}
+:root{--btc:#F7931A;--green:#22c55e;--gold:#FFD700;--soul:#7c3aed;--teal:#06b6d4;--red:#e63946}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ANIMATED GRADIENT SCROLL BAR */
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:4px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--btc),var(--gold),var(--green),var(--btc));background-size:300% 100%;width:0%;animation:sbGrad 4s linear infinite}
+@keyframes sbGrad{0%{background-position:0% 0}100%{background-position:300% 0}}
+
+.ticker{background:linear-gradient(90deg,#431407,#7c2d12,#14532d,#1e3a1e,#431407);padding:9px 0;overflow:hidden;white-space:nowrap}
+.ticker-inner{display:inline-flex;gap:56px;animation:tick 55s linear infinite;font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:900;color:#fff}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+.step-nav-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.snbl{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.snbl a{color:var(--muted);text-decoration:none}.snbl a:hover{color:var(--btc)}
+.snbr{display:flex;align-items:center;gap:8px}
+.step-pill{background:linear-gradient(135deg,var(--btc),var(--gold));color:#000;border-radius:100px;padding:4px 14px;font-size:11px;font-weight:900;letter-spacing:.5px}
+.spm{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:linear-gradient(90deg,var(--btc),var(--gold));width:100%}
+
+.rp{position:fixed;right:22px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;z-index:100}
+.rp-track{width:3px;height:150px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:linear-gradient(to bottom,var(--btc),var(--gold),var(--green));height:0%;transition:height .15s}
+.rp-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;writing-mode:vertical-rl;transform:rotate(180deg)}
+
+/* ===== HERO ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+@keyframes wordReveal{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+.hero{padding:88px 48px 72px;max-width:960px;margin:0 auto;position:relative;overflow:hidden;min-height:680px;display:flex;flex-direction:column;justify-content:center}
+#cosmosCanvas{position:absolute;inset:0;pointer-events:none;z-index:0}
+.hero-21{position:absolute;right:-60px;top:-40px;font-size:clamp(280px,42vw,580px);font-weight:900;line-height:.85;pointer-events:none;z-index:1;-webkit-text-fill-color:transparent;background:linear-gradient(135deg,rgba(247,147,26,.09),rgba(255,215,0,.06),rgba(34,197,94,.03));-webkit-background-clip:text;background-clip:text;animation:bigNum 8s ease-in-out infinite}
+@keyframes bigNum{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.05) rotate(1deg)}}
+.eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:26px;animation:fadeUp .6s ease both;position:relative;z-index:2}
+.step-num-badge{width:64px;height:64px;background:linear-gradient(135deg,var(--btc),var(--gold));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#000;flex-shrink:0;animation:badgeGlow 2.2s ease-in-out infinite}
+@keyframes badgeGlow{0%,100%{box-shadow:0 8px 32px rgba(247,147,26,.5)}50%{box-shadow:0 8px 80px rgba(247,147,26,1),0 0 160px rgba(255,215,0,.4)}}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2.5px;background:linear-gradient(90deg,var(--btc),var(--gold),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800}
+.step-meta-bot{font-size:12px;color:var(--muted);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+h1.hero-h1{font-size:clamp(52px,10vw,130px);font-weight:900;letter-spacing:-6px;line-height:.88;margin-bottom:28px;position:relative;z-index:2}
+.hw{display:inline-block;opacity:0;animation:wordReveal .75s ease both}
+.hw1{animation-delay:.08s;color:var(--btc)}.hw2{animation-delay:.28s;color:var(--gold)}.hw3{animation-delay:.48s;color:var(--green)}
+.sub-p{font-size:clamp(17px,2.3vw,22px);color:var(--muted);line-height:1.88;max-width:740px;margin-bottom:36px;animation:fadeUp .6s .55s ease both;font-family:'Lora',serif;font-style:italic;position:relative;z-index:2}
+.key-box{display:inline-flex;align-items:flex-start;gap:12px;background:rgba(247,147,26,.07);border:1px solid rgba(247,147,26,.32);border-radius:16px;padding:18px 24px;font-size:14px;color:var(--text);line-height:1.75;animation:fadeUp .6s .65s ease both;max-width:720px;position:relative;z-index:2}
+.key-box strong{color:var(--btc)}
+
+/* ===== ARTICLE ===== */
+.art{max-width:800px;margin:0 auto;padding:0 48px 80px}
+.chapter{margin-bottom:72px}
+.ch-label{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.ch-num{width:42px;height:42px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.32);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:var(--btc)}
+.ch-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.9vw,20px);line-height:1.97;color:var(--prose)}
+.prose p{margin-bottom:26px}.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--btc);font-style:italic}.prose em.g{color:var(--green)}.prose em.go{color:var(--gold)}
+.pull-quote{border-left:4px solid var(--btc);margin:44px 0;padding:28px 34px;background:var(--quote-bg);border-radius:0 18px 18px 0;position:relative;overflow:hidden}
+.pull-quote::before{content:'❝';position:absolute;top:-8px;left:22px;font-size:80px;color:var(--btc);opacity:.1;line-height:1;font-family:serif}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(18px,2.5vw,26px);font-style:italic;color:var(--text);line-height:1.6;margin:0;position:relative;z-index:1}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);font-style:normal;margin-top:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.callout{border-radius:18px;padding:28px 32px;margin:36px 0;border:1px solid}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.24)}
+.callout-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;color:var(--btc)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.85;margin:0}
+
+/* ===== 21 TRUTHS TIMELINE ===== */
+.truths{position:relative;margin:44px 0}
+.truths-spine{position:absolute;left:22px;top:24px;bottom:24px;width:2px;background:linear-gradient(to bottom,var(--btc),var(--gold),var(--green));border-radius:2px;z-index:0}
+.truth-row{display:grid;grid-template-columns:54px 1fr;position:relative;z-index:1}
+.t-node{display:flex;flex-direction:column;align-items:center;padding-top:12px}
+.t-dot{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;transition:all .6s ease;background:var(--card);border:2px solid var(--border);color:var(--muted);text-decoration:none;flex-shrink:0}
+.truth-row.lit .t-dot{background:linear-gradient(135deg,var(--btc),var(--gold));border-color:var(--gold);color:#000;box-shadow:0 0 32px rgba(255,215,0,.55)}
+.t-stem{flex:1;width:2px;min-height:16px;background:var(--border);margin:4px auto 0;transition:background .6s}
+.truth-row.lit .t-stem{background:linear-gradient(to bottom,var(--gold),var(--btc))}
+.truth-row:last-child .t-stem{display:none}
+.t-content{padding:10px 0 28px 20px}
+.t-idx{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin-bottom:3px;transition:color .5s}
+.truth-row.lit .t-idx{color:var(--btc)}
+.t-title{font-size:clamp(15px,2.2vw,21px);font-weight:900;letter-spacing:-.4px;margin-bottom:5px;color:var(--muted);transition:color .5s;line-height:1.2}
+.truth-row.lit .t-title{color:var(--text)}
+.t-body{font-size:13px;color:var(--muted);line-height:1.88;max-height:0;overflow:hidden;transition:max-height .7s ease,opacity .5s;opacity:0;font-family:'Lora',serif;font-style:italic}
+.truth-row.lit .t-body{max-height:240px;opacity:1}
+.t-body strong{color:var(--text);font-weight:700;font-style:normal;font-family:'Inter',sans-serif;font-size:.9em}
+.t-link{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;font-weight:800;color:var(--btc);text-decoration:none;font-style:normal;font-family:'Inter',sans-serif;transition:color .2s}
+.t-link:hover{color:var(--gold)}
+
+/* ===== SUPPLY BAR ===== */
+.supply{background:var(--card);border:2px solid rgba(247,147,26,.28);border-radius:22px;overflow:hidden;margin:44px 0}
+.su-head{padding:22px 26px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(247,147,26,.08),transparent)}
+.su-head h3{font-size:17px;font-weight:900;margin-bottom:5px;letter-spacing:-.3px}
+.su-head p{font-size:13px;color:var(--muted);line-height:1.7}
+.su-body{padding:26px}
+.su-nums{display:grid;grid-template-columns:1fr 1fr 1fr;margin-bottom:22px}
+.su-n{text-align:center;padding:14px;border-right:1px solid var(--border)}
+.su-n:last-child{border-right:none}
+.su-val{font-size:clamp(14px,3vw,26px);font-weight:900;letter-spacing:-1.5px;margin-bottom:4px}
+.su-val.mined{background:linear-gradient(135deg,var(--btc),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.su-val.remain{color:var(--muted)}.su-val.cap{color:var(--green)}
+.su-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--muted)}
+.su-bar-wrap{position:relative;margin-bottom:11px}
+.su-bar-cap{position:absolute;right:0;top:-17px;font-size:10px;font-weight:800;color:var(--green)}
+.su-bar-track{height:28px;background:var(--bg2);border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+.su-bar-fill{height:100%;background:linear-gradient(90deg,var(--btc),var(--gold));border-radius:14px;width:0%;transition:width 2.4s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;justify-content:flex-end;padding-right:12px}
+.su-bar-pct{font-size:11px;font-weight:900;color:#000;white-space:nowrap}
+.su-note{font-size:11px;color:var(--muted);text-align:center;line-height:1.7}
+
+/* ===== ACTION TRACKS ===== */
+.tracks{background:var(--card);border:2px solid rgba(247,147,26,.28);border-radius:26px;overflow:hidden;margin:44px 0}
+.tr-head{padding:28px 32px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(247,147,26,.08),transparent)}
+.tr-head h3{font-size:21px;font-weight:900;margin-bottom:7px;letter-spacing:-.4px}
+.tr-head p{font-size:13px;color:var(--muted);line-height:1.75}
+.tr-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+.tr-track{padding:26px 22px;border-right:1px solid var(--border);position:relative}
+.tr-track:last-child{border-right:none}
+.tr-track::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.tr-track:nth-child(1)::before{background:var(--green)}.tr-track:nth-child(2)::before{background:var(--btc)}.tr-track:nth-child(3)::before{background:var(--gold)}
+.tr-icon{font-size:40px;margin-bottom:12px;display:block;animation:trFloat 4s ease-in-out infinite}
+.tr-track:nth-child(2) .tr-icon{animation-delay:.5s}.tr-track:nth-child(3) .tr-icon{animation-delay:1s}
+@keyframes trFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.tr-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:7px}
+.tr-track:nth-child(1) .tr-label{color:var(--green)}.tr-track:nth-child(2) .tr-label{color:var(--btc)}.tr-track:nth-child(3) .tr-label{color:var(--gold)}
+.tr-title{font-size:17px;font-weight:900;margin-bottom:12px;letter-spacing:-.3px}
+.tr-steps{display:flex;flex-direction:column;gap:10px}
+.tr-step{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:var(--muted);line-height:1.65}
+.tr-step strong{color:var(--text);font-weight:700}
+.ck{width:18px;height:18px;border-radius:5px;border:2px solid var(--border);flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:10px;min-width:18px;user-select:none}
+.ck.checked{background:var(--green);border-color:var(--green);color:#000}
+
+/* ===== TOOLBOX ===== */
+.tools-hdr{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--btc);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.tools-hdr::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(247,147,26,.4),transparent)}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:44px}
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;transition:all .3s;text-decoration:none;color:var(--text);display:block;position:relative;overflow:hidden}
+.tool-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0;transition:opacity .3s}
+.tool-card:hover{transform:translateY(-5px)}
+.tool-card:hover::after{opacity:1}
+.tool-card:nth-child(1)::after,.tool-card:nth-child(1):hover{border-color:var(--btc)}.tool-card:nth-child(1)::after{background:var(--btc)}
+.tool-card:nth-child(2)::after,.tool-card:nth-child(2):hover{border-color:var(--green)}.tool-card:nth-child(2)::after{background:var(--green)}
+.tool-card:nth-child(3)::after,.tool-card:nth-child(3):hover{border-color:var(--gold)}.tool-card:nth-child(3)::after{background:var(--gold)}
+.tool-card:nth-child(4)::after,.tool-card:nth-child(4):hover{border-color:var(--soul)}.tool-card:nth-child(4)::after{background:var(--soul)}
+.tool-card:nth-child(5)::after,.tool-card:nth-child(5):hover{border-color:var(--teal)}.tool-card:nth-child(5)::after{background:var(--teal)}
+.tool-card:nth-child(6)::after,.tool-card:nth-child(6):hover{border-color:var(--red)}.tool-card:nth-child(6)::after{background:var(--red)}
+.tool-icon{font-size:32px;margin-bottom:10px;display:block;animation:toolFloat 4.5s ease-in-out infinite}
+.tool-card:nth-child(2) .tool-icon{animation-delay:.4s}.tool-card:nth-child(3) .tool-icon{animation-delay:.8s}.tool-card:nth-child(4) .tool-icon{animation-delay:1.2s}.tool-card:nth-child(5) .tool-icon{animation-delay:1.6s}.tool-card:nth-child(6) .tool-icon{animation-delay:2s}
+@keyframes toolFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.tool-title{font-size:14px;font-weight:900;margin-bottom:4px;letter-spacing:-.2px}
+.tool-desc{font-size:11px;color:var(--muted);line-height:1.7}
+.tool-tag{display:inline-block;margin-top:8px;font-size:10px;font-weight:800;padding:2px 9px;border-radius:100px;background:rgba(247,147,26,.1);color:var(--btc)}
+
+/* ===== MINISTRY ===== */
+.ministry{background:var(--card);border:2px solid rgba(247,147,26,.28);border-radius:26px;overflow:hidden;margin:52px 0}
+.min-head{padding:32px 32px 26px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(247,147,26,.09),transparent);text-align:center}
+.min-head-icon{font-size:60px;margin-bottom:12px;display:block;animation:minIcon 2.5s ease-in-out infinite}
+@keyframes minIcon{0%,100%{transform:scale(1)}50%{transform:scale(1.14);filter:drop-shadow(0 0 32px rgba(247,147,26,.7))}}
+.min-head h3{font-size:26px;font-weight:900;margin-bottom:8px;letter-spacing:-.6px}
+.min-head p{font-size:13px;color:var(--muted);max-width:560px;margin:0 auto;line-height:1.8}
+.min-grid{display:grid;grid-template-columns:1fr 1fr}
+.min-way{padding:28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .2s}
+.min-way:hover{background:rgba(247,147,26,.02)}
+.min-way:nth-child(2n){border-right:none}.min-way:nth-child(3),.min-way:nth-child(4){border-bottom:none}
+.min-num{font-size:48px;font-weight:900;background:linear-gradient(135deg,var(--btc),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:.18;line-height:1;margin-bottom:8px;letter-spacing:-3px}
+.min-title{font-size:16px;font-weight:900;margin-bottom:8px;letter-spacing:-.3px}
+.min-body{font-size:13px;color:var(--muted);line-height:1.88}
+.min-body strong{color:var(--text);font-weight:700}.min-body em{color:var(--btc);font-style:italic}
+.min-action{display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:11px;font-weight:800;padding:4px 13px;border-radius:100px;background:rgba(247,147,26,.1);color:var(--btc)}
+
+/* ===== PLEDGE ===== */
+.pledge{position:relative;margin:56px 0}
+.pledge-inner{border:2px solid rgba(247,147,26,.42);border-radius:28px;padding:56px 52px;position:relative;overflow:hidden;background:var(--bg2)}
+.pledge-inner::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(247,147,26,.04),rgba(255,215,0,.02),transparent 60%);pointer-events:none}
+.pledge-wm{position:absolute;bottom:-60px;right:-30px;font-size:280px;opacity:.025;line-height:1;pointer-events:none;color:var(--btc);font-weight:900;transform:rotate(-8deg)}
+.pledge-ey{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;color:var(--btc);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.pledge-ey::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(247,147,26,.5),transparent)}
+.pledge-copy{display:inline-flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.3);border-radius:10px;padding:8px 16px;font-size:11px;font-weight:800;color:var(--btc);cursor:pointer;transition:all .2s;margin-bottom:24px;font-family:'Inter',sans-serif}
+.pledge-copy:hover{background:rgba(247,147,26,.18)}
+.pledge-copy.copied{color:var(--green);border-color:var(--green);background:rgba(34,197,94,.1)}
+.pledge-lines{display:flex;flex-direction:column}
+.pl{font-size:clamp(18px,3.5vw,42px);font-weight:900;letter-spacing:-1.5px;line-height:1.18;padding:14px 0;border-bottom:1px solid rgba(247,147,26,.07);cursor:default;transition:all .3s;position:relative;overflow:hidden}
+.pl:last-child{border-bottom:none}
+.pl:hover{padding-left:18px}
+.pl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(255,215,0,.04));transition:width .4s;border-radius:0 10px 10px 0}
+.pl:hover::before{width:100%}
+.pl span{position:relative;z-index:1}
+.pl-btc{color:var(--btc)}.pl-go{color:var(--gold)}.pl-g{color:var(--green)}.pl-s{color:var(--soul)}.pl-m{color:var(--muted)}
+
+/* ===== CERTIFICATE ===== */
+.cert-section{margin:56px 0;text-align:center}
+.cert-section h3{font-size:19px;font-weight:900;margin-bottom:7px;letter-spacing:-.4px}
+.cert-section p{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.7}
+#certCanvas{border-radius:16px;border:2px solid rgba(247,147,26,.3);max-width:100%;box-shadow:0 16px 60px rgba(247,147,26,.15);display:block;margin:0 auto 18px}
+.cert-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+.cert-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;transition:all .25s;text-decoration:none;border:none;font-family:'Inter',sans-serif}
+.cert-primary{background:linear-gradient(135deg,var(--btc),var(--gold));color:#000;box-shadow:0 6px 24px rgba(247,147,26,.35)}
+.cert-primary:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(247,147,26,.55)}
+.cert-secondary{background:var(--card);border:1px solid var(--border);color:var(--text)}
+.cert-secondary:hover{border-color:var(--btc);color:var(--btc)}
+
+/* ===== DONATION ===== */
+.donation{background:linear-gradient(135deg,rgba(247,147,26,.09),rgba(255,215,0,.05));border:2px solid rgba(247,147,26,.32);border-radius:26px;padding:52px 40px;margin:52px 0;text-align:center;position:relative;overflow:hidden}
+.don-rings{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.don-ring{position:absolute;border-radius:50%;border:1px solid rgba(247,147,26,.1);top:50%;left:50%;transform:translate(-50%,-50%);animation:dRing 3.5s ease-in-out infinite}
+.don-ring:nth-child(1){width:180px;height:180px}.don-ring:nth-child(2){width:340px;height:340px;animation-delay:.7s}.don-ring:nth-child(3){width:520px;height:520px;animation-delay:1.4s}.don-ring:nth-child(4){width:720px;height:720px;animation-delay:2.1s}
+@keyframes dRing{0%,100%{opacity:.25;transform:translate(-50%,-50%) scale(1)}50%{opacity:.8;transform:translate(-50%,-50%) scale(1.06)}}
+.don-inner{position:relative;z-index:2}
+.don-icon{font-size:52px;margin-bottom:14px;display:block;animation:donFloat 3s ease-in-out infinite}
+@keyframes donFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.don-title{font-size:26px;font-weight:900;margin-bottom:11px;letter-spacing:-.5px}
+.don-sub{font-size:14px;color:var(--muted);max-width:520px;margin:0 auto 26px;line-height:1.85}
+.don-toggle{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:100px;padding:4px;gap:4px;width:fit-content;margin:0 auto 24px}
+.don-tab{padding:7px 20px;border-radius:100px;font-size:12px;font-weight:800;cursor:pointer;transition:all .25s;color:var(--muted);font-family:'Inter',sans-serif}
+.don-tab.active{background:linear-gradient(135deg,var(--btc),var(--gold));color:#000}
+.don-qr{width:164px;height:164px;border-radius:16px;border:4px solid var(--btc);margin:0 auto 20px;display:block;background:white}
+.don-addr{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;word-break:break-all;max-width:440px;margin:0 auto 10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .2s;user-select:all;display:block}
+.don-addr:hover{border-color:var(--btc);color:var(--btc)}
+.don-copied{font-size:12px;font-weight:800;color:var(--green);opacity:0;transition:opacity .3s;margin-bottom:7px;display:block;height:18px}
+.don-copied.show{opacity:1}
+.don-note{font-size:11px;color:var(--muted);line-height:1.6}
+.lightning-note{font-size:13px;color:var(--muted);padding:16px;background:rgba(247,147,26,.06);border-radius:12px;max-width:440px;margin:0 auto;line-height:1.75}
+.lightning-note strong{color:var(--btc)}
+
+/* ===== 21M MOMENT ===== */
+.tm{text-align:center;padding:110px 24px 96px;position:relative;overflow:hidden}
+#tmCanvas{position:absolute;inset:0;pointer-events:none}
+.tm-inner{position:relative;z-index:2}
+.tm-pre{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:3.5px;color:var(--muted);margin-bottom:24px;animation:fadeUp .8s ease both}
+.tm-num{display:block;font-size:clamp(90px,20vw,240px);font-weight:900;letter-spacing:-12px;line-height:.8;background:linear-gradient(135deg,var(--btc) 0%,var(--gold) 45%,var(--green) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tmGlow 3s ease-in-out infinite,fadeUp .8s .08s ease both}
+@keyframes tmGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(247,147,26,0))}50%{filter:drop-shadow(0 0 90px rgba(247,147,26,.5)) drop-shadow(0 0 200px rgba(255,215,0,.22))}}
+.tm-unit{font-size:clamp(22px,5vw,64px);font-weight:900;letter-spacing:-2.5px;color:var(--muted);margin:10px 0 14px;display:block;animation:fadeUp .8s .15s ease both}
+.tm-key{font-size:clamp(62px,13vw,160px);display:block;margin:0 0 20px;animation:keyTurn 4s ease-in-out infinite,fadeUp .8s .22s ease both}
+@keyframes keyTurn{0%,65%,100%{transform:rotate(0deg) scale(1)}32%{transform:rotate(24deg) scale(1.2)}}
+.tm-tag{font-size:clamp(24px,5.5vw,68px);font-weight:900;letter-spacing:-3px;line-height:1.06;margin-bottom:28px;animation:fadeUp .8s .28s ease both}
+.tm-btc{color:var(--btc)}.tm-go{color:var(--gold)}.tm-g{color:var(--green)}
+.tm-sub{font-size:clamp(14px,1.9vw,19px);color:var(--muted);max-width:720px;margin:0 auto;line-height:2.05;font-family:'Lora',serif;font-style:italic;animation:fadeUp .8s .34s ease both}
+
+/* ===== COMPLETE MAP ===== */
+.cmap{background:var(--card);border:2px solid rgba(247,147,26,.32);border-radius:26px;padding:36px;margin:52px 0}
+.cmap-title{font-size:17px;font-weight:900;margin-bottom:7px;letter-spacing:-.3px}
+.cmap-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.75;max-width:600px}
+.cmap-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+.cm-s{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;text-decoration:none;transition:all .3s;border:1px solid;opacity:0;transform:scale(.7)}
+.cm-s.in{opacity:1;transform:scale(1)}
+.cm-s.done{background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(247,147,26,.08));border-color:rgba(34,197,94,.4);color:var(--green)}
+.cm-s.done:hover{transform:scale(1.12) translateY(-3px);border-color:var(--green);box-shadow:0 4px 16px rgba(34,197,94,.3)}
+.cm-s.summit{background:linear-gradient(135deg,var(--btc),var(--gold));border-color:var(--gold);color:#000;font-weight:900;font-size:13px;animation:smtPulse 1.8s ease-in-out infinite}
+@keyframes smtPulse{0%,100%{box-shadow:0 4px 20px rgba(247,147,26,.5)}50%{box-shadow:0 8px 52px rgba(247,147,26,1),0 0 0 10px rgba(255,215,0,.1)}}
+.cmap-leg{display:flex;gap:18px;flex-wrap:wrap;margin-top:4px}
+.cl-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-weight:600}
+.cl-ld{width:10px;height:10px;border-radius:3px}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media print{.ticker,.rp,nav,.step-nav-bar,.scroll-progress,#cosmosCanvas,#tmCanvas,.tm,.don-rings{display:none!important}body{background:white;color:black}}
+@media(max-width:860px){nav,.step-nav-bar{padding-left:18px;padding-right:18px}.hero,.art{padding-left:20px;padding-right:20px}.tr-grid{grid-template-columns:1fr}.tr-track{border-right:none;border-bottom:1px solid var(--border)}.tr-track:last-child{border-bottom:none}.min-grid{grid-template-columns:1fr}.min-way{border-right:none}.min-way:nth-child(3){border-bottom:1px solid var(--border)}.tools-grid{grid-template-columns:1fr 1fr}.pledge-inner{padding:36px 24px}.rp{display:none}.su-nums{grid-template-columns:1fr}.su-n{border-right:none;border-bottom:1px solid var(--border)}.su-n:last-child{border-bottom:none}.cert-btns{flex-direction:column;align-items:center}}
+@media(max-width:540px){.hero-h1{letter-spacing:-3px}.cm-s{width:32px;height:32px;font-size:10px}.tools-grid{grid-template-columns:1fr}.pledge-inner{padding:28px 18px}.tm{padding:72px 20px 60px}}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<div class="ticker"><div class="ticker-inner">
+  <span>🏔️ STEP 21 OF 21 — THE SUMMIT · THE AWAKENING</span><span>·</span>
+  <span>🔑 21 MILLION. FIXED. FOREVER. THE KEY TO EVERYTHING</span><span>·</span>
+  <span>🌅 YOU HAVE ARRIVED. NOW YOU RISE.</span><span>·</span>
+  <span>₿ NOT YOUR KEYS · NOT YOUR COINS · YOUR KEYS · YOUR KINGDOM</span><span>·</span>
+  <span>🌍 SPREAD THE WORD · ORANGE PILL THE WORLD · THE MINISTRY OF BITCOIN IS YOU</span><span>·</span>
+  <span>⚡ STACK SATS · HOLD KEYS · VERIFY · DON'T TRUST · RUN YOUR OWN NODE</span><span>·</span>
+  <span>🏔️ STEP 21 OF 21 — THE SUMMIT · THE AWAKENING</span><span>·</span>
+  <span>🔑 21 MILLION. FIXED. FOREVER. THE KEY TO EVERYTHING</span><span>·</span>
+  <span>🌅 YOU HAVE ARRIVED. NOW YOU RISE.</span><span>·</span>
+  <span>₿ NOT YOUR KEYS · NOT YOUR COINS · YOUR KEYS · YOUR KINGDOM</span><span>·</span>
+  <span>🌍 SPREAD THE WORD · ORANGE PILL THE WORLD · THE MINISTRY OF BITCOIN IS YOU</span><span>·</span>
+  <span>⚡ STACK SATS · HOLD KEYS · VERIFY · DON'T TRUST · RUN YOUR OWN NODE</span><span>·</span>
+</div></div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div style="display:flex;flex-direction:column;gap:1px"><span class="logo-name">SATOLOGY</span><span class="logo-sub">Understanding Bitcoin</span></div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span><span id="btcPrice">$--</span></div>
+    <button class="theme-toggle" id="themeToggle"><span class="t-icon sun">☀️</span><span class="t-icon moon">🌙</span></button>
+  </div>
+</nav>
+
+<div class="step-nav-bar">
+  <div class="snbl">
+    <a href="index.html">Home</a><span style="opacity:.4">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a><span style="opacity:.4">›</span>
+    <span style="color:var(--text);font-weight:600">Step 21 — The Summit 🏔️</span>
+  </div>
+  <div class="snbr">
+    <div class="spm"><div class="spm-bar"><div class="spm-fill"></div></div><span>21 / 21 ✓</span></div>
+    <div class="step-pill">🏔️ Summit</div>
+  </div>
+</div>
+
+<div class="rp"><div class="rp-lbl">Reading</div><div class="rp-track"><div class="rp-fill" id="rpFill"></div></div></div>
+
+<!-- HERO -->
+<div class="hero">
+  <canvas id="cosmosCanvas"></canvas>
+  <div class="hero-21">21</div>
+  <div class="eyebrow">
+    <div class="step-num-badge">21</div>
+    <div>
+      <div class="step-meta-top">🏔️ Phase 4 — Mastery · The Final Step · The Summit</div>
+      <div class="step-meta-bot"><span>🎓 21 steps completed</span><span>·</span><span>🔑 21 million. Fixed. Forever.</span><span>·</span><span>🌍 Now spread the word</span></div>
+    </div>
+  </div>
+  <h1 class="hero-h1">
+    <span class="hw hw1">You</span><br>
+    <span class="hw hw2">are</span><br>
+    <span class="hw hw3">awake.</span>
+  </h1>
+  <p class="sub-p">Twenty steps brought you here. The philosophy of money. The mechanics of the blockchain. The wallets and the keys. The Lightning Network. The law. The taxes. The retirement mathematics. The human freedom argument. Every objection demolished. Now the student becomes the sovereign. The listener becomes the voice. The reader becomes the minister. This is the final step — not an ending, but a beginning.</p>
+  <div class="key-box">
+    <span style="font-size:22px;flex-shrink:0;margin-top:1px">🔑</span>
+    <span><strong>What this final step delivers:</strong> The 21 Truths you now carry — each linked to its source step. The live 21 million supply counter. Three action tracks with checkable localStorage progress. The complete SATOLOGY toolbox. The Bitcoin Ministry. The Sovereign's Pledge with copy-to-share. Your downloadable completion certificate. The 21 Million cosmos moment. And the final words from the summit.</span>
+  </div>
+</div>
+
+<div class="art">
+
+<!-- CHAPTER 1 -->
+<div class="chapter reveal">
+  <div class="ch-label"><div class="ch-num">①</div><div class="ch-title">The Awakening — What Just Happened to You</div></div>
+  <div class="prose">
+    <p>Something has changed. You may not be able to name it precisely yet, but you can feel it. The world looks slightly different when you understand money — when you understand that the thing in your wallet is not a neutral tool but a political technology, designed by humans with interests, maintained by institutions with incentives, and subject to debasement whenever those institutions need resources they cannot otherwise obtain. <em>You cannot unsee this.</em></p>
+    <p>Most people will go their entire lives without understanding what money is. They will work hard for it, save it faithfully, watch inflation quietly devour it, wonder why the house they planned to buy keeps moving further away, and never connect the dots to the system that caused it. <strong>You connected the dots. That is the awakening.</strong></p>
+    <p>Bitcoin is not merely an investment thesis. It is the first viable answer to the oldest problem in monetary history: how do you store value across time when every institution that issues money eventually discovers it can issue more? The answer — for the first time in five thousand years — is mathematics. The answer is <em class="go">21 million.</em> The answer is the key you now hold.</p>
+  </div>
+  <div class="pull-quote reveal">
+    <p>"The rabbit hole has no bottom. But the view from the first twenty steps is already extraordinary."</p>
+    <cite>— Every Bitcoin holder who walked this path before you</cite>
+  </div>
+  <div class="callout callout-btc reveal">
+    <div class="callout-title">₿ What the Awakening Means in Practice</div>
+    <p>When someone says "the economy is growing," you ask: is the number growing, or is the number being printed? When someone says "inflation is under control," you know that 2% per year is 20% per decade. When someone says "Bitcoin is too risky," you know that holding a currency that loses purchasing power by design is also a risk — the quiet, invisible kind. <strong>The awakened mind cannot pretend these things are not true. It can only decide what to do with the knowledge.</strong></p>
+  </div>
+</div>
+
+<!-- CHAPTER 2 — 21 TRUTHS -->
+<div class="chapter reveal">
+  <div class="ch-label"><div class="ch-num">②</div><div class="ch-title">The 21 Truths You Now Carry — Forever</div></div>
+  <div class="prose"><p style="margin-bottom:0">Twenty-one steps. Twenty-one truths. Each linked to the step where you earned it. They light up as you scroll — click any dot to revisit its source.</p></div>
+
+  <div class="truths reveal" id="truthsSection">
+    <div class="truths-spine"></div>
+
+    <div class="truth-row" data-truth="1"><div class="t-node"><a href="btc-step-01.html" class="t-dot">1</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 01 · Step 1</div><div class="t-title">Money is not neutral. It has never been neutral.</div><div class="t-body">Every monetary system was designed by someone with interests. Bitcoin is the first designed to concentrate power in no one's hands. <strong>That is not a small thing. It is the most radical monetary innovation in five thousand years.</strong><a href="btc-step-01.html" class="t-link">→ Step 1: What Is Money?</a></div></div></div>
+
+    <div class="truth-row" data-truth="2"><div class="t-node"><a href="btc-step-02.html" class="t-dot">2</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 02 · Step 2</div><div class="t-title">Inflation is a tax. It is levied without a vote.</div><div class="t-body">The dollar has lost 96% of its purchasing power since 1913. That is not accident. <strong>That is the predictable outcome of a system with no hard limit on supply. Every holder of fiat currency is a creditor of the state — and the state defaults slowly, continuously, silently.</strong><a href="btc-step-02.html" class="t-link">→ Step 2: The Problem With Fiat</a></div></div></div>
+
+    <div class="truth-row" data-truth="3"><div class="t-node"><a href="btc-step-03.html" class="t-dot">3</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 03 · Step 3</div><div class="t-title">Satoshi gave us the gift and then vanished. That was the point.</div><div class="t-body">A monetary system controlled by its creator is not decentralised. <strong>Satoshi's disappearance was the final, deliberate act of design.</strong> Bitcoin has no leader because the only safe Bitcoin is the one where no one is in charge.<a href="btc-step-03.html" class="t-link">→ Step 3: Who Is Satoshi?</a></div></div></div>
+
+    <div class="truth-row" data-truth="4"><div class="t-node"><a href="btc-step-04.html" class="t-dot">4</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 04 · Step 4</div><div class="t-title">Bitcoin is the first money that is also a computer program.</div><div class="t-body">For the first time, monetary rules are enforced by mathematics — not by trust in institutions. <strong>No court can override them. No government can amend them without network consensus. The rules are the money.</strong><a href="btc-step-04.html" class="t-link">→ Step 4: What Is Bitcoin Really?</a></div></div></div>
+
+    <div class="truth-row" data-truth="5"><div class="t-node"><a href="btc-step-05.html" class="t-dot">5</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 05 · Step 5</div><div class="t-title">The blockchain is a ledger that rewrites the meaning of trust.</div><div class="t-body">The ledger is maintained by consensus of thousands, verified by mathematics, visible to everyone. <strong>Humans have always needed trusted third parties to maintain records. Bitcoin eliminates this requirement for money entirely.</strong><a href="btc-step-05.html" class="t-link">→ Step 5: The Blockchain Explained</a></div></div></div>
+
+    <div class="truth-row" data-truth="6"><div class="t-node"><a href="btc-step-06.html" class="t-dot">6</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 06 · Step 6</div><div class="t-title">21 million is not a number. It is a promise kept by physics.</div><div class="t-body">Every government in history has eventually broken its monetary promises. <strong>21 million cannot be broken because no human can break it. The promise is enforced by cryptography and consensus — a different category of promise. The first of its kind.</strong><a href="btc-step-06.html" class="t-link">→ Step 6: Why Only 21 Million?</a></div></div></div>
+
+    <div class="truth-row" data-truth="7"><div class="t-node"><a href="btc-step-07.html" class="t-dot">7</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 07 · Step 7</div><div class="t-title">Your keys are your kingdom. Everything else is a custodian.</div><div class="t-body">A Bitcoin held on an exchange is an IOU. A promise. A liability. <strong>Self-custody — owning the private key — is the only form of Bitcoin ownership that is actually ownership. Not your keys, not your coins. Your keys, your kingdom.</strong><a href="btc-step-07.html" class="t-link">→ Step 7: Wallets &amp; Keys</a></div></div></div>
+
+    <div class="truth-row" data-truth="8"><div class="t-node"><a href="btc-step-08.html" class="t-dot">8</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 08 · Step 8</div><div class="t-title">The history of custodians is the history of loss.</div><div class="t-body">Mt. Gox. QuadrigaCX. FTX. Celsius. Billions in customer funds — all gone, all held by "trusted" custodians. <strong>Bitcoin was built precisely so you don't have to trust custodians. Every exchange failure is a reminder the lesson has not been learned by everyone.</strong><a href="btc-step-08.html" class="t-link">→ Step 8: Not Your Keys, Not Your Coins</a></div></div></div>
+
+    <div class="truth-row" data-truth="9"><div class="t-node"><a href="btc-step-09.html" class="t-dot">9</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 09 · Step 9</div><div class="t-title">The best time to start was yesterday. The second best is today.</div><div class="t-body"><strong>Dollar-cost averaging — buying a fixed amount monthly regardless of price — is the simplest, most proven Bitcoin accumulation strategy.</strong> Small, consistent, automatic. The strategy that has beaten almost everything else over any 4-year period in Bitcoin's history.<a href="btc-step-09.html" class="t-link">→ Step 9: How to Buy Bitcoin</a></div></div></div>
+
+    <div class="truth-row" data-truth="10"><div class="t-node"><a href="btc-step-10.html" class="t-dot">10</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 10 · Step 10</div><div class="t-title">DCA is not a strategy. It is a philosophy of patience.</div><div class="t-body"><strong>Patience and consistency have beaten every "sophisticated" Bitcoin trading strategy ever devised.</strong> The investor who DCA'd through every crash, every bear market, every obituary — without panic-selling — is up multiples. Boring wins.<a href="btc-step-10.html" class="t-link">→ Step 10: What Is DCA?</a></div></div></div>
+
+    <div class="truth-row" data-truth="11"><div class="t-node"><a href="btc-step-11.html" class="t-dot">11</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 11 · Step 11</div><div class="t-title">Bitcoin is not gold's competition. It is gold's successor.</div><div class="t-body">Gold was the best monetary asset for 5,000 years. Bitcoin has every property of gold — and adds perfect divisibility, instant borderless transfer, and verifiable scarcity. <strong>Gold was the best store of value the physical world could produce. Bitcoin is the best the digital world can produce. The digital world is winning.</strong><a href="btc-step-11.html" class="t-link">→ Step 11: Bitcoin vs Gold</a></div></div></div>
+
+    <div class="truth-row" data-truth="12"><div class="t-node"><a href="btc-step-12.html" class="t-dot">12</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 12 · Step 12</div><div class="t-title">Real estate priced in Bitcoin has been falling for fifteen years.</div><div class="t-body"><strong>The "housing crisis" is not a housing crisis. It is a money crisis.</strong> When the money is hard and fixed in supply, assets find their true price. The house that cost 10,000 Bitcoin in 2013 costs a fraction of one today.<a href="btc-step-12.html" class="t-link">→ Step 12: Bitcoin vs Real Estate</a></div></div></div>
+
+    <div class="truth-row" data-truth="13"><div class="t-node"><a href="btc-step-13.html" class="t-dot">13</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 13 · Step 13</div><div class="t-title">The halving is Bitcoin's heartbeat. It cannot be stopped.</div><div class="t-body"><strong>Every previous halving has been followed by a new all-time high within 18 months.</strong> The mechanism is built into the protocol. No committee can delay it. No government can cancel it. Every four years, supply shock. Every time, the same result.<a href="btc-step-13.html" class="t-link">→ Step 13: The Halving Explained</a></div></div></div>
+
+    <div class="truth-row" data-truth="14"><div class="t-node"><a href="btc-step-14.html" class="t-dot">14</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 14 · Step 14</div><div class="t-title">The network effect is Bitcoin's moat. It deepens with every user.</div><div class="t-body">The network is the asset. The network grows every day. <strong>Every person who buys Bitcoin makes it more valuable for every existing holder. Every institution that adopts it makes banning it harder. The moat deepens with every block.</strong><a href="btc-step-14.html" class="t-link">→ Step 14: Bitcoin's Network Effect</a></div></div></div>
+
+    <div class="truth-row" data-truth="15"><div class="t-node"><a href="btc-step-15.html" class="t-dot">15</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 15 · Step 15</div><div class="t-title">Lightning is Bitcoin at the speed of light.</div><div class="t-body"><strong>Millisecond settlement. Fractions of a cent in fees. No intermediary. No chargebacks. No permissions.</strong> The slow, expensive Bitcoin of 2017 is not the Bitcoin of 2024. Lightning solved payments before most critics updated their talking points.<a href="btc-step-15.html" class="t-link">→ Step 15: The Lightning Network</a></div></div></div>
+
+    <div class="truth-row" data-truth="16"><div class="t-node"><a href="btc-step-16.html" class="t-dot">16</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 16 · Step 16</div><div class="t-title">Bitcoin is legal. The trajectory is regulation, not prohibition.</div><div class="t-body"><strong>Every year that passes makes the ban argument weaker and the regulatory framework stronger.</strong> Legal in 100+ countries. ETFs from BlackRock. Legal tender in El Salvador. The window for prohibition closed. What remains is integration.<a href="btc-step-16.html" class="t-link">→ Step 16: Is Bitcoin Legal?</a></div></div></div>
+
+    <div class="truth-row" data-truth="17"><div class="t-node"><a href="btc-step-17.html" class="t-dot">17</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 17 · Step 17</div><div class="t-title">Bitcoin is property. Report it honestly. Hold it longer.</div><div class="t-body"><strong>The three best words in Bitcoin taxation: hold it longer.</strong> Long-term hold reduces tax rate dramatically. The Roth IRA eliminates it entirely. The tax code rewards patience — the same patience that rewards you financially.<a href="btc-step-17.html" class="t-link">→ Step 17: Bitcoin &amp; Taxes</a></div></div></div>
+
+    <div class="truth-row" data-truth="18"><div class="t-node"><a href="btc-step-18.html" class="t-dot">18</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 18 · Step 18</div><div class="t-title">A small Bitcoin allocation changes the retirement timeline.</div><div class="t-body">The FIRE number arrives years earlier for the person who understood this than for the person who didn't. <strong>Even a 1% Bitcoin allocation produced 37% more wealth over a decade. 5% produced 147% more. That difference is measured in years of your life.</strong><a href="btc-step-18.html" class="t-link">→ Step 18: Bitcoin for Retirement</a></div></div></div>
+
+    <div class="truth-row" data-truth="19"><div class="t-node"><a href="btc-step-19.html" class="t-dot">19</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 19 · Step 19</div><div class="t-title">Bitcoin is a human right, not an investment thesis.</div><div class="t-body">Afghan women paid through Bitcoin when banks were closed to them. Ukrainian refugees carried their savings across war zones in 24 words. <strong>For hundreds of millions of people, Bitcoin is not about getting rich. It is the only tool of financial sovereignty available to them.</strong><a href="btc-step-19.html" class="t-link">→ Step 19: Bitcoin &amp; Human Freedom</a></div></div></div>
+
+    <div class="truth-row" data-truth="20"><div class="t-node"><a href="btc-step-20.html" class="t-dot">20</a><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 20 · Step 20</div><div class="t-title">Every objection has been answered. None have been proved.</div><div class="t-body"><strong>479 obituaries. Zero actual deaths. 15 years of unbroken operation.</strong> Ponzi. No value. Too slow. Too volatile. Bad for the environment. Governments will ban it. All answered. All demolished or honestly addressed. The evidence is in.<a href="btc-step-20.html" class="t-link">→ Step 20: Every Objection Answered</a></div></div></div>
+
+    <div class="truth-row" data-truth="21"><div class="t-node"><div class="t-dot" style="cursor:default;background:linear-gradient(135deg,var(--btc),var(--gold));border-color:var(--gold);color:#000;box-shadow:0 0 36px rgba(255,215,0,.6)">🔑</div><div class="t-stem"></div></div><div class="t-content"><div class="t-idx">Truth 21 · The Summit 🏔️</div><div class="t-title">21 million. Fixed. Forever. The key to everything.</div><div class="t-body">There will never be more than 21 million Bitcoin. Not 22 million. Not 21,000,001. The number is enforced by the simultaneous consensus of every node on the network. <strong>In a world of infinite money printing, 21 million is the most important number in finance. Now you understand why. 🔑</strong></div></div></div>
+  </div>
+</div>
+
+<!-- CHAPTER 3 — SUPPLY BAR -->
+<div class="chapter reveal">
+  <div class="ch-label"><div class="ch-num">③</div><div class="ch-title">The 21 Million Hard Cap — Live Supply Counter</div></div>
+  <div class="supply reveal" id="supplySection">
+    <div class="su-head">
+      <h3>🔑 21 Million — Counting Up in Real Time</h3>
+      <p>Starting from 19,855,000 BTC — the approximate current supply — this counter advances in real time. ~3.125 BTC is mined every ~10 minutes. Watch the gap between mined and the hard cap narrow, forever.</p>
+    </div>
+    <div class="su-body">
+      <div class="su-nums">
+        <div class="su-n"><div class="su-val mined" id="supplyMined">19,855,000</div><div class="su-lbl">BTC Mined</div></div>
+        <div class="su-n"><div class="su-val remain" id="supplyRemain">1,145,000</div><div class="su-lbl">BTC Remaining</div></div>
+        <div class="su-n"><div class="su-val cap">21,000,000</div><div class="su-lbl">Hard Cap — Forever</div></div>
+      </div>
+      <div class="su-bar-wrap">
+        <div class="su-bar-cap">21,000,000 ▼</div>
+        <div class="su-bar-track"><div class="su-bar-fill" id="supplyBarFill"><span class="su-bar-pct" id="supplyPct">94.5476%</span></div></div>
+      </div>
+      <div class="su-note" id="supplyNote">~3.125 BTC mined per block · ~1 block every 10 minutes · 94.5476% of total supply mined · 1,145,000 BTC remaining</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER 4 — ACTION TRACKS -->
+<div class="chapter reveal">
+  <div class="ch-label"><div class="ch-num">④</div><div class="ch-title">Your Three Paths Forward — Checkable Progress</div></div>
+  <div class="prose"><p>Understanding Bitcoin and acting on it are different things. The gap between them is the only one that matters now. Pick your track. Check items off as you complete them. Progress is saved in your browser — come back tomorrow and your checkmarks will still be there. <em>The direction matters more than the speed.</em></p></div>
+  <div class="tracks reveal">
+    <div class="tr-head">
+      <h3>🚀 Choose Your Track — Progress Saved Automatically</h3>
+      <p>Every checkbox saves to your browser instantly. Return any time — your progress persists.</p>
+    </div>
+    <div class="tr-grid">
+      <div class="tr-track">
+        <span class="tr-icon">🌱</span>
+        <div class="tr-label">Track 1 — First Timer</div>
+        <div class="tr-title">Start with $21</div>
+        <div class="tr-steps">
+          <div class="tr-step"><div class="ck" data-key="t1s1" onclick="toggleCk(this)"></div><div><strong>Buy $21 of Bitcoin</strong> on Coinbase, River, or Swan Bitcoin. The amount doesn't matter. The habit does.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t1s2" onclick="toggleCk(this)"></div><div><strong>Set up a DCA auto-buy</strong> — $21, $50, or $100 every week. Set it. Forget it. Don't watch the price.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t1s3" onclick="toggleCk(this)"></div><div><strong>Download Blue Wallet or Phoenix</strong> and receive your first Lightning payment. Feel instant settlement.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t1s4" onclick="toggleCk(this)"></div><div><strong>Read The Bitcoin Standard</strong> by Saifedean Ammous. The book that converted more people than any other.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t1s5" onclick="toggleCk(this)"></div><div><strong>Share this series</strong> with one person who needs it. The ministry begins with one conversation.</div></div>
+        </div>
+      </div>
+      <div class="tr-track">
+        <span class="tr-icon">🔥</span>
+        <div class="tr-label">Track 2 — Committed Stacker</div>
+        <div class="tr-title">Take Custody</div>
+        <div class="tr-steps">
+          <div class="tr-step"><div class="ck" data-key="t2s1" onclick="toggleCk(this)"></div><div><strong>Buy a hardware wallet</strong> — Coldcard, Trezor, or Ledger. Move Bitcoin off exchanges. Your keys, your coins.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t2s2" onclick="toggleCk(this)"></div><div><strong>Open a Roth IRA</strong> and buy Bitcoin ETF (IBIT or FBTC). Tax-free growth forever. $7,000/year compounding.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t2s3" onclick="toggleCk(this)"></div><div><strong>Run your FIRE number</strong> using the Step 18 calculator. Know your target with Bitcoin in the mix.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t2s4" onclick="toggleCk(this)"></div><div><strong>Find local Bitcoin merchants</strong> at btcmap.org. Spend and re-stack. Close the circular economy loop.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t2s5" onclick="toggleCk(this)"></div><div><strong>Orange-pill one person per month.</strong> Share a step. Buy coffee and explain the halving.</div></div>
+        </div>
+      </div>
+      <div class="tr-track">
+        <span class="tr-icon">👑</span>
+        <div class="tr-label">Track 3 — Sovereign Maximalist</div>
+        <div class="tr-title">Become the Network</div>
+        <div class="tr-steps">
+          <div class="tr-step"><div class="ck" data-key="t3s1" onclick="toggleCk(this)"></div><div><strong>Run a full node</strong> — Umbrel, Start9, or RaspiBlitz. Verify every transaction. Don't trust. Verify.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t3s2" onclick="toggleCk(this)"></div><div><strong>Open Lightning channels</strong> and route payments. Earn routing fees. Become infrastructure.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t3s3" onclick="toggleCk(this)"></div><div><strong>Multi-sig self-custody</strong> via Unchained Capital, Sparrow Wallet, or Casa. Eliminate single points of failure.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t3s4" onclick="toggleCk(this)"></div><div><strong>Accept Bitcoin for goods or services</strong> via btcpayserver.org. Every merchant strengthens the network.</div></div>
+          <div class="tr-step"><div class="ck" data-key="t3s5" onclick="toggleCk(this)"></div><div><strong>Build, write, teach, speak.</strong> The ministry needs voices. Every blog post, every orange pill is a block in the network of understanding.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER 5 — TOOLS -->
+<div class="chapter reveal">
+  <div class="ch-label"><div class="ch-num">⑤</div><div class="ch-title">The SATOLOGY Toolbox</div></div>
+  <div class="tools-hdr reveal">🛠️ SATOLOGY Interactive Calculators</div>
+  <div class="tools-grid reveal">
+    <a href="Retireearlywithbitcoin.html" class="tool-card"><span class="tool-icon">🔥</span><div class="tool-title">Retire Early with Bitcoin</div><div class="tool-desc">The FIRE calculator built for Bitcoin. Your retirement date with and without allocation.</div><span class="tool-tag">FIRE Calculator</span></a>
+    <a href="raise-with-bitcoin.html" class="tool-card"><span class="tool-icon">📈</span><div class="tool-title">DCA Calculator</div><div class="tool-desc">Model your dollar-cost averaging strategy. See how much your stack would be worth with any monthly amount.</div><span class="tool-tag">Stack Sats</span></a>
+    <a href="real-estate-vs-bitcoin.html" class="tool-card"><span class="tool-icon">🏠</span><div class="tool-title">Real Estate vs Bitcoin</div><div class="tool-desc">Compare property investment returns against Bitcoin. The comparison that changed how thousands think about wealth.</div><span class="tool-tag">Comparison</span></a>
+    <a href="BitcoinSupplyShock.html" class="tool-card"><span class="tool-icon">⚡</span><div class="tool-title">Halving Supply Shock</div><div class="tool-desc">Visualise Bitcoin's supply schedule. Watch the issuance curve flatten toward 21 million.</div><span class="tool-tag">Supply Model</span></a>
+    <a href="LumpSumVSdcaVShybrid.html" class="tool-card"><span class="tool-icon">🎯</span><div class="tool-title">Strategy Comparison</div><div class="tool-desc">Lump sum vs DCA vs hybrid — head-to-head across any historical period.</div><span class="tool-tag">Strategy</span></a>
+    <a href="IntrinsicValue.html" class="tool-card"><span class="tool-icon">💎</span><div class="tool-title">Bitcoin's Intrinsic Value</div><div class="tool-desc">The deep-dive on why Bitcoin has value and what every critic is missing.</div><span class="tool-tag">Philosophy</span></a>
+  </div>
+  <div class="tools-hdr reveal">📚 SATOLOGY Deep Dives</div>
+  <div class="tools-grid reveal">
+    <a href="Unstoppable.html" class="tool-card"><span class="tool-icon">🌊</span><div class="tool-title">Bitcoin Is Unstoppable</div><div class="tool-desc">Why Bitcoin cannot be stopped, banned, or destroyed by any government, institution, or attack vector.</div><span class="tool-tag">Deep Dive</span></a>
+    <a href="why-bitcoin-wins.html" class="tool-card"><span class="tool-icon">🏆</span><div class="tool-title">Why Bitcoin Wins</div><div class="tool-desc">Why Bitcoin — not Ethereum, not XRP, not CBDCs — is the monetary standard the world is moving toward.</div><span class="tool-tag">Analysis</span></a>
+    <a href="BitcoinKids18.html" class="tool-card"><span class="tool-icon">👶</span><div class="tool-title">Bitcoin for Kids</div><div class="tool-desc">Teach the next generation. Age-appropriate Bitcoin explanations for those under 18.</div><span class="tool-tag">Education</span></a>
+  </div>
+</div>
+
+<!-- CHAPTER 6 — MINISTRY -->
+<div class="chapter reveal">
+  <div class="ch-label"><div class="ch-num">⑥</div><div class="ch-title">The Bitcoin Ministry — Spread the Word</div></div>
+  <div class="prose"><p>Bitcoin does not have a marketing department. No advertising budget. No PR firm. No CEO issuing press releases. <em>Bitcoin's only distribution mechanism is people who understand it telling people who don't.</em> You are now one of those people. One conversation. One shared link. One question answered. One objection demolished. This is the work.</p></div>
+  <div class="ministry reveal">
+    <div class="min-head">
+      <span class="min-head-icon">⛪</span>
+      <h3>The Bitcoin Ministry — Four Ways to Spread the Word</h3>
+      <p>You don't need to be an expert. You don't need to be a developer. You just need to keep sharing what you now know — with patience, with evidence, with the calm confidence of someone who has done the work.</p>
+    </div>
+    <div class="min-grid">
+      <div class="min-way"><div class="min-num">01</div><div class="min-title">The Orange Pill</div><div class="min-body">A one-on-one conversation that plants the seed. <strong>Don't lecture. Ask questions.</strong> "Do you know how much purchasing power the dollar has lost since you were born?" <em>The rabbit hole opens from curiosity, not argument.</em> Share this series. Let it do the work.<div class="min-action">🔗 Share why-bitcoin.html</div></div></div>
+      <div class="min-way"><div class="min-num">02</div><div class="min-title">The Proof of Work</div><div class="min-body"><strong>The most powerful argument for Bitcoin is not an argument. It is showing someone your stack after four years of DCA.</strong> It is demonstrating a Lightning payment. It is carrying your savings in 24 words. <em>Lived experience converts where theory fails.</em><div class="min-action">⚡ Demo a Lightning payment</div></div></div>
+      <div class="min-way"><div class="min-num">03</div><div class="min-title">The Written Word</div><div class="min-body">Write about Bitcoin. A tweet, a blog post, a note to your family. <strong>Your perspective — as a non-technical person, as a parent, as a retiree, as whoever you are — reaches people that technical experts cannot reach.</strong> <em>The Bitcoin story needs every voice.</em><div class="min-action">✍️ Share one truth this week</div></div></div>
+      <div class="min-way"><div class="min-num">04</div><div class="min-title">The Gift</div><div class="min-body">Buy someone their first $21 of Bitcoin. Set up their wallet. Watch their face when they receive their first sats. <strong>The visceral experience of receiving Bitcoin converts more minds than any reading.</strong> <em>The gift of financial sovereignty is the most meaningful gift in the Bitcoin economy.</em><div class="min-action">🎁 Gift $21 in sats</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER 7 — PLEDGE -->
+<div class="chapter reveal">
+  <div class="ch-label"><div class="ch-num">⑦</div><div class="ch-title">The Sovereign's Pledge — Twenty-One Lines</div></div>
+  <div class="pledge reveal">
+    <div class="pledge-inner">
+      <div class="pledge-wm">₿</div>
+      <div class="pledge-ey">₿ The Bitcoin Sovereign's Pledge</div>
+      <button class="pledge-copy" id="pledgeCopy" onclick="copyPledge()">📋 Copy all 21 lines to share</button>
+      <div class="pledge-lines">
+        <div class="pl"><span>I understand that <span class="pl-btc">money is not neutral.</span></span></div>
+        <div class="pl"><span>I understand that <span class="pl-go">inflation is a tax</span> levied without my vote.</span></div>
+        <div class="pl"><span>I choose <span class="pl-g">hard money</span> over easy promises.</span></div>
+        <div class="pl"><span>I will <span class="pl-btc">not trust — I will verify.</span></span></div>
+        <div class="pl"><span>My keys. <span class="pl-go">My coins.</span> My kingdom.</span></div>
+        <div class="pl"><span>I will <span class="pl-g">stack sats</span> through every market.</span></div>
+        <div class="pl"><span>I will <span class="pl-btc">hold through</span> the fear and the noise.</span></div>
+        <div class="pl"><span>I will never sell below my <span class="pl-go">conviction.</span></span></div>
+        <div class="pl"><span>I will <span class="pl-g">DCA</span> when others panic.</span></div>
+        <div class="pl"><span>I will hold <span class="pl-btc">self-custody</span> as sacred.</span></div>
+        <div class="pl"><span>I will <span class="pl-s">spread the word</span> with patience and evidence.</span></div>
+        <div class="pl"><span>I will <span class="pl-go">orange-pill</span> with love, not lectures.</span></div>
+        <div class="pl"><span>I will <span class="pl-g">give Bitcoin</span> as the greatest gift I can.</span></div>
+        <div class="pl"><span>I will use <span class="pl-btc">Lightning</span> and close the circular loop.</span></div>
+        <div class="pl"><span>I will run a <span class="pl-go">node</span> when I am ready.</span></div>
+        <div class="pl"><span>I will <span class="pl-g">teach</span> what I know to those who ask.</span></div>
+        <div class="pl"><span>I believe <span class="pl-btc">sound money</span> is a human right.</span></div>
+        <div class="pl"><span>I believe the <span class="pl-s">separation of money and state</span> is long overdue.</span></div>
+        <div class="pl"><span>I believe <span class="pl-go">21 million</span> is the most important number in finance.</span></div>
+        <div class="pl"><span>I am not just a <span class="pl-btc">holder.</span> I am the <span class="pl-g">network.</span></span></div>
+        <div class="pl"><span><span class="pl-go">I am</span> the <span class="pl-btc">ministry.</span> <span class="pl-g">I am awake.</span> 🔑</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER 8 — CERTIFICATE -->
+<div class="chapter reveal">
+  <div class="ch-label"><div class="ch-num">⑧</div><div class="ch-title">Your Completion Certificate</div></div>
+  <div class="cert-section reveal">
+    <h3>🎓 SATOLOGY — Understanding Bitcoin · Certificate of Completion</h3>
+    <p>You completed 21 steps — more Bitcoin education than 99% of people who hold opinions about it. Download your certificate. Share it. Let it be the first of many orange pills.</p>
+    <canvas id="certCanvas" width="900" height="540"></canvas>
+    <div class="cert-btns">
+      <button class="cert-btn cert-primary" onclick="downloadCert()">⬇️ Download Certificate</button>
+      <button class="cert-btn cert-secondary" onclick="drawCert()">🔄 Regenerate</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER 9 — DONATION -->
+<div class="chapter reveal">
+  <div class="ch-label"><div class="ch-num">⑨</div><div class="ch-title">Support the Mission</div></div>
+  <div class="prose"><p>SATOLOGY is free. No paywalls. No subscriptions. No data collection. Twenty-one steps of Bitcoin education, every calculator, every tool — built and maintained by people who believe financial education is a right, not a product. <em>If this series helped you understand Bitcoin, consider supporting the mission.</em></p></div>
+  <div class="donation reveal">
+    <div class="don-rings"><div class="don-ring"></div><div class="don-ring"></div><div class="don-ring"></div><div class="don-ring"></div></div>
+    <div class="don-inner">
+      <span class="don-icon">₿</span>
+      <div class="don-title">Support SATOLOGY</div>
+      <div class="don-sub">21 steps. Free forever. If this education changed something for you — if a calculator showed you a retirement date that surprised you, if a step helped you explain Bitcoin to someone who needed it — consider sending a few sats.</div>
+      <div class="don-toggle">
+        <div class="don-tab active" data-mode="onchain" onclick="toggleDonMode('onchain')">On-chain</div>
+        <div class="don-tab" data-mode="lightning" onclick="toggleDonMode('lightning')">⚡ Lightning</div>
+      </div>
+      <div id="donOnchain">
+        <img class="don-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=164x164&data=BC1QJEG2NER8K79YK7P8RRNAHJ3SLJ6SNQFEMPAR0L" alt="Bitcoin donation QR" loading="lazy">
+        <div class="don-addr" id="donAddr" onclick="copyAddr()">BC1QJEG2NER8K79YK7P8RRNAHJ3SLJ6SNQFEMPAR0L</div>
+        <span class="don-copied" id="donCopied">✓ Address copied to clipboard!</span>
+        <div class="don-note">On-chain Bitcoin · Any amount · Every sat appreciated</div>
+      </div>
+      <div id="donLightning" style="display:none">
+        <div class="lightning-note">⚡ <strong>Lightning tip:</strong> Open your Lightning wallet (Phoenix, Blue Wallet, Strike) and scan the on-chain QR — most modern wallets auto-detect both formats. Living the Step 15 lesson 😉</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /.art -->
+
+<!-- 21 MILLION COSMOS MOMENT -->
+<div class="tm">
+  <canvas id="tmCanvas"></canvas>
+  <div class="tm-inner">
+    <div class="tm-pre">The number that changes everything</div>
+    <span class="tm-num">21</span>
+    <span class="tm-unit">Million. Fixed. Forever.</span>
+    <span class="tm-key">🔑</span>
+    <div class="tm-tag"><span class="tm-btc">Not your keys.</span><br><span class="tm-go">Not your coins.</span><br><span class="tm-g">Your keys. Your Kingdom.</span></div>
+    <div class="tm-sub">This is the number that no committee can change, no central bank can inflate, no government can countermand. 21 million Bitcoin. Every node on the network enforcing the same rule simultaneously. In a world of infinite money printing, 21 million is the immovable object. You understand it now. Go build on it. Go share it. Go rise. The ministry needs you. The world needs sound money. Sound money needs people like you — awake, sovereign, and unstoppable.</div>
+  </div>
+</div>
+
+<!-- COMPLETE MAP -->
+<div class="art" style="padding-top:0;padding-bottom:80px">
+  <div class="cmap reveal" id="cmap">
+    <div class="cmap-title">🗺️ 21 Steps — Complete · The Full Journey</div>
+    <div class="cmap-sub">Every step below is a door you opened. Every door leads back to a truth you now carry. Share the map with someone who needs to walk it.</div>
+    <div class="cmap-grid" id="cmapGrid">
+      <a href="btc-step-01.html" class="cm-s done">1</a>
+      <a href="btc-step-02.html" class="cm-s done">2</a>
+      <a href="btc-step-03.html" class="cm-s done">3</a>
+      <a href="btc-step-04.html" class="cm-s done">4</a>
+      <a href="btc-step-05.html" class="cm-s done">5</a>
+      <a href="btc-step-06.html" class="cm-s done">6</a>
+      <a href="btc-step-07.html" class="cm-s done">7</a>
+      <a href="btc-step-08.html" class="cm-s done">8</a>
+      <a href="btc-step-09.html" class="cm-s done">9</a>
+      <a href="btc-step-10.html" class="cm-s done">10</a>
+      <a href="btc-step-11.html" class="cm-s done">11</a>
+      <a href="btc-step-12.html" class="cm-s done">12</a>
+      <a href="btc-step-13.html" class="cm-s done">13</a>
+      <a href="btc-step-14.html" class="cm-s done">14</a>
+      <a href="btc-step-15.html" class="cm-s done">15</a>
+      <a href="btc-step-16.html" class="cm-s done">16</a>
+      <a href="btc-step-17.html" class="cm-s done">17</a>
+      <a href="btc-step-18.html" class="cm-s done">18</a>
+      <a href="btc-step-19.html" class="cm-s done">19</a>
+      <a href="btc-step-20.html" class="cm-s done">20</a>
+      <a href="btc-step-21.html" class="cm-s summit">21</a>
+    </div>
+    <div class="cmap-leg">
+      <div class="cl-leg"><div class="cl-ld" style="background:rgba(34,197,94,.6)"></div>Steps 1–20 completed</div>
+      <div class="cl-leg"><div class="cl-ld" style="background:linear-gradient(135deg,var(--btc),var(--gold))"></div>Step 21 — The Summit</div>
+    </div>
+    <div style="margin-top:26px;padding-top:22px;border-top:1px solid var(--border);text-align:center">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Share the journey. Start someone new at Step 1.</div>
+      <a href="why-bitcoin.html" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--btc),var(--gold));color:#000;font-size:14px;font-weight:900;padding:14px 32px;border-radius:14px;text-decoration:none;letter-spacing:-.2px;box-shadow:0 8px 32px rgba(247,147,26,.4);transition:all .3s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 48px rgba(247,147,26,.6)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(247,147,26,.4)'">
+        🌅 Share the 21 Steps — Start Someone New at Step 1
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer style="padding:36px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;border-top:1px solid var(--border);max-width:1280px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:9px;font-weight:800;font-size:14px"><div style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff;font-weight:900">₿</div>SATOLOGY</div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <a href="index.html" style="text-decoration:none;color:var(--muted);font-size:12px">Home</a>
+    <a href="why-bitcoin.html" style="text-decoration:none;color:var(--muted);font-size:12px">Why Bitcoin? — 21 Steps</a>
+    <a href="Unstoppable.html" style="text-decoration:none;color:var(--muted);font-size:12px">Unstoppable</a>
+    <a href="IntrinsicValue.html" style="text-decoration:none;color:var(--muted);font-size:12px">Intrinsic Value</a>
+    <a href="Retireearlywithbitcoin.html" style="text-decoration:none;color:var(--muted);font-size:12px">Retire Early</a>
+    <a href="btc-step-20.html" style="text-decoration:none;color:var(--muted);font-size:12px">← Step 20</a>
+  </div>
+  <div style="font-size:11px;color:var(--muted)">© 2026 SATOLOGY — Understanding Bitcoin</div>
+</footer>
+
+<script>
+// ===== THEME =====
+const html=document.documentElement;
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const n=html.getAttribute('data-theme')==='dark'?'light':'dark';
+  html.setAttribute('data-theme',n);
+  localStorage.setItem('satology-theme',n);
+});
+
+// ===== LIVE BTC PRICE =====
+function loadPrice(){
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r=>r.json()).then(d=>{
+      document.getElementById('btcPrice').textContent='$'+d.bitcoin.usd.toLocaleString();
+    }).catch(()=>{});
+}
+loadPrice();setInterval(loadPrice,10000);
+
+// ===== SCROLL PROGRESS =====
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const pct=d.scrollTop/(d.scrollHeight-d.clientHeight)*100;
+  document.getElementById('scrollFill').style.width=pct+'%';
+  document.getElementById('rpFill').style.height=pct+'%';
+},{passive:true});
+
+// ===== COSMOS CANVAS (hero) =====
+(function(){
+  const c=document.getElementById('cosmosCanvas');if(!c)return;
+  const ctx=c.getContext('2d');let S=[],W,H;
+  const COLS=['rgba(247,147,26,','rgba(255,215,0,','rgba(255,255,255,','rgba(34,197,94,'];
+  function resize(){
+    W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;
+    S=Array.from({length:190},()=>({
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15,
+      r:Math.random()*1.6+.3,
+      col:COLS[Math.floor(Math.random()*COLS.length)],
+      ph:Math.random()*Math.PI*2,sp:Math.random()*.004+.001
+    }));
+  }
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    S.forEach(s=>{
+      s.x+=s.vx;s.y+=s.vy;
+      if(s.x<0)s.x=W;if(s.x>W)s.x=0;if(s.y<0)s.y=H;if(s.y>H)s.y=0;
+      const op=.03+.12*((Math.sin(t*s.sp*1000+s.ph)+1)/2);
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=s.col+op+')';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize();window.addEventListener('resize',resize);requestAnimationFrame(draw);
+})();
+
+// ===== 21M MOMENT CANVAS =====
+(function(){
+  const c=document.getElementById('tmCanvas');if(!c)return;
+  const ctx=c.getContext('2d');let P=[],W,H;
+  const COLS=['rgba(247,147,26,','rgba(255,215,0,','rgba(34,197,94,','rgba(255,255,255,'];
+  function resize(){
+    W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;
+    P=Array.from({length:220},()=>({
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*.38,vy:(Math.random()-.5)*.38,
+      r:Math.random()*2.2+.4,
+      col:COLS[Math.floor(Math.random()*COLS.length)],
+      ph:Math.random()*Math.PI*2,sp:Math.random()*.005+.001
+    }));
+  }
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    P.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      const op=.04+.15*((Math.sin(t*p.sp*1000+p.ph)+1)/2);
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.col+op+')';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize();window.addEventListener('resize',resize);requestAnimationFrame(draw);
+})();
+
+// ===== LIVE SUPPLY COUNTER — 19,855,000 counting up =====
+(function(){
+  const BASE=19855000;
+  const BTC_PER_SEC=3.125/600; // 3.125 BTC per 600 seconds
+  const TOTAL=21000000;
+  const START=Date.now();
+  let barAnimated=false;
+
+  function tick(){
+    const elapsed=(Date.now()-START)/1000;
+    const current=Math.min(BASE+elapsed*BTC_PER_SEC,TOTAL);
+    const pct=current/TOTAL*100;
+    const remain=TOTAL-current;
+    document.getElementById('supplyMined').textContent=current.toLocaleString('en-US',{maximumFractionDigits:4});
+    document.getElementById('supplyRemain').textContent=Math.floor(remain).toLocaleString('en-US');
+    document.getElementById('supplyPct').textContent=pct.toFixed(4)+'%';
+    document.getElementById('supplyNote').textContent=
+      '~3.125 BTC mined per block · ~1 block every 10 min · '+pct.toFixed(4)+'% of 21M mined · '+
+      Math.floor(remain).toLocaleString('en-US')+' BTC remaining';
+    requestAnimationFrame(tick);
+  }
+
+  // Animate bar fill on scroll into view
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting&&!barAnimated){
+        barAnimated=true;
+        const pct=(BASE/TOTAL*100);
+        setTimeout(()=>{
+          document.getElementById('supplyBarFill').style.width=pct.toFixed(4)+'%';
+        },120);
+      }
+    });
+  },{threshold:.3});
+  const su=document.getElementById('supplySection');if(su)obs.observe(su);
+  requestAnimationFrame(tick);
+})();
+
+// ===== 21 TRUTHS SCROLL LIGHT-UP =====
+(function(){
+  const rows=document.querySelectorAll('.truth-row');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('lit');});
+  },{threshold:.35,rootMargin:'0px 0px -8% 0px'});
+  rows.forEach(r=>obs.observe(r));
+})();
+
+// ===== CHECKBOXES — localStorage =====
+function toggleCk(el){
+  const key='sat21ck_'+el.dataset.key;
+  const nowChecked=!el.classList.contains('checked');
+  el.classList.toggle('checked',nowChecked);
+  el.textContent=nowChecked?'✓':'';
+  localStorage.setItem(key,nowChecked?'1':'');
+}
+document.querySelectorAll('.ck').forEach(el=>{
+  if(localStorage.getItem('sat21ck_'+el.dataset.key)==='1'){
+    el.classList.add('checked');el.textContent='✓';
+  }
+});
+
+// ===== PLEDGE COPY =====
+const PLEDGE=[
+  'I understand that money is not neutral.',
+  'I understand that inflation is a tax levied without my vote.',
+  'I choose hard money over easy promises.',
+  'I will not trust — I will verify.',
+  'My keys. My coins. My kingdom.',
+  'I will stack sats through every market.',
+  'I will hold through the fear and the noise.',
+  'I will never sell below my conviction.',
+  'I will DCA when others panic.',
+  'I will hold self-custody as sacred.',
+  'I will spread the word with patience and evidence.',
+  'I will orange-pill with love, not lectures.',
+  'I will give Bitcoin as the greatest gift I can.',
+  'I will use Lightning and close the circular loop.',
+  'I will run a node when I am ready.',
+  'I will teach what I know to those who ask.',
+  'I believe sound money is a human right.',
+  'I believe the separation of money and state is long overdue.',
+  'I believe 21 million is the most important number in finance.',
+  'I am not just a holder. I am the network.',
+  'I am the ministry. I am awake. 🔑'
+];
+function copyPledge(){
+  const text='THE BITCOIN SOVEREIGN\'S PLEDGE\n\n'+
+    PLEDGE.map((l,i)=>(i+1)+'. '+l).join('\n')+
+    '\n\n— SATOLOGY: Understanding Bitcoin\n   satology.github.io';
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('pledgeCopy');
+    btn.textContent='✓ Copied! Share it.';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='📋 Copy all 21 lines to share';btn.classList.remove('copied');},3500);
+  }).catch(()=>{});
+}
+
+// ===== CERTIFICATE — Canvas drawn =====
+function drawCert(){
+  const canvas=document.getElementById('certCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=900,H=540;
+  ctx.clearRect(0,0,W,H);
+
+  // Background
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#090909');bg.addColorStop(.5,'#111116');bg.addColorStop(1,'#080808');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  // Outer border
+  const bgrad=ctx.createLinearGradient(0,0,W,H);
+  bgrad.addColorStop(0,'#F7931A');bgrad.addColorStop(.5,'#FFD700');bgrad.addColorStop(1,'#22c55e');
+  ctx.strokeStyle=bgrad;ctx.lineWidth=3;ctx.strokeRect(2,2,W-4,H-4);
+  ctx.globalAlpha=.25;ctx.lineWidth=1;ctx.strokeRect(14,14,W-28,H-28);ctx.globalAlpha=1;
+
+  // Corner decorations
+  const corners=[[28,28],[W-28,28],[28,H-28],[W-28,H-28]];
+  corners.forEach(([x,y])=>{
+    ctx.beginPath();ctx.arc(x,y,6,0,Math.PI*2);
+    ctx.fillStyle='#F7931A';ctx.fill();
+  });
+
+  // ₿ watermark
+  ctx.save();ctx.globalAlpha=.04;
+  ctx.font='bold 300px Inter,Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle='#F7931A';ctx.fillText('₿',W/2,H/2+20);
+  ctx.restore();
+
+  // Top academy name
+  ctx.font='bold 11px Inter,Arial';ctx.textAlign='center';ctx.fillStyle='#F7931A';
+  ctx.letterSpacing='3px';
+  ctx.fillText('SATOLOGY — UNDERSTANDING BITCOIN',W/2,50);
+
+  // Horizontal rule
+  const hr=ctx.createLinearGradient(W/2-140,0,W/2+140,0);
+  hr.addColorStop(0,'transparent');hr.addColorStop(.3,'#F7931A');
+  hr.addColorStop(.7,'#FFD700');hr.addColorStop(1,'transparent');
+  ctx.strokeStyle=hr;ctx.lineWidth=1;ctx.globalAlpha=.6;
+  ctx.beginPath();ctx.moveTo(W/2-140,62);ctx.lineTo(W/2+140,62);ctx.stroke();
+  ctx.globalAlpha=1;
+
+  // "This certifies"
+  ctx.font='italic 14px Georgia,serif';ctx.fillStyle='#666';
+  ctx.fillText('This certifies completion of',W/2,96);
+
+  // Main title gradient
+  const tg=ctx.createLinearGradient(W/2-220,120,W/2+220,185);
+  tg.addColorStop(0,'#F7931A');tg.addColorStop(.5,'#FFD700');tg.addColorStop(1,'#22c55e');
+  ctx.font='bold 48px Inter,Arial';ctx.fillStyle=tg;
+  ctx.fillText('BITCOIN SOVEREIGNTY',W/2,175);
+
+  ctx.font='bold 20px Inter,Arial';ctx.fillStyle='#e8e8e8';
+  ctx.fillText('CERTIFICATE OF COMPLETION',W/2,213);
+
+  // Sub line
+  ctx.font='14px Georgia,serif';ctx.fillStyle='#777';
+  ctx.fillText('The complete 21-step SATOLOGY Understanding Bitcoin journey',W/2,256);
+  ctx.fillText('Mastery of Bitcoin philosophy, mechanics, custody, and financial sovereignty',W/2,278);
+
+  // Middle divider
+  const md=ctx.createLinearGradient(200,0,700,0);
+  md.addColorStop(0,'transparent');md.addColorStop(.3,'#F7931A');
+  md.addColorStop(.7,'#FFD700');md.addColorStop(1,'transparent');
+  ctx.strokeStyle=md;ctx.lineWidth=1;ctx.globalAlpha=.7;
+  ctx.beginPath();ctx.moveTo(200,310);ctx.lineTo(700,310);ctx.stroke();
+  ctx.globalAlpha=1;
+
+  // 21M number
+  const ng=ctx.createLinearGradient(W/2-80,325,W/2+80,370);
+  ng.addColorStop(0,'#F7931A');ng.addColorStop(1,'#FFD700');
+  ctx.font='bold 30px Inter,Arial';ctx.fillStyle=ng;
+  ctx.fillText('21,000,000 BTC',W/2,360);
+  ctx.font='bold 11px Inter,Arial';ctx.fillStyle='#444';ctx.letterSpacing='1px';
+  ctx.fillText('FIXED SUPPLY · MATHEMATICALLY ENFORCED · FOREVER',W/2,382);
+
+  // Key emoji
+  ctx.font='38px Arial';ctx.fillText('🔑',W/2,424);
+
+  // Date
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  ctx.font='bold 13px Inter,Arial';ctx.fillStyle='#555';ctx.letterSpacing='0';
+  ctx.fillText('Completed: '+dateStr,W/2,470);
+  ctx.font='11px Inter,Arial';ctx.fillStyle='#333';
+  ctx.fillText('satology.github.io · Not your keys, not your coins · Your keys, your kingdom',W/2,494);
+}
+
+function downloadCert(){
+  drawCert();
+  const a=document.createElement('a');
+  a.download='SATOLOGY-Bitcoin-Certificate-'+new Date().toISOString().split('T')[0]+'.png';
+  a.href=document.getElementById('certCanvas').toDataURL('image/png');
+  a.click();
+}
+
+// ===== DONATION TOGGLE =====
+function toggleDonMode(mode){
+  document.querySelectorAll('.don-tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===mode));
+  document.getElementById('donOnchain').style.display=mode==='onchain'?'block':'none';
+  document.getElementById('donLightning').style.display=mode==='lightning'?'block':'none';
+}
+function copyAddr(){
+  navigator.clipboard.writeText('BC1QJEG2NER8K79YK7P8RRNAHJ3SLJ6SNQFEMPAR0L').then(()=>{
+    const c=document.getElementById('donCopied');
+    c.classList.add('show');setTimeout(()=>c.classList.remove('show'),2500);
+  }).catch(()=>{});
+}
+
+// ===== COMPLETE MAP — sequential animation =====
+(function(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const steps=document.querySelectorAll('.cm-s');
+        steps.forEach((s,i)=>setTimeout(()=>s.classList.add('in'),i*75));
+        obs.disconnect();
+      }
+    });
+  },{threshold:.2});
+  const cm=document.getElementById('cmap');if(cm)obs.observe(cm);
+})();
+
+// ===== SCROLL REVEAL =====
+const revObs=new IntersectionObserver(
+  entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),
+  {threshold:.05}
+);
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+
+// ===== DRAW CERT ON LOAD =====
+window.addEventListener('load',drawCert);
+</script>
+</body>
+</html>
