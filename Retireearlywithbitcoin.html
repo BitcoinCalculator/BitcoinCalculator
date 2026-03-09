@@ -1,270 +1,570 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Retire Early with Bitcoin — Earliest Retirement Finder</title>
+<title>Retire Early with Bitcoin — SATOLOGY</title>
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('satology-theme')||'dark')</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  /* Theme aligned with main index page */
-  * { box-sizing: border-box; }
-  body {
-    font-family: "Helvetica Neue", Arial, sans-serif;
-    background:#f9fafb;
-    color:#1a1a1a;
-    margin:0;
-  }
-  header {
-    background:#111;
-    color:#f9fafb;
-    padding:1.6rem 1rem;
-    text-align:center;
-    box-shadow:0 2px 8px rgba(0,0,0,.3);
-  }
-  header h1 { margin:0 0 .25rem; font-size:2rem; }
-  header p { margin:0; opacity:.9; }
+[data-theme="dark"]{--bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;--text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;--prose:#c8c8c8;--input-bg:#0d0d10;--input-border:#2a2a32;--table-alt:#0d0d10;--table-head:#16161c}
+[data-theme="light"]{--bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;--text:#1a1a1a;--muted:#888;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;--prose:#3a3a3a;--input-bg:#fff;--input-border:#d0cdc5;--table-alt:#f9f8f5;--table-head:#f0ede6}
+:root{--btc:#F7931A;--green:#22c55e;--gold:#FFD700;--soul:#7c3aed;--teal:#06b6d4;--red:#e63946;--bear:#e63946;--mid:#F7931A;--bull:#22c55e;--hyper:#a855f7}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-  /* Home nav under header subtitle (matches index nav link style, adapted for dark header) */
-  .page-nav{
-    margin-top: 12px;
-    display: flex;
-    justify-content: center;
-  }
-  .page-nav ul{
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.2rem;
-    padding: 0;
-    margin: 0;
-  }
-  .page-nav a{
-    text-decoration: none;
-    font-weight: bold;
-    color: #f7931a; /* Home link default orange */
-    transition: color 0.2s;
-    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-  }
-  .page-nav a:hover{
-    color: #ffffff; /* hover contrast on dark header */
-  }
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--btc),var(--gold),var(--green));width:0%}
 
-  main { max-width:1100px; margin:2rem auto; padding:0 20px; }
+.ticker{background:linear-gradient(90deg,#431407,#7c2d12,#431407);padding:8px 0;overflow:hidden;white-space:nowrap}
+.ticker-inner{display:inline-flex;gap:56px;animation:tick 40s linear infinite;font-size:11px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-  .calculator { background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08);}
-  .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:14px;}
-  .form-group { display:flex; flex-direction:column; }
-  label { font-weight:600; color:#333; margin-bottom:6px;}
-  input[type="number"], select {
-    padding:10px; border:1px solid #ccc; border-radius:8px; font-size:14px; background:#fff;
-  }
-  .btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-  button {
-    border:0; padding:12px 16px; border-radius:8px; cursor:pointer; font-size:15px; font-weight:700;
-  }
-  #findButton { background:#f7931a; color:#fff; width:100%; margin-top:8px; }
-  #findButton:hover { background:#e07c12; }
-  #chartButton { background:#007bff; color:#fff; }
-  #chartButton:hover { background:#0056b3; }
-  #exportButton { background:#6c757d; color:#fff; }
-  #exportButton:hover { background:#5a6268; }
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:900;color:#fff}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;font-size:14px;font-weight:800;color:var(--btc);cursor:pointer;transition:all .2s}
+.nav-price:hover{background:rgba(247,147,26,.18)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
 
-  #result, #error { margin-top:16px; }
-  #result { display:none; background:#e9ecef; padding:14px; border-radius:8px;}
-  #error { color:#c62828; }
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero{padding:64px 48px 48px;max-width:960px;margin:0 auto;position:relative;overflow:hidden}
+#heroCanvas{position:absolute;inset:0;pointer-events:none;z-index:0}
+.hero-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;background:linear-gradient(90deg,var(--btc),var(--gold),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px;animation:fadeUp .5s ease both;position:relative;z-index:1}
+.hero h1{font-size:clamp(32px,6vw,78px);font-weight:900;letter-spacing:-4px;line-height:.95;margin-bottom:18px;animation:fadeUp .5s .06s ease both;position:relative;z-index:1}
+.h1-btc{color:var(--btc)}.h1-go{color:var(--gold)}.h1-g{color:var(--green)}
+.hero-sub{font-size:clamp(15px,1.9vw,19px);color:var(--muted);line-height:1.85;max-width:660px;font-family:'Lora',serif;font-style:italic;animation:fadeUp .5s .12s ease both;position:relative;z-index:1;margin-bottom:0}
 
-  #chartContainer { display:none; margin-top:20px; }
-  canvas { max-width:100%; }
+/* SCENARIO TABS — now 4 */
+.scenario-wrap{max-width:960px;margin:0 auto;padding:0 48px 0}
+.scenario-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.s-tab{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:14px 14px 0 0;font-size:12px;font-weight:800;cursor:pointer;transition:all .25s;border:1px solid var(--border);border-bottom:none;background:var(--bg2);color:var(--muted);user-select:none;position:relative;bottom:-1px;white-space:nowrap}
+.s-tab:hover{color:var(--text)}
+.s-tab.bear.active{background:rgba(230,57,70,.12);border-color:var(--bear);color:var(--bear)}
+.s-tab.mid.active{background:rgba(247,147,26,.12);border-color:var(--btc);color:var(--btc)}
+.s-tab.bull.active{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green)}
+.s-tab.hyper.active{background:rgba(168,85,247,.12);border-color:var(--hyper);color:var(--hyper)}
+.s-tab .s-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.s-tab.bear .s-dot{background:var(--bear)}.s-tab.mid .s-dot{background:var(--btc)}.s-tab.bull .s-dot{background:var(--bull)}.s-tab.hyper .s-dot{background:var(--hyper)}
+.s-tab .s-badge{font-size:9px;padding:2px 6px;border-radius:100px;font-weight:900}
+.s-tab.bear .s-badge{background:rgba(230,57,70,.15);color:var(--bear)}
+.s-tab.mid .s-badge{background:rgba(247,147,26,.15);color:var(--btc)}
+.s-tab.bull .s-badge{background:rgba(34,197,94,.15);color:var(--green)}
+.s-tab.hyper .s-badge{background:rgba(168,85,247,.15);color:var(--hyper)}
 
-  table { width:100%; border-collapse:collapse; margin-top:18px; background:#fff; }
-  th, td { text-align:right; padding:8px; border-bottom:1px solid #eee;}
-  th { background:#f8f9fa; position:sticky; top:0; }
-  td:first-child, th:first-child { text-align:left; }
+.calc-outer{max-width:960px;margin:0 auto;padding:0 48px 48px}
+.calc-card{background:var(--card);border:1px solid var(--border);border-radius:0 18px 18px 18px;padding:32px;transition:border-color .3s}
+.calc-card.bear-mode{border-color:rgba(230,57,70,.35)}
+.calc-card.mid-mode{border-color:rgba(247,147,26,.35)}
+.calc-card.bull-mode{border-color:rgba(34,197,94,.35)}
+.calc-card.hyper-mode{border-color:rgba(168,85,247,.35)}
 
-  /* Highlight BTC price column */
-  th.btc-price-col {
-    background: #f7931a !important;
-    color: #fff !important;
-  }
-  td.btc-price-col {
-    background: #fff3e0;
-    font-weight: 700;
-  }
+.sec-hdr{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin:28px 0 14px;display:flex;align-items:center;gap:10px}
+.sec-hdr::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.sec-hdr.btc-sec{color:var(--btc)}.sec-hdr.inv-sec{color:var(--teal)}.sec-hdr.gen-sec{color:var(--muted)}
+.sec-hdr:first-child{margin-top:0}
 
-  /* Highlight Net Worth column */
-  th.networth-col{
-    background:#9fd0ff !important;
-    color:#0b2a3f !important;
-  }
-  td.networth-col{
-    background:#eaf5ff;
-    font-weight: 700;
-  }
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+input[type="number"],select{padding:11px 13px;border:1px solid var(--input-border);border-radius:10px;font-size:14px;font-weight:600;background:var(--input-bg);color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
+input[type="number"]:focus,select:focus{border-color:var(--btc);box-shadow:0 0 0 3px rgba(247,147,26,.15)}
+select option{background:var(--card);color:var(--text)}
 
-  /* NEW: Retirement divider row */
-  tr.retire-divider td{
-    background:#efe6ff;          /* light purple */
-    color:#3b245a;
-    font-weight:800;
-    text-align:center !important;
-    border-bottom:1px solid #d9c6ff;
-  }
+.growth-presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;align-items:center}
+.gp-label{font-size:11px;color:var(--muted);font-weight:700}
+.gp-btn{padding:5px 12px;border-radius:100px;font-size:11px;font-weight:800;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--muted);transition:all .2s;font-family:'Inter',sans-serif}
+.gp-btn:hover{border-color:var(--btc);color:var(--btc)}
+.gp-btn.bear-p{border-color:var(--bear);color:var(--bear);background:rgba(230,57,70,.07)}
+.gp-btn.mid-p{border-color:var(--btc);color:var(--btc);background:rgba(247,147,26,.07)}
+.gp-btn.bull-p{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.07)}
+.gp-btn.hyper-p{border-color:var(--hyper);color:var(--hyper);background:rgba(168,85,247,.07)}
 
-  .note { font-size:13px; color:#666; margin-top:6px;}
-  footer { text-align:center; padding:1.5rem; color:#666; }
+.scenario-banner{border-radius:12px;padding:14px 18px;margin-bottom:22px;font-size:13px;line-height:1.75;border:1px solid;display:none}
+.scenario-banner.show{display:block}
+.sb-bear{background:rgba(230,57,70,.07);border-color:rgba(230,57,70,.3);color:var(--prose)}
+.sb-mid{background:rgba(247,147,26,.07);border-color:rgba(247,147,26,.3);color:var(--prose)}
+.sb-bull{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.3);color:var(--prose)}
+.sb-hyper{background:rgba(168,85,247,.07);border-color:rgba(168,85,247,.3);color:var(--prose)}
+.sb-bear strong{color:var(--bear)}.sb-mid strong{color:var(--btc)}.sb-bull strong{color:var(--green)}.sb-hyper strong{color:var(--hyper)}
+
+.note{font-size:12px;color:var(--muted);line-height:1.75;padding:14px 16px;background:var(--bg2);border-radius:10px;border-left:3px solid var(--btc);margin-top:18px}
+.note strong{color:var(--text);font-weight:700}
+
+.calc-btn-wrap{margin-top:22px}
+.calc-btn{width:100%;padding:16px;border-radius:13px;border:none;font-size:17px;font-weight:900;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:-.3px;transition:all .3s;position:relative;overflow:hidden}
+.calc-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transform:translateX(-100%);transition:transform .6s}
+.calc-btn:hover::before{transform:translateX(100%)}
+.calc-btn.bear-btn{background:linear-gradient(135deg,#e63946,#c62828);color:#fff;box-shadow:0 6px 24px rgba(230,57,70,.4)}
+.calc-btn.mid-btn{background:linear-gradient(135deg,var(--btc),#e07c12);color:#fff;box-shadow:0 6px 24px rgba(247,147,26,.4)}
+.calc-btn.bull-btn{background:linear-gradient(135deg,var(--green),#16a34a);color:#fff;box-shadow:0 6px 24px rgba(34,197,94,.4)}
+.calc-btn.hyper-btn{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;box-shadow:0 6px 24px rgba(168,85,247,.4)}
+.calc-btn:hover{transform:translateY(-2px)}
+.calc-btn:active{transform:translateY(0)}
+
+.error-box{margin-top:14px;padding:12px 16px;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.3);border-radius:10px;color:var(--red);font-size:13px;display:none}
+.error-box.show{display:block}
+
+.result-box{margin-top:20px;border-radius:16px;padding:24px 28px;border:2px solid;display:none;animation:fadeUp .4s ease both}
+.result-box.show{display:block}
+.result-box.bear-r{background:rgba(230,57,70,.07);border-color:rgba(230,57,70,.4)}
+.result-box.mid-r{background:rgba(247,147,26,.07);border-color:rgba(247,147,26,.4)}
+.result-box.bull-r{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.4)}
+.result-box.hyper-r{background:rgba(168,85,247,.07);border-color:rgba(168,85,247,.4)}
+.result-age{font-size:clamp(40px,8vw,90px);font-weight:900;letter-spacing:-4px;line-height:1}
+.result-box.bear-r .result-age{color:var(--bear)}
+.result-box.mid-r .result-age{color:var(--btc)}
+.result-box.bull-r .result-age{color:var(--green)}
+.result-box.hyper-r .result-age{color:var(--hyper)}
+.result-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px}
+.result-detail{font-size:14px;color:var(--prose);line-height:1.8;margin-top:12px}
+.result-detail strong{color:var(--text)}
+
+/* COMPARE ROW — 4 cards */
+.compare-row{display:none;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;max-width:960px;margin:20px auto 0;padding:0 48px}
+.compare-row.show{display:grid}
+.cmp-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;text-align:center;transition:all .3s;cursor:pointer}
+.cmp-card:hover{transform:translateY(-3px)}
+.cmp-card.bear-c{border-color:rgba(230,57,70,.3)}.cmp-card.mid-c{border-color:rgba(247,147,26,.3)}.cmp-card.bull-c{border-color:rgba(34,197,94,.3)}.cmp-card.hyper-c{border-color:rgba(168,85,247,.3)}
+.cmp-icon{font-size:24px;margin-bottom:6px}
+.cmp-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.cmp-card.bear-c .cmp-label{color:var(--bear)}.cmp-card.mid-c .cmp-label{color:var(--btc)}.cmp-card.bull-c .cmp-label{color:var(--green)}.cmp-card.hyper-c .cmp-label{color:var(--hyper)}
+.cmp-rate{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px}
+.cmp-age{font-size:32px;font-weight:900;letter-spacing:-2px;line-height:1}
+.cmp-card.bear-c .cmp-age{color:var(--bear)}.cmp-card.mid-c .cmp-age{color:var(--btc)}.cmp-card.bull-c .cmp-age{color:var(--green)}.cmp-card.hyper-c .cmp-age{color:var(--hyper)}
+.cmp-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.cmp-card.not-run{opacity:.4}
+
+.chart-section{max-width:960px;margin:28px auto 0;padding:0 48px;display:none}
+.chart-section.show{display:block;animation:fadeUp .5s ease both}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px}
+.chart-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.ct-btn{padding:7px 15px;border-radius:100px;font-size:11px;font-weight:800;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--muted);transition:all .2s;font-family:'Inter',sans-serif}
+.ct-btn.active{background:linear-gradient(135deg,var(--btc),var(--gold));color:#000;border-color:transparent}
+.chart-title{font-size:15px;font-weight:800;margin-bottom:4px}
+.chart-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+
+.table-section{max-width:960px;margin:28px auto 0;padding:0 48px;display:none}
+.table-section.show{display:block;animation:fadeUp .5s ease both}
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.table-toolbar{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.table-title{font-size:15px;font-weight:800}
+.tbl-btn{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.tbl-btn:hover{border-color:var(--btc);color:var(--btc)}
+.table-wrap{overflow-x:auto;max-height:520px;overflow-y:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:960px}
+thead{position:sticky;top:0;z-index:10}
+th{padding:11px 12px;text-align:right;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;background:var(--table-head);color:var(--muted);white-space:nowrap;border-bottom:1px solid var(--border)}
+th:first-child,th:nth-child(2){text-align:left}
+td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--border);color:var(--prose);transition:background .2s}
+td:first-child,td:nth-child(2){text-align:left}
+tr:nth-child(even) td{background:var(--table-alt)}
+tr:hover td{background:rgba(247,147,26,.04)}
+th.btc-col,td.btc-col{color:var(--btc);font-weight:800}
+th.nw-col{background:linear-gradient(135deg,rgba(247,147,26,.25),rgba(255,215,0,.15)) !important;color:var(--btc) !important}
+td.nw-col{font-weight:800;color:var(--btc)}
+.retire-banner-row td{background:linear-gradient(90deg,rgba(34,197,94,.15),rgba(247,147,26,.08),rgba(34,197,94,.15)) !important;text-align:center !important;font-weight:900 !important;font-size:12px !important;color:var(--green) !important;letter-spacing:1px !important;padding:8px !important;border-top:2px solid var(--green) !important;border-bottom:1px solid rgba(34,197,94,.3) !important}
+
+footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:13px;border-top:1px solid var(--border);margin-top:48px}
+footer a{color:var(--btc);text-decoration:none}
+footer a:hover{color:var(--gold)}
+
+@media(max-width:760px){
+  nav,.hero,.scenario-wrap,.calc-outer,.chart-section,.table-section{padding-left:18px;padding-right:18px}
+  .compare-row{grid-template-columns:1fr 1fr;padding:0 18px}
+  .grid{grid-template-columns:1fr}
+  .s-tab{padding:7px 11px;font-size:11px}
+  .s-tab .s-badge{display:none}
+}
 </style>
 </head>
 <body>
-  <header>
-    <h1>Retire Early with Bitcoin</h1>
-    <p>Find the earliest age you can retire while drawing down smartly across assets.</p>
 
-    <!-- Home link (mimics index nav link style) -->
-    <nav class="page-nav">
-      <ul>
-        <li><a href="index.html">← Home</a></li>
-      </ul>
-    </nav>
-  </header>
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
 
-  <main>
-    <div class="calculator">
-      <div class="grid">
-        <div class="form-group">
-          <label for="age">Current Age (years)</label>
-          <input type="number" id="age" min="0" max="100" step="0.5" required>
-        </div>
-        <div class="form-group">
-          <label for="lifeExpectancy">Plan To Age (life expectancy)</label>
-          <input type="number" id="lifeExpectancy" min="60" max="120" step="1" value="95" required>
-        </div>
-        <div class="form-group">
-          <label for="income">Yearly Income ($)</label>
-          <input type="number" id="income" min="0" step="100" required>
-        </div>
-        <div class="form-group">
-          <label for="savingsRate">Savings Rate (% of income)</label>
-          <input type="number" id="savingsRate" min="0" max="100" step="0.1" required>
-        </div>
+<div class="ticker"><div class="ticker-inner">
+  <span>🔥 RETIRE EARLY WITH BITCOIN — SATOLOGY</span><span>·</span>
+  <span>🐻 BEAR 15% · 📊 MID 20% · 🚀 BULL 30% · ⚡ HYPER BULL 40%</span><span>·</span>
+  <span>₿ STACK SATS · LOWER YOUR FIRE NUMBER · RETIRE DECADES EARLY</span><span>·</span>
+  <span>🔑 YOUR KEYS · YOUR KINGDOM · YOUR RETIREMENT DATE</span><span>·</span>
+  <span>🔥 RETIRE EARLY WITH BITCOIN — SATOLOGY</span><span>·</span>
+  <span>🐻 BEAR 15% · 📊 MID 20% · 🚀 BULL 30% · ⚡ HYPER BULL 40%</span><span>·</span>
+  <span>₿ STACK SATS · LOWER YOUR FIRE NUMBER · RETIRE DECADES EARLY</span><span>·</span>
+  <span>🔑 YOUR KEYS · YOUR KINGDOM · YOUR RETIREMENT DATE</span><span>·</span>
+</div></div>
 
-        <!-- Savings destination -->
-        <div class="form-group">
-          <label for="savingsDestination">Where Do Savings Go?</label>
-          <select id="savingsDestination">
-            <option value="investments">Investments</option>
-            <option value="otherAssets">Other Investments</option>
-            <option value="bitcoin">Bitcoin</option>
-          </select>
-        </div>
-
-        <!-- Bitcoin inputs -->
-        <div class="form-group">
-          <label for="bitcoin">Bitcoin Holdings (BTC)</label>
-          <input type="number" id="bitcoin" min="0" step="0.00000001" value="0">
-        </div>
-        <div class="form-group">
-          <label for="btcPrice">Current BTC Price ($)</label>
-          <input type="number" id="btcPrice" min="0" step="100">         
-        </div>
-        <div class="form-group">
-          <label for="btcCagr">Bitcoin CAGR (%)</label>
-          <input type="number" id="btcCagr" min="-100" max="500" step="0.1" value="20">
-        </div>
-
-        <div class="form-group">
-          <label for="investments">Current Investments ($) — liquid/taxable</label>
-          <input type="number" id="investments" min="0" step="100" required>
-        </div>
-        <div class="form-group">
-          <label for="investmentCagr">Investments CAGR (%)</label>
-          <input type="number" id="investmentCagr" min="-100" max="100" step="0.1" required>
-        </div>
-
-        <div class="form-group">
-          <label for="otherAssets">Other Liquid Assets ($)</label>
-          <input type="number" id="otherAssets" min="0" step="100" required>
-        </div>
-        <div class="form-group">
-          <label for="otherAssetsCagr">Other Assets CAGR (%)</label>
-          <input type="number" id="otherAssetsCagr" min="-100" max="100" step="0.1" required>
-        </div>
-
-        <div class="form-group">
-          <label for="k401Balance">401k Balance ($)</label>
-          <input type="number" id="k401Balance" min="0" step="100" required>
-        </div>
-        <div class="form-group">
-          <label for="k401Cagr">401k CAGR (%)</label>
-          <input type="number" id="k401Cagr" min="-100" max="100" step="0.1" required>
-        </div>
-        <div class="form-group">
-          <label for="k401TaxRate">401k Tax Rate (%)</label>
-          <input type="number" id="k401TaxRate" min="0" max="100" step="1" value="30">
-        </div>
-
-        <div class="form-group">
-          <label for="realEstate">Real Estate Value ($) — non-liquid</label>
-          <input type="number" id="realEstate" min="0" step="100" required>
-        </div>
-        <div class="form-group">
-          <label for="realEstateCagr">Real Estate CAGR (%)</label>
-          <input type="number" id="realEstateCagr" min="-100" max="100" step="0.1" value="2" required>
-        </div>
-
-        <div class="form-group">
-          <label for="inflationRate">Expected Inflation Rate (%)</label>
-          <input type="number" id="inflationRate" min="0" max="20" step="0.1" required>
-        </div>
-        <div class="form-group">
-          <label for="retirementSpending">Desired Annual Retirement Spending ($, today’s dollars)</label>
-          <input type="number" id="retirementSpending" min="0" step="100" required>
-        </div>
-      </div>
-
-      <div class="btn-row">
-        <button id="findButton">Find Earliest Retirement</button>
-        <button id="chartButton" style="display:none;">Show Net Worth Chart</button>
-        <button id="exportButton" style="display:none;">Export Table (CSV)</button>
-      </div>
-
-      <div class="note">
-        Rule set: Contributions (pre-retirement) go to your chosen bucket. During retirement, annual
-        spending inflates from today, and withdrawals are taken from
-        <strong>lowest CAGR → highest CAGR</strong>. 401k is available at <strong>age 59.5</strong> and
-        withdrawals are taxed (default <strong>30%</strong>, adjustable). Real estate is not sold.
-      </div>
-
-      <div id="error"></div>
-      <div id="result"></div>
-
-      <div id="chartContainer">
-        <canvas id="netWorthChart"></canvas>
-      </div>
-
-      <div id="tableContainer"></div>
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div style="display:flex;flex-direction:column;gap:1px"><span class="logo-name">SATOLOGY</span><span class="logo-sub">Understanding Bitcoin</span></div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price" id="navPrice" onclick="refreshPrice()" title="Click to refresh">
+      <span class="nav-dot"></span>
+      <span id="btcPriceDisplay">$--</span>
+      <span style="font-size:10px;color:var(--muted)" id="priceHint">↻</span>
     </div>
-  </main>
+    <button class="theme-toggle" id="themeToggle"><span class="t-icon sun">☀️</span><span class="t-icon moon">🌙</span></button>
+  </div>
+</nav>
 
-  <footer>
-    <p>&copy; 2025 The Bitcoiner's Calculators</p>
-  </footer>
+<div class="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-eyebrow">🔥 Retirement Calculator · SATOLOGY Tools</div>
+  <h1><span class="h1-btc">Retire</span><br><span class="h1-go">Earlier.</span><br><span class="h1-g">With Bitcoin.</span></h1>
+  <p class="hero-sub">Four scenarios — Bear, Mid, Bull, Hyper Bull. Every asset class. Inflation-adjusted spending. Smart withdrawal sequencing. Find the earliest age your portfolio can set you free — forever.</p>
+</div>
+
+<div class="scenario-wrap">
+  <div class="scenario-tabs">
+    <div class="s-tab bear" id="tabBear" onclick="switchScenario('bear')">
+      <div class="s-dot"></div>🐻 Bear <span class="s-badge">15% / yr</span>
+    </div>
+    <div class="s-tab mid active" id="tabMid" onclick="switchScenario('mid')">
+      <div class="s-dot"></div>📊 Mid <span class="s-badge">20% / yr</span>
+    </div>
+    <div class="s-tab bull" id="tabBull" onclick="switchScenario('bull')">
+      <div class="s-dot"></div>🚀 Bull <span class="s-badge">30% / yr</span>
+    </div>
+    <div class="s-tab hyper" id="tabHyper" onclick="switchScenario('hyper')">
+      <div class="s-dot"></div>⚡ Hyper Bull <span class="s-badge">40% / yr</span>
+    </div>
+  </div>
+</div>
+
+<div class="calc-outer">
+<div class="calc-card mid-mode" id="calcCard">
+
+  <div class="scenario-banner sb-bear" id="bannerBear">
+    <strong>🐻 Bear Case — 15% / year:</strong> Conservative. Bitcoin matures as an asset class with diminishing but steady appreciation. If your retirement plan works here, it works in almost any scenario. Great for stress-testing.
+  </div>
+  <div class="scenario-banner sb-mid show" id="bannerMid">
+    <strong>📊 Mid Case — 20% / year:</strong> The measured base case. Reflects Bitcoin continuing its historical trend with meaningful but realistic appreciation as global adoption deepens. A sensible planning assumption.
+  </div>
+  <div class="scenario-banner sb-bull" id="bannerBull">
+    <strong>🚀 Bull Case — 30% / year:</strong> Optimistic but historically plausible. Bitcoin as a dominant global store of value, with institutional and sovereign adoption accelerating. Strong compounding from here.
+  </div>
+  <div class="scenario-banner sb-hyper" id="bannerHyper">
+    <strong>⚡ Hyper Bull — 40% / year:</strong> Hyperbitcoinisation-adjacent. Bitcoin becomes a global reserve asset. Use this to model your theoretical ceiling — the date you could retire if Bitcoin's best decade repeats.
+  </div>
+
+  <div class="sec-hdr gen-sec">👤 Personal Details</div>
+  <div class="grid">
+    <div class="form-group">
+      <label for="age">Current Age</label>
+      <input type="number" id="age" min="0" max="100" step="0.5" placeholder="e.g. 35">
+    </div>
+    <div class="form-group">
+      <label for="lifeExpectancy">Plan To Age</label>
+      <input type="number" id="lifeExpectancy" min="60" max="120" step="1" value="95">
+    </div>
+    <div class="form-group">
+      <label for="income">Yearly Income ($)</label>
+      <input type="number" id="income" min="0" step="100" placeholder="e.g. 100000">
+    </div>
+    <div class="form-group">
+      <label for="savingsRate">Savings Rate (% of income)</label>
+      <input type="number" id="savingsRate" min="0" max="100" step="0.1" placeholder="e.g. 20">
+    </div>
+    <div class="form-group">
+      <label for="savingsDestination">New Savings Go To</label>
+      <select id="savingsDestination">
+        <option value="bitcoin">Bitcoin ₿</option>
+        <option value="investments">Investments</option>
+        <option value="otherAssets">Other Assets</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="retirementSpending">Annual Retirement Spending (today's $)</label>
+      <input type="number" id="retirementSpending" min="0" step="100" placeholder="e.g. 60000">
+    </div>
+    <div class="form-group">
+      <label for="inflationRate">Expected Inflation Rate (%)</label>
+      <input type="number" id="inflationRate" min="0" max="20" step="0.1" placeholder="e.g. 3" value="3">
+    </div>
+  </div>
+
+  <div class="sec-hdr btc-sec">₿ Bitcoin Holdings</div>
+  <div class="grid">
+    <div class="form-group">
+      <label for="bitcoin">Bitcoin Holdings (BTC)</label>
+      <input type="number" id="bitcoin" min="0" step="0.00000001" value="0">
+    </div>
+    <div class="form-group">
+      <label for="btcPrice">Current BTC Price ($)</label>
+      <input type="number" id="btcPrice" min="0" step="100" placeholder="Loading…">
+    </div>
+    <div class="form-group" style="grid-column:1/-1">
+      <label for="btcCagr">Expected Annual Growth Rate — Bitcoin (%)</label>
+      <input type="number" id="btcCagr" min="-100" max="500" step="0.1" value="20">
+      <div class="growth-presets">
+        <span class="gp-label">Quick-set:</span>
+        <button class="gp-btn bear-p" onclick="setGrowthAndSwitch(15,'bear')">🐻 Bear 15%</button>
+        <button class="gp-btn mid-p" onclick="setGrowthAndSwitch(20,'mid')">📊 Mid 20%</button>
+        <button class="gp-btn bull-p" onclick="setGrowthAndSwitch(30,'bull')">🚀 Bull 30%</button>
+        <button class="gp-btn hyper-p" onclick="setGrowthAndSwitch(40,'hyper')">⚡ Hyper 40%</button>
+        <button class="gp-btn" onclick="setGrowth(10)">Cautious 10%</button>
+        <button class="gp-btn" onclick="setGrowth(25)">25%</button>
+        <button class="gp-btn" onclick="setGrowth(50)">50%</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-hdr inv-sec">📈 Other Assets</div>
+  <div class="grid">
+    <div class="form-group">
+      <label for="investments">Investments / Brokerage ($)</label>
+      <input type="number" id="investments" min="0" step="100" value="0">
+    </div>
+    <div class="form-group">
+      <label for="investmentCagr">Expected Annual Growth — Investments (%)</label>
+      <input type="number" id="investmentCagr" min="-100" max="100" step="0.1" value="7">
+    </div>
+    <div class="form-group">
+      <label for="otherAssets">Other Liquid Assets ($)</label>
+      <input type="number" id="otherAssets" min="0" step="100" value="0">
+    </div>
+    <div class="form-group">
+      <label for="otherAssetsCagr">Expected Annual Growth — Other Assets (%)</label>
+      <input type="number" id="otherAssetsCagr" min="-100" max="100" step="0.1" value="5">
+    </div>
+    <div class="form-group">
+      <label for="k401Balance">401k Balance ($)</label>
+      <input type="number" id="k401Balance" min="0" step="100" value="0">
+    </div>
+    <div class="form-group">
+      <label for="k401Cagr">Expected Annual Growth — 401k (%)</label>
+      <input type="number" id="k401Cagr" min="-100" max="100" step="0.1" value="7">
+    </div>
+    <div class="form-group">
+      <label for="k401TaxRate">401k Withdrawal Tax Rate (%)</label>
+      <input type="number" id="k401TaxRate" min="0" max="100" step="1" value="22">
+    </div>
+    <div class="form-group">
+      <label for="realEstate">Real Estate Value ($) — non-liquid</label>
+      <input type="number" id="realEstate" min="0" step="100" value="0">
+    </div>
+    <div class="form-group">
+      <label for="realEstateCagr">Expected Annual Growth — Real Estate (%)</label>
+      <input type="number" id="realEstateCagr" min="-100" max="100" step="0.1" value="3">
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>How it works:</strong> Contributions go to your selected bucket until retirement. Retirement spending inflates from today's dollars. Withdrawals taken <strong>lowest growth rate first → highest last</strong> to protect your best assets longest. 401k available at <strong>age 59.5</strong>. Real estate tracked but not liquidated. Bitcoin (BTC) column shows actual coin count each year.
+  </div>
+
+  <div class="calc-btn-wrap">
+    <button class="calc-btn mid-btn" id="calcBtn" onclick="runFinder()">
+      📊 Calculate My Earliest Retirement — Mid Case (20%)
+    </button>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="result-box mid-r" id="resultBox">
+    <div class="result-label" id="resultLabel">Mid Case — Earliest Retirement Age</div>
+    <div class="result-age" id="resultAge">--</div>
+    <div class="result-detail" id="resultDetail"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- COMPARE ROW — 4 scenarios -->
+<div class="compare-row" id="compareRow">
+  <div class="cmp-card bear-c not-run" id="cmpBear" onclick="switchScenario('bear')">
+    <div class="cmp-icon">🐻</div>
+    <div class="cmp-label">Bear Case</div>
+    <div class="cmp-rate">15% / year</div>
+    <div class="cmp-age" id="cmpBearAge">--</div>
+    <div class="cmp-sub" id="cmpBearSub">Not yet run</div>
+  </div>
+  <div class="cmp-card mid-c" id="cmpMid" onclick="switchScenario('mid')">
+    <div class="cmp-icon">📊</div>
+    <div class="cmp-label">Mid Case</div>
+    <div class="cmp-rate">20% / year</div>
+    <div class="cmp-age" id="cmpMidAge">--</div>
+    <div class="cmp-sub" id="cmpMidSub">Not yet run</div>
+  </div>
+  <div class="cmp-card bull-c not-run" id="cmpBull" onclick="switchScenario('bull')">
+    <div class="cmp-icon">🚀</div>
+    <div class="cmp-label">Bull Case</div>
+    <div class="cmp-rate">30% / year</div>
+    <div class="cmp-age" id="cmpBullAge">--</div>
+    <div class="cmp-sub" id="cmpBullSub">Not yet run</div>
+  </div>
+  <div class="cmp-card hyper-c not-run" id="cmpHyper" onclick="switchScenario('hyper')">
+    <div class="cmp-icon">⚡</div>
+    <div class="cmp-label">Hyper Bull</div>
+    <div class="cmp-rate">40% / year</div>
+    <div class="cmp-age" id="cmpHyperAge">--</div>
+    <div class="cmp-sub" id="cmpHyperSub">Not yet run</div>
+  </div>
+</div>
+
+<div class="chart-section" id="chartSection">
+  <div class="chart-card">
+    <div class="chart-tabs">
+      <button class="ct-btn active" onclick="switchChart('networth')">Net Worth</button>
+      <button class="ct-btn" onclick="switchChart('assets')">Asset Breakdown</button>
+      <button class="ct-btn" onclick="switchChart('btc')">Bitcoin</button>
+      <button class="ct-btn" onclick="switchChart('spending')">Spending vs Liquid</button>
+    </div>
+    <div class="chart-title" id="chartTitle">Net Worth Over Time</div>
+    <div class="chart-sub" id="chartSub">Total portfolio value by age</div>
+    <canvas id="mainChart"></canvas>
+  </div>
+</div>
+
+<div class="table-section" id="tableSection">
+  <div class="table-card">
+    <div class="table-toolbar">
+      <div class="table-title">📋 Year-by-Year Projection</div>
+      <button class="tbl-btn" onclick="exportCSV()">⬇️ Export CSV</button>
+    </div>
+    <div class="table-wrap" id="tableWrap"></div>
+  </div>
+</div>
+
+<footer>
+  <div style="margin-bottom:10px"><a href="index.html" style="font-weight:800;font-size:15px">₿ SATOLOGY</a> · Understanding Bitcoin</div>
+  <div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <a href="Unstoppable.html">Unstoppable</a>
+    <a href="LumpSumVSdcaVShybrid.html">DCA vs Lump Sum</a>
+    <a href="real-estate-vs-bitcoin.html">Real Estate vs BTC</a>
+    <a href="BitcoinSupplyShock.html">Supply Shock</a>
+  </div>
+  <div>© 2026 SATOLOGY — Not financial advice. Model your own future.</div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
+// ===== STATE =====
+const html = document.documentElement;
+let currentScenario = 'mid';
 let chartInstance = null;
+let currentChartType = 'networth';
 let lastPath = [];
+const scenarioResults = { bear: null, mid: null, bull: null, hyper: null };
 
-document.getElementById('findButton').addEventListener('click', (e) => {
-  e.preventDefault();
-  runFinder();
-});
-document.getElementById('chartButton').addEventListener('click', () => {
-  drawChart(lastPath);
-});
-document.getElementById('exportButton').addEventListener('click', () => {
-  exportCSV(lastPath);
+const SCENARIOS = {
+  bear:  { label: '🐻 Bear Case',      rate: 15, btnText: '🐻 Calculate Bear Case (15%)',       btnCls: 'bear-btn', cardCls: 'bear-mode', resCls: 'bear-r', desc: 'Conservative scenario — stress-test your plan at 15% annual Bitcoin growth.' },
+  mid:   { label: '📊 Mid Case',       rate: 20, btnText: '📊 Calculate Mid Case (20%)',        btnCls: 'mid-btn',  cardCls: 'mid-mode',  resCls: 'mid-r',  desc: 'Measured base case — realistic appreciation as global Bitcoin adoption deepens.' },
+  bull:  { label: '🚀 Bull Case',      rate: 30, btnText: '🚀 Calculate Bull Case (30%)',       btnCls: 'bull-btn', cardCls: 'bull-mode', resCls: 'bull-r', desc: 'Optimistic scenario — Bitcoin as a dominant global store of value.' },
+  hyper: { label: '⚡ Hyper Bull',     rate: 40, btnText: '⚡ Calculate Hyper Bull Case (40%)', btnCls: 'hyper-btn',cardCls: 'hyper-mode',resCls: 'hyper-r',desc: 'Hyperbitcoinisation scenario — if Bitcoin\'s best decade repeats.' }
+};
+
+// ===== THEME =====
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n);
+  localStorage.setItem('satology-theme', n);
+  if (chartInstance) setTimeout(() => drawChart(lastPath, currentChartType), 50);
 });
 
+// ===== SCROLL =====
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  document.getElementById('scrollFill').style.width = (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%';
+}, { passive: true });
+
+// ===== HERO CANVAS =====
+(function () {
+  const c = document.getElementById('heroCanvas'); if (!c) return;
+  const ctx = c.getContext('2d'); let P = [], W, H;
+  const COLS = ['rgba(247,147,26,', 'rgba(255,215,0,', 'rgba(34,197,94,', 'rgba(168,85,247,'];
+  function resize() {
+    W = c.width = c.offsetWidth; H = c.height = c.offsetHeight;
+    P = Array.from({ length: 130 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .2, vy: (Math.random() - .5) * .2,
+      r: Math.random() * 1.4 + .3,
+      col: COLS[Math.floor(Math.random() * COLS.length)],
+      ph: Math.random() * Math.PI * 2, sp: Math.random() * .004 + .001
+    }));
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    P.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      const op = .03 + .1 * ((Math.sin(t * p.sp * 1000 + p.ph) + 1) / 2);
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.col + op + ')'; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); window.addEventListener('resize', resize); requestAnimationFrame(draw);
+})();
+
+// ===== BTC PRICE =====
+async function refreshPrice() {
+  document.getElementById('priceHint').textContent = '⏳';
+  try {
+    const d = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd').then(r => r.json());
+    const p = d.bitcoin.usd;
+    document.getElementById('btcPriceDisplay').textContent = '$' + p.toLocaleString();
+    document.getElementById('btcPrice').value = p;
+  } catch (e) {}
+  document.getElementById('priceHint').textContent = '↻';
+}
+refreshPrice(); setInterval(refreshPrice, 30000);
+
+// ===== SCENARIO SWITCH =====
+function switchScenario(s) {
+  currentScenario = s;
+  const sc = SCENARIOS[s];
+
+  // Tabs
+  Object.keys(SCENARIOS).forEach(k => {
+    document.getElementById('tab' + cap(k)).classList.toggle('active', k === s);
+    document.getElementById('banner' + cap(k)).classList.toggle('show', k === s);
+  });
+
+  // Card / button / result styling
+  document.getElementById('calcCard').className = 'calc-card ' + sc.cardCls;
+  const btn = document.getElementById('calcBtn');
+  btn.className = 'calc-btn ' + sc.btnCls;
+  btn.textContent = sc.btnText;
+  document.getElementById('resultBox').className = 'result-box ' + sc.resCls;
+
+  // Auto-set BTC growth rate for the selected scenario
+  document.getElementById('btcCagr').value = sc.rate;
+
+  // Restore saved results
+  const saved = scenarioResults[s];
+  if (saved) {
+    showResult(saved.retireAge, saved.startIn, s);
+    document.getElementById('resultBox').classList.add('show');
+    lastPath = saved.path;
+    drawChart(lastPath, currentChartType);
+    renderTable(lastPath);
+    document.getElementById('chartSection').classList.add('show');
+    document.getElementById('tableSection').classList.add('show');
+  } else {
+    document.getElementById('resultBox').classList.remove('show');
+  }
+}
+
+function setGrowth(v) { document.getElementById('btcCagr').value = v; }
+function setGrowthAndSwitch(v, s) { setGrowth(v); switchScenario(s); }
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ===== INPUTS =====
 function getInputs() {
   const v = id => document.getElementById(id).value;
   return {
@@ -273,376 +573,320 @@ function getInputs() {
     income: parseFloat(v('income')),
     savingsRate: parseFloat(v('savingsRate')) / 100,
     savingsDestination: v('savingsDestination'),
-
-    bitcoinBTC: parseFloat(v('bitcoin')),
-    btcPrice: parseFloat(v('btcPrice')),
+    bitcoinBTC: parseFloat(v('bitcoin')) || 0,
+    btcPrice: parseFloat(v('btcPrice')) || 0,
     btcCagr: parseFloat(v('btcCagr')) / 100,
-
-    investments: parseFloat(v('investments')),
+    investments: parseFloat(v('investments')) || 0,
     investmentCagr: parseFloat(v('investmentCagr')) / 100,
-
-    otherAssets: parseFloat(v('otherAssets')),
+    otherAssets: parseFloat(v('otherAssets')) || 0,
     otherAssetsCagr: parseFloat(v('otherAssetsCagr')) / 100,
-
-    k401Balance: parseFloat(v('k401Balance')),
+    k401Balance: parseFloat(v('k401Balance')) || 0,
     k401Cagr: parseFloat(v('k401Cagr')) / 100,
     k401TaxRate: parseFloat(v('k401TaxRate')) / 100,
-
-    realEstate: parseFloat(v('realEstate')),
+    realEstate: parseFloat(v('realEstate')) || 0,
     realEstateCagr: parseFloat(v('realEstateCagr')) / 100,
-
     inflationRate: parseFloat(v('inflationRate')) / 100,
     retirementSpending: parseFloat(v('retirementSpending'))
   };
 }
 
-function validateInputs(i) {
-  const err = [];
-  if (isNaN(i.age) || i.age < 0 || i.age > 100) err.push('Age must be 0–100.');
-  if (isNaN(i.lifeExpectancy) || i.lifeExpectancy <= i.age) err.push('Life expectancy must exceed current age.');
-  if (isNaN(i.income) || i.income < 0) err.push('Income must be ≥ 0.');
-  if (isNaN(i.savingsRate) || i.savingsRate < 0 || i.savingsRate > 1) err.push('Savings rate must be 0–100%.');
-
-  const nums = ['investments','otherAssets','k401Balance','realEstate','retirementSpending','btcPrice','bitcoinBTC'];
-  nums.forEach(k => { if (isNaN(i[k]) || i[k] < 0) err.push(`${labelize(k)} must be ≥ 0.`); });
-
-  const pcts = ['investmentCagr','otherAssetsCagr','k401Cagr','realEstateCagr','inflationRate','btcCagr','k401TaxRate'];
-  pcts.forEach(k => { if (isNaN(i[k])) err.push(`${labelize(k)} is required.`); });
-
-  return err;
-  function labelize(k){
-    return k
-      .replace(/([A-Z])/g,' $1')
-      .replace('k401','401k')
-      .replace('btc','BTC ')
-      .replace(/^./,s=>s.toUpperCase())
-      .trim();
-  }
+function validate(i) {
+  const e = [];
+  if (isNaN(i.age) || i.age < 0 || i.age > 100) e.push('Current age must be 0–100.');
+  if (isNaN(i.lifeExpectancy) || i.lifeExpectancy <= i.age) e.push('Plan-to age must exceed current age.');
+  if (isNaN(i.income) || i.income < 0) e.push('Income must be ≥ 0.');
+  if (isNaN(i.savingsRate) || i.savingsRate < 0 || i.savingsRate > 1) e.push('Savings rate must be 0–100%.');
+  if (isNaN(i.retirementSpending) || i.retirementSpending <= 0) e.push('Annual retirement spending is required.');
+  if (isNaN(i.btcCagr)) e.push('Bitcoin growth rate is required.');
+  if (isNaN(i.inflationRate)) e.push('Inflation rate is required.');
+  return e;
 }
 
+// ===== RUN =====
 function runFinder() {
-  const errorDiv = document.getElementById('error');
-  const resultDiv = document.getElementById('result');
-  const chartBtn = document.getElementById('chartButton');
-  const exportBtn = document.getElementById('exportButton');
-  const tableContainer = document.getElementById('tableContainer');
-
-  errorDiv.textContent = '';
-  resultDiv.style.display = 'none';
-  chartBtn.style.display = 'none';
-  exportBtn.style.display = 'none';
-  tableContainer.innerHTML = '';
-  document.getElementById('chartContainer').style.display = 'none';
-  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-
+  const eb = document.getElementById('errorBox');
+  eb.classList.remove('show');
   const i = getInputs();
-  const errs = validateInputs(i);
-  if (errs.length) { errorDiv.textContent = errs.join(' '); return; }
+  const errs = validate(i);
+  if (errs.length) { eb.textContent = errs.join(' '); eb.classList.add('show'); return; }
 
-  const maxYearsSearch = 50; // search window for retirement start
-  let foundPlan = null;
-
-  for (let startIn = 0; startIn <= maxYearsSearch; startIn++) {
-    const sim = simulatePlan(i, startIn);
-    if (sim.success) { foundPlan = { startIn, sim }; break; }
+  let found = null;
+  for (let n = 0; n <= 65; n++) {
+    const sim = simulate(i, n);
+    if (sim.success) { found = { startIn: n, sim }; break; }
   }
 
-  resultDiv.style.display = 'block';
-  if (!foundPlan) {
-    resultDiv.textContent = `❌ No feasible retirement found within ${maxYearsSearch} years under current assumptions. Try lowering spending, raising savings, or increasing returns.`;
+  const rb = document.getElementById('resultBox');
+  rb.classList.add('show');
+
+  if (!found) {
+    document.getElementById('resultLabel').textContent = SCENARIOS[currentScenario].label + ' — No Retirement Found';
+    document.getElementById('resultAge').textContent = '∞';
+    document.getElementById('resultDetail').innerHTML = '❌ No feasible retirement within 65 years. Try reducing spending, increasing savings, or switching to a higher growth scenario.';
+    scenarioResults[currentScenario] = null;
+    updateCmp(currentScenario, null, null);
+    document.getElementById('compareRow').classList.add('show');
     return;
   }
 
-  const retireAge = (i.age + foundPlan.startIn).toFixed(1);
-  resultDiv.innerHTML = `
-    ✅ Earliest retirement age: <strong>${retireAge}</strong><br/>
-    (Retire in <strong>${foundPlan.startIn} year(s)</strong> and your liquid assets never deplete through age ${i.lifeExpectancy}.)`;
+  const retireAge = (i.age + found.startIn).toFixed(1);
+  lastPath = found.sim.path;
+  scenarioResults[currentScenario] = { retireAge, startIn: found.startIn, path: lastPath };
 
-  lastPath = foundPlan.sim.path; // store for chart/table/export
-  exportBtn.style.display = 'inline-block';
-  renderTable(lastPath, tableContainer);
-  // Auto-show chart
-  drawChart(lastPath);
+  showResult(retireAge, found.startIn, currentScenario);
+  updateCmp(currentScenario, retireAge, found.startIn);
+
+  document.getElementById('compareRow').classList.add('show');
+  drawChart(lastPath, currentChartType);
+  renderTable(lastPath);
+  document.getElementById('chartSection').classList.add('show');
+  document.getElementById('tableSection').classList.add('show');
+
+  setTimeout(() => rb.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
 }
 
-function simulatePlan(i, startInYears) {
-  // Initial balances (Bitcoin converted to USD)
-  let inv = i.investments;
-  let oth = i.otherAssets;
-  let k401 = i.k401Balance;
-  let re  = i.realEstate;
+function showResult(retireAge, startIn, s) {
+  const sc = SCENARIOS[s];
+  document.getElementById('resultLabel').textContent = sc.label + ' — Earliest Retirement Age';
+  document.getElementById('resultAge').textContent = retireAge;
+  document.getElementById('resultDetail').innerHTML =
+    `Retire in <strong>${startIn} year${startIn !== 1 ? 's' : ''}</strong> at age <strong>${retireAge}</strong> assuming <strong>${sc.rate}% annual Bitcoin growth</strong>. ${sc.desc}`;
+}
 
-  const startBtcPrice = (i.btcPrice || 0);
-  let btcUsd = (i.bitcoinBTC || 0) * startBtcPrice;
+function updateCmp(s, retireAge, startIn) {
+  const el = document.getElementById('cmp' + cap(s));
+  el.classList.remove('not-run');
+  document.getElementById('cmp' + cap(s) + 'Age').textContent = retireAge || '∞';
+  document.getElementById('cmp' + cap(s) + 'Sub').textContent = retireAge
+    ? 'Retire in ' + startIn + ' yr' + (startIn !== 1 ? 's' : '')
+    : 'Not feasible';
+}
 
-  const path = [];
-  const startAge = i.age;
-  const retireAge = i.age + startInYears;
-  const maxAge = i.lifeExpectancy;
-
+// ===== SIMULATE =====
+function simulate(i, startInYears) {
+  let inv = i.investments, oth = i.otherAssets, k401 = i.k401Balance, re = i.realEstate;
+  const startBtcPrice = i.btcPrice || 1;
+  let btcUsd = i.bitcoinBTC * startBtcPrice;
   const annualSavings = i.income * i.savingsRate;
-  const startYear = new Date().getFullYear(); // current year auto
+  const retireAge = i.age + startInYears;
+  const startYear = new Date().getFullYear();
+  const path = [];
 
-  let yearIndex = 0;
-  for (let age = startAge; age <= maxAge; age += 1, yearIndex += 1) {
+  for (let yr = 0; yr <= (i.lifeExpectancy - i.age); yr++) {
+    const age = i.age + yr;
     const isRetired = age >= retireAge;
+    const btcPriceNow = startBtcPrice * Math.pow(1 + i.btcCagr, yr);
 
-    // BTC price per coin for THIS row (growth shows on next year/age)
-    const btcPriceThisYear = startBtcPrice * Math.pow(1 + i.btcCagr, yearIndex);
-
-    // 1) Contributions (only before retirement): add to selected bucket
     if (!isRetired && annualSavings > 0) {
       if (i.savingsDestination === 'bitcoin') btcUsd += annualSavings;
       else if (i.savingsDestination === 'otherAssets') oth += annualSavings;
-      else inv += annualSavings; // default investments
+      else inv += annualSavings;
     }
 
-    // 2) If retired, withdraw to cover inflation-adjusted spending by lowest CAGR → highest
-    let withdrawnInv = 0, withdrawnOth = 0, withdrawn401Gross = 0, withdrawnBtc = 0;
-    let required = 0;
-
+    let required = 0, wInv = 0, wOth = 0, w401g = 0, wBtc = 0;
     if (isRetired) {
-      // Spending inflated from TODAY (not from retirement start)
-      required = i.retirementSpending * Math.pow(1 + i.inflationRate, yearIndex);
+      required = i.retirementSpending * Math.pow(1 + i.inflationRate, yr);
       let need = required;
-
-      const accessible401k = age >= 59.5;
-      const buckets = [];
-
-      buckets.push({
-        name:'Investments',
-        cagr:i.investmentCagr,
-        netAvail: () => inv,
-        take: (takeNet) => { const amt = Math.min(inv, takeNet); inv -= amt; withdrawnInv += amt; return amt; }
-      });
-
-      buckets.push({
-        name:'Other',
-        cagr:i.otherAssetsCagr,
-        netAvail: () => oth,
-        take: (takeNet) => { const amt = Math.min(oth, takeNet); oth -= amt; withdrawnOth += amt; return amt; }
-      });
-
-      if (accessible401k) {
-        buckets.push({
-          name:'401k',
-          cagr:i.k401Cagr,
-          netAvail: () => k401 * (1 - i.k401TaxRate),
-          take: (takeNet) => {
-            const maxNet = k401 * (1 - i.k401TaxRate);
-            const net = Math.min(maxNet, takeNet);
-            const gross = net / (1 - i.k401TaxRate);
-            k401 -= gross;
-            withdrawn401Gross += gross;
-            return net;
-          }
-        });
-      }
-
-      buckets.push({
-        name:'Bitcoin',
-        cagr:i.btcCagr,
-        netAvail: () => btcUsd,
-        take: (takeNet) => { const amt = Math.min(btcUsd, takeNet); btcUsd -= amt; withdrawnBtc += amt; return amt; }
-      });
-
-      buckets.sort((a,b) => a.cagr - b.cagr);
-
-      for (const b of buckets) {
-        if (need <= 0) break;
-        const canNet = b.netAvail();
-        if (canNet <= 0) continue;
-        const taken = b.take(need);
-        need -= taken;
-      }
-
-      if (need > 0) {
-        return { success: false, reason: 'insufficient_liquidity', atAge: age };
-      }
+      const can401 = age >= 59.5;
+      const buckets = [
+        { cagr: i.investmentCagr, take: n => { const a = Math.min(inv, n); inv -= a; wInv += a; return a; } },
+        { cagr: i.otherAssetsCagr, take: n => { const a = Math.min(oth, n); oth -= a; wOth += a; return a; } },
+        ...(can401 ? [{ cagr: i.k401Cagr, take: n => { const mx = k401 * (1 - i.k401TaxRate); const net = Math.min(mx, n); const gr = net / (1 - i.k401TaxRate); k401 -= gr; w401g += gr; return net; } }] : []),
+        { cagr: i.btcCagr, take: n => { const a = Math.min(btcUsd, n); btcUsd -= a; wBtc += a; return a; } }
+      ].sort((a, b) => a.cagr - b.cagr);
+      for (const b of buckets) { if (need <= 0) break; need -= b.take(need); }
+      if (need > 0.01) return { success: false };
     }
 
-    // Record the row FIRST, then apply growth so growth shows on the *next* age/year.
-    const netWorth = inv + oth + k401 + re + btcUsd;
+    const nw = inv + oth + k401 + re + btcUsd;
+    const lnw = inv + oth + (age >= 59.5 ? k401 * (1 - i.k401TaxRate) : 0) + btcUsd;
     path.push({
-      year: startYear + yearIndex,
-      age: +age.toFixed(1),
-      netWorth: netWorth,
-
-      invested: inv,
-      other: oth,
-      k401: k401,
-
-      btcPrice: +btcPriceThisYear.toFixed(2),
-      bitcoin: btcUsd,
-
-      realEstate: re,
+      year: startYear + yr, age: +age.toFixed(1),
+      netWorth: nw, liquidNetWorth: lnw,
+      invested: inv, other: oth, k401,
+      btcPrice: +btcPriceNow.toFixed(2),
+      btcCoins: +(btcUsd / btcPriceNow).toFixed(8),
+      bitcoin: btcUsd, realEstate: re,
       requiredSpending: +required.toFixed(2),
-      withdrawnInv: +withdrawnInv.toFixed(2),
-      withdrawnOther: +withdrawnOth.toFixed(2),
-      withdrawn401k: +withdrawn401Gross.toFixed(2),
-      withdrawnBitcoin: +withdrawnBtc.toFixed(2),
+      withdrawnInv: +wInv.toFixed(2), withdrawnOther: +wOth.toFixed(2),
+      withdrawn401k: +w401g.toFixed(2), withdrawnBitcoin: +wBtc.toFixed(2),
       retired: isRetired
     });
 
-    if (inv < -1e-6 || oth < -1e-6 || k401 < -1e-6 || btcUsd < -1e-6) {
-      return { success: false, reason: 'negative_balance', atAge: age };
-    }
-
-    // Grow all buckets annually by their CAGRs (applies to NEXT age/year)
-    inv *= (1 + i.investmentCagr);
-    oth *= (1 + i.otherAssetsCagr);
-    k401 *= (1 + i.k401Cagr);
-    re  *= (1 + i.realEstateCagr);
-    btcUsd *= (1 + i.btcCagr);
+    if (inv < -1 || oth < -1 || k401 < -1 || btcUsd < -1) return { success: false };
+    inv *= (1 + i.investmentCagr); oth *= (1 + i.otherAssetsCagr);
+    k401 *= (1 + i.k401Cagr); re *= (1 + i.realEstateCagr); btcUsd *= (1 + i.btcCagr);
   }
-
   return { success: true, path };
 }
 
-function drawChart(path) {
-  if (!path || !path.length) return;
-  const ctx = document.getElementById('netWorthChart').getContext('2d');
-  document.getElementById('chartContainer').style.display = 'block';
-  if (chartInstance) { chartInstance.destroy(); }
+// ===== CHART =====
+const CHART_DEFS = {
+  networth: {
+    title: 'Net Worth Over Time', sub: 'Total and liquid portfolio value by age',
+    build: (path, isDark) => [
+      { label: 'Total Net Worth', data: path.map(p => ({ x: p.age, y: Math.round(p.netWorth) })), borderColor: isDark ? '#FFD700' : '#e07c12', backgroundColor: 'rgba(255,215,0,.06)', fill: true, tension: .35, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5 },
+      { label: 'Liquid Net Worth', data: path.map(p => ({ x: p.age, y: Math.round(p.liquidNetWorth) })), borderColor: '#F7931A', fill: false, tension: .35, borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, borderDash: [5, 3] }
+    ]
+  },
+  assets: {
+    title: 'Asset Breakdown', sub: 'How each asset class grows and depletes through your life',
+    build: path => [
+      { label: 'Bitcoin ($)', data: path.map(p => ({ x: p.age, y: Math.round(p.bitcoin) })), borderColor: '#F7931A', tension: .35, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, fill: false },
+      { label: 'Investments', data: path.map(p => ({ x: p.age, y: Math.round(p.invested) })), borderColor: '#06b6d4', tension: .35, borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, fill: false },
+      { label: 'Other Assets', data: path.map(p => ({ x: p.age, y: Math.round(p.other) })), borderColor: '#22c55e', tension: .35, borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, fill: false },
+      { label: '401k', data: path.map(p => ({ x: p.age, y: Math.round(p.k401) })), borderColor: '#8b5cf6', tension: .35, borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, fill: false },
+      { label: 'Real Estate', data: path.map(p => ({ x: p.age, y: Math.round(p.realEstate) })), borderColor: '#d97706', tension: .35, borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, fill: false }
+    ]
+  },
+  btc: {
+    title: 'Bitcoin: USD Value & Coin Count', sub: 'Your Bitcoin stack in dollars and in actual BTC each year',
+    build: path => [
+      { label: 'Bitcoin USD Value', data: path.map(p => ({ x: p.age, y: Math.round(p.bitcoin) })), borderColor: '#F7931A', backgroundColor: 'rgba(247,147,26,.08)', fill: true, tension: .35, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5 },
+      { label: 'BTC Price ($)', data: path.map(p => ({ x: p.age, y: Math.round(p.btcPrice) })), borderColor: '#FFD700', tension: .35, borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, fill: false, borderDash: [4, 2] }
+    ]
+  },
+  spending: {
+    title: 'Spending vs Liquid Portfolio', sub: 'Does your liquid portfolio keep pace with inflation-adjusted spending?',
+    build: path => [
+      { label: 'Liquid Net Worth', data: path.map(p => ({ x: p.age, y: Math.round(p.liquidNetWorth) })), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,.06)', fill: true, tension: .35, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4 },
+      { label: 'Annual Spending Required', data: path.map(p => ({ x: p.age, y: Math.round(p.requiredSpending) })), borderColor: '#e63946', tension: .35, borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, fill: false, borderDash: [6, 3] }
+    ]
+  }
+};
 
-  const labels = path.map(p => p.age);
-  const net = path.map(p => p.netWorth);
-  const inv = path.map(p => p.invested);
-  const oth = path.map(p => p.other);
-  const k4  = path.map(p => p.k401);
-  const btc = path.map(p => p.bitcoin);
-  const re  = path.map(p => p.realEstate);
+function switchChart(type) {
+  currentChartType = type;
+  document.querySelectorAll('.ct-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['networth', 'assets', 'btc', 'spending'][i] === type);
+  });
+  if (lastPath.length) drawChart(lastPath, type);
+}
+
+function drawChart(path, type) {
+  if (!path?.length) return;
+  const def = CHART_DEFS[type] || CHART_DEFS.networth;
+  document.getElementById('chartTitle').textContent = def.title;
+  document.getElementById('chartSub').textContent = def.sub;
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const gc = isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+  const tc = isDark ? '#555' : '#999';
+
+  const datasets = def.build(path, isDark);
+  const retireAge = path.find(p => p.retired)?.age;
+  if (retireAge) {
+    const maxY = Math.max(...path.map(p => p.netWorth));
+    datasets.push({
+      label: 'Retirement ↑', fill: false, tension: 0, borderDash: [3, 3],
+      borderColor: 'rgba(34,197,94,.45)', borderWidth: 1.5, pointRadius: 0,
+      data: path.map(p => ({ x: p.age, y: p.age === retireAge ? maxY : null })), spanGaps: false
+    });
+  }
 
   chartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Net Worth ($)', data: net, borderWidth: 2, fill: false, borderColor: 'skyblue'},
-        { label: 'Investments ($)', data: inv, borderWidth: 1, fill: false, borderColor: 'lightcoral'},
-        { label: 'Other Assets ($)', data: oth, borderWidth: 1, fill: false, borderColor: 'mediumseagreen'},
-        { label: '401k ($)', data: k4, borderWidth: 1, fill: false, borderColor: 'mediumpurple'},
-        { label: 'Bitcoin ($)', data: btc, borderWidth: 1, fill: false, borderColor: 'orange' },
-        { label: 'Real Estate ($)', data: re, borderWidth: 1, fill: false, borderColor: 'peru'},
-      ]
-    },
+    type: 'line', data: { datasets },
     options: {
       responsive: true,
+      animation: { duration: 600, easing: 'easeOutCubic' },
       interaction: { mode: 'index', intersect: false },
       scales: {
-        y: { ticks: { callback: v => '$' + Number(v).toLocaleString() } }
+        x: { type: 'linear', title: { display: true, text: 'Age', color: tc }, grid: { color: gc }, ticks: { color: tc } },
+        y: { title: { display: true, text: 'USD ($)', color: tc }, grid: { color: gc }, ticks: { color: tc, callback: v => '$' + fmt(v) } }
       },
       plugins: {
-        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: $${Number(ctx.parsed.y).toLocaleString()}` } }
+        legend: { labels: { color: isDark ? '#e8e8e8' : '#333', font: { family: 'Inter', weight: '700', size: 12 } } },
+        tooltip: {
+          backgroundColor: isDark ? 'rgba(17,17,20,.96)' : 'rgba(255,255,255,.96)',
+          titleColor: isDark ? '#e8e8e8' : '#111',
+          bodyColor: isDark ? '#c8c8c8' : '#444',
+          borderColor: isDark ? '#2a2a32' : '#e0ddd5',
+          borderWidth: 1, padding: 12,
+          callbacks: {
+            title: ctx => 'Age ' + ctx[0].parsed.x,
+            label: ctx => ctx.parsed.y == null ? null : ` ${ctx.dataset.label}: $${fmt(Math.round(ctx.parsed.y))}`
+          }
+        }
       }
     }
   });
 }
 
-function renderTable(path, container) {
-  if (!path || !path.length) return;
+// ===== TABLE =====
+function renderTable(path) {
+  if (!path?.length) return;
   const cols = [
-    ['Year','year'],
-    ['Age','age'],
-    ['Net Worth ($)','netWorth'],
-    ['Investments ($)','invested'],
-    ['Other Assets ($)','other'],
-    ['401k ($)','k401'],
-    ['BTC Price ($)','btcPrice'],
-    ['Bitcoin ($)','bitcoin'],
-    ['Real Estate ($)','realEstate'],
-    ['Req. Spending ($)','requiredSpending'],
-    ['From Inv ($)','withdrawnInv'],
-    ['From Other ($)','withdrawnOther'],
-    ['From 401k (gross $)','withdrawn401k'],
-    ['From Bitcoin ($)','withdrawnBitcoin'],
-    ['Retired?','retired']
+    { l: 'Year', k: 'year' }, { l: 'Age', k: 'age' },
+    { l: 'Net Worth', k: 'netWorth', f: 'usd', c: 'nw-col' },
+    { l: 'Liquid NW', k: 'liquidNetWorth', f: 'usd' },
+    { l: 'Investments', k: 'invested', f: 'usd' },
+    { l: 'Other Assets', k: 'other', f: 'usd' },
+    { l: '401k', k: 'k401', f: 'usd' },
+    { l: 'BTC Price', k: 'btcPrice', f: 'usd', c: 'btc-col' },
+    { l: 'Bitcoin ($)', k: 'bitcoin', f: 'usd', c: 'btc-col' },
+    { l: 'Bitcoin ₿', k: 'btcCoins', f: 'btc', c: 'btc-col' },
+    { l: 'Real Estate', k: 'realEstate', f: 'usd' },
+    { l: 'Req. Spending', k: 'requiredSpending', f: 'usd' },
+    { l: 'From Inv', k: 'withdrawnInv', f: 'usd' },
+    { l: 'From Other', k: 'withdrawnOther', f: 'usd' },
+    { l: 'From 401k', k: 'withdrawn401k', f: 'usd' },
+    { l: 'From Bitcoin', k: 'withdrawnBitcoin', f: 'usd' },
+    { l: 'Retired', k: 'retired', f: 'bool' }
   ];
 
-  let html = '<table><thead><tr>';
-  cols.forEach(([label,key]) => {
-    let cls = '';
-    if (key === 'btcPrice') cls = 'btc-price-col';
-    if (key === 'netWorth') cls = 'networth-col';
-    html += `<th${cls ? ` class="${cls}"` : ''}>${label}</th>`;
-  });
-  html += '</tr></thead><tbody>';
+  let h = '<table><thead><tr>';
+  cols.forEach(c => { h += `<th${c.c ? ` class="${c.c}"` : ''}>${c.l}</th>`; });
+  h += '</tr></thead><tbody>';
 
-  // Insert divider right before first retired year
-  let dividerInserted = false;
-
+  let div = false;
   path.forEach(row => {
-    if (!dividerInserted && row.retired) {
-      html += `<tr class="retire-divider"><td colspan="${cols.length}">Retirement Starts</td></tr>`;
-      dividerInserted = true;
+    if (!div && row.retired) {
+      div = true;
+      h += `<tr class="retire-banner-row"><td colspan="${cols.length}">🎉 RETIREMENT BEGINS — AGE ${row.age} 🎉</td></tr>`;
     }
-
-    html += '<tr>';
-    cols.forEach(([label,key]) => {
-      let v = row[key];
-      let cls = '';
-      if (key === 'btcPrice') cls = 'btc-price-col';
-      if (key === 'netWorth') cls = 'networth-col';
-
-      if (key === 'year') html += `<td${cls ? ` class="${cls}"` : ''}>${v}</td>`;
-      else if (key === 'age') html += `<td${cls ? ` class="${cls}"` : ''}>${v}</td>`;
-      else if (key === 'retired') html += `<td${cls ? ` class="${cls}"` : ''}>${v ? 'Yes' : 'No'}</td>`;
-      else if (typeof v === 'number') html += `<td${cls ? ` class="${cls}"` : ''}>${'$' + Number(v).toLocaleString()}</td>`;
-      else html += `<td${cls ? ` class="${cls}"` : ''}>${v}</td>`;
+    h += '<tr>';
+    cols.forEach(c => {
+      const v = row[c.k];
+      let d = '';
+      if (c.f === 'usd') d = '$' + fmt(Math.round(v));
+      else if (c.f === 'btc') d = '₿ ' + (+v).toFixed(8);
+      else if (c.f === 'bool') d = v ? '<span style="color:var(--green);font-weight:800">✓</span>' : '<span style="color:var(--muted)">—</span>';
+      else d = v;
+      h += `<td${c.c ? ` class="${c.c}"` : ''}>${d}</td>`;
     });
-    html += '</tr>';
+    h += '</tr>';
   });
-
-  html += '</tbody></table>';
-  container.innerHTML = html;
+  h += '</tbody></table>';
+  document.getElementById('tableWrap').innerHTML = h;
 }
 
-function exportCSV(path) {
-  if (!path || !path.length) return;
-  const headers = [
-    'Year','Age','NetWorth','Investments','OtherAssets','401k','BTCPrice','Bitcoin','RealEstate',
-    'RequiredSpending','WithdrawnInvestments','WithdrawnOther','Withdrawn401kGross','WithdrawnBitcoin','Retired'
-  ];
-  const lines = [headers.join(',')];
-  path.forEach(p => {
-    lines.push([
-      p.year,
-      p.age,
-      Math.round(p.netWorth),
-      Math.round(p.invested),
-      Math.round(p.other),
-      Math.round(p.k401),
-      Math.round(p.btcPrice),
-      Math.round(p.bitcoin),
-      Math.round(p.realEstate),
-      p.requiredSpending,
-      p.withdrawnInv,
-      p.withdrawnOther,
-      p.withdrawn401k,
-      p.withdrawnBitcoin,
-      p.retired ? 'Yes' : 'No'
-    ].join(','));
-  });
-  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'retirement_path.csv';
-  a.click();
-  URL.revokeObjectURL(url);
+// ===== EXPORT =====
+function exportCSV() {
+  if (!lastPath.length) return;
+  const hdr = ['Year','Age','NetWorth','LiquidNW','Investments','Other','401k','BTCPrice','Bitcoin_USD','Bitcoin_BTC','RealEstate','ReqSpending','WithdrawnInv','WithdrawnOther','Withdrawn401k','WithdrawnBTC','Retired'];
+  const rows = lastPath.map(p => [
+    p.year, p.age, Math.round(p.netWorth), Math.round(p.liquidNetWorth),
+    Math.round(p.invested), Math.round(p.other), Math.round(p.k401),
+    Math.round(p.btcPrice), Math.round(p.bitcoin), p.btcCoins,
+    Math.round(p.realEstate), p.requiredSpending,
+    p.withdrawnInv, p.withdrawnOther, p.withdrawn401k, p.withdrawnBitcoin,
+    p.retired ? 'Yes' : 'No'
+  ].join(','));
+  const blob = new Blob([[hdr.join(','), ...rows].join('\n')], { type: 'text/csv' });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `satology_retirement_${currentScenario}_${new Date().toISOString().split('T')[0]}.csv` });
+  a.click(); URL.revokeObjectURL(a.href);
 }
 
-// 🔥 Auto-fill BTC price on load
-async function updateBTCPrice() {
-  try {
-    const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
-    const data = await res.json();
-    const price = data.bitcoin.usd;
-    document.getElementById("btcPrice").value = price;
-  } catch (err) {
-    console.error("BTC price fetch failed:", err);
-  }
+function fmt(n) {
+  if (Math.abs(n) >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+  if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+  return Number(n).toLocaleString();
 }
-updateBTCPrice();
+
+// Init
+switchScenario('mid');
 </script>
 </body>
 </html>
