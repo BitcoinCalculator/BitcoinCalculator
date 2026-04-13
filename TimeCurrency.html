@@ -27,10 +27,6 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;al
 .logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px}
 .logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
 .nav-right{display:flex;align-items:center;gap:12px}
-.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;font-size:14px;font-weight:800;color:var(--btc);cursor:pointer;transition:all .2s}
-.nav-price:hover{background:rgba(247,147,26,.18)}
-.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 .theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0}
 .theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--btc);transition:transform .3s}
 [data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
@@ -138,16 +134,6 @@ input[disabled]{opacity:.5;cursor:not-allowed}
 .tb-bar{height:10px;border-radius:100px;background:var(--bg2);overflow:hidden}
 .tb-fill{height:100%;border-radius:100px;transition:width 1s cubic-bezier(.4,0,.2,1)}
 
-.btc-time-section{background:linear-gradient(135deg,rgba(247,147,26,.07),rgba(255,215,0,.04));border:2px solid rgba(247,147,26,.25);border-radius:22px;padding:30px;margin-bottom:24px}
-.bts-head{font-size:15px;font-weight:900;margin-bottom:6px}
-.bts-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.7}
-.btc-time-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.btc-time-card{background:var(--card);border:1px solid rgba(247,147,26,.2);border-radius:14px;padding:18px;text-align:center}
-.btc-tc-icon{font-size:28px;margin-bottom:8px;display:block}
-.btc-tc-val{font-size:clamp(20px,3.5vw,32px);font-weight:900;letter-spacing:-1.5px;line-height:1;color:var(--btc);animation:countUp .6s .2s ease both;opacity:0;animation-fill-mode:both}
-.btc-tc-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-top:5px;margin-bottom:3px}
-.btc-tc-sub{font-size:11px;color:var(--muted);line-height:1.5;margin-top:4px}
-
 .chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:24px}
 .chart-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
 .ct-btn{padding:7px 14px;border-radius:100px;font-size:11px;font-weight:800;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--muted);transition:all .2s;font-family:'Inter',sans-serif}
@@ -192,11 +178,9 @@ footer a:hover{color:var(--gold)}
 <div class="ticker"><div class="ticker-inner">
   <span>⏳ TIME CURRENCY — YOUR SCARCEST ASSET · SATOLOGY</span><span>·</span>
   <span>⚠️ RIGHT NOW YOU ARE SPENDING TIME — THE ONLY THING YOU CANNOT EARN BACK</span><span>·</span>
-  <span>🔑 BITCOIN IS SCARCE · YOUR TIME IS SCARCER</span><span>·</span>
   <span>⏱️ EVERY OWNED HOUR IS A UNIT OF SOVEREIGNTY — SPEND IT LIKE IT</span><span>·</span>
   <span>⏳ TIME CURRENCY — YOUR SCARCEST ASSET · SATOLOGY</span><span>·</span>
   <span>⚠️ RIGHT NOW YOU ARE SPENDING TIME — THE ONLY THING YOU CANNOT EARN BACK</span><span>·</span>
-  <span>🔑 BITCOIN IS SCARCE · YOUR TIME IS SCARCER</span><span>·</span>
   <span>⏱️ EVERY OWNED HOUR IS A UNIT OF SOVEREIGNTY — SPEND IT LIKE IT</span><span>·</span>
 </div></div>
 
@@ -206,11 +190,6 @@ footer a:hover{color:var(--gold)}
     <div style="display:flex;flex-direction:column;gap:1px"><span class="logo-name">SATOLOGY</span><span class="logo-sub">Understanding Bitcoin</span></div>
   </a>
   <div class="nav-right">
-    <div class="nav-price" id="navPrice" onclick="refreshPrice()" title="Click to refresh">
-      <span class="nav-dot"></span>
-      <span id="btcPriceDisplay">$--</span>
-      <span style="font-size:10px;color:var(--muted)" id="priceHint">↻</span>
-    </div>
     <button class="theme-toggle" id="themeToggle"><span class="t-icon sun">☀️</span><span class="t-icon moon">🌙</span></button>
   </div>
 </nav>
@@ -324,12 +303,6 @@ footer a:hover{color:var(--gold)}
     <div id="tbBars"></div>
   </div>
 
-  <div class="btc-time-section" id="btcSection" style="display:none">
-    <div class="bts-head">₿ Time × Bitcoin — The Connection That Changes Everything</div>
-    <div class="bts-sub">Bitcoin is proof-of-work, but so is your life. Here is what your owned time means when you start measuring it in the hardest money ever created.</div>
-    <div class="btc-time-grid" id="btcGrid"></div>
-  </div>
-
   <div class="chart-card" id="chartCard" style="display:none">
     <div class="chart-tabs">
       <button class="ct-btn active" onclick="switchChart('breakdown')">Time Breakdown</button>
@@ -427,7 +400,6 @@ const htmlEl = document.documentElement;
 let chartInstance = null;
 let currentChartType = 'breakdown';
 let lastCalcResult = null;
-let liveBtcPrice = 0;
 
 // ===== THEME =====
 document.getElementById('themeToggle').addEventListener('click', function() {
@@ -497,21 +469,6 @@ function updateClock() {
 }
 updateClock();
 setInterval(updateClock, 1000);
-
-// ===== BTC PRICE =====
-function refreshPrice() {
-  document.getElementById('priceHint').textContent = '⏳';
-  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      liveBtcPrice = d.bitcoin.usd;
-      document.getElementById('btcPriceDisplay').textContent = '$' + liveBtcPrice.toLocaleString();
-      document.getElementById('priceHint').textContent = '↻';
-    })
-    .catch(function(){ document.getElementById('priceHint').textContent = '↻'; });
-}
-refreshPrice();
-setInterval(refreshPrice, 30000);
 
 // ===== INIT =====
 (function init() {
@@ -660,7 +617,6 @@ function calculate() {
     document.getElementById('hourglassHero').style.display = 'none';
     document.getElementById('statGrid').innerHTML = '';
     document.getElementById('timeBreakdown').style.display = 'none';
-    document.getElementById('btcSection').style.display = 'none';
     document.getElementById('chartCard').style.display = 'none';
     document.getElementById('conclusionBox').style.display = 'none';
     setTimeout(function(){ document.getElementById('resultsSection').scrollIntoView({behavior:'smooth',block:'start'}); }, 100);
@@ -680,7 +636,7 @@ function calculate() {
   var pctOwned = totalWakingHrs > 0 ? ownedHours / totalWakingHrs * 100 : 0;
   var pctWork = totalWakingHrs > 0 ? workHrsRemaining / totalWakingHrs * 100 : 0;
 
-  // NEW: Full moons left (lunar cycles remaining)
+  // Full moons left (lunar cycles remaining)
   var LUNAR_CYCLE_DAYS = 29.53059;
   var remainingDays = remainingCalendarYears * 365.25;
   var fullMoonsLeft = Math.round(remainingDays / LUNAR_CYCLE_DAYS);
@@ -716,7 +672,6 @@ function calculate() {
     {icon:'😴',label:'Sleep Hours Remaining',val:formatInt(sleepHrsTotal),sub:'Excluded from owned time',cls:'btc-c',vcls:'bv'},
     {icon:'📊',label:'Owned Time %',val:pctOwned.toFixed(1)+'%',sub:'Of remaining waking hours',cls:'teal-c',vcls:'tv'},
     {icon:'🧮',label:'Life Expectancy',val:baseLE.toFixed(1)+' − '+condYearsLost.toFixed(1),sub:'= '+estimatedDeathAge.toFixed(1)+' estimated age at death',cls:'gold-c',vcls:'gv'},
-    // NEW: Full moons card (keeps original layout and styling)
     {icon:'🌕',label:'Full Moons Left',val:formatInt(fullMoonsLeft),sub:'Lunar cycles remaining in your lifetime',cls:'purple-c',vcls:'pv'}
   ];
   document.getElementById('statGrid').innerHTML = cards.map(function(c) {
@@ -742,22 +697,6 @@ function calculate() {
       '</div>';
   }).join('');
   document.getElementById('timeBreakdown').style.display = 'block';
-
-  // BTC section
-  var price = liveBtcPrice || 85000;
-  var usdPerOwnedHour = ownedHours > 0 ? (price / ownedHours).toFixed(4) : '0';
-  var satsPerOwnedHour = ownedHours > 0 ? (100000000 / ownedHours).toFixed(2) : '0';
-  var hrsToEarnBtc = price > 0 ? formatInt(price / 25) : '--';
-  var btcCards = [
-    {icon:'₿',label:'USD per Owned Hour',val:'$'+Number(usdPerOwnedHour).toFixed(4),sub:'If 1 BTC = $'+formatInt(price)+' today'},
-    {icon:'⚡',label:'Sats per Owned Hour',val:Number(satsPerOwnedHour).toFixed(2),sub:'Satoshis your free time is worth at today\'s BTC price'},
-    {icon:'⏱️',label:'Hours to Earn 1 BTC',val:hrsToEarnBtc+'h',sub:'At $25/hr wage — without stacking'},
-    {icon:'🔑',label:'Time Sovereignty',val:pctOwned.toFixed(0)+'%',sub:'Of waking time you own outright'}
-  ];
-  document.getElementById('btcGrid').innerHTML = btcCards.map(function(c) {
-    return '<div class="btc-time-card"><span class="btc-tc-icon">'+c.icon+'</span><div class="btc-tc-label">'+c.label+'</div><div class="btc-tc-val">'+c.val+'</div><div class="btc-tc-sub">'+c.sub+'</div></div>';
-  }).join('');
-  document.getElementById('btcSection').style.display = 'block';
 
   // Chart
   document.getElementById('chartCard').style.display = 'block';
@@ -924,10 +863,6 @@ function drawChart(r, type) {
 
 // ===== CONCLUSION =====
 function renderConclusion(r) {
-  var price = liveBtcPrice || 85000;
-  var usdPerHour = r.ownedHours > 0 ? (price / r.ownedHours).toFixed(4) : '0';
-  var workYearsLeft = r.yearsToRetire.toFixed(1);
-
   document.getElementById('conclusionBox').innerHTML =
     '<div class="con-eyebrow">⏳ Your Time — The Full Picture</div>' +
     '<div class="con-headline">' +
@@ -939,20 +874,16 @@ function renderConclusion(r) {
       '<div class="cs-item-c"><div class="cs-val-c" style="color:var(--teal)">' + formatInt(r.ownedHours) + '</div><div class="cs-lbl-c">Owned Hours</div></div>' +
       '<div class="cs-item-c"><div class="cs-val-c" style="color:var(--gold)">' + r.pctOwned.toFixed(1) + '%</div><div class="cs-lbl-c">Of Waking Time Yours</div></div>' +
       '<div class="cs-item-c"><div class="cs-val-c" style="color:var(--red)">' + r.pctWork.toFixed(1) + '%</div><div class="cs-lbl-c">Waking Time at Work</div></div>' +
-      '<div class="cs-item-c"><div class="cs-val-c" style="color:var(--btc)">$' + usdPerHour + '</div><div class="cs-lbl-c">USD per Owned Hour (BTC)</div></div>' +
     '</div>' +
     '<div class="con-body">' +
-      '<p>You have <strong>' + formatInt(r.ownedHours) + ' owned waking hours remaining</strong> — that is your real balance. Not the number in your bank account. Not your salary. Not your net worth on paper. <em>The hours that belong entirely to you</em>, where no employer, no system, and no obligation has a claim.</p>' +
-      '<p>Of all your remaining waking hours, only <strong>' + r.pctOwned.toFixed(1) + '% are fully yours</strong>. The remaining ' + r.pctWork.toFixed(1) + '% are allocated to work' + (r.yearsToRetire > 0 ? ' for the next ' + workYearsLeft + ' years' : ' — though you have already retired, meaning all remaining waking time is yours') + '. Most people never see this number. Most people never ask the question. You just did, and that alone changes something.</p>' +
-      '<p>Here is the connection that most people miss: <em>money is stored time.</em> When you work an hour, the system gives you a number. That number is supposed to preserve the value of that hour until you spend it. But fiat currency fails at this. Inflation silently drains the purchasing power of every hour you have already traded. Bitcoin does not do this. When you stack sats, you are converting your most irreplaceable asset — <strong>your owned hours</strong> — into a form of stored value that cannot be inflated away, cannot be debased, and cannot be confiscated by anyone running a printing press.</p>' +
-      '<p>At today\'s price of $' + formatInt(price) + ', each of your owned hours is worth <strong>$' + usdPerHour + ' in Bitcoin terms</strong>. That is not your hourly wage. That is the value of your <em>free, sovereign, unencumbered time</em> measured in the hardest money ever created. Use that lens the next time someone asks you to work late, or the next time you spend a free afternoon on something that does not matter.</p>' +
-      '<p>The question is not "how do I earn more?" The question is: <strong>"how do I buy back more of my own hours?"</strong> Retiring early is not about luxury — it is about the fundamental human act of reclaiming your time from a system that profits from your continued participation in it. Bitcoin, used with patience and discipline, is one of the most powerful tools in history for doing exactly that.</p>' +
+      '<p>You have <strong>' + formatInt(r.ownedHours) + ' owned waking hours remaining</strong> — that is your real balance. The hours that belong entirely to you, where no employer or obligation has a claim.</p>' +
+      '<p>Time is the ultimate limited resource. Just as Bitcoin is a scarce asset that cannot be inflated or debased, your time cannot be printed or recovered. The most powerful choice you can make is to transfer the value of your work into assets that are equally limited — so your past labor continues to hold its value for the future you have left.</p>' +
     '</div>' +
     '<div class="con-pledge">' +
       '<span class="pt">' + formatInt(r.ownedHours) + ' hours left.</span><br>' +
       '<span class="pgo">Spend fewer of them working for others.</span><br>' +
       '<span class="pg">Stack more of them for yourself.</span><br>' +
-      '<span class="pb">Bitcoin helps. Time demands it. &#128273;</span>' +
+      '<span class="pb">Time demands it. &#128273;</span>' +
     '</div>';
 }
 
@@ -970,7 +901,6 @@ function resetAll() {
   document.getElementById('bonusSection').style.display = 'none';
   document.getElementById('hourglassHero').style.display = 'none';
   document.getElementById('timeBreakdown').style.display = 'none';
-  document.getElementById('btcSection').style.display = 'none';
   document.getElementById('chartCard').style.display = 'none';
   document.getElementById('conclusionBox').style.display = 'none';
   lastCalcResult = null;
