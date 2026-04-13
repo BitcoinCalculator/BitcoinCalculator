@@ -290,9 +290,9 @@ footer a:hover{color:var(--gold)}
   <div class="hourglass-hero" id="hourglassHero" style="display:none">
     <div class="hh-eyebrow">⏳ Your Remaining Owned Time</div>
     <div class="hh-main" id="hhMain">--</div>
-    <div class="hh-unit" id="hhUnit">owned waking hours</div>
+    <div class="hh-unit" id="hhUnit">owned years remaining</div>
     <div class="hh-divider"></div>
-    <div class="hh-sub" id="hhSub">Every hour in this number is a unit of your sovereignty.</div>
+    <div class="hh-sub" id="hhSub">Every single one is already ticking.</div>
   </div>
 
   <div class="stat-grid" id="statGrid"></div>
@@ -654,18 +654,19 @@ function calculate() {
 
   document.getElementById('bonusSection').style.display = 'none';
 
-  // Hourglass hero
-  document.getElementById('hhMain').textContent = formatInt(ownedHours);
-  document.getElementById('hhUnit').textContent = 'owned waking hours — ' + ownedYears.toFixed(1) + ' years · ' + formatInt(ownedDays) + ' days';
+  // Hourglass hero — BIGGEST NUMBER IS NOW OWNED YEARS (for maximum impact that time is running out)
+  // followed immediately by full moons left
+  document.getElementById('hhMain').textContent = ownedYears.toFixed(1);
+  document.getElementById('hhUnit').innerHTML = 'owned years left <span style="color:var(--teal);font-size:0.65em;letter-spacing:1px">· ' + formatInt(fullMoonsLeft) + ' full moons left</span>';
   document.getElementById('hhSub').textContent = 'Estimated to live to age ' + estimatedDeathAge.toFixed(1) +
     ' · ' + (yearsToRetire > 0 ? yearsToRetire.toFixed(1) + ' years until retirement · ' : 'Already retired · ') +
-    formatInt(workHrsRemaining) + ' work hours subtracted.';
+    formatInt(ownedHours) + ' owned waking hours after work subtracted.';
   document.getElementById('hourglassHero').style.display = 'block';
 
-  // Stat cards
+  // Stat cards (kept for completeness)
   var cards = [
+    {icon:'📆',label:'Owned Years Remaining',val:ownedYears.toFixed(1)+' yrs',sub:'Your true sovereign time',cls:'gold-c',vcls:'gv'},
     {icon:'⌛',label:'Owned Hours Remaining',val:formatInt(ownedHours),sub:'Waking hours fully yours',cls:'teal-c',vcls:'tv'},
-    {icon:'📆',label:'Owned Years',val:ownedYears.toFixed(1)+' yrs',sub:'Same time as years',cls:'gold-c',vcls:'gv'},
     {icon:'🌙',label:'Calendar Years Remaining',val:remainingCalendarYears.toFixed(1)+' yrs',sub:'To estimated age '+estimatedDeathAge.toFixed(1),cls:'purple-c',vcls:'pv'},
     {icon:'💼',label:'Work Hours Remaining',val:formatInt(workHrsRemaining),sub:'Until retirement at '+retireAge,cls:'red-c',vcls:'rv'},
     {icon:'🏖️',label:'Retired Free Hours',val:formatInt(retiredHrs),sub:'Waking hours after retirement',cls:'green-c',vcls:'grv'},
@@ -866,21 +867,21 @@ function renderConclusion(r) {
   document.getElementById('conclusionBox').innerHTML =
     '<div class="con-eyebrow">⏳ Your Time — The Full Picture</div>' +
     '<div class="con-headline">' +
-      '<span style="color:var(--teal)">' + formatInt(r.ownedHours) + ' hours.</span><br>' +
-      '<span style="color:var(--gold)">' + r.ownedYears.toFixed(1) + ' years.</span><br>' +
+      '<span style="color:var(--teal)">' + r.ownedYears.toFixed(1) + ' years.</span><br>' +
+      '<span style="color:var(--gold)">' + formatInt(r.ownedHours) + ' hours.</span><br>' +
       '<span style="color:var(--green)">Every single one is already ticking.</span>' +
     '</div>' +
     '<div class="con-stats">' +
-      '<div class="cs-item-c"><div class="cs-val-c" style="color:var(--teal)">' + formatInt(r.ownedHours) + '</div><div class="cs-lbl-c">Owned Hours</div></div>' +
+      '<div class="cs-item-c"><div class="cs-val-c" style="color:var(--teal)">' + r.ownedYears.toFixed(1) + '</div><div class="cs-lbl-c">Owned Years Left</div></div>' +
       '<div class="cs-item-c"><div class="cs-val-c" style="color:var(--gold)">' + r.pctOwned.toFixed(1) + '%</div><div class="cs-lbl-c">Of Waking Time Yours</div></div>' +
       '<div class="cs-item-c"><div class="cs-val-c" style="color:var(--red)">' + r.pctWork.toFixed(1) + '%</div><div class="cs-lbl-c">Waking Time at Work</div></div>' +
     '</div>' +
     '<div class="con-body">' +
-      '<p>You have <strong>' + formatInt(r.ownedHours) + ' owned waking hours remaining</strong> — that is your real balance. The hours that belong entirely to you, where no employer or obligation has a claim.</p>' +
+      '<p>You have <strong>' + r.ownedYears.toFixed(1) + ' owned years remaining</strong> — that is your real balance. The hours that belong entirely to you, where no employer or obligation has a claim.</p>' +
       '<p>Time is the ultimate limited resource. Just as Bitcoin is a scarce asset that cannot be inflated or debased, your time cannot be printed or recovered. The most powerful choice you can make is to transfer the value of your work into assets that are equally limited — so your past labor continues to hold its value for the future you have left.</p>' +
     '</div>' +
     '<div class="con-pledge">' +
-      '<span class="pt">' + formatInt(r.ownedHours) + ' hours left.</span><br>' +
+      '<span class="pt">' + r.ownedYears.toFixed(1) + ' years left.</span><br>' +
       '<span class="pgo">Spend fewer of them working for others.</span><br>' +
       '<span class="pg">Stack more of them for yourself.</span><br>' +
       '<span class="pb">Time demands it. &#128273;</span>' +
@@ -909,3 +910,4 @@ function resetAll() {
 </script>
 </body>
 </html>
+```.getFull
