@@ -22,22 +22,23 @@
 
     .card {
       width: 100%;
-      max-width: 700px;
+      max-width: 760px;
       background: #1f2937;
       border: 1px solid #374151;
       border-radius: 18px;
       padding: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     }
 
     h1 {
-      margin-top: 0;
+      margin: 0 0 10px 0;
       font-size: 28px;
     }
 
     p {
       color: #d1d5db;
       line-height: 1.5;
+      margin: 0 0 18px 0;
     }
 
     .formula {
@@ -49,15 +50,16 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       color: #fbbf24;
       overflow-x: auto;
+      line-height: 1.6;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 700px) {
       .grid {
         grid-template-columns: 1fr;
       }
@@ -77,6 +79,12 @@
       background: #111827;
       color: white;
       font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #fbbf24;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.12);
     }
 
     .buttons {
@@ -93,6 +101,15 @@
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
+      transition: transform 0.08s ease, opacity 0.2s ease;
+    }
+
+    button:hover {
+      opacity: 0.95;
+    }
+
+    button:active {
+      transform: scale(0.98);
     }
 
     .primary {
@@ -113,11 +130,18 @@
       border: 1px solid #374151;
     }
 
+    .result-label {
+      color: #d1d5db;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
+
     .pin-value {
-      font-size: 34px;
+      font-size: 36px;
       font-weight: 800;
       color: #34d399;
       margin-top: 8px;
+      word-break: break-word;
     }
 
     .steps {
@@ -139,43 +163,59 @@
       color: #fca5a5;
       margin-top: 14px;
       font-weight: 600;
+      min-height: 24px;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: #9ca3af;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>PIN Calculator</h1>
-    <p>Enter a year and month to calculate the PIN using the formula below.</p>
+    <p>Enter the full date. The calculator builds the base formula, then subtracts <strong>day × 366</strong>.</p>
 
     <div class="formula">
-      PIN = year × 317 + (year mod 100) × 89 + month × 613 + 100000
+      Base PIN = year × 317 + (year mod 100) × 89 + month × 613 + 100000<br>
+      Final PIN = Base PIN - (day × 366)
     </div>
 
     <div class="grid">
       <div>
         <label for="year">Year</label>
-        <input id="year" type="number" placeholder="e.g. 2026" value="2026" />
+        <input id="year" type="number" placeholder="e.g. 2026" />
       </div>
 
       <div>
         <label for="month">Month</label>
-        <input id="month" type="number" min="1" max="12" placeholder="1 to 12" value="4" />
+        <input id="month" type="number" min="1" max="12" placeholder="1 to 12" />
+      </div>
+
+      <div>
+        <label for="day">Day</label>
+        <input id="day" type="number" min="1" max="31" placeholder="1 to 31" />
       </div>
     </div>
 
     <div class="buttons">
       <button class="primary" onclick="calculatePIN()">Calculate PIN</button>
-      <button class="secondary" onclick="fillCurrentDate()">Use Current Month</button>
+      <button class="secondary" onclick="fillCurrentDate()">Use Today</button>
       <button class="secondary" onclick="clearAll()">Clear</button>
     </div>
 
     <div id="error" class="error"></div>
 
     <div id="result" class="result" style="display:none;">
-      <div>PIN Result</div>
+      <div class="result-label">PIN Result</div>
       <div id="pinValue" class="pin-value"></div>
+      <div id="steps" class="steps"></div>
+    </div>
 
-      <div class="steps" id="steps"></div>
+    <div class="footer-note">
+      Example: if date = April 17, 2026, then the calculator subtracts 17 × 366 from the base result.
     </div>
   </div>
 
@@ -184,9 +224,20 @@
       return Number(num).toLocaleString();
     }
 
+    function isValidDate(year, month, day) {
+      const date = new Date(year, month - 1, day);
+      return (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day
+      );
+    }
+
     function calculatePIN() {
       const year = parseInt(document.getElementById("year").value, 10);
       const month = parseInt(document.getElementById("month").value, 10);
+      const day = parseInt(document.getElementById("day").value, 10);
+
       const errorEl = document.getElementById("error");
       const resultEl = document.getElementById("result");
       const pinValueEl = document.getElementById("pinValue");
@@ -196,8 +247,8 @@
       resultEl.style.display = "none";
       stepsEl.innerHTML = "";
 
-      if (isNaN(year) || isNaN(month)) {
-        errorEl.textContent = "Please enter both a valid year and month.";
+      if (isNaN(year) || isNaN(month) || isNaN(day)) {
+        errorEl.textContent = "Please enter a valid year, month, and day.";
         return;
       }
 
@@ -206,21 +257,35 @@
         return;
       }
 
-      const step1 = year * 317;
-      const yearMod = year % 100;
-      const step2 = yearMod * 89;
-      const step3 = month * 613;
-      const sum = step1 + step2 + step3;
-      const pin = sum + 100000;
+      if (day < 1 || day > 31) {
+        errorEl.textContent = "Day must be between 1 and 31.";
+        return;
+      }
 
-      pinValueEl.textContent = formatNumber(pin);
+      if (!isValidDate(year, month, day)) {
+        errorEl.textContent = "That is not a real calendar date.";
+        return;
+      }
+
+      const yearPart = year * 317;
+      const yearMod = year % 100;
+      const modPart = yearMod * 89;
+      const monthPart = month * 613;
+      const baseSum = yearPart + modPart + monthPart;
+      const basePIN = baseSum + 100000;
+      const dayPart = day * 366;
+      const finalPIN = basePIN - dayPart;
+
+      pinValueEl.textContent = formatNumber(finalPIN);
 
       stepsEl.innerHTML = `
-        <div class="step-line">1. ${year} × 317 = ${formatNumber(step1)}</div>
-        <div class="step-line">2. ${yearMod} × 89 = ${formatNumber(step2)}</div>
-        <div class="step-line">3. ${month} × 613 = ${formatNumber(step3)}</div>
-        <div class="step-line">4. Sum = ${formatNumber(sum)}</div>
-        <div class="step-line">5. + 100,000 = ${formatNumber(pin)}</div>
+        <div class="step-line">1. ${year} × 317 = ${formatNumber(yearPart)}</div>
+        <div class="step-line">2. ${yearMod} × 89 = ${formatNumber(modPart)}</div>
+        <div class="step-line">3. ${month} × 613 = ${formatNumber(monthPart)}</div>
+        <div class="step-line">4. Base sum = ${formatNumber(baseSum)}</div>
+        <div class="step-line">5. Base PIN = ${formatNumber(baseSum)} + 100,000 = ${formatNumber(basePIN)}</div>
+        <div class="step-line">6. ${day} × 366 = ${formatNumber(dayPart)}</div>
+        <div class="step-line">7. Final PIN = ${formatNumber(basePIN)} - ${formatNumber(dayPart)} = ${formatNumber(finalPIN)}</div>
       `;
 
       resultEl.style.display = "block";
@@ -230,18 +295,20 @@
       const now = new Date();
       document.getElementById("year").value = now.getFullYear();
       document.getElementById("month").value = now.getMonth() + 1;
+      document.getElementById("day").value = now.getDate();
       calculatePIN();
     }
 
     function clearAll() {
       document.getElementById("year").value = "";
       document.getElementById("month").value = "";
+      document.getElementById("day").value = "";
       document.getElementById("error").textContent = "";
       document.getElementById("result").style.display = "none";
       document.getElementById("steps").innerHTML = "";
     }
 
-    calculatePIN();
+    fillCurrentDate();
   </script>
 </body>
 </html>
