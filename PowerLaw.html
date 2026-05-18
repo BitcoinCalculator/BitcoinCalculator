@@ -5,16 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0A0805">
-<title>Power Law Prediction Scale — Bitcoin Price Corridor | SATOLOGY</title>
+<title>Bitcoin Power Law Corridor — Giovanni Santostasi | SATOLOGY</title>
 <meta name="description" content="Giovanni Santostasi's Bitcoin Power Law model: the price corridor that has held for 15 years. Where is Bitcoin in the cycle right now?">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 html { scroll-behavior: smooth; background: #0A0805; color-scheme: dark; }
-
 body {
   background: #0A0805;
   color: #E8DEC8;
@@ -22,7 +20,6 @@ body {
   line-height: 1.8;
   overflow-x: hidden;
 }
-
 body::before {
   content: '';
   position: fixed;
@@ -32,7 +29,6 @@ body::before {
   z-index: 999;
   opacity: 0.5;
 }
-
 nav {
   position: sticky; top: 0; z-index: 200;
   height: 60px; padding: 0 2rem;
@@ -41,7 +37,6 @@ nav {
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(240,165,0,0.1);
 }
-
 .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
 .nav-logo-symbol { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: #F0A500; }
 .nav-logo-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.22em; color: #E8DEC8; text-transform: uppercase; }
@@ -50,7 +45,6 @@ nav {
 .nav-back:hover { color: #F0A500; }
 .nav-price { display: flex; align-items: center; gap: 0.45rem; background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.2); border-radius: 100px; padding: 5px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; font-weight: 600; color: #F0A500; }
 .nav-dot { width: 6px; height: 6px; background: #4CAF50; border-radius: 50%; animation: pulse 2s infinite; }
-
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
 /* HERO */
@@ -62,7 +56,6 @@ nav {
   border-bottom: 1px solid rgba(240,165,0,0.12);
   position: relative;
 }
-
 .hero-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.25em; color: #F0A500; text-transform: uppercase; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
 .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 12vw, 9rem); line-height: 0.92; letter-spacing: 0.02em; color: #FAF5EB; max-width: 900px; opacity: 0; animation: fadeUp 0.9s 0.4s forwards; }
 .hero h1 span { color: #F0A500; display: block; }
@@ -70,40 +63,32 @@ nav {
 .hero-credit { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.12em; color: #C0AD90; text-transform: uppercase; margin-top: 0.8rem; opacity: 0; animation: fadeUp 0.9s 0.8s forwards; }
 .hero-credit a { color: #C47F00; text-decoration: none; }
 .hero-credit a:hover { color: #F0A500; }
-
 .scroll-hint { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0; animation: fadeUp 1s 1.4s forwards; }
 .scroll-hint span { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.2em; color: #C0AD90; text-transform: uppercase; }
 .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, #F0A500, transparent); animation: scrollPulse 2s ease-in-out infinite; }
 
-/* MAIN LAYOUT */
+/* LAYOUT */
 .page-wrap { max-width: 1100px; margin: 0 auto; padding: 4rem 2rem 8rem; }
 
 /* CHART SECTION */
 .chart-section {
-  background: #0E0B07;
+  background: #0C0A06;
   border: 1px solid rgba(240,165,0,0.2);
   padding: 2.5rem;
   margin-bottom: 3rem;
+  position: relative;
 }
-
 .chart-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 2rem;
+  margin-bottom: 1.8rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
-
-.chart-title-group {}
 .chart-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.06em; color: #FAF5EB; margin-bottom: 0.3rem; }
 .chart-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.12em; color: #C0AD90; text-transform: uppercase; }
-
-/* ZONE INDICATOR */
-.zone-indicator {
-  text-align: right;
-}
-
+.zone-indicator { text-align: right; }
 .zone-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.15em; color: #C0AD90; text-transform: uppercase; margin-bottom: 0.4rem; }
 .zone-badge {
   font-family: 'Bebas Neue', sans-serif;
@@ -112,252 +97,78 @@ nav {
   padding: 0.3rem 1rem;
   display: inline-block;
 }
-.zone-cheap   { color: #4CAF50; border: 1px solid rgba(76,175,80,0.4); background: rgba(76,175,80,0.08); }
-.zone-fair    { color: #F0A500; border: 1px solid rgba(240,165,0,0.4); background: rgba(240,165,0,0.08); }
-.zone-pricey  { color: #FF7043; border: 1px solid rgba(255,112,67,0.4); background: rgba(255,112,67,0.08); }
-.zone-bubble  { color: #E53935; border: 1px solid rgba(229,57,53,0.4); background: rgba(229,57,53,0.08); }
-
-/* CANVAS WRAPPER */
-.canvas-wrap {
-  position: relative;
-  width: 100%;
-  height: 420px;
-  margin-bottom: 1.5rem;
-}
-
-canvas#powerLawChart {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
-}
+.zone-cheap  { color: #4CAF50; border: 1px solid rgba(76,175,80,0.4);   background: rgba(76,175,80,0.08); }
+.zone-fair   { color: #F0A500; border: 1px solid rgba(240,165,0,0.4);   background: rgba(240,165,0,0.08); }
+.zone-pricey { color: #FF7043; border: 1px solid rgba(255,112,67,0.4); background: rgba(255,112,67,0.08); }
+.zone-bubble { color: #E53935; border: 1px solid rgba(229,57,53,0.4);   background: rgba(229,57,53,0.08); }
 
 /* LEGEND */
 .chart-legend {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.2rem;
 }
+.legend-item { display: flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.07em; color: #C0AD90; }
+.legend-swatch { width: 28px; height: 3px; border-radius: 2px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #FAF5EB; }
 
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.9rem;
-  letter-spacing: 0.08em;
-  color: #C0AD90;
-  text-transform: uppercase;
-}
+/* CANVAS */
+.canvas-wrap { position: relative; width: 100%; height: 480px; margin-bottom: 1.5rem; }
+canvas#powerLawChart { width: 100% !important; height: 100% !important; display: block; }
 
-.legend-line {
-  width: 24px;
-  height: 3px;
-  border-radius: 2px;
-}
-
-/* DATE SLIDER */
-.slider-section {
-  background: #0E0B07;
-  border: 1px solid rgba(240,165,0,0.15);
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-}
-
-.slider-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.2em; color: #C47F00; text-transform: uppercase; margin-bottom: 2rem; }
-
-.slider-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.slider-group label {
-  display: block;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.9rem;
-  letter-spacing: 0.12em;
-  color: #C0AD90;
-  text-transform: uppercase;
-  margin-bottom: 0.8rem;
-}
-
-input[type=range] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 4px;
-  background: rgba(240,165,0,0.15);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #F0A500;
-  cursor: pointer;
-  border: 2px solid #0A0805;
-  box-shadow: 0 0 0 2px rgba(240,165,0,0.3);
-}
-
-.slider-display {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 2rem;
-  letter-spacing: 0.06em;
-  color: #F0A500;
-  margin-top: 0.6rem;
-}
-
-/* PREDICTION READOUT */
+/* READOUTS */
 .prediction-readout {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1.5rem;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem;
 }
-
-.readout-card {
-  background: #0A0805;
-  border: 1px solid rgba(240,165,0,0.15);
-  padding: 1.4rem;
-  text-align: center;
-}
-
-.readout-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.9rem;
-  letter-spacing: 0.12em;
-  color: #C0AD90;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-}
-
-.readout-value {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.6rem;
-  letter-spacing: 0.04em;
-  color: #FAF5EB;
-}
-
+.readout-card { background: #0A0805; border: 1px solid rgba(240,165,0,0.12); padding: 1.4rem; text-align: center; }
+.readout-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.1em; color: #C0AD90; text-transform: uppercase; margin-bottom: 0.5rem; }
+.readout-value { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.04em; color: #FAF5EB; }
 .readout-value.upper { color: #E53935; }
 .readout-value.mid   { color: #F0A500; }
 .readout-value.lower { color: #4CAF50; }
 
-/* WHAT IF CALCULATOR */
-.whatif-section {
-  background: #0E0B07;
-  border: 1px solid rgba(240,165,0,0.2);
-  border-left: 3px solid #F0A500;
-  padding: 2.5rem;
-  margin-bottom: 3rem;
-}
+/* SLIDER */
+.slider-section { background: #0E0B07; border: 1px solid rgba(240,165,0,0.15); padding: 2.5rem; margin-bottom: 2rem; }
+.slider-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.2em; color: #C47F00; text-transform: uppercase; margin-bottom: 2rem; }
+.slider-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+.slider-group label { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.12em; color: #C0AD90; text-transform: uppercase; margin-bottom: 0.8rem; }
+input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; background: rgba(240,165,0,0.15); border-radius: 2px; outline: none; cursor: pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #F0A500; cursor: pointer; border: 2px solid #0A0805; box-shadow: 0 0 0 2px rgba(240,165,0,0.3); }
+.slider-display { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.06em; color: #F0A500; margin-top: 0.6rem; }
 
+/* WHAT IF */
+.whatif-section { background: #0E0B07; border: 1px solid rgba(240,165,0,0.2); border-left: 3px solid #F0A500; padding: 2.5rem; margin-bottom: 3rem; }
 .whatif-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.06em; color: #FAF5EB; margin-bottom: 0.4rem; }
 .whatif-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.1em; color: #C0AD90; text-transform: uppercase; margin-bottom: 2rem; }
-
-.whatif-inputs {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.input-group label {
-  display: block;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.9rem;
-  letter-spacing: 0.12em;
-  color: #C0AD90;
-  text-transform: uppercase;
-  margin-bottom: 0.6rem;
-}
-
-.input-group input, .input-group select {
-  width: 100%;
-  background: #0A0805;
-  border: 1px solid rgba(240,165,0,0.2);
-  color: #FAF5EB;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.95rem;
-  padding: 0.7rem 1rem;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.input-group input:focus, .input-group select:focus {
-  border-color: rgba(240,165,0,0.5);
-}
-
-.whatif-btn {
-  background: #F0A500;
-  color: #0A0805;
-  border: none;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.2rem;
-  letter-spacing: 0.12em;
-  padding: 0.9rem 2.5rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  display: block;
-  margin-bottom: 1.5rem;
-}
+.whatif-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.input-group label { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.12em; color: #C0AD90; text-transform: uppercase; margin-bottom: 0.6rem; }
+.input-group input, .input-group select { width: 100%; background: #0A0805; border: 1px solid rgba(240,165,0,0.2); color: #FAF5EB; font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; padding: 0.7rem 1rem; outline: none; appearance: none; -webkit-appearance: none; }
+.input-group input:focus, .input-group select:focus { border-color: rgba(240,165,0,0.5); }
+.whatif-btn { background: #F0A500; color: #0A0805; border: none; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.12em; padding: 0.9rem 2.5rem; cursor: pointer; transition: background 0.2s; display: block; margin-bottom: 1.5rem; }
 .whatif-btn:hover { background: #FFB830; }
-
-.whatif-result {
-  display: none;
-  background: #0A0805;
-  border: 1px solid rgba(240,165,0,0.2);
-  padding: 2rem;
-}
-
+.whatif-result { display: none; background: #0A0805; border: 1px solid rgba(240,165,0,0.2); padding: 2rem; }
 .whatif-result.show { display: block; }
-
-.whatif-result-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
+.whatif-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
 .wr-item { text-align: center; }
 .wr-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.1em; color: #C0AD90; text-transform: uppercase; margin-bottom: 0.4rem; }
 .wr-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: #F0A500; }
 .wr-val.big { font-size: 2.2rem; }
 .wr-val.green { color: #4CAF50; }
-.wr-val.red   { color: #E53935; }
 
-/* EXPLANATION SECTION */
+/* EXPLANATION */
 .explain-section { margin-bottom: 3rem; }
-
 .chapter { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.25em; color: #C47F00; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
 .chapter::after { content: ''; flex: 1; height: 1px; background: rgba(240,165,0,0.15); }
-
 h2 { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.2; color: #FAF5EB; margin-bottom: 1.5rem; font-weight: 400; }
-
 p { margin-bottom: 1.2rem; color: #E8DEC8; font-size: 1.05rem; }
-
 .mono-fact { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #F0A500; background: rgba(240,165,0,0.06); border-left: 2px solid #F0A500; padding: 1rem 1.5rem; margin: 2rem 0; letter-spacing: 0.05em; line-height: 1.7; }
-
 blockquote { padding: 2.5rem 0; margin: 3rem 0; border-top: 1px solid rgba(240,165,0,0.15); border-bottom: 1px solid rgba(240,165,0,0.15); }
 blockquote p { font-family: 'DM Serif Display', Georgia, serif; font-style: italic; font-size: clamp(1.3rem, 3vw, 1.9rem); color: #FAF5EB; line-height: 1.4; margin-bottom: 0; }
 blockquote cite { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #C0AD90; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-top: 1rem; }
-
-.stat-block { background: #110E08; border: 1px solid rgba(240,165,0,0.2); border-left: 3px solid #F0A500; padding: 2.5rem 2rem; margin: 2.5rem 0; position: relative; overflow: hidden; }
+.stat-block { background: #110E08; border: 1px solid rgba(240,165,0,0.2); border-left: 3px solid #F0A500; padding: 2.5rem 2rem; margin: 2.5rem 0; }
 .stat-number { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 8vw, 5rem); color: #F0A500; line-height: 1; display: block; margin-bottom: 0.4rem; }
-.stat-label  { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #C0AD90; letter-spacing: 0.08em; text-transform: uppercase; }
+.stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #C0AD90; letter-spacing: 0.08em; text-transform: uppercase; }
 
-/* CORRIDOR TABLE */
-.corridor-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 2rem 0;
-  font-size: 0.9rem;
-}
+/* TABLE */
+.corridor-table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.9rem; }
 .corridor-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.15em; text-transform: uppercase; color: #C47F00; text-align: left; padding: 0.8rem 1rem; background: #110E08; border-bottom: 1px solid rgba(240,165,0,0.2); }
 .corridor-table td { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #C0AD90; padding: 0.9rem 1rem; border-bottom: 1px solid rgba(240,165,0,0.07); }
 .corridor-table tr:hover td { background: rgba(240,165,0,0.03); }
@@ -367,19 +178,7 @@ blockquote cite { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; co
 .td-lower { color: #4CAF50; }
 
 /* DISCLAIMER */
-.disclaimer {
-  background: #0E0B07;
-  border: 1px solid rgba(240,165,0,0.1);
-  padding: 1.5rem 2rem;
-  margin: 3rem 0;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.9rem;
-  color: #C0AD90;
-  letter-spacing: 0.05em;
-  line-height: 1.7;
-}
-
-.disclaimer strong { color: #C0AD90; }
+.disclaimer { background: #0E0B07; border: 1px solid rgba(240,165,0,0.1); padding: 1.5rem 2rem; margin: 3rem 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #C0AD90; letter-spacing: 0.05em; line-height: 1.7; }
 
 /* FINALE */
 .finale { background: #070604; border-top: 1px solid rgba(240,165,0,0.15); padding: 6rem 2rem; text-align: center; }
@@ -411,6 +210,7 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
   nav { padding: 0 1rem; }
   .nav-back { display: none; }
   .chart-section, .slider-section, .whatif-section { padding: 1.5rem; }
+  .canvas-wrap { height: 340px; }
 }
 </style>
 </head>
@@ -431,11 +231,10 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
 </nav>
 
 <header class="hero">
-  <p class="hero-label">₿ Model by Giovanni Santostasi</p>
-  <h1>POWER LAW<span>PREDICTION</span></h1>
+  <p class="hero-label">₿ Model by Giovanni Santostasi, PhD</p>
+  <h1>POWER LAW<span>CORRIDOR</span></h1>
   <p class="hero-sub">Bitcoin has followed the same mathematical curve for 15 years. No model is perfect — but no model has survived this long either.</p>
-  <p class="hero-credit">Based on the research of <a href="https://giovannisantostasi.medium.com" target="_blank" rel="noopener">Giovanni Santostasi, PhD</a> · Power Law Corridor · Not Financial Advice</p>
-
+  <p class="hero-credit">Based on the research of <a href="https://giovannisantostasi.medium.com" target="_blank" rel="noopener">Giovanni Santostasi, PhD</a> · Not Financial Advice</p>
   <div class="scroll-hint">
     <span>Explore</span>
     <div class="scroll-line"></div>
@@ -447,21 +246,22 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
   <!-- CHART SECTION -->
   <div class="chart-section">
     <div class="chart-header">
-      <div class="chart-title-group">
+      <div>
         <div class="chart-title">Bitcoin Power Law Corridor</div>
-        <div class="chart-subtitle">Log price vs. days since genesis block (Jan 3, 2009)</div>
+        <div class="chart-subtitle">Quarterly close price vs. corridor bands · 2010 – 2030</div>
       </div>
       <div class="zone-indicator">
         <div class="zone-label">Current Zone</div>
-        <div class="zone-badge zone-fair" id="currentZoneBadge">CALCULATING...</div>
+        <div class="zone-badge zone-fair" id="currentZoneBadge">LOADING…</div>
       </div>
     </div>
 
     <div class="chart-legend">
-      <div class="legend-item"><div class="legend-line" style="background:#E53935"></div> Upper Resistance</div>
-      <div class="legend-item"><div class="legend-line" style="background:#F0A500; border-style: dashed"></div> Power Law Midline</div>
-      <div class="legend-item"><div class="legend-line" style="background:#4CAF50"></div> Lower Support</div>
-      <div class="legend-item"><div class="legend-line" style="background:#64B5F6; width:10px; height:10px; border-radius:50%"></div> Actual BTC Price</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#E53935; opacity:0.8"></div>Upper Resistance</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#F0A500; border-bottom:2px dashed #F0A500; height:0; margin-top:1px"></div>Fair Value</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#4CAF50; opacity:0.8"></div>Lower Support</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#FAF5EB"></div>Quarterly Close</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#F0A500; border-color:#FAF5EB; width:12px;height:12px;border-radius:50%;display:inline-block;border:2px solid #FAF5EB"></div>&nbsp;Live Price</div>
     </div>
 
     <div class="canvas-wrap">
@@ -474,7 +274,7 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
         <div class="readout-value upper" id="readoutUpper">$--</div>
       </div>
       <div class="readout-card">
-        <div class="readout-label">Today — Power Law Midline</div>
+        <div class="readout-label">Today — Fair Value</div>
         <div class="readout-value mid" id="readoutMid">$--</div>
       </div>
       <div class="readout-card">
@@ -484,7 +284,7 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
     </div>
   </div>
 
-  <!-- FUTURE PREDICTION SLIDER -->
+  <!-- SLIDER -->
   <div class="slider-section">
     <div class="slider-title">// Power Law Corridor — Any Date</div>
     <div class="slider-row">
@@ -499,14 +299,13 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
         <div class="slider-display" id="monthDisplay">May</div>
       </div>
     </div>
-
     <div class="prediction-readout">
       <div class="readout-card">
         <div class="readout-label">Upper Resistance</div>
         <div class="readout-value upper" id="sliderUpper">$--</div>
       </div>
       <div class="readout-card">
-        <div class="readout-label">Power Law Midline</div>
+        <div class="readout-label">Fair Value</div>
         <div class="readout-value mid" id="sliderMid">$--</div>
       </div>
       <div class="readout-card">
@@ -520,7 +319,6 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
   <div class="whatif-section">
     <div class="whatif-title">What If I Had Bought Then?</div>
     <div class="whatif-sub">Enter any past purchase — see where you'd be today</div>
-
     <div class="whatif-inputs">
       <div class="input-group">
         <label>Amount Invested (USD)</label>
@@ -529,44 +327,27 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
       <div class="input-group">
         <label>Purchase Year</label>
         <select id="wiYear">
-          <option value="2011">2011</option>
-          <option value="2012">2012</option>
-          <option value="2013">2013</option>
-          <option value="2014">2014</option>
-          <option value="2015">2015</option>
-          <option value="2016">2016</option>
-          <option value="2017">2017</option>
-          <option value="2018">2018</option>
-          <option value="2019">2019</option>
-          <option value="2020">2020</option>
-          <option value="2021">2021</option>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-          <option value="2024" selected>2024</option>
+          <option value="2011">2011</option><option value="2012">2012</option>
+          <option value="2013">2013</option><option value="2014">2014</option>
+          <option value="2015">2015</option><option value="2016">2016</option>
+          <option value="2017">2017</option><option value="2018">2018</option>
+          <option value="2019">2019</option><option value="2020">2020</option>
+          <option value="2021">2021</option><option value="2022">2022</option>
+          <option value="2023">2023</option><option value="2024" selected>2024</option>
           <option value="2025">2025</option>
         </select>
       </div>
       <div class="input-group">
-        <label>Purchase Month</label>
-        <select id="wiMonth">
-          <option value="1">January</option>
-          <option value="2">February</option>
-          <option value="3">March</option>
-          <option value="4">April</option>
-          <option value="5" selected>May</option>
-          <option value="6">June</option>
-          <option value="7">July</option>
-          <option value="8">August</option>
-          <option value="9">September</option>
-          <option value="10">October</option>
-          <option value="11">November</option>
-          <option value="12">December</option>
+        <label>Purchase Quarter</label>
+        <select id="wiQuarter">
+          <option value="1">Q1 (Jan–Mar)</option>
+          <option value="2">Q2 (Apr–Jun)</option>
+          <option value="3" selected>Q3 (Jul–Sep)</option>
+          <option value="4">Q4 (Oct–Dec)</option>
         </select>
       </div>
     </div>
-
     <button class="whatif-btn" onclick="calculateWhatIf()">CALCULATE WHAT IF →</button>
-
     <div class="whatif-result" id="whatifResult">
       <div class="wr-label">If you invested <span id="wrAmountDisplay"></span> in <span id="wrDateDisplay"></span>:</div>
       <div class="whatif-result-grid">
@@ -590,81 +371,82 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
   <div class="explain-section">
     <div class="chapter">The Model</div>
     <h2>Why the Power Law Has Held for 15 Years</h2>
-
-    <p>Most price models fail because they mistake correlation for causation. They draw a line through a chart and call it a prediction. Giovanni Santostasi's Power Law is different. It is grounded in a structural observation about how Bitcoin adoption grows — the same mathematical pattern that governs cities, biological organisms, the internet, and virtually every complex network that humans have ever built.</p>
-
-    <p>Power law relationships appear throughout nature and society: the size distribution of cities, the frequency of words in language, earthquake magnitudes, and stock market returns all follow power laws. The key insight is that as a system scales, certain properties grow not linearly but by a constant exponent. Bitcoin's price has grown by roughly the same exponent relative to time since the Genesis Block — and it has done so across four complete market cycles, including crashes of 80% or more.</p>
+    <p>Most price models fail because they mistake correlation for causation. Giovanni Santostasi's Power Law is different. It is grounded in a structural observation about how Bitcoin adoption grows — the same mathematical pattern that governs cities, biological organisms, the internet, and virtually every complex network that humans have ever built.</p>
+    <p>Power laws appear throughout nature and society. The key insight is that as Bitcoin scales, adoption grows not linearly but by a constant exponent relative to time since the Genesis Block. This relationship has persisted across four complete market cycles, including crashes of 80% or more.</p>
 
     <blockquote>
-      <p>"Bitcoin is not a bubble — it is a power law. The price oscillates around a rising baseline that compounds over decades, not years."</p>
-      <cite>— Giovanni Santostasi, PhD, physicist & Bitcoin researcher</cite>
+      <p>"Bitcoin is more similar to a city and an organism than a financial asset. It is ruled by power laws."</p>
+      <cite>— Giovanni Santostasi, PhD, Physicist &amp; Bitcoin Researcher</cite>
     </blockquote>
 
-    <p>The model defines two corridor bounds. The upper resistance line represents the historic ceiling of bull market peaks — every major cycle top has touched this line and then reverted. The lower support line represents the historic floor — every major bear market bottom has touched or approached this line before recovering. Between the two corridors, the midline represents the "fair value" at any moment in time.</p>
+    <p>The corridor defines two historical bounds. The upper resistance line represents the ceiling of bull market peaks. The lower support line represents the floor — every major bear market bottom has approached or touched this line before recovering. Between the two corridors, the midline represents "fair value" at any moment in time.</p>
 
     <div class="mono-fact">
-      Power Law formula: Price ≈ 10^(5.84 × log₁₀(days_since_genesis) − 17.01)
-      Upper: multiply by ~10x | Lower: divide by ~10x
+      Fair Value = 10^(5.84509376 × log₁₀(days_since_genesis) − 17.01593313)<br>
+      Upper Resistance: intercept + 0.6 (≈ 4× fair value)<br>
+      Lower Support: intercept − 0.6 (≈ 0.25× fair value)<br>
+      Source: Harold Christopher Burger / Giovanni Santostasi (R² = 0.95)
     </div>
 
-    <p>What makes the model extraordinary is not that it predicted specific prices — it did not. What it predicted is the range. Bitcoin has never spent a meaningful period of time outside the corridor. Every time it approached the upper bound, it eventually pulled back. Every time it collapsed toward the lower bound, it eventually recovered. The corridor contracts in percentage terms over time as Bitcoin matures, meaning the volatility decreases as the market deepens.</p>
+    <p>What makes the model extraordinary is not that it predicted specific prices — it did not. What it predicted is the <em>range</em>. Bitcoin has never spent a meaningful period of time outside the corridor. Every time it approached the upper bound, it eventually pulled back. Every time it collapsed toward the lower bound, it eventually recovered.</p>
 
     <div class="stat-block">
-      <span class="stat-number">15</span>
-      <span class="stat-label">Years Bitcoin's price has remained inside the Power Law corridor — across 4 full market cycles and 80%+ crashes</span>
+      <span class="stat-number">0.95</span>
+      <span class="stat-label">R² coefficient — the Power Law explains 95% of Bitcoin's variance in log-log space across 15 years and four complete market cycles</span>
     </div>
 
     <table class="corridor-table">
       <thead>
         <tr>
-          <th>Year</th>
-          <th>Lower Support</th>
-          <th>Midline</th>
-          <th>Upper Resistance</th>
-          <th>Cycle Peak Actual</th>
+          <th>Cycle Peak</th>
+          <th class="td-lower">Lower Support</th>
+          <th class="td-mid">Fair Value</th>
+          <th class="td-upper">Upper Resistance</th>
+          <th>Actual High</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>2013</td>
-          <td class="td-lower">$12</td>
-          <td class="td-mid">$120</td>
-          <td class="td-upper">$1,200</td>
-          <td>$1,150 ✓</td>
+          <td class="td-lower">$27</td>
+          <td class="td-mid">$109</td>
+          <td class="td-upper">$432</td>
+          <td>$1,150 †</td>
         </tr>
         <tr>
           <td>2017</td>
-          <td class="td-lower">$1,400</td>
-          <td class="td-mid">$7,000</td>
-          <td class="td-upper">$35,000</td>
-          <td>$19,800 ✓</td>
+          <td class="td-lower">$1,100</td>
+          <td class="td-mid">$3,500</td>
+          <td class="td-upper">$13,900</td>
+          <td>$19,700 †</td>
         </tr>
         <tr>
           <td>2021</td>
-          <td class="td-lower">$12,000</td>
-          <td class="td-mid">$42,000</td>
-          <td class="td-upper">$200,000</td>
+          <td class="td-lower">$6,900</td>
+          <td class="td-mid">$27,500</td>
+          <td class="td-upper">$109,500</td>
           <td>$69,000 ✓</td>
         </tr>
         <tr>
-          <td>2026</td>
-          <td class="td-lower">~$42K</td>
-          <td class="td-mid">~$108K</td>
-          <td class="td-upper">~$410K</td>
-          <td>In progress</td>
+          <td>2026 (now)</td>
+          <td class="td-lower" id="tableNowLower">~$--</td>
+          <td class="td-mid" id="tableNowMid">~$--</td>
+          <td class="td-upper" id="tableNowUpper">~$--</td>
+          <td>In Progress</td>
         </tr>
         <tr>
           <td>2030</td>
-          <td class="td-lower">~$120K</td>
-          <td class="td-mid">~$300K</td>
-          <td class="td-upper">~$1.1M</td>
+          <td class="td-lower">~$122K</td>
+          <td class="td-mid">~$487K</td>
+          <td class="td-upper">~$1.9M</td>
           <td>Projected</td>
         </tr>
       </tbody>
     </table>
+    <p style="font-size:0.9rem; color:#888; font-family:'IBM Plex Mono',monospace; margin-top:-1rem;">† Early cycles (2013, 2017) briefly exceeded the upper band as the model calibrated with fewer data points. Post-2020, adherence has tightened significantly.</p>
 
     <div class="disclaimer">
-      <strong>Important:</strong> The Power Law model is a research tool, not a guaranteed forecast. Past corridor behavior does not guarantee future adherence. Bitcoin could break the model. Markets are unpredictable. Giovanni Santostasi does not endorse any specific investment decision. This visualization is for educational purposes only and represents the model as published. <strong>Do your own research. This is not financial advice.</strong>
+      <strong style="color:#C0AD90">Important:</strong> The Power Law is a research tool, not a guaranteed forecast. Past corridor behavior does not guarantee future adherence. Bitcoin could break the model. Markets are unpredictable. Giovanni Santostasi does not endorse any specific investment decision. <strong style="color:#C0AD90">Do your own research. This is not financial advice.</strong>
     </div>
   </div>
 
@@ -694,253 +476,280 @@ footer { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: flex; j
       <a href="Network.html">The Network</a>
       <a href="Blockchain.html">The Blockchain</a>
       <a href="ColdStorage.html">Cold Storage</a>
-      <a href="btc-step-01.html">21-Part Course</a>
+      <a href="Clock21M.html">21M Clock</a>
     </div>
   </footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ─── POWER LAW CONSTANTS ───────────────────────────────────────────────────
-// Giovanni Santostasi's model (published, publicly available)
-// Price = 10^(A * log10(days) + B)
-// Upper: A=5.84, B=-16.4
-// Mid:   A=5.84, B=-17.01
-// Lower: A=5.84, B=-17.6
-
-const GENESIS = new Date('2009-01-03');
+// ═══════════════════════════════════════════════════════════════════════════
+// POWER LAW CONSTANTS
+// Source: Harold Christopher Burger / Giovanni Santostasi (R²=0.95)
+// Formula: Price = 10^(SLOPE × log10(days_since_genesis) + B)
+// ═══════════════════════════════════════════════════════════════════════════
+const GENESIS = new Date('2009-01-03T00:00:00Z');
+const SLOPE   = 5.84509376;
+const B_MID   = -17.01593313;
+const B_UPPER = B_MID + 0.6;   // -16.41593313  ≈ 4× above fair value
+const B_LOWER = B_MID - 0.6;   // -17.61593313  ≈ 0.25× fair value
 
 function daysSinceGenesis(date) {
-  return Math.max(1, Math.floor((date - GENESIS) / 86400000));
+  return Math.max(1, Math.floor((date.getTime() - GENESIS.getTime()) / 86400000));
 }
-
-function powerLawPrice(days, mode) {
-  const log10d = Math.log10(days);
-  let B;
-  if      (mode === 'upper') B = -16.4;
-  else if (mode === 'lower') B = -17.6;
-  else                        B = -17.01;
-  return Math.pow(10, 5.84 * log10d + B);
+function powerLaw(days, B) {
+  return Math.pow(10, SLOPE * Math.log10(days) + B);
 }
-
 function formatK(n) {
-  if (n >= 1e9)  return '$' + (n/1e9).toFixed(1) + 'B';
-  if (n >= 1e6)  return '$' + (n/1e6).toFixed(1) + 'M';
+  if (!n || n < 0.001) return '--';
+  if (n >= 1e9)  return '$' + (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6)  return '$' + (n/1e6).toFixed(2) + 'M';
   if (n >= 1e3)  return '$' + Math.round(n/1000) + 'K';
-  return '$' + Math.round(n);
+  if (n >= 1)    return '$' + Math.round(n).toLocaleString();
+  return '$' + n.toFixed(2);
 }
 
-// ─── BTC LIVE PRICE ────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// QUARTERLY HISTORICAL PRICES (end-of-quarter close, approximate)
+// ═══════════════════════════════════════════════════════════════════════════
+const Q_PRICES = {
+  '2010-Q3': 0.06,    '2010-Q4': 0.30,
+  '2011-Q1': 0.93,    '2011-Q2': 15.40,   '2011-Q3': 4.72,    '2011-Q4': 4.25,
+  '2012-Q1': 4.89,    '2012-Q2': 6.62,    '2012-Q3': 12.38,   '2012-Q4': 13.45,
+  '2013-Q1': 91.00,   '2013-Q2': 97.50,   '2013-Q3': 128.00,  '2013-Q4': 754.00,
+  '2014-Q1': 473.00,  '2014-Q2': 629.00,  '2014-Q3': 380.00,  '2014-Q4': 319.00,
+  '2015-Q1': 247.00,  '2015-Q2': 263.00,  '2015-Q3': 236.00,  '2015-Q4': 426.00,
+  '2016-Q1': 416.00,  '2016-Q2': 675.00,  '2016-Q3': 611.00,  '2016-Q4': 968.00,
+  '2017-Q1': 1081.00, '2017-Q2': 2548.00, '2017-Q3': 4385.00, '2017-Q4': 13860.00,
+  '2018-Q1': 6929.00, '2018-Q2': 6413.00, '2018-Q3': 6625.00, '2018-Q4': 3742.00,
+  '2019-Q1': 4096.00, '2019-Q2': 10793.00,'2019-Q3': 8290.00, '2019-Q4': 7196.00,
+  '2020-Q1': 6424.00, '2020-Q2': 9137.00, '2020-Q3': 10784.00,'2020-Q4': 29374.00,
+  '2021-Q1': 58918.00,'2021-Q2': 35837.00,'2021-Q3': 43791.00,'2021-Q4': 46306.00,
+  '2022-Q1': 45538.00,'2022-Q2': 19784.00,'2022-Q3': 19431.00,'2022-Q4': 16547.00,
+  '2023-Q1': 28478.00,'2023-Q2': 30477.00,'2023-Q3': 26968.00,'2023-Q4': 42265.00,
+  '2024-Q1': 71335.00,'2024-Q2': 62734.00,'2024-Q3': 63301.00,'2024-Q4': 93429.00,
+  '2025-Q1': 82552.00,
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LIVE PRICE
+// ═══════════════════════════════════════════════════════════════════════════
 let liveBTCPrice = null;
+let chartInstance = null;
 
 async function fetchPrice() {
   try {
     const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-    const d = await r.json();
-    liveBTCPrice = d.bitcoin.usd;
-    document.getElementById('btcPriceNav').textContent = '$' + liveBTCPrice.toLocaleString('en-US',{maximumFractionDigits:0});
-    updateCurrentZone();
+    const data = await r.json();
+    liveBTCPrice = data.bitcoin.usd;
+    document.getElementById('btcPriceNav').textContent =
+      '$' + liveBTCPrice.toLocaleString('en-US', {maximumFractionDigits: 0});
+    updateReadouts();
+    updateZoneBadge();
+    if (chartInstance) updateLiveDot();
   } catch(e) {}
 }
 
-function updateCurrentZone() {
+function updateReadouts() {
   const now = new Date();
   const d = daysSinceGenesis(now);
-  const upper = powerLawPrice(d, 'upper');
-  const mid   = powerLawPrice(d, 'mid');
-  const lower = powerLawPrice(d, 'lower');
+  const u = powerLaw(d, B_UPPER);
+  const m = powerLaw(d, B_MID);
+  const l = powerLaw(d, B_LOWER);
+  document.getElementById('readoutUpper').textContent = formatK(u);
+  document.getElementById('readoutMid').textContent   = formatK(m);
+  document.getElementById('readoutLower').textContent = formatK(l);
+  // Update corridor table "now" row
+  document.getElementById('tableNowUpper').textContent = '~' + formatK(u);
+  document.getElementById('tableNowMid').textContent   = '~' + formatK(m);
+  document.getElementById('tableNowLower').textContent = '~' + formatK(l);
+}
 
-  document.getElementById('readoutUpper').textContent = formatK(upper);
-  document.getElementById('readoutMid').textContent   = formatK(mid);
-  document.getElementById('readoutLower').textContent = formatK(lower);
-
+function updateZoneBadge() {
   if (!liveBTCPrice) return;
+  const now = new Date();
+  const d = daysSinceGenesis(now);
+  const u = powerLaw(d, B_UPPER);
+  const m = powerLaw(d, B_MID);
+  const l = powerLaw(d, B_LOWER);
+
+  const logPrice = Math.log10(liveBTCPrice);
+  const logLow   = Math.log10(l);
+  const logHigh  = Math.log10(u);
+  const logMid   = Math.log10(m);
+  const ratio = (logPrice - logLow) / (logHigh - logLow); // 0=at support, 1=at upper
+
   const badge = document.getElementById('currentZoneBadge');
   badge.className = 'zone-badge';
-  const ratio = (liveBTCPrice - lower) / (upper - lower);
-  if (ratio < 0.25) {
-    badge.textContent = 'DEEP VALUE';
-    badge.classList.add('zone-cheap');
-  } else if (ratio < 0.5) {
-    badge.textContent = 'FAIR VALUE';
-    badge.classList.add('zone-fair');
-  } else if (ratio < 0.75) {
-    badge.textContent = 'ABOVE MID';
-    badge.classList.add('zone-pricey');
-  } else {
-    badge.textContent = 'NEAR TOP';
-    badge.classList.add('zone-bubble');
-  }
+  if      (ratio < 0.25) { badge.textContent = 'DEEP VALUE'; badge.classList.add('zone-cheap'); }
+  else if (ratio < 0.50) { badge.textContent = 'FAIR VALUE'; badge.classList.add('zone-fair'); }
+  else if (ratio < 0.75) { badge.textContent = 'ABOVE MID';  badge.classList.add('zone-pricey'); }
+  else                   { badge.textContent = 'NEAR TOP';   badge.classList.add('zone-bubble'); }
 }
 
-// ─── SLIDER ────────────────────────────────────────────────────────────────
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-function updateSlider() {
-  const year  = parseInt(document.getElementById('yearSlider').value);
-  const month = parseInt(document.getElementById('monthSlider').value);
-  document.getElementById('yearDisplay').textContent  = year;
-  document.getElementById('monthDisplay').textContent = MONTHS[month-1];
-
-  const targetDate = new Date(year, month-1, 15);
-  const d = daysSinceGenesis(targetDate);
-
-  document.getElementById('sliderUpper').textContent = formatK(powerLawPrice(d,'upper'));
-  document.getElementById('sliderMid').textContent   = formatK(powerLawPrice(d,'mid'));
-  document.getElementById('sliderLower').textContent = formatK(powerLawPrice(d,'lower'));
+function updateLiveDot() {
+  if (!chartInstance || !liveBTCPrice) return;
+  const now = new Date();
+  const y = now.getFullYear();
+  const q = Math.ceil((now.getMonth() + 1) / 3);
+  const key = `${y}-Q${q}`;
+  const idx = chartInstance.data.labels.indexOf(key);
+  if (idx === -1) return;
+  chartInstance.data.datasets[4].data[idx] = liveBTCPrice;
+  chartInstance.update('none');
 }
 
-document.getElementById('yearSlider').addEventListener('input', updateSlider);
-document.getElementById('monthSlider').addEventListener('input', updateSlider);
-updateSlider();
-
-// ─── WHAT IF CALCULATOR ────────────────────────────────────────────────────
-// Approximate historical BTC prices (year average in USD)
-const HIST_PRICES = {
-  2011: 5, 2012: 8, 2013: 200, 2014: 600, 2015: 280,
-  2016: 500, 2017: 4000, 2018: 9000, 2019: 7000, 2020: 11000,
-  2021: 35000, 2022: 30000, 2023: 28000, 2024: 62000, 2025: 90000
-};
-
-// Monthly adjustment factors (rough shape of typical year)
-const MONTH_ADJ = [0.85,0.88,0.92,0.96,1.0,1.02,1.05,0.98,0.94,1.08,1.12,1.18];
-
-function calculateWhatIf() {
-  const amount  = parseFloat(document.getElementById('wiAmount').value) || 1000;
-  const year    = parseInt(document.getElementById('wiYear').value);
-  const month   = parseInt(document.getElementById('wiMonth').value);
-
-  const basePrice = HIST_PRICES[year] || 10000;
-  const adj       = MONTH_ADJ[month-1];
-  const btcPrice  = Math.round(basePrice * adj);
-  const btcBought = amount / btcPrice;
-
-  const currentPrice = liveBTCPrice || 100000;
-  const valueToday   = btcBought * currentPrice;
-
-  document.getElementById('wrAmountDisplay').textContent = '$' + amount.toLocaleString();
-  document.getElementById('wrDateDisplay').textContent   = MONTHS[month-1] + ' ' + year;
-  document.getElementById('wrPriceThen').textContent = '$' + btcPrice.toLocaleString();
-  document.getElementById('wrBtcAmount').textContent = btcBought.toFixed(6) + ' BTC';
-  document.getElementById('wrValueToday').textContent = '$' + Math.round(valueToday).toLocaleString();
-
-  const result = document.getElementById('whatifResult');
-  result.classList.add('show');
-}
-
-// ─── CHART ─────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// CHART BUILD
+// ═══════════════════════════════════════════════════════════════════════════
 function buildChart() {
   const ctx = document.getElementById('powerLawChart').getContext('2d');
 
-  // Generate points from 2010 to 2030
-  const labels = [], upperData = [], midData = [], lowerData = [], priceData = [];
+  // Build parallel arrays — same index = same quarter — NO misalignment possible
+  const labels   = [];
+  const midArr   = [];
+  const upperArr = [];
+  const lowerArr = [];
+  const histArr  = [];
+  const liveArr  = [];
 
-  // Sample actual BTC prices for historical chart (annual data points)
-  const historicalPrices = [
-    {year:2010,month:7,price:0.06},
-    {year:2011,month:6,price:17},
-    {year:2012,month:1,price:6},
-    {year:2012,month:12,price:13},
-    {year:2013,month:4,price:230},
-    {year:2013,month:11,price:1150},
-    {year:2014,month:1,price:800},
-    {year:2014,month:12,price:320},
-    {year:2015,month:1,price:200},
-    {year:2015,month:12,price:430},
-    {year:2016,month:6,price:590},
-    {year:2016,month:12,price:950},
-    {year:2017,month:1,price:1000},
-    {year:2017,month:6,price:2500},
-    {year:2017,month:12,price:19700},
-    {year:2018,month:6,price:6400},
-    {year:2018,month:12,price:3200},
-    {year:2019,month:6,price:10800},
-    {year:2019,month:12,price:7200},
-    {year:2020,month:3,price:5100},
-    {year:2020,month:12,price:28990},
-    {year:2021,month:4,price:58000},
-    {year:2021,month:7,price:31000},
-    {year:2021,month:11,price:68000},
-    {year:2022,month:6,price:20000},
-    {year:2022,month:11,price:16500},
-    {year:2023,month:1,price:16800},
-    {year:2023,month:12,price:42000},
-    {year:2024,month:3,price:72000},
-    {year:2024,month:9,price:57000},
-    {year:2024,month:12,price:97000},
-    {year:2025,month:3,price:82000},
-    {year:2025,month:12,price:97000},
-    {year:2026,month:5,price:liveBTCPrice || 104000},
-  ];
+  const now = new Date();
+  const nowYear = now.getFullYear();
+  const nowQ    = Math.ceil((now.getMonth() + 1) / 3);
 
-  // Build corridor lines (quarterly from 2010 to 2030)
   for (let year = 2010; year <= 2030; year++) {
-    for (let q = 0; q < 4; q++) {
-      const month = q * 3 + 1;
-      const date  = new Date(year, month-1, 1);
-      if (date > new Date('2030-12-31')) continue;
-      const d = daysSinceGenesis(date);
-      labels.push(year + ' Q' + (q+1));
-      upperData.push(powerLawPrice(d,'upper'));
-      midData.push(powerLawPrice(d,'mid'));
-      lowerData.push(powerLawPrice(d,'lower'));
+    for (let q = 1; q <= 4; q++) {
+      const key  = `${year}-Q${q}`;
+      const date = new Date(year, (q - 1) * 3 + 1, 15); // mid-quarter
+      const d    = daysSinceGenesis(date);
+
+      labels.push(key);
+      midArr.push(powerLaw(d, B_MID));
+      upperArr.push(powerLaw(d, B_UPPER));
+      lowerArr.push(powerLaw(d, B_LOWER));
+
+      // Historical price — null if not known
+      histArr.push(Q_PRICES[key] !== undefined ? Q_PRICES[key] : null);
+
+      // Live price — only at current quarter, updated after chart builds
+      liveArr.push((year === nowYear && q === nowQ) ? (liveBTCPrice || null) : null);
     }
   }
 
-  // Build historical price scatter
-  const scatterData = historicalPrices.map(p => {
-    const date = new Date(p.year, p.month-1, 15);
-    const d = daysSinceGenesis(date);
-    // Find x index (approximate)
-    const xIdx = Math.floor((p.year - 2010) * 4 + (p.month-1)/3);
-    return {x: Math.min(xIdx, labels.length-1), y: p.price};
-  });
+  // Custom plugins
+  const halvingPlugin = {
+    id: 'halvings',
+    afterDraw(chart) {
+      const marks = ['2012-Q4','2016-Q2','2020-Q2','2024-Q2'];
+      const names = ['Halving 1','Halving 2','Halving 3','Halving 4'];
+      const {ctx: c, chartArea} = chart;
+      if (!chartArea) return;
+      marks.forEach((lbl, i) => {
+        const idx = chart.data.labels.indexOf(lbl);
+        if (idx === -1) return;
+        const meta = chart.getDatasetMeta(0);
+        if (!meta.data[idx]) return;
+        const x = meta.data[idx].x;
+        c.save();
+        c.strokeStyle = 'rgba(240,165,0,0.22)';
+        c.lineWidth = 1;
+        c.setLineDash([3, 5]);
+        c.beginPath();
+        c.moveTo(x, chartArea.top);
+        c.lineTo(x, chartArea.bottom);
+        c.stroke();
+        c.fillStyle = 'rgba(240,165,0,0.45)';
+        c.font = '600 9px IBM Plex Mono, monospace';
+        c.textAlign = 'center';
+        c.fillText('₿', x, chartArea.top + 9);
+        c.restore();
+      });
+    }
+  };
 
-  new Chart(ctx, {
+  const bgPlugin = {
+    id: 'chartBg',
+    beforeDraw(chart) {
+      const {ctx: c, chartArea} = chart;
+      if (!chartArea) return;
+      c.save();
+      c.fillStyle = 'rgba(5,3,2,0.6)';
+      c.fillRect(chartArea.left, chartArea.top, chartArea.width, chartArea.height);
+      c.restore();
+    }
+  };
+
+  chartInstance = new Chart(ctx, {
     type: 'line',
+    plugins: [bgPlugin, halvingPlugin],
     data: {
-      labels: labels,
+      labels,
       datasets: [
+        // 0: Fair value midline (drawn first so fills reference it)
+        {
+          label: 'Fair Value',
+          data: midArr,
+          borderColor: 'rgba(240,165,0,0.85)',
+          borderWidth: 1.5,
+          borderDash: [8, 5],
+          pointRadius: 0,
+          fill: false,
+          tension: 0.15,
+          order: 4,
+        },
+        // 1: Upper resistance — fills DOWN to dataset 0 (fair value) with red tint
         {
           label: 'Upper Resistance',
-          data: upperData,
-          borderColor: '#E53935',
+          data: upperArr,
+          borderColor: 'rgba(229,57,53,0.7)',
           borderWidth: 1.5,
           pointRadius: 0,
-          fill: false,
-          tension: 0.4,
+          fill: { target: 0, above: 'rgba(229,57,53,0.09)', below: 'transparent' },
+          tension: 0.15,
+          order: 5,
         },
-        {
-          label: 'Power Law Midline',
-          data: midData,
-          borderColor: '#F0A500',
-          borderWidth: 1.5,
-          borderDash: [6, 4],
-          pointRadius: 0,
-          fill: false,
-          tension: 0.4,
-        },
+        // 2: Lower support — fills UP to dataset 0 (fair value) with green tint
         {
           label: 'Lower Support',
-          data: lowerData,
-          borderColor: '#4CAF50',
+          data: lowerArr,
+          borderColor: 'rgba(76,175,80,0.7)',
           borderWidth: 1.5,
           pointRadius: 0,
-          fill: false,
-          tension: 0.4,
+          fill: { target: 0, above: 'transparent', below: 'rgba(76,175,80,0.09)' },
+          tension: 0.15,
+          order: 5,
         },
+        // 3: Historical quarterly price line
         {
-          label: 'BTC Price',
-          data: scatterData,
-          type: 'scatter',
-          backgroundColor: 'rgba(100,181,246,0.8)',
-          borderColor: 'rgba(100,181,246,0.9)',
-          pointRadius: 4,
+          label: 'BTC Quarterly Close',
+          data: histArr,
+          borderColor: 'rgba(250,245,235,0.9)',
+          borderWidth: 2.5,
+          pointRadius: 3.5,
           pointHoverRadius: 7,
-          showLine: true,
-          borderWidth: 1,
-          tension: 0.3,
-        }
+          pointBackgroundColor: 'rgba(250,245,235,0.9)',
+          pointBorderColor: 'rgba(240,165,0,0.5)',
+          pointBorderWidth: 1,
+          fill: false,
+          tension: 0.2,
+          spanGaps: false,
+          order: 2,
+        },
+        // 4: Live price dot (single glowing point at current quarter)
+        {
+          label: 'Live Price',
+          data: liveArr,
+          borderColor: '#F0A500',
+          borderWidth: 3,
+          pointRadius: 10,
+          pointHoverRadius: 14,
+          pointBackgroundColor: '#F0A500',
+          pointBorderColor: '#FAF5EB',
+          pointBorderWidth: 2.5,
+          fill: false,
+          showLine: false,
+          order: 1,
+        },
       ]
     },
     options: {
@@ -950,36 +759,57 @@ function buildChart() {
       scales: {
         x: {
           ticks: {
-            color: '#8A7D6A',
+            color: '#888',
             font: { family: 'IBM Plex Mono', size: 11 },
-            maxTicksLimit: 12,
-            maxRotation: 45,
+            maxRotation: 0,
+            autoSkip: false,
+            callback: function(val, index) {
+              const lbl = this.getLabelForValue(val);
+              // Show year only on Q1 ticks, show nothing for Q2-Q4
+              if (lbl && lbl.endsWith('-Q1')) {
+                return lbl.replace('-Q1', '');
+              }
+              return '';
+            }
           },
-          grid: { color: 'rgba(240,165,0,0.05)' },
+          grid: { color: 'rgba(240,165,0,0.04)' },
         },
         y: {
           type: 'logarithmic',
+          min: 0.01,
           ticks: {
-            color: '#8A7D6A',
+            color: '#888',
             font: { family: 'IBM Plex Mono', size: 11 },
-            callback: v => formatK(v),
-            maxTicksLimit: 8,
+            callback: function(v) {
+              const map = {
+                0.01:'$0.01', 0.1:'$0.10', 1:'$1', 10:'$10', 100:'$100',
+                1000:'$1K', 10000:'$10K', 100000:'$100K', 1000000:'$1M',
+              };
+              return map[v] || null;
+            },
+            maxTicksLimit: 10,
           },
-          grid: { color: 'rgba(240,165,0,0.05)' },
+          grid: { color: 'rgba(240,165,0,0.06)' },
         }
       },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(10,8,5,0.95)',
-          borderColor: 'rgba(240,165,0,0.3)',
+          backgroundColor: 'rgba(7,5,3,0.96)',
+          borderColor: 'rgba(240,165,0,0.35)',
           borderWidth: 1,
           titleColor: '#F0A500',
           bodyColor: '#C0AD90',
-          titleFont: { family: 'IBM Plex Mono', size: 11 },
+          padding: 12,
+          titleFont: { family: 'IBM Plex Mono', size: 11, weight: '600' },
           bodyFont: { family: 'IBM Plex Mono', size: 11 },
           callbacks: {
-            label: ctx => ctx.dataset.label + ': ' + formatK(ctx.parsed.y)
+            title: items => items[0].label,
+            label: ctx => {
+              if (ctx.parsed.y === null || ctx.parsed.y === undefined) return null;
+              return ' ' + ctx.dataset.label + ': ' + formatK(ctx.parsed.y);
+            },
+            filter: item => item.parsed.y !== null && item.parsed.y !== undefined,
           }
         }
       }
@@ -987,11 +817,58 @@ function buildChart() {
   });
 }
 
-// Init
-fetchPrice().then(() => {
-  buildChart();
-  updateSlider();
-});
+// ═══════════════════════════════════════════════════════════════════════════
+// SLIDER
+// ═══════════════════════════════════════════════════════════════════════════
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function updateSlider() {
+  const year  = parseInt(document.getElementById('yearSlider').value);
+  const month = parseInt(document.getElementById('monthSlider').value);
+  document.getElementById('yearDisplay').textContent  = year;
+  document.getElementById('monthDisplay').textContent = MONTH_NAMES[month - 1];
+  const d = daysSinceGenesis(new Date(year, month - 1, 15));
+  document.getElementById('sliderUpper').textContent = formatK(powerLaw(d, B_UPPER));
+  document.getElementById('sliderMid').textContent   = formatK(powerLaw(d, B_MID));
+  document.getElementById('sliderLower').textContent = formatK(powerLaw(d, B_LOWER));
+}
+document.getElementById('yearSlider').addEventListener('input', updateSlider);
+document.getElementById('monthSlider').addEventListener('input', updateSlider);
+updateSlider();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// WHAT IF CALCULATOR
+// ═══════════════════════════════════════════════════════════════════════════
+function calculateWhatIf() {
+  const amount  = parseFloat(document.getElementById('wiAmount').value) || 1000;
+  const year    = parseInt(document.getElementById('wiYear').value);
+  const quarter = parseInt(document.getElementById('wiQuarter').value);
+  const key     = `${year}-Q${quarter}`;
+  const qNames  = ['','Q1','Q2','Q3','Q4'];
+
+  const btcPrice = Q_PRICES[key] || null;
+  if (!btcPrice) {
+    alert('No historical data for that period yet.');
+    return;
+  }
+  const btcBought = amount / btcPrice;
+  const currentPrice = liveBTCPrice || 100000;
+  const valueToday = btcBought * currentPrice;
+
+  document.getElementById('wrAmountDisplay').textContent = '$' + amount.toLocaleString();
+  document.getElementById('wrDateDisplay').textContent   = qNames[quarter] + ' ' + year;
+  document.getElementById('wrPriceThen').textContent   = formatK(btcPrice);
+  document.getElementById('wrBtcAmount').textContent   = btcBought.toFixed(6) + ' BTC';
+  document.getElementById('wrValueToday').textContent  = '$' + Math.round(valueToday).toLocaleString();
+  document.getElementById('whatifResult').classList.add('show');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════════
+updateReadouts();
+buildChart();
+fetchPrice();
 setInterval(fetchPrice, 60000);
 </script>
 </body>
