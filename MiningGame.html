@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>Bitcoin Mining Simulator — Can You Survive the Halving? | SATOLOGY</title>
+<meta name="description" content="Step inside a Bitcoin mining operation. Pick your hardware, set your electricity rate, and compete against the entire network. Can you stay profitable when the halving hits?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { background: #050403; color-scheme: dark; }
+body {
+  background: #050403;
+  color: #E8DEC8;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0,255,0,0.013) 0px, transparent 1px, transparent 3px);
+  pointer-events: none; z-index: 999;
+}
+
+nav {
+  position: sticky; top: 0; z-index: 200;
+  height: 60px; padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(5,4,3,0.97); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,200,80,0.15);
+}
+.nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+.nav-logo-symbol { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: #F0A500; }
+.nav-logo-name { font-size: 0.9rem; letter-spacing: 0.22em; color: #E8DEC8; text-transform: uppercase; }
+.nav-right { display: flex; align-items: center; gap: 1.5rem; }
+.nav-back { font-size: 0.9rem; letter-spacing: 0.15em; color: #666; text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+.nav-back:hover { color: #0F0; }
+.nav-price { display: flex; align-items: center; gap: 0.45rem; background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.2); border-radius: 100px; padding: 5px 12px; font-size: 0.9rem; font-weight: 600; color: #F0A500; }
+.nav-dot { width: 6px; height: 6px; background: #0F0; border-radius: 50%; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 5rem 2rem 4rem;
+  background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(0,200,80,0.06) 0%, transparent 70%);
+  border-bottom: 1px solid rgba(0,200,80,0.1);
+}
+.hero-tag { font-size: 0.82rem; letter-spacing: 0.3em; color: #0C6; text-transform: uppercase; margin-bottom: 1.5rem; }
+.hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 12vw, 8rem); line-height: 0.9; letter-spacing: 0.04em; color: #FAF5EB; }
+.hero h1 span { color: #0D0; display: block; font-size: 0.65em; letter-spacing: 0.06em; }
+.hero-sub { font-family: 'Libre Baskerville', serif; font-style: italic; font-size: clamp(1rem, 2vw, 1.3rem); color: #888; margin: 1.5rem auto 0; max-width: 560px; }
+
+/* MAIN GAME LAYOUT */
+.game-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* PANEL */
+.panel {
+  background: #0A0A08;
+  border: 1px solid rgba(0,200,80,0.15);
+  padding: 2rem;
+  position: relative;
+}
+
+.panel-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.3em;
+  color: #0C6;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(0,200,80,0.1);
+}
+
+/* HARDWARE SELECTION */
+.hw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.hw-card {
+  background: #050403;
+  border: 2px solid rgba(0,200,80,0.1);
+  padding: 1.4rem 1.2rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+
+.hw-card:hover { border-color: rgba(0,200,80,0.3); }
+.hw-card.selected { border-color: #0D0; background: rgba(0,200,80,0.06); }
+
+.hw-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.06em;
+  color: #FAF5EB;
+  margin-bottom: 0.4rem;
+}
+
+.hw-gen {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: #0C6;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.hw-stat {
+  font-size: 0.82rem;
+  color: #888;
+  margin-bottom: 0.3rem;
+}
+
+.hw-stat span { color: #FAF5EB; }
+
+.hw-badge {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.8rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+.badge-best  { color: #0D0; border: 1px solid rgba(0,200,80,0.4); background: rgba(0,200,80,0.08); }
+.badge-old   { color: #888; border: 1px solid rgba(100,100,100,0.3); background: transparent; }
+
+/* SETTINGS */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.setting-group label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: #0C6;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.setting-group input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: rgba(0,200,80,0.2);
+  outline: none;
+  cursor: pointer;
+}
+.setting-group input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #0D0;
+  cursor: pointer;
+}
+
+.setting-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  color: #0D0;
+  margin-top: 0.4rem;
+}
+
+.start-btn {
+  display: block;
+  width: 100%;
+  background: #0A0A08;
+  border: 2px solid #0D0;
+  color: #0D0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.2em;
+  padding: 1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 0.5rem;
+}
+.start-btn:hover, .start-btn:focus { background: #0D0; color: #050403; }
+
+/* COMMAND TERMINAL */
+.terminal {
+  display: none;
+}
+.terminal.active { display: block; }
+
+/* STATS DASHBOARD */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dash-card {
+  background: #050403;
+  border: 1px solid rgba(0,200,80,0.12);
+  padding: 1rem 1.2rem;
+  text-align: center;
+}
+
+.dash-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: #555;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.dash-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  color: #0D0;
+}
+
+.dash-val.warn  { color: #FF8C00; }
+.dash-val.bad   { color: #E53935; }
+.dash-val.gold  { color: #F0A500; }
+
+/* BLOCK STREAM */
+.block-stream-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  color: #0C6;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.block-stream {
+  height: 180px;
+  overflow-y: auto;
+  background: #050403;
+  border: 1px solid rgba(0,200,80,0.1);
+  padding: 1rem;
+  font-size: 0.82rem;
+  color: #555;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.25rem;
+  scroll-behavior: smooth;
+}
+
+.block-stream::-webkit-scrollbar { width: 4px; }
+.block-stream::-webkit-scrollbar-track { background: #050403; }
+.block-stream::-webkit-scrollbar-thumb { background: rgba(0,200,80,0.3); }
+
+.log-line { white-space: pre; }
+.log-win   { color: #0D0; font-weight: 600; }
+.log-halving { color: #F0A500; }
+.log-info  { color: #444; }
+
+/* PROFIT CHART */
+.profit-chart-wrap {
+  margin-top: 1.5rem;
+  position: relative;
+}
+
+.profit-chart-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  color: #0C6;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+canvas#profitChart {
+  width: 100% !important;
+  height: 120px !important;
+  display: block;
+}
+
+/* HALVING ALERT */
+.halving-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 2rem;
+}
+.halving-overlay.show { display: flex; }
+
+.halving-box {
+  background: #0A0A08;
+  border: 2px solid #F0A500;
+  padding: 3rem 4rem;
+  max-width: 560px;
+}
+
+.halving-icon { font-size: 3rem; margin-bottom: 1rem; }
+.halving-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  color: #F0A500;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+.halving-body {
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+.halving-btn {
+  background: #F0A500;
+  color: #050403;
+  border: none;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.15em;
+  padding: 0.8rem 2.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.halving-btn:hover { background: #FFB830; }
+
+/* RESULTS PANEL */
+.results-panel {
+  display: none;
+  background: #0A0A08;
+  border: 1px solid rgba(0,200,80,0.2);
+  padding: 2.5rem;
+}
+.results-panel.show { display: block; }
+
+.result-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+.result-title.profit { color: #0D0; }
+.result-title.loss   { color: #E53935; }
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.result-item { text-align: center; }
+.result-label { font-size: 0.72rem; letter-spacing: 0.15em; color: #555; text-transform: uppercase; margin-bottom: 0.3rem; }
+.result-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #FAF5EB; }
+
+.replay-btn {
+  background: transparent;
+  border: 2px solid #0D0;
+  color: #0D0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.15em;
+  padding: 0.7rem 2rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-right: 1rem;
+}
+.replay-btn:hover { background: #0D0; color: #050403; }
+
+/* EDUCATION PANEL */
+.edu-panel {
+  background: #0A0A08;
+  border: 1px solid rgba(240,165,0,0.12);
+  border-left: 3px solid #F0A500;
+  padding: 1.5rem 2rem;
+}
+.edu-title { font-size: 0.72rem; letter-spacing: 0.2em; color: #C47F00; text-transform: uppercase; margin-bottom: 0.8rem; }
+.edu-body { font-family: 'Libre Baskerville', serif; font-size: 0.9rem; color: #C0AD90; line-height: 1.7; }
+
+/* FOOTER */
+.footer-wrap { background: #030302; border-top: 1px solid rgba(0,200,80,0.08); }
+footer { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: #F0A500; }
+.footer-copy { font-size: 0.78rem; color: #444; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.4rem; }
+.footer-links { display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
+.footer-links a { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: #444; text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: #0C6; }
+
+@media(max-width:680px) {
+  .hw-grid { grid-template-columns: 1fr; }
+  .settings-grid { grid-template-columns: 1fr; }
+  .dashboard { grid-template-columns: repeat(2, 1fr); }
+  .result-grid { grid-template-columns: 1fr 1fr; }
+  nav { padding: 0 1rem; }
+  .nav-back { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-symbol">₿</span>
+    <span class="nav-logo-name">SATOLOGY</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Home</a>
+    <div class="nav-price">
+      <span class="nav-dot"></span>
+      <span id="btcPriceNav">$--</span>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <p class="hero-tag">₿ Interactive Simulator</p>
+  <h1>BITCOIN<span>MINING GAME</span></h1>
+  <p class="hero-sub">Pick your hardware. Set your electricity rate. Compete against the entire network. The halving is coming — can you survive it?</p>
+</div>
+
+<div class="game-wrap">
+
+  <!-- SETUP PANEL -->
+  <div class="panel" id="setupPanel">
+    <div class="panel-title">// Step 1 — Choose Your Hardware</div>
+    <div class="hw-grid" id="hwGrid">
+      <div class="hw-card" data-hw="0" onclick="selectHW(0)">
+        <div class="hw-name">Antminer S9</div>
+        <div class="hw-gen">Gen 2017</div>
+        <div class="hw-stat">Hash Rate: <span>14 TH/s</span></div>
+        <div class="hw-stat">Power: <span>1,372 W</span></div>
+        <div class="hw-stat">Efficiency: <span>98 J/TH</span></div>
+        <div class="hw-stat">Cost: <span>~$200</span></div>
+        <div class="hw-badge badge-old">Legacy</div>
+      </div>
+      <div class="hw-card selected" data-hw="1" onclick="selectHW(1)">
+        <div class="hw-name">Antminer S19 Pro</div>
+        <div class="hw-gen">Gen 2020</div>
+        <div class="hw-stat">Hash Rate: <span>110 TH/s</span></div>
+        <div class="hw-stat">Power: <span>3,250 W</span></div>
+        <div class="hw-stat">Efficiency: <span>29.5 J/TH</span></div>
+        <div class="hw-stat">Cost: <span>~$1,500</span></div>
+      </div>
+      <div class="hw-card" data-hw="2" onclick="selectHW(2)">
+        <div class="hw-name">Antminer S21 XP</div>
+        <div class="hw-gen">Gen 2024</div>
+        <div class="hw-stat">Hash Rate: <span>270 TH/s</span></div>
+        <div class="hw-stat">Power: <span>3,645 W</span></div>
+        <div class="hw-stat">Efficiency: <span>13.5 J/TH</span></div>
+        <div class="hw-stat">Cost: <span>~$4,000</span></div>
+        <div class="hw-badge badge-best">Best 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="settingsPanel">
+    <div class="panel-title">// Step 2 — Your Setup</div>
+    <div class="settings-grid">
+      <div class="setting-group">
+        <label>Electricity (¢ / kWh)</label>
+        <input type="range" id="electricSlider" min="3" max="20" value="8" step="0.5" oninput="updateSettings()">
+        <div class="setting-val" id="electricVal">8¢</div>
+      </div>
+      <div class="setting-group">
+        <label>Number of Machines</label>
+        <input type="range" id="machinesSlider" min="1" max="20" value="3" step="1" oninput="updateSettings()">
+        <div class="setting-val" id="machinesVal">3</div>
+      </div>
+      <div class="setting-group">
+        <label>Game Speed</label>
+        <input type="range" id="speedSlider" min="1" max="5" value="2" step="1" oninput="updateSettings()">
+        <div class="setting-val" id="speedVal">Normal</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:1.5rem; background:#050403; border-color:rgba(0,200,80,0.08);">
+      <div class="panel-title">// Pre-Game Economics</div>
+      <div class="dashboard" id="previewDash">
+        <div class="dash-card">
+          <div class="dash-label">Your Hash Rate</div>
+          <div class="dash-val" id="prevHashrate">--</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-label">Daily Power Cost</div>
+          <div class="dash-val warn" id="prevPowerCost">--</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-label">Est. Daily Revenue</div>
+          <div class="dash-val" id="prevRevenue">--</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-label">Est. Daily Profit</div>
+          <div class="dash-val" id="prevProfit">--</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="startGame()">⚡ START MINING ⚡</button>
+  </div>
+
+  <!-- TERMINAL / GAME -->
+  <div class="panel terminal" id="gamePanel">
+    <div class="panel-title">// Mining Operations — Live Feed</div>
+
+    <div class="dashboard" id="liveDash">
+      <div class="dash-card">
+        <div class="dash-label">Blocks Found</div>
+        <div class="dash-val gold" id="statBlocksFound">0</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-label">Total Revenue</div>
+        <div class="dash-val" id="statRevenue">$0.00</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-label">Power Costs</div>
+        <div class="dash-val warn" id="statCost">$0.00</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-label">Net Profit</div>
+        <div class="dash-val" id="statProfit">$0.00</div>
+      </div>
+    </div>
+
+    <div class="block-stream-title">// Block Events</div>
+    <div class="block-stream" id="blockStream">
+      <div class="log-line log-info">[ SYSTEM ] Connecting to Bitcoin network...</div>
+    </div>
+
+    <div class="profit-chart-wrap">
+      <div class="profit-chart-title">// Cumulative P&L ($)</div>
+      <canvas id="profitChart"></canvas>
+    </div>
+
+    <div style="margin-top:1.5rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+      <button class="replay-btn" onclick="stopGame()">⏹ STOP</button>
+      <span id="halvingCountdown" style="font-size:0.82rem; color:#F0A500; letter-spacing:0.1em;"></span>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-panel" id="resultsPanel">
+    <div id="resultTitle" class="result-title">RESULTS</div>
+    <div id="resultSub" style="font-size:0.9rem; color:#888; margin-bottom:1.5rem;"></div>
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="result-label">Blocks Found</div>
+        <div class="result-val" id="resBlocks">--</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Total Revenue</div>
+        <div class="result-val" id="resRevenue">--</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Power Costs</div>
+        <div class="result-val" id="resCost">--</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Net Profit</div>
+        <div class="result-val" id="resProfit">--</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Break-Even Rate</div>
+        <div class="result-val" id="resBreakeven">--</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Survived Halving</div>
+        <div class="result-val" id="resSurvived">--</div>
+      </div>
+    </div>
+    <button class="replay-btn" onclick="resetGame()">↺ PLAY AGAIN</button>
+    <a href="index.html" style="font-size:0.9rem; letter-spacing:0.1em; color:#444; text-decoration:none; text-transform:uppercase;">← Back to Tools</a>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="edu-panel">
+    <div class="edu-title">// Why Does This Matter?</div>
+    <div class="edu-body">
+      Bitcoin mining is intentionally competitive. The network automatically adjusts difficulty every 2,016 blocks (~2 weeks) so that blocks are always found roughly every 10 minutes — no matter how much or how little hashrate is on the network. Every 4 years, the block reward halves. Miners who survive the halving do so because efficiency wins. This simulator models real economics: actual S9/S19/S21 XP specs, real network hashrate (~1.020 ZH/s in 2026), real electricity rates, and the real block reward (3.125 BTC post-2024 halving).
+    </div>
+  </div>
+
+</div>
+
+<!-- HALVING ALERT -->
+<div class="halving-overlay" id="halvingOverlay">
+  <div class="halving-box">
+    <div class="halving-icon">⚡</div>
+    <div class="halving-title">HALVING EVENT</div>
+    <div class="halving-body" id="halvingBody">
+      The Bitcoin block reward just halved. Your revenue per block just dropped by 50%. This is the moment that separates efficient miners from the rest. Do you have the margins to survive?
+    </div>
+    <button class="halving-btn" onclick="dismissHalving()">KEEP MINING →</button>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div>
+      <div class="footer-logo">SATOLOGY</div>
+      <div class="footer-copy">© 2026 · Educational Simulator · Not Financial Advice</div>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="Network.html">The Network</a>
+      <a href="PowerLaw.html">Power Law</a>
+      <a href="bitcoin-halving.html">The Halving</a>
+    </div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ─── HARDWARE DATA ─────────────────────────────────────────────────────────
+const HARDWARE = [
+  { name: 'Antminer S9',      hashrate: 14,   watts: 1372,  efficiency: 98    },
+  { name: 'Antminer S19 Pro', hashrate: 110,  watts: 3250,  efficiency: 29.5  },
+  { name: 'Antminer S21 XP',  hashrate: 270,  watts: 3645,  efficiency: 13.5  },
+];
+
+// ─── NETWORK CONSTANTS ─────────────────────────────────────────────────────
+const NETWORK_HASHRATE_TH = 1_020_000_000; // 1.020 ZH/s in TH/s
+const BLOCK_REWARD_BTC    = 3.125;          // post-2024 halving
+const HALVING_BLOCKS       = 210_000;        // simulate halving mid-game
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let selectedHW = 1;
+let electricRate = 0.08; // $/kWh
+let numMachines  = 3;
+let gameSpeed    = 2; // 1-5
+let gameLoop     = null;
+let btcPrice     = 100000;
+
+let totalRevenue   = 0;
+let totalCost      = 0;
+let blocksFound    = 0;
+let simDay         = 0;
+let halvingDone    = false;
+let halvingShown   = false;
+let currentReward  = BLOCK_REWARD_BTC;
+let profitHistory  = [0];
+let profitChart    = null;
+let simBlocksSinceHalving = 0;
+let halvingBlock   = 420; // ~simulated blocks before halving event
+
+const SPEED_LABELS = ['', 'Slow', 'Normal', 'Fast', 'Very Fast', 'Turbo'];
+const SPEED_MS     = [0, 2500, 1500, 800, 400, 150];
+
+// ─── FETCH PRICE ──────────────────────────────────────────────────────────
+async function fetchPrice() {
+  try {
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    const d = await r.json();
+    btcPrice = d.bitcoin.usd;
+    document.getElementById('btcPriceNav').textContent = '$' + btcPrice.toLocaleString('en-US',{maximumFractionDigits:0});
+    updateSettings();
+  } catch(e) {}
+}
+fetchPrice();
+setInterval(fetchPrice, 60000);
+
+// ─── HW SELECTION ─────────────────────────────────────────────────────────
+function selectHW(idx) {
+  selectedHW = idx;
+  document.querySelectorAll('.hw-card').forEach((c, i) => {
+    c.classList.toggle('selected', i === idx);
+  });
+  updateSettings();
+}
+
+// ─── SETTINGS ─────────────────────────────────────────────────────────────
+function updateSettings() {
+  electricRate = parseFloat(document.getElementById('electricSlider').value) / 100;
+  numMachines  = parseInt(document.getElementById('machinesSlider').value);
+  const spd    = parseInt(document.getElementById('speedSlider').value);
+
+  document.getElementById('electricVal').textContent = (electricRate*100).toFixed(1) + '¢';
+  document.getElementById('machinesVal').textContent = numMachines;
+  document.getElementById('speedVal').textContent    = SPEED_LABELS[spd];
+
+  const hw = HARDWARE[selectedHW];
+  const myTH = hw.hashrate * numMachines;
+  const myShare = myTH / NETWORK_HASHRATE_TH;
+  const blocksPerDay = 144; // 144 blocks/day
+  const myBlocksPerDay = myShare * blocksPerDay;
+  const dailyRevenueBTC = myBlocksPerDay * BLOCK_REWARD_BTC;
+  const dailyRevenueUSD = dailyRevenueBTC * btcPrice;
+  const dailyPowerKWh   = (hw.watts * numMachines / 1000) * 24;
+  const dailyPowerCost  = dailyPowerKWh * electricRate;
+  const dailyProfit     = dailyRevenueUSD - dailyPowerCost;
+
+  document.getElementById('prevHashrate').textContent = myTH + ' TH/s';
+  document.getElementById('prevPowerCost').textContent = '$' + dailyPowerCost.toFixed(2);
+  document.getElementById('prevRevenue').textContent   = '$' + dailyRevenueUSD.toFixed(2);
+
+  const profEl = document.getElementById('prevProfit');
+  profEl.textContent = (dailyProfit >= 0 ? '+' : '') + '$' + dailyProfit.toFixed(2);
+  profEl.className = 'dash-val' + (dailyProfit > 0 ? '' : dailyProfit > -10 ? ' warn' : ' bad');
+}
+
+// ─── GAME LOGIC ───────────────────────────────────────────────────────────
+function startGame() {
+  document.getElementById('setupPanel').style.display    = 'none';
+  document.getElementById('settingsPanel').style.display = 'none';
+  document.getElementById('gamePanel').classList.add('active');
+  document.getElementById('resultsPanel').classList.remove('show');
+
+  // Reset state
+  totalRevenue = 0; totalCost = 0; blocksFound = 0;
+  simDay = 0; halvingDone = false; halvingShown = false;
+  currentReward = BLOCK_REWARD_BTC;
+  profitHistory = [0];
+  simBlocksSinceHalving = 0;
+
+  // Clear log
+  document.getElementById('blockStream').innerHTML = '<div class="log-line log-info">[ SYSTEM ] Mining started...</div>';
+
+  // Init chart
+  if (profitChart) profitChart.destroy();
+  const ctx = document.getElementById('profitChart').getContext('2d');
+  profitChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['0'],
+      datasets: [{
+        data: [0],
+        borderColor: '#0D0',
+        borderWidth: 2,
+        pointRadius: 0,
+        fill: {
+          target: 'origin',
+          above: 'rgba(0,200,80,0.1)',
+          below: 'rgba(229,57,53,0.1)'
+        },
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { display: false },
+        y: {
+          ticks: { color: '#444', font: {family:'IBM Plex Mono', size:11}, callback: v => '$' + Math.round(v) },
+          grid: { color: 'rgba(0,200,80,0.05)' }
+        }
+      },
+      plugins: { legend: {display:false}, tooltip: { enabled: false } },
+      animation: { duration: 200 }
+    }
+  });
+
+  const spd = parseInt(document.getElementById('speedSlider').value);
+  gameLoop = setInterval(simulateTick, SPEED_MS[spd]);
+}
+
+let totalSimBlocks = 0;
+
+function simulateTick() {
+  totalSimBlocks++;
+  simBlocksSinceHalving++;
+
+  const hw = HARDWARE[selectedHW];
+  const myTH = hw.hashrate * numMachines;
+  const myShare = myTH / NETWORK_HASHRATE_TH;
+
+  // Probabilistic block win (~1 block per tick = 10 min, check if our miner won it)
+  const rand = Math.random();
+  const won  = rand < myShare * 50; // slight boost for playability
+
+  // Power cost per tick (10 min = 1/144 day)
+  const powerPerTickKWh = (hw.watts * numMachines / 1000) * (10/60);
+  const powerCost = powerPerTickKWh * electricRate;
+  totalCost += powerCost;
+
+  // Revenue if won
+  let tickRevenue = 0;
+  if (won) {
+    blocksFound++;
+    tickRevenue = currentReward * btcPrice;
+    totalRevenue += tickRevenue;
+    addLog(`[ BLOCK #${totalSimBlocks.toString().padStart(6,'0')} ] ⚡ YOU FOUND IT! +${currentReward} BTC = $${tickRevenue.toFixed(2)}`, 'win');
+  } else {
+    if (totalSimBlocks % 20 === 0) {
+      addLog(`[ BLOCK #${totalSimBlocks.toString().padStart(6,'0')} ] Network found block — not your miner this time.`, 'info');
+    }
+  }
+
+  const netProfit = totalRevenue - totalCost;
+  updateDashboard(netProfit);
+
+  // Chart update
+  if (totalSimBlocks % 5 === 0) {
+    profitHistory.push(netProfit);
+    profitChart.data.labels.push(totalSimBlocks.toString());
+    profitChart.data.datasets[0].data.push(netProfit);
+    // Keep chart tidy
+    if (profitHistory.length > 100) {
+      profitChart.data.labels.shift();
+      profitChart.data.datasets[0].data.shift();
+    }
+    profitChart.update();
+  }
+
+  // Halving check
+  if (!halvingDone && totalSimBlocks >= halvingBlock) {
+    halvingDone = true;
+    currentReward = currentReward / 2;
+    addLog(``, 'info');
+    addLog(`[ ⚡ HALVING ] Block reward slashed to ${currentReward} BTC — welcome to the new economics.`, 'halving');
+    addLog(``, 'info');
+    showHalving();
+  }
+
+  // Game ends after 800 ticks
+  if (totalSimBlocks >= 800) {
+    stopGame();
+  }
+
+  // Countdown to halving
+  if (!halvingDone) {
+    const remaining = halvingBlock - totalSimBlocks;
+    document.getElementById('halvingCountdown').textContent = `⚡ HALVING IN ${remaining} BLOCKS`;
+  } else {
+    document.getElementById('halvingCountdown').textContent = '⚡ POST-HALVING ERA';
+  }
+}
+
+function addLog(text, type) {
+  const el = document.createElement('div');
+  el.className = 'log-line' + (type === 'win' ? ' log-win' : type === 'halving' ? ' log-halving' : ' log-info');
+  el.textContent = text;
+  const stream = document.getElementById('blockStream');
+  stream.insertBefore(el, stream.firstChild);
+}
+
+function updateDashboard(netProfit) {
+  document.getElementById('statBlocksFound').textContent = blocksFound;
+  document.getElementById('statRevenue').textContent = '$' + totalRevenue.toFixed(2);
+  document.getElementById('statCost').textContent = '$' + totalCost.toFixed(2);
+  const profEl = document.getElementById('statProfit');
+  profEl.textContent = (netProfit >= 0 ? '+' : '') + '$' + netProfit.toFixed(2);
+  profEl.className = 'dash-val' + (netProfit > 0 ? '' : netProfit > -50 ? ' warn' : ' bad');
+}
+
+function showHalving() {
+  const doc = document.getElementById('halvingBody');
+  const hw  = HARDWARE[selectedHW];
+  const dailyPower = (hw.watts * numMachines / 1000) * 24 * electricRate;
+  const newDailyRevApprox = (hw.hashrate * numMachines / NETWORK_HASHRATE_TH) * 144 * currentReward * btcPrice;
+  doc.textContent = `The Bitcoin block reward just dropped from ${currentReward*2} BTC to ${currentReward} BTC. Your estimated daily revenue is now ~$${newDailyRevApprox.toFixed(2)} against power costs of ~$${dailyPower.toFixed(2)}. ${newDailyRevApprox > dailyPower ? "You're still profitable — barely. Efficient miners survive." : "You're now mining at a loss. This is why efficiency is everything."}`;
+  document.getElementById('halvingOverlay').classList.add('show');
+}
+
+function dismissHalving() {
+  document.getElementById('halvingOverlay').classList.remove('show');
+}
+
+function stopGame() {
+  if (gameLoop) { clearInterval(gameLoop); gameLoop = null; }
+  document.getElementById('gamePanel').classList.remove('active');
+  showResults();
+}
+
+function showResults() {
+  const netProfit = totalRevenue - totalCost;
+  const hw = HARDWARE[selectedHW];
+
+  document.getElementById('resultTitle').textContent = netProfit >= 0 ? '✓ PROFITABLE' : '✗ LOSS';
+  document.getElementById('resultTitle').className = 'result-title ' + (netProfit >= 0 ? 'profit' : 'loss');
+  document.getElementById('resultSub').textContent = `${hw.name} × ${numMachines} | ${(electricRate*100).toFixed(1)}¢/kWh | ${totalSimBlocks} blocks simulated`;
+
+  document.getElementById('resBlocks').textContent   = blocksFound;
+  document.getElementById('resRevenue').textContent  = '$' + totalRevenue.toFixed(2);
+  document.getElementById('resCost').textContent     = '$' + totalCost.toFixed(2);
+  document.getElementById('resProfit').textContent   = (netProfit >= 0 ? '+' : '') + '$' + netProfit.toFixed(2);
+
+  const breakevenRate = (totalRevenue / ((hw.watts * numMachines / 1000) * (totalSimBlocks * 10 / 60))) * 100;
+  document.getElementById('resBreakeven').textContent = isFinite(breakevenRate) ? breakevenRate.toFixed(1) + '¢' : '--';
+  document.getElementById('resSurvived').textContent  = halvingDone ? (netProfit >= 0 ? '✓ YES' : '✗ NO') : 'N/A';
+
+  document.getElementById('resultsPanel').classList.add('show');
+}
+
+function resetGame() {
+  totalSimBlocks = 0;
+  document.getElementById('resultsPanel').classList.remove('show');
+  document.getElementById('setupPanel').style.display    = '';
+  document.getElementById('settingsPanel').style.display = '';
+  document.getElementById('halvingOverlay').classList.remove('show');
+  updateSettings();
+}
+
+// Init
+updateSettings();
+</script>
+</body>
+</html>

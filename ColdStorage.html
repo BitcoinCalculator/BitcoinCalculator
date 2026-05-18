@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>Cold Storage — Secure Your Bitcoin Forever | SATOLOGY</title>
+<meta name="description" content="Not your keys, not your coins. The complete guide to self-custody: hot wallets, cold wallets, seed phrases, hardware devices, passphrases, and multisig vaults.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background-color: #0A0805;
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0A0805;
+  color: #E8DEC8;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.5;
+}
+
+/* NAV */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 60px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10,8,5,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(240,165,0,0.1);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.nav-logo-symbol {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.3rem;
+  color: #F0A500;
+  line-height: 1;
+}
+
+.nav-logo-name {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.22em;
+  color: #E8DEC8;
+  text-transform: uppercase;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-back {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: #C0AD90;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: #F0A500; }
+
+.nav-price {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(240,165,0,0.08);
+  border: 1px solid rgba(240,165,0,0.2);
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #F0A500;
+}
+
+.nav-dot {
+  width: 6px;
+  height: 6px;
+  background: #4CAF50;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  position: relative;
+  background-color: #0A0805;
+  background-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(240,165,0,0.07) 0%, transparent 70%);
+  border-bottom: 1px solid rgba(240,165,0,0.12);
+}
+
+.hero-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
+  font-size: clamp(3.5rem, 14vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: #FAF5EB;
+  max-width: 900px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero h1 span {
+  color: #F0A500;
+  display: block;
+}
+
+.hero-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: #C0AD90;
+  margin-top: 1.5rem;
+  max-width: 640px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.65s forwards;
+}
+
+.hero-stat-row {
+  margin-top: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 0.9s forwards;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-stat-pill {
+  border: 1px solid rgba(240,165,0,0.25);
+  background-color: rgba(240,165,0,0.04);
+  padding: 1rem 1.6rem;
+  text-align: center;
+}
+
+.hero-stat-pill-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+}
+
+.hero-stat-pill-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+  display: block;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 1.4s forwards;
+}
+
+.scroll-hint span {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #C0AD90;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, #F0A500, transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ARTICLE */
+article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 5rem 2rem 8rem;
+  background-color: #0A0805;
+}
+
+.section {
+  margin-bottom: 5rem;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chapter {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chapter::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: rgba(240,165,0,0.15);
+}
+
+h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.2;
+  color: #FAF5EB;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+p {
+  margin-bottom: 1.2rem;
+  color: #E8DEC8;
+  font-size: 1.05rem;
+}
+
+/* STAT BLOCKS */
+.stat-block {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.2);
+  border-left: 3px solid #F0A500;
+  padding: 2.5rem 2rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-block::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(240,165,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-number {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* MONO FACT */
+.mono-fact {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #F0A500;
+  background-color: rgba(240,165,0,0.06);
+  border-left: 2px solid #F0A500;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  letter-spacing: 0.05em;
+  line-height: 1.7;
+}
+
+/* BLOCKQUOTE */
+blockquote {
+  padding: 2.5rem 0;
+  margin: 3rem 0;
+  border-top: 1px solid rgba(240,165,0,0.15);
+  border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+blockquote p {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #FAF5EB;
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+
+blockquote cite {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 1rem;
+}
+
+/* PILLARS GRID */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.pillar-item {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.6rem;
+}
+
+.pillar-item h4 {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.1rem;
+  color: #FAF5EB;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.6rem;
+}
+
+.pillar-item p {
+  font-size: 0.95rem;
+  color: #C0AD90;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+/* WALLET SPECTRUM */
+.spectrum {
+  margin: 2.5rem 0;
+  position: relative;
+}
+
+.spectrum-track {
+  height: 6px;
+  background: linear-gradient(to right, #4CAF50, #F0A500, #E53935);
+  border-radius: 3px;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.spectrum-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.spectrum-label-left { color: #4CAF50; }
+.spectrum-label-right { color: #E53935; }
+
+.spectrum-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.spectrum-card {
+  display: grid;
+  grid-template-columns: 160px 1fr auto;
+  gap: 1.2rem;
+  align-items: center;
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.2rem 1.4rem;
+}
+
+.spectrum-card-type {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: #FAF5EB;
+}
+
+.spectrum-card-desc {
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.spectrum-card-risk {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.risk-high { color: #E53935; border: 1px solid rgba(229,57,53,0.3); background: rgba(229,57,53,0.06); }
+.risk-med  { color: #F0A500; border: 1px solid rgba(240,165,0,0.3); background: rgba(240,165,0,0.06); }
+.risk-low  { color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); background: rgba(76,175,80,0.06); }
+.risk-min  { color: #81C784; border: 1px solid rgba(129,199,132,0.3); background: rgba(129,199,132,0.06); }
+
+/* KEY ANATOMY */
+.key-anatomy {
+  background-color: #0E0B07;
+  border: 1px solid rgba(240,165,0,0.2);
+  padding: 2.5rem;
+  margin: 2.5rem 0;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+.key-anatomy-title {
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 1.8rem;
+}
+
+.key-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid rgba(240,165,0,0.08);
+}
+
+.key-row:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.key-row-label {
+  font-size: 0.9rem;
+  color: #F0A500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding-top: 0.15rem;
+}
+
+.key-row-content {}
+
+.key-row-hex {
+  font-size: 0.78rem;
+  color: #C0AD90;
+  word-break: break-all;
+  line-height: 1.6;
+  margin-bottom: 0.4rem;
+}
+
+.key-row-note {
+  font-size: 0.82rem;
+  color: #8A7D6A;
+  font-family: 'Libre Baskerville', serif;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* SEED PHRASE DISPLAY */
+.seed-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin: 2rem 0;
+}
+
+.seed-word {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.15);
+  padding: 0.7rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.seed-num {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+  color: #C47F00;
+  min-width: 20px;
+}
+
+.seed-text {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #E8DEC8;
+}
+
+.seed-word.passphrase {
+  border-color: rgba(240,165,0,0.4);
+  background-color: rgba(240,165,0,0.08);
+}
+
+.seed-word.passphrase .seed-num {
+  color: #F0A500;
+}
+
+.seed-word.passphrase .seed-text {
+  color: #F0A500;
+}
+
+/* COMPARISON TABLE */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-size: 0.9rem;
+}
+
+.compare-table th {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C47F00;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  background-color: #110E08;
+  border-bottom: 1px solid rgba(240,165,0,0.2);
+}
+
+.compare-table td {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.875rem;
+  color: #C0AD90;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(240,165,0,0.07);
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+.compare-table tr:hover td {
+  background-color: rgba(240,165,0,0.03);
+}
+
+.compare-table td:first-child {
+  color: #FAF5EB;
+  font-weight: 600;
+}
+
+.td-check { color: #4CAF50; }
+.td-cross { color: #E53935; }
+.td-warn  { color: #F0A500; }
+
+/* HARDWARE DEVICES */
+.device-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.device-card {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.15);
+  padding: 1.8rem;
+  position: relative;
+}
+
+.device-card-name {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.4rem;
+  color: #FAF5EB;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.4rem;
+}
+
+.device-card-tagline {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #F0A500;
+  margin-bottom: 1rem;
+}
+
+.device-card-desc {
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.device-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  color: #4CAF50;
+  border: 1px solid rgba(76,175,80,0.3);
+  background: rgba(76,175,80,0.07);
+}
+
+/* MULTISIG VISUAL */
+.multisig-visual {
+  background-color: #0E0B07;
+  border: 1px solid rgba(240,165,0,0.2);
+  padding: 2.5rem 2rem;
+  margin: 2.5rem 0;
+  text-align: center;
+}
+
+.multisig-title {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.multisig-keys {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.ms-key {
+  width: 70px;
+  height: 90px;
+  border: 2px solid rgba(240,165,0,0.3);
+  background-color: #110E08;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+  color: #C0AD90;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ms-key.active {
+  border-color: #F0A500;
+  background-color: rgba(240,165,0,0.08);
+  color: #F0A500;
+}
+
+.ms-key-icon {
+  font-size: 1.4rem;
+}
+
+.multisig-arrow {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C47F00;
+  letter-spacing: 0.1em;
+  margin: 0.8rem 0;
+}
+
+.multisig-result {
+  display: inline-block;
+  background-color: rgba(240,165,0,0.08);
+  border: 1px solid rgba(240,165,0,0.3);
+  padding: 0.8rem 2rem;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #F0A500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* THREAT MODEL */
+.threat-list {
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.threat-item {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 1rem;
+  align-items: start;
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.1);
+  padding: 1.2rem 1.4rem;
+}
+
+.threat-icon {
+  font-size: 1.2rem;
+  padding-top: 0.1rem;
+}
+
+.threat-content-title {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  color: #FAF5EB;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.threat-content-desc {
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* RULES BOX */
+.rules-box {
+  background-color: #070604;
+  border: 1px solid rgba(240,165,0,0.25);
+  border-top: 3px solid #F0A500;
+  padding: 2.5rem;
+  margin: 2.5rem 0;
+}
+
+.rules-box-title {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.08em;
+  color: #FAF5EB;
+  margin-bottom: 1.4rem;
+}
+
+.rules-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.rules-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.6;
+}
+
+.rules-list li::before {
+  content: '▸';
+  color: #F0A500;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+
+/* FINALE */
+.finale {
+  background-color: #070604;
+  border-top: 1px solid rgba(240,165,0,0.15);
+  padding: 6rem 2rem;
+  text-align: center;
+}
+
+.finale-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.finale h2 {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #FAF5EB;
+  max-width: 700px;
+  margin: 0 auto 1.5rem;
+}
+
+.finale h2 span { color: #F0A500; }
+
+.finale-body {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #C0AD90;
+  max-width: 520px;
+  margin: 0 auto 2rem;
+}
+
+.finale-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.finale-link {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C0AD90;
+  text-decoration: none;
+  border: 1px solid rgba(240,165,0,0.2);
+  padding: 0.8rem 1.4rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+.finale-link:hover {
+  color: #F0A500;
+  border-color: rgba(240,165,0,0.5);
+}
+
+/* FOOTER */
+.footer-wrap {
+  background-color: #070604;
+  border-top: 1px solid rgba(240,165,0,0.1);
+}
+
+footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.4rem;
+  color: #F0A500;
+  letter-spacing: 0.06em;
+}
+
+.footer-copy {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.footer-links a {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #C0AD90;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: #F0A500; }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .pillars-grid { grid-template-columns: 1fr; }
+  .device-grid  { grid-template-columns: 1fr; }
+  .seed-grid    { grid-template-columns: repeat(3, 1fr); }
+  .spectrum-card { grid-template-columns: 1fr; }
+  .spectrum-card-risk { display: inline-block; margin-top: 0.4rem; }
+  .key-row      { grid-template-columns: 1fr; }
+  .key-row-label { padding-top: 0; margin-bottom: 0.3rem; }
+  nav { padding: 0 1rem; }
+  .nav-back { display: none; }
+  .hero-stat-row { gap: 0.8rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-symbol">₿</span>
+    <span class="nav-logo-name">SATOLOGY</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Home</a>
+    <div class="nav-price">
+      <span class="nav-dot"></span>
+      <span id="btcPriceNav">$--</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-label">₿ Self-Custody Masterclass</p>
+  <h1>COLD<span>STORAGE</span></h1>
+  <p class="hero-sub">The exchange holds your coins. Your hardware wallet holds your future. There is no middle ground — you either control your Bitcoin or someone else does.</p>
+
+  <div class="hero-stat-row">
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">~$3.6B</span>
+      <span class="hero-stat-pill-label">Lost to Exchange Hacks</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">2048</span>
+      <span class="hero-stat-pill-label">BIP39 Word List</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">2¹²⁸</span>
+      <span class="hero-stat-pill-label">12-Word Entropy</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">∞</span>
+      <span class="hero-stat-pill-label">Your Sovereignty</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article>
+
+  <!-- CHAPTER 1 -->
+  <div class="section">
+    <div class="chapter">Chapter 01</div>
+    <h2>Not Your Keys, Not Your Coins</h2>
+
+    <p>In November 2022, FTX — the second-largest cryptocurrency exchange in the world, valued at $32 billion — collapsed overnight. Over a million customers discovered that their coins were gone. Not stolen. Not hacked. Simply never theirs to begin with. FTX had been using customer funds as collateral for risky trades. When confidence evaporated, the house of cards fell in days.</p>
+
+    <p>Mt. Gox. QuadrigaCX. Celsius. Voyager. BlockFi. The list of exchanges and lending platforms that have lost customer funds is long, and it keeps growing. Each time, the story is the same: users believed they owned Bitcoin. What they actually owned was a number on a screen — a database entry that said they had Bitcoin — while the actual private keys sat on a server they had no control over.</p>
+
+    <p>Bitcoin is a bearer instrument. Whoever controls the private key controls the coins. There is no recourse. There is no chargeback. There is no FDIC insurance. The ledger does not care about your screenshot. If you do not hold your private keys, you do not hold Bitcoin. You hold a promise — and promises are breakable.</p>
+
+    <blockquote>
+      <p>"Not your keys, not your coins."</p>
+      <cite>— Andreas Antonopoulos, Bitcoin educator</cite>
+    </blockquote>
+
+    <p>This is not a warning to scare you away from Bitcoin. It is the most important feature Bitcoin has. Self-custody is not a risk — it is the point. Bitcoin gives you the ability to be your own bank for the first time in human history. This guide teaches you how to do that safely.</p>
+
+    <div class="mono-fact">
+      Every bank in history has asked you to trust them with your money. Bitcoin asks you to trust math — and math doesn't have a board of directors.
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 -->
+  <div class="section">
+    <div class="chapter">Chapter 02</div>
+    <h2>The Custody Spectrum</h2>
+
+    <p>Not all wallets are created equal. The word "wallet" is used for everything from a Coinbase account to an air-gapped signing device in a safe. Understanding the spectrum of custody — from completely trusting others to completely trusting yourself — is the foundation of a good security strategy.</p>
+
+    <div class="spectrum">
+      <div class="spectrum-track"></div>
+      <div class="spectrum-labels">
+        <span class="spectrum-label-left">← Most Secure</span>
+        <span class="spectrum-label-right">Most Convenient →</span>
+      </div>
+      <div class="spectrum-cards">
+        <div class="spectrum-card">
+          <div class="spectrum-card-type">Multisig Vault</div>
+          <div class="spectrum-card-desc">Multiple hardware devices required to sign. Used by institutions and serious long-term holders. Eliminates single points of failure.</div>
+          <div class="spectrum-card-risk risk-min">Fort Knox</div>
+        </div>
+        <div class="spectrum-card">
+          <div class="spectrum-card-type">Hardware Wallet</div>
+          <div class="spectrum-card-desc">Physical device that stores keys offline. Signs transactions without ever exposing your private key to the internet.</div>
+          <div class="spectrum-card-risk risk-low">Recommended</div>
+        </div>
+        <div class="spectrum-card">
+          <div class="spectrum-card-type">Software Wallet</div>
+          <div class="spectrum-card-desc">App on your phone or computer. You hold the keys but the device is connected to the internet — a hot wallet.</div>
+          <div class="spectrum-card-risk risk-med">Acceptable</div>
+        </div>
+        <div class="spectrum-card">
+          <div class="spectrum-card-type">Exchange Account</div>
+          <div class="spectrum-card-desc">Custodial. The exchange holds your keys. You own a number in a database. FTX was an exchange. Celsius was an exchange.</div>
+          <div class="spectrum-card-risk risk-high">Not Your Keys</div>
+        </div>
+      </div>
+    </div>
+
+    <p>The right approach for most people is to use an exchange temporarily to purchase Bitcoin, then immediately withdraw to a hardware wallet you control. Use the exchange like a cash machine — get in, get out, don't leave anything behind.</p>
+  </div>
+
+  <!-- CHAPTER 3 -->
+  <div class="section">
+    <div class="chapter">Chapter 03</div>
+    <h2>Private Keys & Public Addresses</h2>
+
+    <p>At the core of Bitcoin is a simple but profound mathematical relationship. A private key is a randomly generated 256-bit number — essentially a number between 1 and 2²⁵⁶, which is larger than the number of atoms in the observable universe. From this private key, your wallet derives a public key through elliptic curve cryptography. From the public key, it derives your Bitcoin address — the identifier you share with the world.</p>
+
+    <div class="key-anatomy">
+      <div class="key-anatomy-title">// The Key Hierarchy</div>
+      <div class="key-row">
+        <div class="key-row-label">Private Key</div>
+        <div class="key-row-content">
+          <div class="key-row-hex">E9873D79C6D87DC0FB6A5778633389F4453213303DA61F20BD67FC233AA33262</div>
+          <div class="key-row-note">A random 256-bit number. Controls spending. Never share this. Never type it online. This is the crown jewel.</div>
+        </div>
+      </div>
+      <div class="key-row">
+        <div class="key-row-label">Public Key</div>
+        <div class="key-row-content">
+          <div class="key-row-hex">02E9873D79C6D87DC0FB6A5778633389F4453213303DA61F20BD67FC233AA33262</div>
+          <div class="key-row-note">Mathematically derived from private key using SECP256K1 elliptic curve. Can be shared. Cannot be reversed to reveal private key.</div>
+        </div>
+      </div>
+      <div class="key-row">
+        <div class="key-row-label">BTC Address</div>
+        <div class="key-row-content">
+          <div class="key-row-hex">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div>
+          <div class="key-row-note">Hash of the public key. This is what you share when someone wants to send you Bitcoin. A new address can be generated for every transaction.</div>
+        </div>
+      </div>
+    </div>
+
+    <p>The relationship is one-way. Given a private key, you can always compute the public key and address. Given an address — or even the public key — it is computationally impossible to reverse-engineer the private key. This asymmetry is what makes Bitcoin ownership possible without a trusted third party.</p>
+
+    <p>Your wallet is not a place where Bitcoin is stored. Bitcoin lives on the blockchain. Your wallet is a keychain — it holds the private keys that prove you have the right to move the coins recorded at your address.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <h4>Private Key</h4>
+        <p>Your spending password. The master secret. Anyone who has it controls your Bitcoin. Store offline, store in multiple secure locations, never share.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Public Key</h4>
+        <p>Derived from your private key. Used to verify your signatures. Cannot be used to steal coins. Can be shared freely.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Bitcoin Address</h4>
+        <p>The hash of your public key. Your public "account number." Share this when receiving payment. Generate a new one for each transaction for privacy.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Signature</h4>
+        <p>Created by combining your private key with transaction data. Proves you authorized the spend without revealing your private key. Math, not trust.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 4 -->
+  <div class="section">
+    <div class="chapter">Chapter 04</div>
+    <h2>The Seed Phrase — Your Master Key</h2>
+
+    <p>Managing a raw 256-bit private key — a 64-character hexadecimal string — would be a nightmare. Lose one character and your Bitcoin is gone forever. This is why the industry adopted BIP39: the Bitcoin Improvement Proposal that encodes private keys as a human-readable sequence of common English words called a seed phrase or mnemonic.</p>
+
+    <p>When you set up a hardware wallet for the first time, it generates a random seed — a number so large it could never be guessed — and converts it into either 12 or 24 simple words drawn from a standardized list of 2,048 words. Every wallet, address, and private key you'll ever use is derived from this single seed. Lose the device, just restore from your words. Get a new device, same words, same Bitcoin.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">2,048</span>
+      <span class="stat-label">Words in the BIP39 wordlist — each chosen to be short, common, and unambiguous from the others</span>
+    </div>
+
+    <p>Here is what a 24-word seed phrase looks like — except this is an example for illustration only. Never store your real seed phrase digitally, never take a photo of it, never type it into any website:</p>
+
+    <div class="seed-grid">
+      <div class="seed-word"><span class="seed-num">01</span><span class="seed-text">army</span></div>
+      <div class="seed-word"><span class="seed-num">02</span><span class="seed-text">van</span></div>
+      <div class="seed-word"><span class="seed-num">03</span><span class="seed-text">defense</span></div>
+      <div class="seed-word"><span class="seed-num">04</span><span class="seed-text">carry</span></div>
+      <div class="seed-word"><span class="seed-num">05</span><span class="seed-text">jealous</span></div>
+      <div class="seed-word"><span class="seed-num">06</span><span class="seed-text">true</span></div>
+      <div class="seed-word"><span class="seed-num">07</span><span class="seed-text">garbage</span></div>
+      <div class="seed-word"><span class="seed-num">08</span><span class="seed-text">claim</span></div>
+      <div class="seed-word"><span class="seed-num">09</span><span class="seed-text">echo</span></div>
+      <div class="seed-word"><span class="seed-num">10</span><span class="seed-text">media</span></div>
+      <div class="seed-word"><span class="seed-num">11</span><span class="seed-text">make</span></div>
+      <div class="seed-word"><span class="seed-num">12</span><span class="seed-text">crunch</span></div>
+      <div class="seed-word"><span class="seed-num">13</span><span class="seed-text">filter</span></div>
+      <div class="seed-word"><span class="seed-num">14</span><span class="seed-text">liberty</span></div>
+      <div class="seed-word"><span class="seed-num">15</span><span class="seed-text">impact</span></div>
+      <div class="seed-word"><span class="seed-num">16</span><span class="seed-text">oppose</span></div>
+      <div class="seed-word"><span class="seed-num">17</span><span class="seed-text">diesel</span></div>
+      <div class="seed-word"><span class="seed-num">18</span><span class="seed-text">permit</span></div>
+      <div class="seed-word"><span class="seed-num">19</span><span class="seed-text">thrive</span></div>
+      <div class="seed-word"><span class="seed-num">20</span><span class="seed-text">morning</span></div>
+      <div class="seed-word"><span class="seed-num">21</span><span class="seed-text">patient</span></div>
+      <div class="seed-word"><span class="seed-num">22</span><span class="seed-text">above</span></div>
+      <div class="seed-word"><span class="seed-num">23</span><span class="seed-text">burger</span></div>
+      <div class="seed-word"><span class="seed-num">24</span><span class="seed-text">indoor</span></div>
+    </div>
+
+    <p>These 24 words encode 256 bits of entropy — a number so vast that even if every computer ever built searched randomly for your seed, they would not find it before the sun burns out. The order matters. Every word matters. Every space matters. This list of words is your Bitcoin.</p>
+
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Seed Type</th>
+            <th>Words</th>
+            <th>Entropy</th>
+            <th>Security</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>12-Word</td>
+            <td>12</td>
+            <td>128-bit</td>
+            <td class="td-check">✓ Sufficient</td>
+            <td>Used by most consumer wallets. Astronomically secure.</td>
+          </tr>
+          <tr>
+            <td>24-Word</td>
+            <td>24</td>
+            <td>256-bit</td>
+            <td class="td-check">✓ Maximum</td>
+            <td>Double the entropy. Preferred by Coldcard, Trezor. Belt-and-suspenders security.</td>
+          </tr>
+          <tr>
+            <td>+ Passphrase</td>
+            <td>24 + custom</td>
+            <td>256-bit+</td>
+            <td class="td-check">✓ Elite</td>
+            <td>The "25th word." Infinite additional wallets. See Chapter 05.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 -->
+  <div class="section">
+    <div class="chapter">Chapter 05</div>
+    <h2>The 25th Word — The Passphrase</h2>
+
+    <p>BIP39 includes an optional feature that most people never use — and most advanced Bitcoiners consider essential. It is called the passphrase, or informally, the 25th word. It is not a word at all. It can be any string of any characters at any length: a word, a phrase, a sentence, a random string of symbols. It is added to your 24-word seed before your wallet derives your keys.</p>
+
+    <p>The result is profound. A different passphrase — even a single character different — produces a completely different wallet with completely different addresses and completely different Bitcoin. The 24-word seed without the passphrase opens a wallet. The same 24-word seed with your passphrase opens a different, hidden wallet.</p>
+
+    <div class="seed-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="seed-word"><span class="seed-num">01</span><span class="seed-text">army</span></div>
+      <div class="seed-word"><span class="seed-num">02</span><span class="seed-text">van</span></div>
+      <div class="seed-word"><span class="seed-num">03</span><span class="seed-text">defense</span></div>
+      <div class="seed-word"><span class="seed-num">04</span><span class="seed-text">carry</span></div>
+      <div class="seed-word"><span class="seed-num">...</span><span class="seed-text">...</span></div>
+      <div class="seed-word"><span class="seed-num">23</span><span class="seed-text">burger</span></div>
+      <div class="seed-word"><span class="seed-num">24</span><span class="seed-text">indoor</span></div>
+      <div class="seed-word passphrase"><span class="seed-num">25</span><span class="seed-text">MySecret!</span></div>
+    </div>
+
+    <p>This creates a powerful security architecture. Imagine someone finds your 24-word backup. Without the passphrase, they can access that wallet — so put a small decoy amount there. Your real stack, protected by the passphrase they don't have, is mathematically invisible to them. Even under duress, you can reveal the 24 words knowing your real Bitcoin is safe.</p>
+
+    <div class="mono-fact">
+      The passphrase adds a secret that exists nowhere on Earth except in your memory. There is no recovery. Forget it and the Bitcoin is gone. Write it separately from your seed.
+    </div>
+
+    <div class="threat-list">
+      <div class="threat-item">
+        <div class="threat-icon">⚠️</div>
+        <div>
+          <div class="threat-content-title">Critical Warning</div>
+          <div class="threat-content-desc">If you forget your passphrase, no one can help you. Not Ledger, not Trezor, not the Bitcoin network. The Bitcoin is permanently inaccessible. Store the passphrase separately from your seed phrase, in a location you will never forget.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">✓</div>
+        <div>
+          <div class="threat-content-title">Best Practice</div>
+          <div class="threat-content-desc">Keep a small amount (say, 1-5% of holdings) on the base wallet — the one without passphrase. This is your "duress wallet." If coerced to reveal your seed, hand it over. Your real stack remains hidden.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 -->
+  <div class="section">
+    <div class="chapter">Chapter 06</div>
+    <h2>Hardware Wallets — The Gold Standard</h2>
+
+    <p>A hardware wallet is a small dedicated device — purpose-built to generate and store your private keys in a secure, isolated environment. It never connects to the internet. It signs transactions internally and only transmits the signed transaction — never the key itself. Even if your computer is fully infected with malware, your Bitcoin is safe because the key never leaves the device.</p>
+
+    <p>When you sign a transaction on a hardware wallet, the process looks like this: your computer prepares the unsigned transaction, sends it to the device, the device displays the details on its own screen (address, amount), you verify them with your own eyes and confirm with a physical button, the device signs internally, and returns the signed transaction to your computer. The private key never touched the internet at any point.</p>
+
+    <div class="device-grid">
+      <div class="device-card">
+        <div class="device-card-name">Coldcard</div>
+        <div class="device-card-tagline">MK4 / Q — Bitcoin Only</div>
+        <div class="device-card-desc">The choice of advanced Bitcoiners. Bitcoin-only firmware. Air-gap capable via MicroSD card. Duress PIN. Brick PIN. Open source. Manufactured in Canada.</div>
+        <div class="device-badge">Advanced</div>
+      </div>
+      <div class="device-card">
+        <div class="device-card-name">Trezor</div>
+        <div class="device-card-tagline">Model T / Safe 5</div>
+        <div class="device-card-desc">Pioneer of hardware wallets, founded 2014. Open source hardware and firmware. Touchscreen. Color display. Good choice for beginners and intermediate users.</div>
+        <div class="device-badge">Beginner Friendly</div>
+      </div>
+      <div class="device-card">
+        <div class="device-card-name">Ledger</div>
+        <div class="device-card-tagline">Nano X / Flex</div>
+        <div class="device-card-desc">Most popular hardware wallet globally. Bluetooth connectivity. Wide coin support. Note: 2020 data breach exposed customer emails. Firmware is closed-source.</div>
+      </div>
+      <div class="device-card">
+        <div class="device-card-name">Jade</div>
+        <div class="device-card-tagline">Blockstream Jade Plus</div>
+        <div class="device-card-desc">Open source. Air-gap capable. Low cost. Camera for QR code signing. Made by Blockstream — one of the most respected Bitcoin infrastructure companies. Excellent value.</div>
+        <div class="device-badge">Best Value</div>
+      </div>
+    </div>
+
+    <div class="mono-fact">
+      Buy your hardware wallet only from the manufacturer's official website. Never from third parties on Amazon or eBay. A tampered device is the most sophisticated attack vector in Bitcoin theft.
+    </div>
+  </div>
+
+  <!-- CHAPTER 7 -->
+  <div class="section">
+    <div class="chapter">Chapter 07</div>
+    <h2>Multisig — The Vault</h2>
+
+    <p>A standard single-signature wallet requires one private key to spend funds. Multisig — short for multi-signature — requires multiple keys. A 2-of-3 multisig, for example, creates a wallet that requires any 2 signatures out of 3 possible keys. You might keep one key at home, one in a bank vault, and one with a trusted family member. Any two of the three can move the Bitcoin. None of them alone can steal it.</p>
+
+    <div class="multisig-visual">
+      <div class="multisig-title">// 2-of-3 Multisig — Spend requires any 2 of 3 keys</div>
+      <div class="multisig-keys">
+        <div class="ms-key active">
+          <div class="ms-key-icon">🔑</div>
+          <div>Key 1</div>
+          <div>Home</div>
+        </div>
+        <div class="ms-key active">
+          <div class="ms-key-icon">🔑</div>
+          <div>Key 2</div>
+          <div>Vault</div>
+        </div>
+        <div class="ms-key">
+          <div class="ms-key-icon">🔑</div>
+          <div>Key 3</div>
+          <div>Family</div>
+        </div>
+      </div>
+      <div class="multisig-arrow">Key 1 + Key 2 = ✓ Transaction Authorized</div>
+      <div class="multisig-result">Bitcoin Released — No Trust Required</div>
+    </div>
+
+    <p>Multisig eliminates the single point of failure that haunts single-signature wallets. Lose one key? You still have two. One location burns down? You still have keys elsewhere. One device is compromised? The thief still can't move your coins without a second signature.</p>
+
+    <p>Popular multisig setups include 2-of-3 for individuals (resilience without complexity), 3-of-5 for high net worth individuals and families, and 2-of-3 or 3-of-5 for company treasuries with geographically distributed key holders.</p>
+
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Setup</th>
+            <th>Can Lose</th>
+            <th>Need to Spend</th>
+            <th>Best For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1-of-1 (Standard)</td>
+            <td class="td-cross">0 keys</td>
+            <td>1 key</td>
+            <td>Everyday use, small amounts</td>
+          </tr>
+          <tr>
+            <td>2-of-3 Multisig</td>
+            <td class="td-check">1 key</td>
+            <td>Any 2 keys</td>
+            <td>Personal long-term storage</td>
+          </tr>
+          <tr>
+            <td>3-of-5 Multisig</td>
+            <td class="td-check">2 keys</td>
+            <td>Any 3 keys</td>
+            <td>Large holdings, family vaults</td>
+          </tr>
+          <tr>
+            <td>2-of-2 Multisig</td>
+            <td class="td-cross">0 keys</td>
+            <td>Both keys</td>
+            <td>Two-person authorization (business)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Tools like Sparrow Wallet, Specter Desktop, and Unchained Capital make multisig accessible to individuals without a technical background. If you're serious about long-term self-custody, multisig is the destination.</p>
+  </div>
+
+  <!-- CHAPTER 8 -->
+  <div class="section">
+    <div class="chapter">Chapter 08</div>
+    <h2>Backup — The Vault Is Only as Strong as Its Copy</h2>
+
+    <p>A hardware wallet is not a backup. The hardware wallet can be lost, destroyed, stolen, or discontinued. Your backup is your seed phrase — and the security of your Bitcoin ultimately depends on how well you protect those words. Paper is a start. But paper burns, paper floods, paper fades.</p>
+
+    <p>The industry has converged on metal backups as the standard for serious self-custody. Several companies sell stainless steel plates or titanium capsules designed to hold seed words. Some use stamps, some use tiles, some use engraving. All of them survive fire (steel melts at 1,400°C, house fires peak around 600°C), water, corrosion, and physical damage that would destroy a paper backup in seconds.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <h4>Cryptosteel</h4>
+        <p>Stainless steel letter tiles that slide into a capsule. Fire resistant, waterproof. Can fit a 24-word seed in multiple configurations. Battle-tested product.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Blockplate</h4>
+        <p>Simple stainless steel plate with a punch tool. Letters are stamped permanently into steel. Minimalist, inexpensive, no special tools needed beyond the punch.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Billfodl</h4>
+        <p>Similar to Cryptosteel. Letter tiles in a stainless steel enclosure. Includes extra letters. Tamper evident seal. Widely used in the self-custody community.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>DIY</h4>
+        <p>A metal letter stamp set from a hardware store and a stainless steel sheet works just as well. The method matters less than the material — use metal, not paper.</p>
+      </div>
+    </div>
+
+    <div class="rules-box">
+      <div class="rules-box-title">The Non-Negotiable Rules of Backup</div>
+      <ul class="rules-list">
+        <li>Never store your seed phrase digitally — no photos, no notes apps, no cloud, no email, no password manager</li>
+        <li>Never type your seed phrase into any website, ever, for any reason — this is always a scam</li>
+        <li>Store your backup in at least two separate physical locations — your home and a second secure location</li>
+        <li>If using a passphrase, store it separately from your seed — they should never be in the same place</li>
+        <li>Test your backup before you put significant Bitcoin in the wallet — restore from seed, verify same addresses</li>
+        <li>Make sure someone you trust knows where the backups are in the event of your death</li>
+        <li>Never take a photo of your seed phrase — iCloud, Google Photos, and device backups are not secure</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CHAPTER 9 -->
+  <div class="section">
+    <div class="chapter">Chapter 09</div>
+    <h2>Threat Model — Know What You're Defending Against</h2>
+
+    <p>Good security is not about being paranoid — it is about being accurate. Different people face different threats, and your security setup should match your actual threat model, not someone else's. A person with $500 in Bitcoin needs a different approach than someone with generational wealth on-chain.</p>
+
+    <div class="threat-list">
+      <div class="threat-item">
+        <div class="threat-icon">🌐</div>
+        <div>
+          <div class="threat-content-title">Remote Hackers</div>
+          <div class="threat-content-desc">The most common threat for most people. Malware, phishing, fake wallet apps, clipboard hijacking (malware that replaces Bitcoin addresses you copy). Defense: hardware wallet. Never sign anything on an internet-connected device alone.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">🏠</div>
+        <div>
+          <div class="threat-content-title">Physical Theft</div>
+          <div class="threat-content-desc">Someone finds your hardware wallet, or your seed phrase backup. Defense: PIN on hardware wallet. Passphrase to hide real holdings. Metal backup in a secure location. Consider a small decoy wallet on the base seed.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">🔥</div>
+        <div>
+          <div class="threat-content-title">Disaster</div>
+          <div class="threat-content-desc">Fire, flood, or natural disaster destroys your home and everything in it. Defense: geographically distributed backups. Metal seed storage. If two locations are destroyed simultaneously, you have bigger problems than Bitcoin.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">⚙️</div>
+        <div>
+          <div class="threat-content-title">Hardware Failure</div>
+          <div class="threat-content-desc">The device breaks, is lost, or is discontinued. Defense: your seed phrase backup is all you need. A hardware wallet is just a key generator — it is replaceable. Your seed phrase is not.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">👤</div>
+        <div>
+          <div class="threat-content-title">You</div>
+          <div class="threat-content-desc">The most common cause of Bitcoin loss is user error. Forgetting a passphrase. Losing a backup. Sending to the wrong address. Defense: test everything, document everything, store backups in multiple locations, and act slowly and deliberately.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-block">
+      <span class="stat-number">~20%</span>
+      <span class="stat-label">Estimated percentage of all Bitcoin that is permanently lost — forgotten keys, dead owners, early miners who discarded drives. These coins are gone forever. This is why your backup is everything.</span>
+    </div>
+  </div>
+
+  <!-- CHAPTER 10 -->
+  <div class="section">
+    <div class="chapter">Chapter 10</div>
+    <h2>Your Sovereign Stack — The Action Plan</h2>
+
+    <p>Theory without action is just knowledge on a shelf. Here is a practical sequence for moving from exchange custody to true self-sovereignty. This is not a checklist — it is a journey. Take each step deliberately, test before you trust, and never rush when moving irreversible money.</p>
+
+    <div class="threat-list">
+      <div class="threat-item">
+        <div class="threat-icon">1</div>
+        <div>
+          <div class="threat-content-title">Choose a Hardware Wallet</div>
+          <div class="threat-content-desc">For most people: Trezor (beginner) or Jade (value). For advanced users: Coldcard. Buy direct from the manufacturer only. Never buy used or from third-party sellers.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">2</div>
+        <div>
+          <div class="threat-content-title">Initialize and Write Down Your Seed</div>
+          <div class="threat-content-desc">Set up the device. Write your 24 words clearly on paper first, then stamp them into metal. Verify every word. Then verify the backup by checking wallet addresses match.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">3</div>
+        <div>
+          <div class="threat-content-title">Test Before You Trust</div>
+          <div class="threat-content-desc">Send a small test amount — $20 worth. Confirm it arrives. Then restore from seed phrase on the same or a new device and confirm the same address appears. Now you know your backup works.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">4</div>
+        <div>
+          <div class="threat-content-title">Set Up a Passphrase (Optional but Recommended)</div>
+          <div class="threat-content-desc">Choose a strong, memorable passphrase. Write it separately from your seed. Store the passphrase in a different location. Put a small decoy amount on the base wallet.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">5</div>
+        <div>
+          <div class="threat-content-title">Distribute Your Backups</div>
+          <div class="threat-content-desc">Put one metal backup at home. Put a second in a fireproof safe deposit box, or a trusted family member's home. Store passphrase separately. Two locations minimum.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">6</div>
+        <div>
+          <div class="threat-content-title">Withdraw from Exchanges</div>
+          <div class="threat-content-desc">Move your Bitcoin to your hardware wallet. Verify the receiving address on the device screen before sending. Start with a small amount. Then move the rest. Leave nothing on the exchange.</div>
+        </div>
+      </div>
+      <div class="threat-item">
+        <div class="threat-icon">7</div>
+        <div>
+          <div class="threat-content-title">Plan for Inheritance</div>
+          <div class="threat-content-desc">Your Bitcoin must survive you. Leave sealed instructions for trusted heirs — what software to use, what hardware wallet, where the seed backups are, and how to access them. Bitcoin without a plan is Bitcoin lost.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</article>
+
+<!-- FINALE -->
+<div class="finale">
+  <div class="finale-label">₿ The Final Question</div>
+  <h2>WHO <span>HOLDS</span> YOUR KEYS?</h2>
+  <p class="finale-body">If your answer is an exchange, a bank, or "I'm not sure" — your Bitcoin is not really yours. Self-custody is not paranoia. It is the entire point.</p>
+
+  <div class="finale-links">
+    <a href="Network.html" class="finale-link">The Network →</a>
+    <a href="Blockchain.html" class="finale-link">The Blockchain →</a>
+    <a href="PowerLaw.html" class="finale-link">Power Law Chart →</a>
+    <a href="index.html" class="finale-link">← All Tools</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-wrap">
+  <footer>
+    <div>
+      <div class="footer-logo">SATOLOGY</div>
+      <div class="footer-copy">© 2026 · Not Financial Advice · Stack Sats</div>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="Network.html">The Network</a>
+      <a href="Blockchain.html">The Blockchain</a>
+      <a href="bitcoin-halving.html">Halving</a>
+      <a href="btc-step-01.html">21-Part Course</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+// BTC Price
+async function fetchPrice() {
+  try {
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    const d = await r.json();
+    const p = d.bitcoin.usd;
+    document.getElementById('btcPriceNav').textContent = '$' + p.toLocaleString('en-US', {maximumFractionDigits: 0});
+  } catch(e) {}
+}
+fetchPrice();
+setInterval(fetchPrice, 60000);
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
