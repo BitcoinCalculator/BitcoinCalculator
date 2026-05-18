@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>The 21 Million Clock — Bitcoin's Finite Supply, Live | SATOLOGY</title>
+<meta name="description" content="Only 21 million Bitcoin will ever exist. Watch the supply tick up, the halving countdown, and the estimated date of the last satoshi — live.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=DM+Serif+Display:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #040302; color-scheme: dark; }
+
+body {
+  background: #040302;
+  color: #E8DEC8;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 999; opacity: 0.6;
+}
+
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 200;
+  height: 60px; padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(4,3,2,0.97); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(240,165,0,0.08);
+}
+.nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+.nav-logo-symbol { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: #F0A500; }
+.nav-logo-name { font-size: 0.9rem; letter-spacing: 0.22em; color: #E8DEC8; text-transform: uppercase; }
+.nav-right { display: flex; align-items: center; gap: 1.5rem; }
+.nav-back { font-size: 0.9rem; letter-spacing: 0.15em; color: #C0AD90; text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+.nav-back:hover { color: #F0A500; }
+.nav-price { display: flex; align-items: center; gap: 0.45rem; background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.2); border-radius: 100px; padding: 5px 12px; font-size: 0.9rem; font-weight: 600; color: #F0A500; }
+.nav-dot { width: 6px; height: 6px; background: #4CAF50; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* HERO CLOCK SECTION */
+.clock-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 2rem 4rem;
+  background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(240,165,0,0.06) 0%, transparent 70%);
+  text-align: center;
+  position: relative;
+  border-bottom: 1px solid rgba(240,165,0,0.1);
+}
+
+.clock-label {
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.3s forwards;
+}
+
+/* SUPPLY NUMBER */
+.supply-display {
+  opacity: 0;
+  animation: fadeUp 1s 0.5s forwards;
+}
+
+.supply-top-label {
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.supply-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 12vw, 9rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: #F0A500;
+  text-shadow: 0 0 80px rgba(240,165,0,0.3);
+  transition: color 0.1s;
+}
+
+.supply-number.tick { color: #FFD000; }
+
+.supply-unit {
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* PROGRESS BAR */
+.supply-progress {
+  width: 100%;
+  max-width: 700px;
+  margin: 3rem auto 0;
+  opacity: 0;
+  animation: fadeUp 1s 0.9s forwards;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+}
+
+.progress-track {
+  height: 8px;
+  background: rgba(240,165,0,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #C47F00, #F0A500);
+  border-radius: 4px;
+  transition: width 2s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: #FFD700;
+  box-shadow: 0 0 8px #FFD700;
+}
+
+.progress-pct {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  color: #F0A500;
+  margin-top: 0.8rem;
+  text-align: right;
+}
+
+/* STATS GRID */
+.stats-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 2rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: #0A0805;
+  border: 1px solid rgba(240,165,0,0.12);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgba(240,165,0,0.3), transparent);
+}
+
+.stat-card-icon {
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.stat-card-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: #F0A500;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+  transition: color 0.2s;
+}
+
+.stat-card-label {
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* HALVING COUNTDOWN */
+.halving-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+.halving-card {
+  background: #0A0805;
+  border: 1px solid rgba(240,165,0,0.2);
+  border-top: 3px solid #F0A500;
+  padding: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: center;
+}
+
+.halving-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.06em;
+  color: #FAF5EB;
+  margin-bottom: 0.4rem;
+}
+
+.halving-sub {
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.halving-body {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 0.95rem;
+  color: #C0AD90;
+  line-height: 1.7;
+}
+
+.halving-countdown-box {
+  text-align: center;
+  min-width: 180px;
+}
+
+.halving-clock-label {
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.halving-clock-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  color: #F0A500;
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(240,165,0,0.3);
+}
+
+.halving-clock-unit {
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-top: 0.3rem;
+}
+
+/* SUPPLY SCHEDULE */
+.schedule-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+.section-title {
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: rgba(240,165,0,0.12); }
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.schedule-table th {
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: #C47F00;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  background: #0A0805;
+  border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+.schedule-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(240,165,0,0.06);
+  color: #C0AD90;
+  font-size: 0.9rem;
+}
+
+.schedule-table tr:hover td { background: rgba(240,165,0,0.03); }
+.schedule-table td:first-child { color: #FAF5EB; }
+.schedule-table tr.current td { background: rgba(240,165,0,0.06); border-color: rgba(240,165,0,0.12); }
+.schedule-table tr.current td:first-child { color: #F0A500; }
+.td-done  { color: #4CAF50; }
+.td-cur   { color: #F0A500; }
+.td-fut   { color: #888; }
+
+/* LAST SATOSHI */
+.last-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+.last-card {
+  background: #0A0805;
+  border: 1px solid rgba(240,165,0,0.15);
+  padding: 3rem 2.5rem;
+  text-align: center;
+}
+
+.last-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: 0.04em;
+  color: #FAF5EB;
+  margin-bottom: 0.5rem;
+}
+
+.last-date {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  color: #F0A500;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.last-body {
+  font-family: 'Libre Baskerville', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #C0AD90;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* FINALE */
+.finale {
+  background: #030302;
+  border-top: 1px solid rgba(240,165,0,0.1);
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.finale-label {
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.finale h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #FAF5EB;
+  max-width: 700px;
+  margin: 0 auto 1.5rem;
+}
+.finale h2 span { color: #F0A500; }
+
+.finale-sub {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #C0AD90;
+  max-width: 520px;
+  margin: 0 auto 2.5rem;
+}
+
+.finale-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.finale-link {
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C0AD90;
+  text-decoration: none;
+  border: 1px solid rgba(240,165,0,0.2);
+  padding: 0.8rem 1.4rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+.finale-link:hover { color: #F0A500; border-color: rgba(240,165,0,0.5); }
+
+.footer-wrap { background: #030302; border-top: 1px solid rgba(240,165,0,0.06); }
+footer { max-width: 900px; margin: 0 auto; padding: 2.5rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: #F0A500; }
+.footer-copy { font-size: 0.9rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.4rem; }
+.footer-links { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+.footer-links a { font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase; color: #C0AD90; text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: #F0A500; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+@media(max-width:640px) {
+  .stats-section { grid-template-columns: 1fr 1fr; }
+  .halving-card { grid-template-columns: 1fr; }
+  .halving-countdown-box { border-top: 1px solid rgba(240,165,0,0.1); padding-top: 1.5rem; }
+  nav { padding: 0 1rem; }
+  .nav-back { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-symbol">₿</span>
+    <span class="nav-logo-name">SATOLOGY</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Home</a>
+    <div class="nav-price">
+      <span class="nav-dot"></span>
+      <span id="btcPriceNav">$--</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO CLOCK -->
+<section class="clock-hero">
+  <div class="clock-label">₿ The Scarcest Asset in Human History</div>
+
+  <div class="supply-display">
+    <div class="supply-top-label">Bitcoin Mined So Far</div>
+    <div class="supply-number" id="supplyMined">20,028,821</div>
+    <div class="supply-unit">of 21,000,000 BTC</div>
+  </div>
+
+  <div class="supply-progress">
+    <div class="progress-labels">
+      <span>0 BTC — Genesis (Jan 3, 2009)</span>
+      <span>21M BTC — Final (≈ 2140)</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-pct" id="progressPct">--</div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stat-card">
+    <span class="stat-card-icon">₿</span>
+    <div class="stat-card-val" id="statMined">--</div>
+    <div class="stat-card-label">BTC Mined<br>to Date</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-card-icon">🔒</span>
+    <div class="stat-card-val" id="statRemaining">--</div>
+    <div class="stat-card-label">BTC Still<br>to Be Mined</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-card-icon">💀</span>
+    <div class="stat-card-val" id="statLost">~3.7M</div>
+    <div class="stat-card-label">BTC Estimated<br>Lost Forever</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-card-icon">⚡</span>
+    <div class="stat-card-val" id="statReward">3.125</div>
+    <div class="stat-card-label">BTC Block<br>Reward Today</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-card-icon">🧱</span>
+    <div class="stat-card-val" id="statBlockHeight">--</div>
+    <div class="stat-card-label">Current<br>Block Height</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-card-icon">💰</span>
+    <div class="stat-card-val" id="statMarketCap">--</div>
+    <div class="stat-card-label">Market Cap<br>(Live)</div>
+  </div>
+</div>
+
+<!-- HALVING COUNTDOWN -->
+<div class="halving-section">
+  <div class="section-title">// Next Halving</div>
+  <div class="halving-card">
+    <div>
+      <div class="halving-title">The 2028 Halving</div>
+      <div class="halving-sub">Block ~1,050,000 · Estimated April 2028</div>
+      <div class="halving-body">
+        Every 210,000 blocks (~4 years), Bitcoin's block reward cuts in half. The 2024 halving dropped the reward from 6.25 to 3.125 BTC. The 2028 halving will drop it to 1.5625 BTC. This is not optional, not subject to vote, and cannot be changed. It is written in the code and enforced by every node on earth.
+      </div>
+    </div>
+    <div class="halving-countdown-box">
+      <div class="halving-clock-label">Blocks Until<br>Next Halving</div>
+      <div class="halving-clock-val" id="halvingBlocks">--</div>
+      <div class="halving-clock-unit">Blocks Remaining</div>
+      <br>
+      <div class="halving-clock-label">Estimated Date</div>
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:1.6rem; color:#E8DEC8; margin-top:0.3rem;" id="halvingDate">April 2028</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPLY SCHEDULE -->
+<div class="schedule-section">
+  <div class="section-title">// Halving Schedule — The Full Picture</div>
+  <table class="schedule-table">
+    <thead>
+      <tr>
+        <th>Halving #</th>
+        <th>Year</th>
+        <th>Block Height</th>
+        <th>Reward (BTC)</th>
+        <th>BTC Issued This Era</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Genesis</td>
+        <td>2009</td>
+        <td>0</td>
+        <td>50.000</td>
+        <td>10,500,000</td>
+        <td class="td-done">✓ Complete</td>
+      </tr>
+      <tr>
+        <td>Halving 1</td>
+        <td>2012</td>
+        <td>210,000</td>
+        <td>25.000</td>
+        <td>5,250,000</td>
+        <td class="td-done">✓ Complete</td>
+      </tr>
+      <tr>
+        <td>Halving 2</td>
+        <td>2016</td>
+        <td>420,000</td>
+        <td>12.500</td>
+        <td>2,625,000</td>
+        <td class="td-done">✓ Complete</td>
+      </tr>
+      <tr>
+        <td>Halving 3</td>
+        <td>2020</td>
+        <td>630,000</td>
+        <td>6.250</td>
+        <td>1,312,500</td>
+        <td class="td-done">✓ Complete</td>
+      </tr>
+      <tr class="current">
+        <td>Halving 4 ◀</td>
+        <td>2024</td>
+        <td>840,000</td>
+        <td>3.125</td>
+        <td>656,250</td>
+        <td class="td-cur">⚡ Current Era</td>
+      </tr>
+      <tr>
+        <td>Halving 5</td>
+        <td>~2028</td>
+        <td>1,050,000</td>
+        <td>1.5625</td>
+        <td>328,125</td>
+        <td class="td-fut">↗ Upcoming</td>
+      </tr>
+      <tr>
+        <td>Halving 6</td>
+        <td>~2032</td>
+        <td>1,260,000</td>
+        <td>0.7813</td>
+        <td>164,063</td>
+        <td class="td-fut">↗ Future</td>
+      </tr>
+      <tr>
+        <td>Halving 10</td>
+        <td>~2048</td>
+        <td>2,100,000</td>
+        <td>0.0488</td>
+        <td>10,254</td>
+        <td class="td-fut">—</td>
+      </tr>
+      <tr>
+        <td>Last Block</td>
+        <td>~2140</td>
+        <td>~6,930,000</td>
+        <td>0 sat</td>
+        <td>0</td>
+        <td class="td-fut">— Final</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- LAST SATOSHI -->
+<div class="last-section">
+  <div class="section-title">// The Final Frontier</div>
+  <div class="last-card">
+    <div class="last-title">The Last Bitcoin Will Be Mined</div>
+    <div class="last-date">Around the Year 2140</div>
+    <div class="last-body">
+      Block subsidy halves every 210,000 blocks. After 33 halvings — around block 6,930,000 — the block reward drops below 1 satoshi and rounds to zero. The final satoshi will be mined somewhere around the year 2140. Long after everyone alive today is gone. The 21 million limit isn't a policy. It's physics.
+    </div>
+  </div>
+</div>
+
+<!-- FINALE -->
+<div class="finale">
+  <div class="finale-label">₿ The Mathematics of Scarcity</div>
+  <h2>THERE WILL <span>NEVER</span> BE MORE</h2>
+  <p class="finale-sub">No chairman. No government. No inflation. The 21 million limit is enforced by thousands of nodes around the world, right now, every ten minutes.</p>
+  <div class="finale-links">
+    <a href="bitcoin-halving.html" class="finale-link">The Halving →</a>
+    <a href="Network.html" class="finale-link">The Network →</a>
+    <a href="PowerLaw.html" class="finale-link">Power Law Chart →</a>
+    <a href="index.html" class="finale-link">← All Tools</a>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div>
+      <div class="footer-logo">SATOLOGY</div>
+      <div class="footer-copy">© 2026 · Data updated in real time · Not Financial Advice</div>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="bitcoin-halving.html">Halving</a>
+      <a href="ColdStorage.html">Cold Storage</a>
+      <a href="MiningGame.html">Mining Game</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ─── CONSTANTS ─────────────────────────────────────────────────────────────
+const AVG_BLOCK_TIME_SECS = 600;
+const SATOSHI_PER_BTC     = 1e8;
+const NEXT_HALVING_BLOCK  = 1_050_000; // 5th halving (block ~1,050,000)
+const HALVING_BLOCKS      = 210_000;
+
+// Known verified anchor: block 840,000 was the 4th halving,
+// mined on April 20, 2024 at 00:09:27 UTC.
+// Using this anchor avoids the historical over-count that comes from
+// dividing raw seconds since genesis by 600 (Bitcoin averaged ~574 s/block
+// over its first 15 years due to rising hashrate outpacing difficulty).
+const ANCHOR_BLOCK = 840_000;
+const ANCHOR_DATE  = new Date('2024-04-20T00:09:27Z');
+
+// Fallback: estimate block height from the anchor if live API is unavailable
+function estimateBlockHeightFallback() {
+  const secondsSinceAnchor = (Date.now() - ANCHOR_DATE.getTime()) / 1000;
+  return ANCHOR_BLOCK + Math.floor(secondsSinceAnchor / AVG_BLOCK_TIME_SECS);
+}
+
+// ─── LIVE BLOCK HEIGHT via mempool.space ──────────────────────────────────
+// mempool.space returns the current tip height as a plain integer.
+let liveBlockHeight = null;
+
+async function fetchBlockHeight() {
+  try {
+    const r = await fetch('https://mempool.space/api/blocks/tip/height');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const h = await r.json();
+    if (typeof h === 'number' && h > 800_000) {
+      liveBlockHeight = h;
+    }
+  } catch(e) {
+    // Silently fall back to anchor estimate
+  }
+}
+
+function getBlockHeight() {
+  return liveBlockHeight !== null ? liveBlockHeight : estimateBlockHeightFallback();
+}
+
+// ─── SUPPLY MATH ──────────────────────────────────────────────────────────
+// Exact BTC issued at a given block height using the halving schedule.
+// This matches Bitcoin Core's own calculation.
+function btcMinedAt(height) {
+  let mined     = 0;
+  let reward    = 50;        // sats per block in era 0 (in BTC)
+  let remaining = height;
+  while (remaining > 0 && reward >= 1 / SATOSHI_PER_BTC) {
+    const blocksThisEra = Math.min(HALVING_BLOCKS, remaining);
+    mined    += blocksThisEra * reward;
+    remaining -= blocksThisEra;
+    reward   /= 2;
+  }
+  return Math.min(mined, 21_000_000);
+}
+
+// ─── FORMAT HELPERS ───────────────────────────────────────────────────────
+function fmtBTC(n) {
+  // Show full precision up to 6 decimal places — important for remaining < 1M
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(4) + 'M';
+  if (n >= 1_000)     return n.toLocaleString('en-US', {maximumFractionDigits: 2});
+  return n.toFixed(4);
+}
+
+function fmtUSD(n) {
+  if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + 'T';
+  if (n >= 1e9)  return '$' + (n / 1e9).toFixed(1)  + 'B';
+  if (n >= 1e6)  return '$' + (n / 1e6).toFixed(1)  + 'M';
+  return '$' + Math.round(n).toLocaleString();
+}
+
+// ─── STATE ────────────────────────────────────────────────────────────────
+let btcPrice = null;
+let lastRenderedHeight = 0;
+
+// ─── DATA FETCHES ─────────────────────────────────────────────────────────
+async function fetchPrice() {
+  try {
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    const d = await r.json();
+    btcPrice = d.bitcoin.usd;
+    document.getElementById('btcPriceNav').textContent =
+      '$' + btcPrice.toLocaleString('en-US', {maximumFractionDigits: 0});
+  } catch(e) {}
+}
+
+// ─── MAIN RENDER TICK ─────────────────────────────────────────────────────
+function tick() {
+  const height    = getBlockHeight();
+  const mined     = btcMinedAt(height);
+  const remaining = 21_000_000 - mined;
+  const pct       = (mined / 21_000_000) * 100;
+
+  // Flash on new block
+  const el = document.getElementById('supplyMined');
+  if (height !== lastRenderedHeight && lastRenderedHeight !== 0) {
+    el.classList.add('tick');
+    setTimeout(() => el.classList.remove('tick'), 300);
+  }
+  lastRenderedHeight = height;
+
+  // Hero number — full precision comma-separated
+  el.textContent = mined.toLocaleString('en-US', {maximumFractionDigits: 8});
+
+  // Progress bar
+  document.getElementById('progressFill').style.width = pct.toFixed(6) + '%';
+  document.getElementById('progressPct').textContent  = pct.toFixed(4) + '% mined';
+
+  // Stat cards
+  document.getElementById('statMined').textContent =
+    (mined / 1_000_000).toFixed(4) + 'M BTC';
+  document.getElementById('statRemaining').textContent =
+    remaining.toLocaleString('en-US', {maximumFractionDigits: 0}) + ' BTC';
+  document.getElementById('statBlockHeight').textContent =
+    '#' + height.toLocaleString();
+
+  // Market cap (requires price)
+  if (btcPrice) {
+    document.getElementById('statMarketCap').textContent = fmtUSD(btcPrice * mined);
+  }
+
+  // Halving countdown
+  const halvingRemaining = NEXT_HALVING_BLOCK - height;
+  document.getElementById('halvingBlocks').textContent =
+    halvingRemaining > 0 ? halvingRemaining.toLocaleString() : 'PAST';
+
+  if (halvingRemaining > 0) {
+    const msRemaining = halvingRemaining * AVG_BLOCK_TIME_SECS * 1000;
+    const halvingDate = new Date(Date.now() + msRemaining);
+    document.getElementById('halvingDate').textContent =
+      halvingDate.toLocaleDateString('en-US', {year: 'numeric', month: 'long'});
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+// Fetch live block height and price in parallel, then render immediately
+Promise.all([fetchBlockHeight(), fetchPrice()]).then(() => {
+  tick();
+});
+
+// Refresh block height every 2 minutes (new block ~every 10 min)
+setInterval(async () => {
+  await fetchBlockHeight();
+  tick();
+}, 120_000);
+
+// Refresh price every 60 seconds
+setInterval(async () => {
+  await fetchPrice();
+  tick();
+}, 60_000);
+
+// Re-render every 30 seconds even without new data (keeps relative time fresh)
+setInterval(tick, 30_000);
+</script>
+</body>
+</html>
