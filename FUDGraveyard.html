@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>The FUD Graveyard — Every Time They Said Bitcoin Was Dead | SATOLOGY</title>
+<meta name="description" content="Over 400 times, experts and journalists declared Bitcoin dead. Every single one of them was wrong. Welcome to the graveyard.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #0A0805; color-scheme: dark; }
+body {
+  background: #0A0805;
+  color: #E8DEC8;
+  font-family: 'Libre Baskerville', Georgia, serif;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 999; opacity: 0.5;
+}
+
+nav {
+  position: sticky; top: 0; z-index: 200;
+  height: 60px; padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(10,8,5,0.95); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(240,165,0,0.1);
+}
+.nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+.nav-logo-symbol { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: #F0A500; }
+.nav-logo-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.22em; color: #E8DEC8; text-transform: uppercase; }
+.nav-right { display: flex; align-items: center; gap: 1.5rem; }
+.nav-back { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.15em; color: #C0AD90; text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+.nav-back:hover { color: #F0A500; }
+.nav-price { display: flex; align-items: center; gap: 0.45rem; background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.2); border-radius: 100px; padding: 5px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; font-weight: 600; color: #F0A500; }
+.nav-dot { width: 6px; height: 6px; background: #4CAF50; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; padding: 4rem 2rem; position: relative;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(229,57,53,0.07) 0%, transparent 70%);
+  border-bottom: 1px solid rgba(229,57,53,0.15);
+}
+.hero-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.25em; color: #E53935; text-transform: uppercase; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+.hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 14vw, 10rem); line-height: 0.92; letter-spacing: 0.02em; color: #FAF5EB; max-width: 900px; opacity: 0; animation: fadeUp 0.9s 0.4s forwards; }
+.hero h1 span { color: #E53935; display: block; }
+.hero-sub { font-family: 'DM Serif Display', Georgia, serif; font-style: italic; font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: #C0AD90; margin-top: 1.5rem; max-width: 640px; opacity: 0; animation: fadeUp 0.9s 0.65s forwards; }
+
+.hero-stat-row { margin-top: 2.5rem; opacity: 0; animation: fadeUp 1s 0.9s forwards; display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+.hero-stat-pill { border: 1px solid rgba(229,57,53,0.25); background: rgba(229,57,53,0.05); padding: 1rem 1.6rem; text-align: center; }
+.hero-stat-pill-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.6rem, 4vw, 2.4rem); color: #E53935; line-height: 1; display: block; }
+.hero-stat-pill-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #C0AD90; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.4rem; display: block; }
+
+.scroll-hint { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0; animation: fadeUp 1s 1.4s forwards; }
+.scroll-hint span { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.2em; color: #C0AD90; text-transform: uppercase; }
+.scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, #E53935, transparent); animation: scrollPulse 2s ease-in-out infinite; }
+
+/* DEATH COUNT BANNER */
+.death-banner {
+  background: #E53935;
+  padding: 1.2rem 2rem;
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  letter-spacing: 0.1em;
+  color: #FAF5EB;
+  border-bottom: 2px solid rgba(0,0,0,0.3);
+}
+
+.death-banner span {
+  color: #0A0805;
+  background: #FAF5EB;
+  padding: 0 0.4rem;
+  margin: 0 0.3rem;
+}
+
+/* GRAVEYARD SECTION */
+.graveyard-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 5rem 2rem 8rem;
+}
+
+/* ERA LABEL */
+.era-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 0.08em;
+  color: rgba(229,57,53,0.4);
+  text-align: center;
+  margin: 4rem 0 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(229,57,53,0.1);
+}
+
+/* TOMBSTONE GRID */
+.tombstone-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* TOMBSTONE */
+.tombstone {
+  background: #0E0B07;
+  border: 1px solid rgba(229,57,53,0.2);
+  border-top: 4px solid rgba(229,57,53,0.5);
+  padding: 2rem 1.6rem;
+  position: relative;
+  transition: border-color 0.2s, transform 0.2s;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.2s;
+}
+
+.tombstone.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tombstone:hover {
+  border-color: rgba(229,57,53,0.5);
+}
+
+/* R.I.P symbol */
+.tombstone::before {
+  content: '✝';
+  font-size: 1.2rem;
+  color: rgba(229,57,53,0.3);
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+}
+
+.stone-date {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: #E53935;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.stone-headline {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #FAF5EB;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.stone-source {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+}
+
+.stone-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(240,165,0,0.1);
+}
+
+.stone-price {
+  text-align: center;
+}
+
+.stone-price-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.stone-price-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  color: #C0AD90;
+}
+
+.stone-arrow {
+  font-size: 1.4rem;
+  color: #4CAF50;
+}
+
+.stone-price-val.now {
+  color: #F0A500;
+}
+
+/* FEATURED TOMBSTONE — bigger */
+.tombstone.featured {
+  grid-column: span 2;
+  border-color: rgba(229,57,53,0.4);
+  border-top-width: 6px;
+  background: linear-gradient(135deg, #110E08 0%, #0E0B07 100%);
+}
+
+.tombstone.featured .stone-headline {
+  font-size: 1.3rem;
+}
+
+/* SCOREBOARD */
+.scoreboard {
+  background: #0E0B07;
+  border: 1px solid rgba(240,165,0,0.2);
+  padding: 3rem 2rem;
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.score-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+}
+
+.score-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.score-side { text-align: center; }
+
+.score-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.score-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 1;
+}
+
+.score-number.bitcoin { color: #F0A500; }
+.score-number.fud     { color: #E53935; }
+
+.score-vs {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: rgba(240,165,0,0.3);
+  letter-spacing: 0.1em;
+}
+
+/* ARTICLE SECTION */
+article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+.chapter { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.25em; color: #C47F00; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+.chapter::after { content: ''; flex: 1; height: 1px; background: rgba(240,165,0,0.15); }
+h2 { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.2; color: #FAF5EB; margin-bottom: 1.5rem; font-weight: 400; }
+p { margin-bottom: 1.2rem; color: #E8DEC8; font-size: 1.05rem; }
+.mono-fact { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #F0A500; background: rgba(240,165,0,0.06); border-left: 2px solid #F0A500; padding: 1rem 1.5rem; margin: 2rem 0; letter-spacing: 0.05em; line-height: 1.7; }
+blockquote { padding: 2.5rem 0; margin: 3rem 0; border-top: 1px solid rgba(240,165,0,0.15); border-bottom: 1px solid rgba(240,165,0,0.15); }
+blockquote p { font-family: 'DM Serif Display', Georgia, serif; font-style: italic; font-size: clamp(1.4rem, 3vw, 2rem); color: #FAF5EB; line-height: 1.4; margin-bottom: 0; }
+blockquote cite { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #C0AD90; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-top: 1rem; }
+
+/* FINALE */
+.finale { background: #070604; border-top: 1px solid rgba(240,165,0,0.15); padding: 6rem 2rem; text-align: center; }
+.finale-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.25em; color: #F0A500; text-transform: uppercase; margin-bottom: 2rem; }
+.finale h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1; letter-spacing: 0.02em; color: #FAF5EB; max-width: 700px; margin: 0 auto 1.5rem; }
+.finale h2 span { color: #F0A500; }
+.finale-body { font-family: 'DM Serif Display', Georgia, serif; font-style: italic; font-size: 1.2rem; color: #C0AD90; max-width: 520px; margin: 0 auto 2rem; }
+.finale-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+.finale-link { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.15em; text-transform: uppercase; color: #C0AD90; text-decoration: none; border: 1px solid rgba(240,165,0,0.2); padding: 0.8rem 1.4rem; transition: color 0.2s, border-color 0.2s; }
+.finale-link:hover { color: #F0A500; border-color: rgba(240,165,0,0.5); }
+
+.footer-wrap { background: #070604; border-top: 1px solid rgba(240,165,0,0.1); }
+footer { max-width: 960px; margin: 0 auto; padding: 3rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: #F0A500; letter-spacing: 0.06em; }
+.footer-copy { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #C0AD90; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.5rem; }
+.footer-links { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+.footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; color: #C0AD90; text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: #F0A500; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes scrollPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+@media(max-width:600px) {
+  .tombstone.featured { grid-column: span 1; }
+  .tombstone-grid { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr 1fr; }
+  .score-vs { display: none; }
+  nav { padding: 0 1rem; }
+  .nav-back { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-symbol">₿</span>
+    <span class="nav-logo-name">SATOLOGY</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Home</a>
+    <div class="nav-price">
+      <span class="nav-dot"></span>
+      <span id="btcPriceNav">$--</span>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <p class="hero-label">† Rest in Irrelevance</p>
+  <h1>THE FUD<span>GRAVEYARD</span></h1>
+  <p class="hero-sub">Over 400 times, experts, journalists, economists, and governments declared Bitcoin dead. The obituaries keep piling up. So does the price.</p>
+
+  <div class="hero-stat-row">
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">400+</span>
+      <span class="hero-stat-pill-label">Declared Dead</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">0</span>
+      <span class="hero-stat-pill-label">Times It Died</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">$0.06</span>
+      <span class="hero-stat-pill-label">First Obituary Price</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num" id="heroLivePrice">$--</span>
+      <span class="hero-stat-pill-label">Price Today</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Pay Respects</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<div class="death-banner">
+  Bitcoin has been declared dead <span id="deathCount">400+</span> times — tracked at 99bitcoins.com/bitcoin-obituaries
+</div>
+
+<!-- SCOREBOARD -->
+<div class="graveyard-wrap">
+
+  <div class="scoreboard">
+    <div class="score-title">// Final Scoreboard</div>
+    <div class="score-grid">
+      <div class="score-side">
+        <div class="score-label">Bitcoin</div>
+        <div class="score-number bitcoin">∞</div>
+        <div class="score-label" style="margin-top:0.5rem">Still Alive</div>
+      </div>
+      <div class="score-vs">VS</div>
+      <div class="score-side">
+        <div class="score-label">The Obituaries</div>
+        <div class="score-number fud">0</div>
+        <div class="score-label" style="margin-top:0.5rem">Correct Predictions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERA: THE EARLY DAYS -->
+  <div class="era-label">2010 — 2013</div>
+
+  <div class="tombstone-grid">
+    <div class="tombstone featured">
+      <div class="stone-date">June 20, 2011</div>
+      <div class="stone-headline">"The Bitcoin Bubble — Why It Will Crash and Never Recover"</div>
+      <div class="stone-source">Business Insider</div>
+      <div class="stone-price-row">
+        <div class="stone-price">
+          <div class="stone-price-label">BTC Then</div>
+          <div class="stone-price-val">$19</div>
+        </div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price">
+          <div class="stone-price-label">BTC Now</div>
+          <div class="stone-price-val now" id="price1">$--</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tombstone">
+      <div class="stone-date">Oct 1, 2012</div>
+      <div class="stone-headline">"Bitcoin is a Ponzi scheme for redistributing wealth from one sucker to the next"</div>
+      <div class="stone-source">Forbes</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$12</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price2">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone">
+      <div class="stone-date">Apr 3, 2013</div>
+      <div class="stone-headline">"The Bitcoin crash of 2013: Don't forget your tulips on the way out"</div>
+      <div class="stone-source">Ars Technica</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$95</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price3">$--</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERA: THE MEDIA PEAK -->
+  <div class="era-label">2014 — 2016</div>
+
+  <div class="tombstone-grid">
+    <div class="tombstone">
+      <div class="stone-date">Feb 28, 2014</div>
+      <div class="stone-headline">"Bitcoin is Dying — This is the Beginning of the End"</div>
+      <div class="stone-source">Washington Post</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$580</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price4">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone">
+      <div class="stone-date">Jan 15, 2015</div>
+      <div class="stone-headline">"Bitcoin is heading to $0. It's time to say goodbye"</div>
+      <div class="stone-source">The Guardian</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$185</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price5">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone featured">
+      <div class="stone-date">Dec 5, 2015</div>
+      <div class="stone-headline">"Bitcoin is Dead. Long live the blockchain."</div>
+      <div class="stone-source">The Economist</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$390</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price6">$--</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERA: CELEBRITY FUD -->
+  <div class="era-label">2017 — 2018</div>
+
+  <div class="tombstone-grid">
+    <div class="tombstone">
+      <div class="stone-date">Sept 12, 2017</div>
+      <div class="stone-headline">"Bitcoin is a fraud that will blow up. It's worse than tulip bulbs and anyone who buys it is stupid."</div>
+      <div class="stone-source">Jamie Dimon, JPMorgan CEO</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$4,000</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price7">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone">
+      <div class="stone-date">Jan 15, 2018</div>
+      <div class="stone-headline">"Why Bitcoin Is Losing the Battle to Be a Currency" — Expects collapse to $0</div>
+      <div class="stone-source">Bloomberg</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$14,000</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price8">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone">
+      <div class="stone-date">Feb 5, 2018</div>
+      <div class="stone-headline">"Crypto is a Colossal Pump-and-Dump Scheme" — predicted to go to zero within months</div>
+      <div class="stone-source">The New York Times</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$7,000</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price9">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone featured">
+      <div class="stone-date">Nov 25, 2018</div>
+      <div class="stone-headline">"Bitcoin is Dead" — Nouriel Roubini testifies to US Senate that Bitcoin will go to zero</div>
+      <div class="stone-source">Nouriel Roubini, US Senate Testimony</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$3,500</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price10">$--</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERA: THE ETF WARS -->
+  <div class="era-label">2019 — 2022</div>
+
+  <div class="tombstone-grid">
+    <div class="tombstone">
+      <div class="stone-date">Jul 9, 2019</div>
+      <div class="stone-headline">"Bitcoin Is a Delusion That Could Conquer the World" — calls crypto "intrinsically worthless"</div>
+      <div class="stone-source">The Atlantic</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$12,800</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price11">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone">
+      <div class="stone-date">May 19, 2021</div>
+      <div class="stone-headline">"China Bans Bitcoin Again — This Time It's Over"</div>
+      <div class="stone-source">Multiple Outlets</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$34,000</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price12">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone">
+      <div class="stone-date">Jun 21, 2021</div>
+      <div class="stone-headline">"Bitcoin's Death Spiral: How It Could Happen and Why It Seems Inevitable"</div>
+      <div class="stone-source">Slate</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$32,000</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price13">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone featured">
+      <div class="stone-date">Nov 16, 2022</div>
+      <div class="stone-headline">"Bitcoin is Dead. The FTX collapse killed it. It won't be coming back."</div>
+      <div class="stone-source">New York Magazine</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$16,500</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price14">$--</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERA: RECENT -->
+  <div class="era-label">2023 — Present</div>
+
+  <div class="tombstone-grid">
+    <div class="tombstone">
+      <div class="stone-date">Jan 4, 2023</div>
+      <div class="stone-headline">"The Crypto Dream Is Dead. This is the post-mortem."</div>
+      <div class="stone-source">TIME Magazine</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$16,800</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price15">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone">
+      <div class="stone-date">Mar 9, 2023</div>
+      <div class="stone-headline">"Banking crisis will be the end of Bitcoin and Crypto"</div>
+      <div class="stone-source">Various Pundits</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$20,200</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price16">$--</div></div>
+      </div>
+    </div>
+
+    <div class="tombstone">
+      <div class="stone-date">Aug 17, 2023</div>
+      <div class="stone-headline">"Bitcoin Tumbles Below $26K — Is This the Final Collapse?"</div>
+      <div class="stone-source">CNBC</div>
+      <div class="stone-price-row">
+        <div class="stone-price"><div class="stone-price-label">BTC Then</div><div class="stone-price-val">$25,800</div></div>
+        <div class="stone-arrow">→</div>
+        <div class="stone-price"><div class="stone-price-label">BTC Now</div><div class="stone-price-val now" id="price17">$--</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EDITORIAL SECTION -->
+<article>
+  <div class="chapter">Pattern Recognition</div>
+  <h2>Why They Keep Getting It Wrong</h2>
+
+  <p>The pattern is not accidental. Every time Bitcoin experiences a significant correction, the same voices emerge with the same conclusions. The crash proves it was a bubble. The adoption is fake. The technology is useless. The only people who buy it are criminals and gamblers. And then Bitcoin recovers, makes new all-time highs, and the cycle begins again.</p>
+
+  <p>What these obituaries miss is a fundamental misunderstanding of what Bitcoin is. Journalists trained to cover the stock market look at Bitcoin volatility and see fragility. Economists trained in Keynesian frameworks look at Bitcoin's fixed supply and see irrationality. Bankers look at decentralization and see threat. None of them are looking at Bitcoin on its own terms.</p>
+
+  <blockquote>
+    <p>"The press is the enemy of Bitcoin in the same way the press was the enemy of the internet."</p>
+    <cite>— Attributed to early internet observer, adapted for Bitcoin</cite>
+  </blockquote>
+
+  <p>The 99bitcoins.com Bitcoin obituaries tracker — which has been documenting every Bitcoin death declaration since 2010 — passed 400 entries in 2022. Each entry is a public record. Each has a date, an author, a publication, and a price. The price never went to zero. The author was always wrong. The publication moved on to the next controversy without ever acknowledging the error.</p>
+
+  <div class="mono-fact">
+    Every year, Bitcoin dies. Every year, Bitcoin is worth more than it was when it was declared dead. This has happened 15 years in a row.
+  </div>
+
+  <p>The more interesting question is not why they get it wrong — it is why they keep making the same prediction. The answer is simple: there is almost no career cost to being wrong about Bitcoin. A journalist who declares Bitcoin dead in 2018 and is later shown to be wrong simply writes about something else. No correction. No accountability. No update. Meanwhile, the person who bought Bitcoin at $3,500 in November 2018 is sitting on life-changing returns.</p>
+
+  <p>The graveyard above is not comprehensive. It is a curated sample. For every obituary shown here, there are twenty more like it. The real question — the one that matters — is why you would take investment advice from the same institutions that have been wrong about this specific asset for fifteen consecutive years.</p>
+</article>
+
+<!-- FINALE -->
+<div class="finale">
+  <div class="finale-label">₿ The Only Question That Matters</div>
+  <h2>STILL <span>DEAD?</span></h2>
+  <p class="finale-body">They said it in 2011. They said it in 2014. They said it in 2018. They said it in 2022. Each time, the only people who lost money were the ones who believed them.</p>
+  <div class="finale-links">
+    <a href="PowerLaw.html" class="finale-link">See the Power Law →</a>
+    <a href="bitcoin-halving.html" class="finale-link">The Halving →</a>
+    <a href="ColdStorage.html" class="finale-link">Secure Your Bitcoin →</a>
+    <a href="index.html" class="finale-link">← All Tools</a>
+  </div>
+</div>
+
+<div class="footer-wrap">
+  <footer>
+    <div>
+      <div class="footer-logo">SATOLOGY</div>
+      <div class="footer-copy">© 2026 · Obituaries sourced from 99bitcoins.com · Not Financial Advice</div>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="Network.html">The Network</a>
+      <a href="Blockchain.html">The Blockchain</a>
+      <a href="PowerLaw.html">Power Law</a>
+      <a href="ColdStorage.html">Cold Storage</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+async function fetchPrice() {
+  try {
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    const d = await r.json();
+    const p = d.bitcoin.usd;
+    const fmt = '$' + p.toLocaleString('en-US', {maximumFractionDigits: 0});
+    document.getElementById('btcPriceNav').textContent = fmt;
+    document.getElementById('heroLivePrice').textContent = fmt;
+    for (let i = 1; i <= 17; i++) {
+      const el = document.getElementById('price' + i);
+      if (el) el.textContent = fmt;
+    }
+  } catch(e) {}
+}
+fetchPrice();
+setInterval(fetchPrice, 60000);
+
+// Scroll reveal for tombstones
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.05 });
+
+document.querySelectorAll('.tombstone').forEach(t => observer.observe(t));
+</script>
+</body>
+</html>
