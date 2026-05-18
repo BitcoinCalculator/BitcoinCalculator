@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 1: What Is Money? | SATOLOGY</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;
+  --text:#e8e8e8;--muted:#555;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;
+  --prose:#c8c8c8;--quote-bg:#0d0d10;
+}
+[data-theme="light"]{
+  --bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;
+  --text:#1a1a1a;--muted:#999;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;
+  --prose:#3a3a3a;--quote-bg:#f0ede6;
+}
+:root{--btc:#F7931A;--btc2:#e07b10;--green:#22c55e;--purple:#8b5cf6;--red:#e63946;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── SCROLL PROGRESS ── */
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--btc),#ff6b00);width:0%}
+
+/* ── TICKER ── */
+.ticker{background:var(--btc);padding:9px 0;overflow:hidden;white-space:nowrap;z-index:201;position:relative}
+.ticker-inner{display:inline-flex;gap:64px;animation:tick 34s linear infinite;font-size:12px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .35s,border-color .35s}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;font-size:14px;font-weight:800;color:var(--btc)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0;transition:all .3s}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;transition:opacity .3s}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+/* ── STEP BREADCRUMB NAV ── */
+.step-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:52px;transition:background .35s}
+.step-nav-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.step-nav-left a{color:var(--muted);text-decoration:none;transition:color .2s}
+.step-nav-left a:hover{color:var(--btc)}
+.step-nav-sep{opacity:.4}
+.step-nav-current{color:var(--text);font-weight:600}
+.step-nav-right{display:flex;align-items:center;gap:8px}
+.step-pill{background:var(--btc);color:#fff;border-radius:100px;padding:4px 14px;font-size:11px;font-weight:800;letter-spacing:.5px}
+.step-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spm-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.spm-fill{height:100%;background:var(--btc);border-radius:2px;width:4.76%}
+
+/* ── HERO ── */
+.step-hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;position:relative}
+.step-hero::before{content:'';position:absolute;top:0;right:0;width:400px;height:400px;background:radial-gradient(circle,rgba(247,147,26,.08),transparent 70%);pointer-events:none}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.step-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;animation:fadeUp .6s ease both}
+.step-number{width:52px;height:52px;background:var(--green);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;flex-shrink:0}
+.step-meta{display:flex;flex-direction:column;gap:3px}
+.step-meta-top{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--green);font-weight:700}
+.step-meta-bottom{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.step-meta-bottom span{display:flex;align-items:center;gap:4px}
+
+.step-hero h1{font-size:clamp(36px,6vw,72px);font-weight:900;letter-spacing:-3px;line-height:1.02;margin-bottom:20px;animation:fadeUp .6s .08s ease both}
+.step-hero h1 em{color:var(--btc);font-style:normal}
+
+.step-hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.75;max-width:680px;margin-bottom:36px;animation:fadeUp .6s .14s ease both;font-family:'Lora',serif;font-style:italic}
+
+/* Key lesson pill */
+.key-lesson{display:inline-flex;align-items:flex-start;gap:10px;background:rgba(247,147,26,.07);border:1px solid rgba(247,147,26,.2);border-radius:14px;padding:14px 20px;font-size:14px;color:var(--text);line-height:1.6;margin-bottom:48px;animation:fadeUp .6s .18s ease both;max-width:680px}
+.key-lesson-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.key-lesson strong{color:var(--btc)}
+
+/* ── READING PROGRESS ── */
+.reading-progress{position:fixed;right:24px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:100}
+.rp-track{width:3px;height:160px;background:var(--border);border-radius:2px;overflow:hidden}
+.rp-fill{width:100%;background:var(--btc);border-radius:2px;height:0%;transition:height .2s}
+.rp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;writing-mode:vertical-rl;transform:rotate(180deg);margin-top:4px}
+
+/* ── ARTICLE BODY ── */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 48px 80px}
+
+/* Chapter sections */
+.chapter{margin-bottom:72px}
+.chapter-label{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.chapter-num{width:40px;height:40px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:var(--btc);flex-shrink:0}
+.chapter-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+
+/* Prose */
+.prose{font-family:'Lora',serif;font-size:clamp(16px,1.8vw,19px);line-height:1.9;color:var(--prose);transition:color .35s}
+.prose p{margin-bottom:24px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:700;font-family:'Inter',sans-serif;font-size:.9em}
+.prose em{color:var(--btc);font-style:italic}
+
+/* Pull quotes */
+.pull-quote{border-left:4px solid var(--btc);margin:40px 0;padding:24px 28px;background:var(--quote-bg);border-radius:0 14px 14px 0;transition:background .35s}
+.pull-quote p{font-family:'Lora',serif;font-size:clamp(18px,2.5vw,24px);font-style:italic;color:var(--text);line-height:1.6;margin:0}
+.pull-quote cite{display:block;font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);font-style:normal;margin-top:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+
+/* Callout boxes */
+.callout{border-radius:16px;padding:28px 32px;margin:36px 0;border:1px solid}
+.callout-btc{background:rgba(247,147,26,.06);border-color:rgba(247,147,26,.2)}
+.callout-green{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)}
+.callout-red{background:rgba(230,57,70,.06);border-color:rgba(230,57,70,.2)}
+.callout-purple{background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.2)}
+.callout-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.callout-btc .callout-title{color:var(--btc)}
+.callout-green .callout-title{color:var(--green)}
+.callout-red .callout-title{color:var(--red)}
+.callout-purple .callout-title{color:var(--purple)}
+.callout p{font-size:15px;color:var(--prose);line-height:1.8;margin:0;font-family:'Inter',sans-serif}
+
+/* Timeline — history of money */
+.timeline{margin:44px 0;position:relative}
+.timeline::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--green),var(--btc),var(--purple));border-radius:1px}
+.tl-item{display:flex;gap:24px;margin-bottom:32px;position:relative}
+.tl-dot{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;z-index:1;border:2px solid var(--border);background:var(--card);transition:background .35s,border-color .35s}
+.tl-content{flex:1;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;transition:all .3s}
+.tl-content:hover{border-color:var(--btc)}
+.tl-era{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--btc);margin-bottom:5px}
+.tl-title{font-size:16px;font-weight:800;margin-bottom:6px;letter-spacing:-.2px}
+.tl-desc{font-size:13px;color:var(--muted);line-height:1.7}
+.tl-verdict{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px}
+.tv-bad{background:rgba(230,57,70,.1);color:var(--red)}
+.tv-ok{background:rgba(247,147,26,.1);color:var(--btc)}
+.tv-good{background:rgba(34,197,94,.1);color:var(--green)}
+
+/* Properties grid */
+.properties-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0}
+.prop-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;transition:all .3s;position:relative;overflow:hidden}
+.prop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.prop-card.has{border-color:rgba(34,197,94,.2)}
+.prop-card.has::before{background:var(--green)}
+.prop-card.no{border-color:rgba(230,57,70,.15);opacity:.7}
+.prop-card.no::before{background:var(--red)}
+.prop-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.1)}
+.prop-icon{font-size:24px;margin-bottom:10px}
+.prop-name{font-size:14px;font-weight:800;margin-bottom:5px}
+.prop-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.prop-badge{display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px}
+.pb-has{background:rgba(34,197,94,.1);color:var(--green)}
+.pb-no{background:rgba(230,57,70,.1);color:var(--red)}
+
+/* Comparison table */
+.comp-table{width:100%;border-radius:16px;overflow:hidden;border:1px solid var(--border);margin:36px 0}
+.comp-table table{width:100%;border-collapse:collapse}
+.comp-table th{padding:14px 20px;font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:800;background:var(--bg2);color:var(--muted);text-align:left;border-bottom:1px solid var(--border)}
+.comp-table th.btc-col{color:var(--btc)}
+.comp-table td{padding:16px 20px;font-size:14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--prose);font-family:'Inter',sans-serif}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table tr:hover td{background:rgba(247,147,26,.03)}
+.comp-table .row-label{font-weight:700;color:var(--text)}
+.comp-table .bad{color:var(--red)}
+.comp-table .ok{color:var(--btc)}
+.comp-table .good{color:var(--green)}
+.comp-icon{font-size:15px;margin-right:4px}
+
+/* Insight boxes */
+.insight{display:flex;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin:36px 0;align-items:flex-start;transition:all .3s}
+.insight:hover{border-color:var(--btc)}
+.insight-icon{font-size:28px;flex-shrink:0}
+.insight-body h4{font-size:15px;font-weight:800;margin-bottom:7px;letter-spacing:-.2px}
+.insight-body p{font-size:13px;color:var(--muted);line-height:1.75;margin:0}
+
+/* The big stat */
+.big-stat{text-align:center;padding:52px 24px;position:relative;overflow:hidden}
+.big-stat::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(247,147,26,.06),transparent 70%);pointer-events:none}
+.bs-num{font-size:clamp(60px,12vw,120px);font-weight:900;letter-spacing:-5px;line-height:1;background:linear-gradient(135deg,var(--btc),#ff9500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.bs-label{font-size:clamp(16px,2.5vw,24px);font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:-.5px}
+.bs-sub{font-size:14px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.75}
+
+/* Key takeaway — end of article */
+.key-takeaway{background:linear-gradient(135deg,rgba(247,147,26,.1),rgba(247,147,26,.04));border:1px solid rgba(247,147,26,.25);border-radius:20px;padding:40px;margin:48px 0 0}
+.kt-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--btc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kt-text{font-size:clamp(17px,2.5vw,22px);font-weight:800;line-height:1.5;letter-spacing:-.3px;margin-bottom:20px}
+.kt-text em{color:var(--btc);font-style:normal}
+.kt-points{display:flex;flex-direction:column;gap:10px}
+.kt-point{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--prose);line-height:1.6}
+.kt-point-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── STEP NAVIGATION ── */
+.step-nav-bottom{max-width:780px;margin:0 auto 40px;padding:0 48px}
+.snb-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snb-prev,.snb-next{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 24px;text-decoration:none;color:var(--text);transition:all .3s}
+.snb-prev:hover,.snb-next:hover{border-color:var(--btc);transform:translateY(-3px);box-shadow:0 12px 32px rgba(247,147,26,.12)}
+.snb-next{flex-direction:row-reverse;text-align:right}
+.snb-icon{font-size:28px;flex-shrink:0}
+.snb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700;margin-bottom:3px}
+.snb-title{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.snb-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* 21 steps mini map */
+.steps-minimap{max-width:780px;margin:0 auto 80px;padding:0 48px}
+.sm-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px}
+.sm-title{font-size:14px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.sm-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sm-step{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;text-decoration:none;transition:all .2s;border:1px solid var(--border);color:var(--muted);background:var(--bg2)}
+.sm-step:hover{border-color:var(--btc);color:var(--btc);transform:translateY(-2px)}
+.sm-step.current{background:var(--green);border-color:var(--green);color:#fff}
+.sm-step.phase-2{background:rgba(247,147,26,.08);border-color:rgba(247,147,26,.2)}
+.sm-step.phase-3{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)}
+.sm-step.phase-4{background:rgba(255,107,0,.08);border-color:rgba(255,107,0,.2)}
+.sm-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.sm-leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sm-leg-dot{width:10px;height:10px;border-radius:3px}
+
+/* ── FOOTER ── */
+.footer-wrap{border-top:1px solid var(--border)}
+footer{padding:40px 48px;display:flex;justify-content:space-between;align-items:center;max-width:1280px;margin:0 auto;flex-wrap:wrap;gap:20px}
+.foot-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{text-decoration:none;color:var(--muted);font-size:12px;font-weight:500;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{font-size:11px;color:var(--muted)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  nav,.step-nav{padding:0 18px}
+  .step-hero,.article-wrap,.step-nav-bottom,.steps-minimap{padding-left:20px;padding-right:20px}
+  .properties-grid{grid-template-columns:1fr}
+  .snb-inner{grid-template-columns:1fr}
+  .snb-next{flex-direction:row;text-align:left}
+  .reading-progress{display:none}
+  footer{padding:28px 20px;flex-direction:column;text-align:center}
+  .comp-table{overflow-x:auto}
+}
+@media(max-width:540px){
+  .step-hero h1{letter-spacing:-1.5px}
+  .sm-step{width:30px;height:30px;font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>₿ STEP 1 OF 21</span><span>·</span>
+    <span>💰 WHAT IS MONEY?</span><span>·</span>
+    <span>🌅 YOU ARE STILL EARLY</span><span>·</span>
+    <span>📖 KNOWLEDGE IS THE BEST INVESTMENT</span><span>·</span>
+    <span>🔐 YOUR KEYS, YOUR COINS, YOUR FUTURE</span><span>·</span>
+    <span>21,000,000 — FIXED FOREVER</span><span>·</span>
+    <span>₿ STEP 1 OF 21</span><span>·</span>
+    <span>💰 WHAT IS MONEY?</span><span>·</span>
+    <span>🌅 YOU ARE STILL EARLY</span><span>·</span>
+    <span>📖 KNOWLEDGE IS THE BEST INVESTMENT</span><span>·</span>
+    <span>🔐 YOUR KEYS, YOUR COINS, YOUR FUTURE</span><span>·</span>
+    <span>21,000,000 — FIXED FOREVER</span><span>·</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">Understanding Bitcoin</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price"><span class="nav-dot"></span><span id="btcPriceNav">$--</span></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<!-- STEP BREADCRUMB -->
+<div class="step-nav">
+  <div class="step-nav-left">
+    <a href="index.html">Home</a>
+    <span class="step-nav-sep">›</span>
+    <a href="why-bitcoin.html">Why Bitcoin?</a>
+    <span class="step-nav-sep">›</span>
+    <span class="step-nav-current">Step 1 — What Is Money?</span>
+  </div>
+  <div class="step-nav-right">
+    <div class="step-progress-mini">
+      <div class="spm-bar"><div class="spm-fill"></div></div>
+      <span>1 / 21</span>
+    </div>
+    <div class="step-pill">Step 1</div>
+  </div>
+</div>
+
+<!-- READING PROGRESS SIDEBAR -->
+<div class="reading-progress">
+  <div class="rp-label">Reading</div>
+  <div class="rp-track"><div class="rp-fill" id="rpFill"></div></div>
+</div>
+
+<!-- ══════════════════════════
+     HERO
+══════════════════════════ -->
+<div class="step-hero">
+  <div class="step-eyebrow">
+    <div class="step-number">1</div>
+    <div class="step-meta">
+      <div class="step-meta-top">🟢 Foundation · Phase 1 of 4</div>
+      <div class="step-meta-bottom">
+        <span>⏱ 5 min read</span>
+        <span>·</span>
+        <span>🎯 Beginner</span>
+        <span>·</span>
+        <span>📖 No prior knowledge needed</span>
+      </div>
+    </div>
+  </div>
+
+  <h1>What Is<br><em>Money?</em></h1>
+
+  <p class="step-hero-sub">Before you can understand why Bitcoin matters, you need to ask a question almost no one ever asks — what is money, really? Not what it looks like. Not what it's made of. What it <em>is.</em></p>
+
+  <div class="key-lesson">
+    <span class="key-lesson-icon">💡</span>
+    <span><strong>What you'll understand by the end of this step:</strong> What money actually is at its core, why every form of money in history has eventually failed, and the five properties that make money truly good — setting the stage for why Bitcoin is different from everything that came before.</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     ARTICLE BODY
+══════════════════════════ -->
+<div class="article-wrap">
+
+  <!-- CHAPTER 1 -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">①</div>
+      <div class="chapter-title">The Question Nobody Asks</div>
+    </div>
+
+    <div class="prose">
+      <p>You've used money your entire life. You've earned it, spent it, saved it, worried about not having enough of it. And yet — if someone asked you right now to define what money <em>actually is</em> — you'd probably struggle.</p>
+      <p>That's not your fault. Money is so woven into daily life that we never stop to examine it. It's like asking a fish to describe water.</p>
+      <p>But here's why this question matters more than almost any other: <strong>if you don't understand what money is, you can't understand when it's failing you.</strong> And right now — quietly, invisibly, every single day — the money most people use is failing them.</p>
+    </div>
+
+    <div class="pull-quote">
+      <p>"Money is a social technology. It's the operating system of civilization. And like any technology, it can be upgraded — or it can become obsolete."</p>
+      <cite>SATOLOGY — Understanding Bitcoin</cite>
+    </div>
+
+    <div class="prose">
+      <p>So let's start at the very beginning. Not with Bitcoin. Not with banks. Not with charts or prices. Let's start with the oldest question in economics: <em>what is money?</em></p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">②</div>
+      <div class="chapter-title">A Brief, Remarkable History</div>
+    </div>
+
+    <div class="prose">
+      <p>Money didn't appear all at once. It evolved — slowly, messily, over thousands of years — as humans solved the same fundamental problem over and over: <strong>how do we trade things with each other without carrying everything we own everywhere we go?</strong></p>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-dot">🐚</div>
+        <div class="tl-content">
+          <div class="tl-era">~3000 BC — Ancient World</div>
+          <div class="tl-title">Shells, Beads & Livestock</div>
+          <div class="tl-desc">Early humans used whatever was scarce and desirable in their community. Cowrie shells, glass beads, cattle. These worked fine — until someone found a better shell, or the herd died. Value collapsed.</div>
+          <div class="tl-verdict tv-bad">✗ Failed — supply unpredictable</div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-dot">🥇</div>
+        <div class="tl-content">
+          <div class="tl-era">~700 BC — Ancient Civilizations</div>
+          <div class="tl-title">Gold & Silver Coins</div>
+          <div class="tl-desc">Gold became the dominant money for over 2,500 years — and for good reason. It's rare, durable, divisible, and nobody can manufacture more of it. Empires rose and fell, but gold held its value.</div>
+          <div class="tl-verdict tv-ok">~ Worked well — but heavy, slow, and impractical</div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-dot">📜</div>
+        <div class="tl-content">
+          <div class="tl-era">~1000 AD — Tang Dynasty China</div>
+          <div class="tl-title">Paper Money (IOUs for Gold)</div>
+          <div class="tl-desc">Paper was introduced as a receipt — "this note is redeemable for X amount of gold." Genius. Convenient. Portable. But it required trust in whoever issued it. And that trust got abused. Every time.</div>
+          <div class="tl-verdict tv-ok">~ Convenient — but trust required</div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-dot">🏦</div>
+        <div class="tl-content">
+          <div class="tl-era">1971 — Nixon Shock</div>
+          <div class="tl-title">Pure Fiat Money — No Gold Backing</div>
+          <div class="tl-desc">In 1971, President Nixon ended the US dollar's link to gold. For the first time in history, the world's reserve currency was backed by nothing but trust in government. Since then, every major currency on Earth has lost the vast majority of its purchasing power.</div>
+          <div class="tl-verdict tv-bad">✗ Failing now — unlimited supply, infinite printing</div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-dot">₿</div>
+        <div class="tl-content">
+          <div class="tl-era">2009 — Satoshi Nakamoto</div>
+          <div class="tl-title">Bitcoin — Digital Scarcity for the First Time</div>
+          <div class="tl-desc">For the first time in history, a form of money was created with an absolutely fixed, mathematically-enforced supply. No government. No trust required. No inflation possible. The first genuinely scarce digital asset ever created.</div>
+          <div class="tl-verdict tv-good">✓ Still running — 15+ years, never hacked, never stopped</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Notice the pattern? Every time humanity found a better form of money, the old one was eventually abandoned. Not because people chose to — but because the new form simply had <em>better properties.</em></p>
+      <p>Which brings us to the most important question of this entire step.</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">③</div>
+      <div class="chapter-title">The Five Properties of Good Money</div>
+    </div>
+
+    <div class="prose">
+      <p>What makes something good money? Economists have studied this for centuries and landed on five core properties. Every form of money in history has been judged by these criteria. The ones that had them thrived. The ones that didn't, failed.</p>
+      <p>Here are the five — and next to each one, ask yourself: does the dollar you use every day actually have this property?</p>
+    </div>
+
+    <div class="properties-grid">
+      <div class="prop-card has reveal">
+        <div class="prop-icon">💎</div>
+        <div class="prop-name">Scarcity</div>
+        <div class="prop-desc">Good money must be hard to produce more of. If anyone can make more whenever they want, it loses value. Gold is scarce. Bitcoin is absolutely scarce — 21 million, forever.</div>
+        <div class="prop-badge pb-has">✓ Bitcoin Has This</div>
+      </div>
+      <div class="prop-card has reveal">
+        <div class="prop-icon">⚡</div>
+        <div class="prop-name">Portability</div>
+        <div class="prop-desc">Good money must be easy to carry and transfer. Gold fails here — it's heavy and slow. The dollar is digital. Bitcoin can be sent anywhere on Earth in minutes, with no intermediary.</div>
+        <div class="prop-badge pb-has">✓ Bitcoin Has This</div>
+      </div>
+      <div class="prop-card has reveal">
+        <div class="prop-icon">🔪</div>
+        <div class="prop-name">Divisibility</div>
+        <div class="prop-desc">Good money must be breakable into smaller units for everyday transactions. One Bitcoin divides into 100 million satoshis — you can transact in tiny fractions with perfect precision.</div>
+        <div class="prop-badge pb-has">✓ Bitcoin Has This</div>
+      </div>
+      <div class="prop-card has reveal">
+        <div class="prop-icon">🔍</div>
+        <div class="prop-name">Verifiability</div>
+        <div class="prop-desc">Good money must be easy to authenticate. Ancient coins were shaved. Dollar bills are counterfeited. Every Bitcoin transaction is verified instantly by thousands of independent computers worldwide.</div>
+        <div class="prop-badge pb-has">✓ Bitcoin Has This</div>
+      </div>
+      <div class="prop-card has reveal" style="grid-column: 1 / -1">
+        <div class="prop-icon">🏔️</div>
+        <div class="prop-name">Durability</div>
+        <div class="prop-desc">Good money must last. Paper rots. Shells break. Gold corrodes slowly. Bitcoin is digital — it doesn't decay, rust, or degrade. A Bitcoin from 2009 is identical to one minted today. And it will be identical in 100 years.</div>
+        <div class="prop-badge pb-has">✓ Bitcoin Has This — Perfectly</div>
+      </div>
+    </div>
+
+    <div class="callout callout-red reveal">
+      <div class="callout-title">⚠️ But Wait — What About the Dollar?</div>
+      <p>The US dollar fails the most important test: scarcity. The Federal Reserve can — and does — create trillions of new dollars at will. Between 2020 and 2022 alone, the US printed more money than in its entire prior history combined. Every dollar printed makes yours worth a little less. That's not a bug in the system. It's a feature — for governments, not for you.</p>
+    </div>
+  </div>
+
+  <!-- BIG STAT -->
+  <div class="big-stat reveal">
+    <div class="bs-num">97%</div>
+    <div class="bs-label">Of the US Dollar's value has been lost since 1913</div>
+    <div class="bs-sub">What cost $1 in 1913 costs $30+ today. The dollar didn't become worth less by accident — it was designed to. The people who understood this got out early.</div>
+  </div>
+
+  <!-- CHAPTER 4 -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">④</div>
+      <div class="chapter-title">Money as a Store of Time</div>
+    </div>
+
+    <div class="prose">
+      <p>Here's a way of thinking about money that most people have never considered — but once you hear it, you can never unhear it.</p>
+      <p><strong>Money is stored human energy.</strong> It's a representation of the time, effort, and skills you exchanged for it. When you earn money, you're converting your most irreplaceable asset — your time — into a token you can exchange later.</p>
+      <p>Which means that when your money loses value to inflation, <em>you're not just losing dollars.</em> You're losing hours of your life that you can never get back.</p>
+    </div>
+
+    <div class="insight reveal">
+      <div class="insight-icon">⏰</div>
+      <div class="insight-body">
+        <h4>The Hidden Tax on Your Time</h4>
+        <p>If inflation runs at 7% per year (as it did in 2022), and your savings earn 0.5% in a bank account — you're losing 6.5% of your purchasing power every year. Over 10 years, $100,000 in savings becomes worth just $51,000 in real terms. You didn't spend it. You didn't lose it. It was silently extracted from you.</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>This is the most important realization in personal finance: <strong>where you store your wealth matters more than how much you earn.</strong> You can work harder, earn more, save more — and still fall behind if the vessel you're storing it in leaks.</p>
+      <p>For most of history, gold was the best vessel. For the last century, it's been stocks and real estate. And for the first time in human history, something exists that may be better than all of them — because it combines gold's scarcity with the internet's portability, and adds mathematical certainty that no human authority can ever change the rules.</p>
+    </div>
+
+    <div class="pull-quote">
+      <p>"Gold is a great store of value — until someone finds a bigger gold mine. The dollar is convenient — until the government prints too much. Bitcoin has a fixed supply. Not fixed like gold. Fixed like mathematics."</p>
+      <cite>SATOLOGY — Understanding Bitcoin</cite>
+    </div>
+  </div>
+
+  <!-- CHAPTER 5 -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑤</div>
+      <div class="chapter-title">How the Different Forms Stack Up</div>
+    </div>
+
+    <div class="prose">
+      <p>Let's put it all together. Here's how the major forms of money score on the five properties of good money — judged honestly, without hype.</p>
+    </div>
+
+    <div class="comp-table reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Cowrie Shells</th>
+            <th>Gold</th>
+            <th>US Dollar</th>
+            <th class="btc-col">₿ Bitcoin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">💎 Scarcity</td>
+            <td class="bad"><span class="comp-icon">✗</span>None</td>
+            <td class="ok"><span class="comp-icon">~</span>Relative</td>
+            <td class="bad"><span class="comp-icon">✗</span>Unlimited</td>
+            <td class="good"><span class="comp-icon">✓</span>Absolute — 21M</td>
+          </tr>
+          <tr>
+            <td class="row-label">⚡ Portability</td>
+            <td class="ok"><span class="comp-icon">~</span>Okay</td>
+            <td class="bad"><span class="comp-icon">✗</span>Heavy, slow</td>
+            <td class="good"><span class="comp-icon">✓</span>Digital</td>
+            <td class="good"><span class="comp-icon">✓</span>Global, instant</td>
+          </tr>
+          <tr>
+            <td class="row-label">🔪 Divisibility</td>
+            <td class="bad"><span class="comp-icon">✗</span>Poor</td>
+            <td class="ok"><span class="comp-icon">~</span>Limited</td>
+            <td class="good"><span class="comp-icon">✓</span>Cents</td>
+            <td class="good"><span class="comp-icon">✓</span>100M satoshis</td>
+          </tr>
+          <tr>
+            <td class="row-label">🔍 Verifiability</td>
+            <td class="ok"><span class="comp-icon">~</span>Visual</td>
+            <td class="ok"><span class="comp-icon">~</span>Assay needed</td>
+            <td class="ok"><span class="comp-icon">~</span>Counterfeit risk</td>
+            <td class="good"><span class="comp-icon">✓</span>Math-verified</td>
+          </tr>
+          <tr>
+            <td class="row-label">🏔️ Durability</td>
+            <td class="bad"><span class="comp-icon">✗</span>Breaks</td>
+            <td class="good"><span class="comp-icon">✓</span>Excellent</td>
+            <td class="ok"><span class="comp-icon">~</span>Paper degrades</td>
+            <td class="good"><span class="comp-icon">✓</span>Perfect — digital</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-green reveal">
+      <div class="callout-title">✓ What This Table Tells Us</div>
+      <p>Gold was the best form of money for 2,500 years because it had the best combination of these properties available. Bitcoin has the same properties as gold — but better in almost every dimension. It's more divisible, more portable, more verifiable, equally durable, and — crucially — <strong>absolutely scarce</strong> in a way gold never was and never can be. This is why many serious economists, investors, and institutions are calling Bitcoin "digital gold."</p>
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 — THE REALIZATION -->
+  <div class="chapter reveal">
+    <div class="chapter-label">
+      <div class="chapter-num">⑥</div>
+      <div class="chapter-title">The Realization</div>
+    </div>
+
+    <div class="prose">
+      <p>You've just learned something that took most of humanity thousands of years to figure out, and that the vast majority of people alive today still don't fully understand.</p>
+      <p>Money is not just coins and bills. It's not just a number in a bank app. <strong>It's the most powerful social technology ever invented</strong> — and like all technology, it evolves. The forms of money that have the best properties win. The ones that don't, fade away.</p>
+      <p>For the first time in human history, a form of money exists that has <em>all five properties</em> — and has one of them (scarcity) in an absolute, mathematical, tamper-proof way that has never existed before.</p>
+      <p>You don't have to believe that Bitcoin will succeed. But after this step, you can see <em>why it has a case</em> — a case built not on hype, not on speculation, but on the same criteria humans have always used to evaluate money.</p>
+      <p>That's Step 1. And it changes everything that comes after it.</p>
+    </div>
+
+    <div class="insight reveal">
+      <div class="insight-icon">🌅</div>
+      <div class="insight-body">
+        <h4>You're Thinking About Money Differently Now</h4>
+        <p>Most people will go their entire lives never questioning what money actually is. You just did. That single shift — from accepting money as a given to understanding it as a technology — is the foundation of everything else in this journey. Step 2 picks up exactly here: if the current system is failing, just how broken is it? The answer is more surprising than you think.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">🏆 Step 1 — Key Takeaways</div>
+    <div class="kt-text">Money is a technology. And like all technology, <em>it gets upgraded.</em></div>
+    <div class="kt-points">
+      <div class="kt-point"><span class="kt-point-icon">💰</span><span>Money is not dollars or gold — it's any system that allows humans to store and exchange value across time and space.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">📉</span><span>Every form of money in history has eventually failed or been replaced — usually because something with better properties came along.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">💎</span><span>Good money needs five properties: scarcity, portability, divisibility, verifiability, and durability.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">🏦</span><span>The US dollar fails the most critical test — scarcity — because it can be printed in unlimited quantities by governments.</span></div>
+      <div class="kt-point"><span class="kt-point-icon">₿</span><span>Bitcoin is the first asset in history with absolute scarcity — 21 million, enforced by mathematics, forever. This is genuinely new.</span></div>
+    </div>
+  </div>
+
+</div><!-- /article-wrap -->
+
+<!-- ══ STEP NAVIGATION ══ -->
+<div class="step-nav-bottom">
+  <div class="snb-inner">
+    <a href="why-bitcoin.html" class="snb-prev reveal">
+      <div class="snb-icon">🗺️</div>
+      <div>
+        <div class="snb-label">← Back to</div>
+        <div class="snb-title">Why Bitcoin? — The 21 Steps</div>
+        <div class="snb-desc">Return to the journey map</div>
+      </div>
+    </a>
+    <a href="btc-step-02.html" class="snb-next reveal">
+      <div class="snb-icon">📉</div>
+      <div>
+        <div class="snb-label">Next → Step 2</div>
+        <div class="snb-title">The Problem With Fiat Money</div>
+        <div class="snb-desc">Why inflation is not an accident</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ══ MINIMAP ══ -->
+<div class="steps-minimap">
+  <div class="sm-card reveal">
+    <div class="sm-title">🗺️ Your Journey — 21 Steps to Understanding Bitcoin</div>
+    <div class="sm-grid">
+      <a href="btc-step-01.html" class="sm-step current" title="Step 1 — What Is Money?">1</a>
+      <a href="btc-step-02.html" class="sm-step" title="Step 2 — The Problem With Fiat">2</a>
+      <a href="btc-step-03.html" class="sm-step" title="Step 3 — Who Is Satoshi?">3</a>
+      <a href="btc-step-04.html" class="sm-step" title="Step 4 — What Is Bitcoin?">4</a>
+      <a href="btc-step-05.html" class="sm-step" title="Step 5 — The Blockchain">5</a>
+      <a href="btc-step-06.html" class="sm-step" title="Step 6 — Why 21 Million?">6</a>
+      <a href="btc-step-07.html" class="sm-step phase-2" title="Step 7 — Wallets & Keys">7</a>
+      <a href="btc-step-08.html" class="sm-step phase-2" title="Step 8 — Not Your Keys">8</a>
+      <a href="btc-step-09.html" class="sm-step phase-2" title="Step 9 — Buying Bitcoin">9</a>
+      <a href="btc-step-10.html" class="sm-step phase-2" title="Step 10 — What Is DCA?">10</a>
+      <a href="btc-step-11.html" class="sm-step phase-2" title="Step 11 — Bitcoin vs Gold">11</a>
+      <a href="btc-step-12.html" class="sm-step phase-2" title="Step 12 — Bitcoin vs Real Estate">12</a>
+      <a href="btc-step-13.html" class="sm-step phase-3" title="Step 13 — The Halving">13</a>
+      <a href="btc-step-14.html" class="sm-step phase-3" title="Step 14 — Network Effect">14</a>
+      <a href="btc-step-15.html" class="sm-step phase-3" title="Step 15 — Lightning Network">15</a>
+      <a href="btc-step-16.html" class="sm-step phase-3" title="Step 16 — Is Bitcoin Legal?">16</a>
+      <a href="btc-step-17.html" class="sm-step phase-3" title="Step 17 — Bitcoin & Taxes">17</a>
+      <a href="btc-step-18.html" class="sm-step phase-3" title="Step 18 — Bitcoin for Retirement">18</a>
+      <a href="btc-step-19.html" class="sm-step phase-4" title="Step 19 — Bitcoin & Freedom">19</a>
+      <a href="btc-step-20.html" class="sm-step phase-4" title="Step 20 — Every Objection Answered">20</a>
+      <a href="btc-step-21.html" class="sm-step phase-4" title="Step 21 — Your Path Forward">21</a>
+    </div>
+    <div class="sm-legend">
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:var(--green)"></div>You are here</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(247,147,26,.4)"></div>Phase 2 — Ownership</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(139,92,246,.4)"></div>Phase 3 — Deep Dive</div>
+      <div class="sm-leg"><div class="sm-leg-dot" style="background:rgba(255,107,0,.4)"></div>Phase 4 — Big Picture</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-wrap">
+  <footer>
+    <div class="foot-logo">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px;background:var(--btc);display:grid;place-items:center;color:#fff">₿</div>
+      SATOLOGY
+    </div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="why-bitcoin.html">Why Bitcoin? — 21 Steps</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+      <a href="raise-with-bitcoin.html">DCA Calculator</a>
+      <a href="real-estate-vs-bitcoin.html">RE vs BTC</a>
+      <a href="Keychain.html">Keychain</a>
+    </div>
+    <div class="foot-copy">© 2026 SATOLOGY — Understanding Bitcoin</div>
+  </footer>
+</div>
+
+<script>
+// ── THEME ──
+const html = document.documentElement;
+html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n);
+  localStorage.setItem('satology-theme', n);
+});
+
+// ── LIVE BTC PRICE ──
+function updatePrice() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json())
+    .then(d => { document.getElementById('btcPriceNav').textContent = '$' + d.bitcoin.usd.toLocaleString(); })
+    .catch(() => {});
+}
+updatePrice();
+setInterval(updatePrice, 10000);
+
+// ── SCROLL PROGRESS + READING PROGRESS ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('scrollFill').style.width = pct + '%';
+  document.getElementById('rpFill').style.height = pct + '%';
+}, { passive: true });
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

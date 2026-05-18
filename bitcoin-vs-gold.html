@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>Bitcoin vs Gold — The Great Money Showdown | SATOLOGY</title>
+<meta name="description" content="The definitive comparison of Bitcoin and gold as stores of value. Scarcity, portability, verifiability, and the performance data that settles the debate.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background-color: #0A0805;
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0A0805;
+  color: #E8DEC8;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.5;
+}
+
+/* ── NAV ── */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 60px;
+  padding: 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10,8,5,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(240,165,0,0.1);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.nav-logo-icon {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.4rem;
+  color: #F0A500;
+  line-height: 1;
+}
+
+.nav-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.nav-logo-name {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: #FAF5EB;
+}
+
+.nav-logo-sub {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  color: #8A7D62;
+  text-transform: uppercase;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-back {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: #8A7D62;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.nav-back:hover { color: #F0A500; }
+
+.nav-price {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(240,165,0,0.08);
+  border: 1px solid rgba(240,165,0,0.18);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #F0A500;
+  letter-spacing: 0.02em;
+}
+
+.nav-price-dot {
+  width: 7px;
+  height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: livePulse 2s infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  position: relative;
+  background-color: #0A0805;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 30% 50%, rgba(184,140,0,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 50% at 70% 50%, rgba(240,165,0,0.06) 0%, transparent 65%);
+  border-bottom: 1px solid rgba(240,165,0,0.12);
+  overflow: hidden;
+}
+
+/* VS divider line across hero */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(240,165,0,0.15) 30%, rgba(240,165,0,0.15) 70%, transparent);
+  pointer-events: none;
+}
+
+.hero-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
+  font-size: clamp(3.5rem, 14vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: #FAF5EB;
+  max-width: 900px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero h1 .vs-text {
+  font-size: clamp(1.8rem, 5vw, 4rem);
+  color: #8A7D62;
+  display: block;
+  letter-spacing: 0.3em;
+  margin: 0.2rem 0;
+}
+
+.hero h1 span.gold { color: #F0A500; }
+
+.hero-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: #8A7D62;
+  margin-top: 1.5rem;
+  max-width: 640px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.65s forwards;
+}
+
+.hero-duel {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 2rem;
+  align-items: center;
+  max-width: 700px;
+  width: 100%;
+  opacity: 0;
+  animation: fadeUp 1s 0.9s forwards;
+}
+
+.hero-duel-side {
+  padding: 1.6rem;
+  border: 1px solid rgba(240,165,0,0.15);
+  background: rgba(240,165,0,0.03);
+}
+
+.hero-duel-icon {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 2.5rem;
+  color: #F0A500;
+  display: block;
+  margin-bottom: 0.4rem;
+  line-height: 1;
+}
+
+.hero-duel-name {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: #8A7D62;
+  text-transform: uppercase;
+}
+
+.hero-duel-mcap {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.4rem;
+  color: #FAF5EB;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.hero-vs-badge {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 2.5rem;
+  color: #FF4D1C;
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(255,77,28,0.35);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 1.5s forwards;
+}
+
+.scroll-hint span {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: #8A7D62;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, #F0A500, transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── ARTICLE ── */
+article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 5rem 2rem 8rem;
+  background-color: #0A0805;
+}
+
+.section {
+  margin-bottom: 5rem;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chapter {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chapter::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: rgba(240,165,0,0.15);
+}
+
+h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.2;
+  color: #FAF5EB;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+p {
+  margin-bottom: 1.2rem;
+  color: #E8DEC8;
+  font-size: 1.05rem;
+}
+
+/* ── STAT BLOCKS ── */
+.stat-block {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.2);
+  border-left: 3px solid #F0A500;
+  padding: 2.5rem 2rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-block::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(240,165,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-number {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+  color: #8A7D62;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Red variant */
+.stat-block-red {
+  background-color: #110808;
+  border: 1px solid rgba(255,77,28,0.2);
+  border-left: 3px solid #FF4D1C;
+  padding: 2.5rem 2rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-block-red::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,77,28,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-number-red {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #FF4D1C;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label-red {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+  color: #8A7D62;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── SUPPLY BARS ── */
+.supply-bar { margin: 1.6rem 0; }
+
+.supply-bar-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: #8A7D62;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bar-track {
+  height: 10px;
+  background-color: #1A1610;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-fill.gold { background-color: #F0A500; }
+.bar-fill.dim  { background-color: rgba(240,165,0,0.35); }
+.bar-fill.red  { background-color: #FF4D1C; }
+.bar-fill.silver { background-color: #8A9BAE; }
+
+/* ── COLLISION ── */
+.collision {
+  background-color: #1A1610;
+  border: 1px solid rgba(240,165,0,0.15);
+  padding: 2.5rem;
+  margin: 2.5rem 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.collision-num {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1;
+  display: block;
+}
+.collision-num.red  { color: #FF4D1C; }
+.collision-num.gold { color: #F0A500; }
+.collision-num.silver { color: #8A9BAE; }
+
+.collision-desc {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.7rem;
+  color: #8A7D62;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+
+.vs {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 2rem;
+  color: #FF4D1C;
+  border: 1px solid rgba(255,77,28,0.3);
+  width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+
+/* ── BLOCKQUOTE ── */
+blockquote {
+  padding: 2.5rem 0;
+  margin: 3rem 0;
+  border-top: 1px solid rgba(240,165,0,0.15);
+  border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+blockquote p {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #FAF5EB;
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+
+blockquote cite {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.63rem;
+  color: #8A7D62;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 1rem;
+}
+
+/* ── MONO FACT ── */
+.mono-fact {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #F0A500;
+  background-color: rgba(240,165,0,0.06);
+  border-left: 2px solid #F0A500;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  letter-spacing: 0.05em;
+  line-height: 1.7;
+}
+
+.mono-fact-red {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #FF4D1C;
+  background-color: rgba(255,77,28,0.05);
+  border-left: 2px solid #FF4D1C;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  letter-spacing: 0.05em;
+  line-height: 1.7;
+}
+
+/* ── PILLARS GRID ── */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.pillar-item {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.6rem;
+}
+
+.pillar-item h4 {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.1rem;
+  color: #FAF5EB;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.pillar-item p {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.67rem;
+  color: #8A7D62;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  margin-bottom: 0;
+}
+
+.pillar-check {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #22c55e;
+  display: block;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+.pillar-cross {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #FF4D1C;
+  display: block;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+/* ── COMPARISON TABLE ── */
+.comparison-table-wrap {
+  margin: 2.5rem 0;
+  overflow-x: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+}
+
+.comparison-table th {
+  padding: 1rem 1.2rem;
+  text-align: left;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-bottom: 2px solid rgba(240,165,0,0.25);
+}
+
+.comparison-table th:first-child { color: #8A7D62; }
+.comparison-table th.th-gold { color: #8A9BAE; }
+.comparison-table th.th-btc { color: #F0A500; }
+
+.comparison-table td {
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid rgba(240,165,0,0.07);
+  line-height: 1.5;
+  color: #8A7D62;
+}
+
+.comparison-table td:first-child {
+  color: #E8DEC8;
+  font-size: 0.73rem;
+  letter-spacing: 0.06em;
+}
+
+.comparison-table td.td-gold {
+  color: #8A9BAE;
+}
+
+.comparison-table td.td-btc {
+  color: #F0A500;
+}
+
+.comparison-table tr:hover td {
+  background: rgba(240,165,0,0.03);
+}
+
+/* ── INSTITUTION ROW ── */
+.institution-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+  margin: 2.5rem 0;
+}
+
+.institution-box {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.4rem 1rem;
+  text-align: center;
+}
+
+.institution-box-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.9rem;
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.institution-box-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.59rem;
+  color: #8A7D62;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* ── SHIFT ── */
+.shift {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.12);
+  margin: 2.5rem 0;
+}
+
+.shift-from {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #8A7D62;
+  text-decoration: line-through;
+  margin-bottom: 0.8rem;
+}
+
+.shift-arrow {
+  font-size: 1.5rem;
+  color: #F0A500;
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.shift-to {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  color: #FAF5EB;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #F0A500, transparent);
+  margin: 3rem auto;
+}
+
+/* ── FINALE ── */
+.finale {
+  text-align: center;
+  padding: 5rem 2rem;
+  background-image: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(240,165,0,0.06), transparent 70%);
+}
+
+.finale-question {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2rem, 7vw, 5rem);
+  line-height: 1;
+  color: #FAF5EB;
+  margin-bottom: 1.2rem;
+}
+
+.finale-question span { color: #F0A500; }
+
+.finale-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #8A7D62;
+  max-width: 560px;
+  margin: 0 auto 2.5rem;
+}
+
+/* ── FOOTER ── */
+footer {
+  background-color: #080604;
+  border-top: 1px solid rgba(240,165,0,0.1);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.08em;
+  color: #F0A500;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-links a {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: #8A7D62;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: #F0A500; }
+
+.footer-copy {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: #4A4035;
+  text-transform: uppercase;
+}
+
+/* ── CTA LINKS ── */
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.cta-link {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: #F0A500;
+  text-decoration: none;
+  border: 1px solid rgba(240,165,0,0.3);
+  padding: 0.75rem 1.4rem;
+  text-transform: uppercase;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.cta-link:hover {
+  background: rgba(240,165,0,0.08);
+  border-color: #F0A500;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .collision { grid-template-columns: 1fr; }
+  .vs { margin: 0 auto; }
+  .pillars-grid { grid-template-columns: 1fr; }
+  .hero-duel { grid-template-columns: 1fr; }
+  .hero-vs-badge { margin: 0 auto; }
+  .site-nav { padding: 0 1rem; }
+  .nav-logo-sub { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">₿</div>
+    <div class="nav-logo-text">
+      <span class="nav-logo-name">SATOLOGY</span>
+      <span class="nav-logo-sub">The Study of Sats</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <a class="nav-back" href="index.html">← Home</a>
+    <div class="nav-price">
+      <span class="nav-price-dot"></span>
+      <span id="btcPriceNav">$--</span>
+      BTC
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-label">₿ The Definitive Comparison · Sound Money · 2025–2026</p>
+  <h1>
+    Bitcoin
+    <span class="vs-text">VS</span>
+    <span class="gold">Gold</span>
+  </h1>
+  <p class="hero-sub">Five thousand years of gold. Sixteen years of Bitcoin. One will define the next century of money. The data is already in.</p>
+
+  <div class="hero-duel">
+    <div class="hero-duel-side">
+      <span class="hero-duel-icon" style="color:#8A9BAE;">Au</span>
+      <span class="hero-duel-name">Gold</span>
+      <span class="hero-duel-mcap">~$22 Trillion</span>
+      <span class="hero-duel-name" style="font-size:0.55rem; margin-top:0.3rem;">market cap · 5,000 year head start</span>
+    </div>
+    <div class="hero-vs-badge">VS</div>
+    <div class="hero-duel-side">
+      <span class="hero-duel-icon">₿</span>
+      <span class="hero-duel-name">Bitcoin</span>
+      <span class="hero-duel-mcap">~$1.9 Trillion</span>
+      <span class="hero-duel-name" style="font-size:0.55rem; margin-top:0.3rem;">market cap · 16 years old</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>The Showdown</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article>
+
+  <!-- SECTION 1: THE ORIGINAL GOLD STANDARD -->
+  <div class="section">
+    <div class="chapter">Chapter 01 — The Foundation</div>
+    <h2>Gold: Five Thousand Years of Sound Money</h2>
+    <p>Give gold its due. Before dismissing it as a relic, it is worth understanding why gold became the monetary standard of virtually every civilization on Earth — from ancient Egypt to the British Empire. Gold was not chosen arbitrarily. It earned its place through properties that no other naturally occurring substance could match.</p>
+    <p>Gold is chemically inert: it does not rust, corrode, or degrade over millennia. A gold coin buried for 2,000 years emerges as bright as the day it was minted. It is divisible — coins can be melted and reformed. It is recognizable across cultures. It has always been scarce relative to human desire for it, requiring significant labor to extract from the earth. And for most of human history, it was essentially impossible to create fraudulently at scale.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <span class="pillar-check">PASS</span>
+        <h4>Durable</h4>
+        <p>Does not corrode, rust, or decay. A gold bar from antiquity is still a gold bar today.</p>
+      </div>
+      <div class="pillar-item">
+        <span class="pillar-check">PASS</span>
+        <h4>Scarce</h4>
+        <p>~200,000 tonnes mined in all of human history. Annual production adds only ~1.5% to total supply.</p>
+      </div>
+      <div class="pillar-item">
+        <span class="pillar-check">PARTIAL</span>
+        <h4>Divisible</h4>
+        <p>Can be divided physically — but requires a metallurgist and assay equipment to verify purity and weight.</p>
+      </div>
+      <div class="pillar-item">
+        <span class="pillar-check">PARTIAL</span>
+        <h4>Portable</h4>
+        <p>Dense and heavy. $1 million in gold weighs approximately 20 kilograms. Not easily transported internationally.</p>
+      </div>
+    </div>
+
+    <p>For 5,000 years, gold's physical limitations were acceptable because there was no alternative. Societies built entire financial systems — currencies, banking, international trade — on top of gold. At its peak, under the Bretton Woods system established in 1944, every major currency in the world was fixed to the US dollar, which was itself convertible to gold at $35 per ounce. The gold standard provided a hard anchor preventing unlimited money creation.</p>
+
+    <div class="mono-fact-red">
+      August 15, 1971 — President Nixon suspended dollar-to-gold convertibility.<br>
+      The last hard link between money and physical reality was cut.<br>
+      What followed: 50+ years of unlimited fiat expansion, and the dollar losing ~87% of its purchasing power.
+    </div>
+
+    <p>Nixon's decision was framed as temporary. It was not. The Bretton Woods system never returned. Gold became a commodity. The dollar became a promise backed by nothing but government authority — and government willingness to exercise fiscal restraint, which proved to be finite. The world's monetary anchor had been cut loose, and gold, for all its historical virtues, could no longer play its role. It was too heavy, too slow, too difficult to verify, and too easy for governments to confiscate.</p>
+    <p>The world needed a new anchor. It needed gold's properties in a form suited to the digital age. It took until 2009 for that anchor to be forged.</p>
+  </div>
+
+  <!-- SECTION 2: SCARCITY SHOWDOWN -->
+  <div class="section">
+    <div class="chapter">Chapter 02 — The Scarcity Showdown</div>
+    <h2>21 Million vs. "We'll Keep Mining"</h2>
+    <p>The most fundamental property of sound money is scarcity. A monetary asset that can be inflated away — whose supply can be expanded by those in power — is not sound money; it is a slow confiscation. Gold's scarcity has always been physical: there is a limited amount in the Earth's crust, and extracting it is costly. But "limited by geology" is not the same as "mathematically fixed forever."</p>
+    <p>New gold mines are discovered regularly. Asteroid mining projects are no longer science fiction. Deep-sea nodule extraction, which could theoretically access enormous quantities of gold, is an active area of technological development. No one knows how much gold ultimately exists — only how much has been found so far. Gold's supply is not capped; it is merely slow to grow. That is an important distinction.</p>
+
+    <div class="collision">
+      <div>
+        <span class="collision-num silver">~200,000t</span>
+        <div class="collision-desc">Total gold mined in history — growing by ~3,000t/year forever</div>
+      </div>
+      <div class="vs">VS</div>
+      <div>
+        <span class="collision-num gold">21,000,000</span>
+        <div class="collision-desc">Maximum Bitcoin — hard-coded. Immutable. 19.86M already issued.</div>
+      </div>
+    </div>
+
+    <p>Bitcoin's supply schedule is not a policy. It is not a target. It is not a goal that a committee manages. It is a mathematical rule embedded in code, enforced by every node on a global network that spans 120+ countries and has never been successfully overridden in 16 years of continuous operation. The rules can be proposed to change — and every such proposal has been rejected. The cap is 21 million. Period.</p>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Bitcoin already mined (of 21M)</span><span>19.86M — 94.6%</span></div>
+      <div class="bar-track"><div class="bar-fill gold" data-width="94.6"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Bitcoin remaining to be mined</span><span>~1.14M BTC — 5.4%</span></div>
+      <div class="bar-track"><div class="bar-fill dim" data-width="5.4"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Bitcoin annual inflation (post-2024 halving)</span><span>~0.85% — already below gold</span></div>
+      <div class="bar-track"><div class="bar-fill gold" data-width="8.5"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Gold annual inflation (new mining)</span><span>~1.5–1.7% — and unknown ceiling</span></div>
+      <div class="bar-track"><div class="bar-fill silver" data-width="16"></div></div>
+    </div>
+
+    <p>Following the April 2024 halving — Bitcoin's fourth in its history — the block subsidy dropped to 3.125 BTC per block. Annual issuance fell to roughly 164,250 new Bitcoin per year. That represents an inflation rate of approximately 0.85% — lower than gold's ~1.5%, lower than any fiat currency, and lower than it has ever been. In 2028, the fifth halving will cut it again. The trajectory is asymptotically toward zero. By 2140, the last satoshi is mined, and the inflation rate reaches exactly zero. Permanently.</p>
+
+    <blockquote>
+      <p>"Gold is the money of kings, silver is the money of gentlemen, barter is the money of peasants — but debt is the money of slaves."</p>
+      <cite>— Norm Franz, Money and Wealth in the New Millennium</cite>
+    </blockquote>
+
+    <p>Gold's stock-to-flow ratio — the ratio of existing supply to annual new production — has long been the highest of any commodity, at roughly 60–70x. It was gold's most powerful monetary property. As of 2024, Bitcoin's stock-to-flow ratio has surpassed gold's for the first time in history, and it continues to rise with every halving. The student has exceeded the teacher — in the very metric the teacher defined.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">0.85%</span>
+      <span class="stat-label">Bitcoin's annual inflation rate after the 2024 halving — lower than gold's for the first time in history. In 2028, it halves again.</span>
+    </div>
+  </div>
+
+  <!-- SECTION 3: PORTABILITY -->
+  <div class="section">
+    <div class="chapter">Chapter 03 — Portability &amp; Divisibility</div>
+    <h2>You Cannot Email Gold</h2>
+    <p>Portability is where gold's limitations become undeniable. Gold is dense — roughly 19.3 grams per cubic centimeter. At $3,300 per troy ounce (approximate 2025 price), one million dollars in gold weighs approximately 9.3 kilograms. One billion dollars weighs more than nine tonnes. Moving it requires armored vehicles, bonded couriers, customs declarations, insurance, assay certificates, and weeks of coordination. Moving it across international borders adds layers of regulatory complexity, potential seizure risk, and fees that can reach 1–2% of the total value.</p>
+    <p>Gold is not divisible at the transaction level. If you want to pay $47.83 for a meal in gold, the practical mechanics are somewhere between impossible and absurd. You cannot send fractional gold over the internet. The invention of paper money was, in large part, a workaround for this limitation — and we know how that ended.</p>
+
+    <div class="collision">
+      <div>
+        <span class="collision-num silver">9.3kg</span>
+        <div class="collision-desc">Weight of $1 million in gold. Cross-border: armored truck required.</div>
+      </div>
+      <div class="vs">VS</div>
+      <div>
+        <span class="collision-num gold">24 words</span>
+        <div class="collision-desc">A Bitcoin seed phrase. Holds any amount. Crosses any border. Fits in your memory.</div>
+      </div>
+    </div>
+
+    <p>Bitcoin's portability is without historical precedent. One billion dollars in Bitcoin can be transmitted anywhere on Earth in approximately 10 minutes for a fee of a few dollars. A transaction of $1 is economically identical to a transaction of $1 billion — the network does not discriminate by amount. The fee is roughly constant regardless of value transferred.</p>
+    <p>More profound than wire transfers is the concept of self-custody portability. A Bitcoin seed phrase — 12 or 24 words drawn from a standard word list — can be memorized by a human being, tattooed on skin, engraved on steel, or committed to memory, and it encodes the complete ownership of any amount of Bitcoin. A refugee fleeing a country with no possessions can carry their life savings in their mind. A dissident can store wealth in a form no physical search can locate. This is not a theoretical capability — it is in use today, by people in precisely those circumstances.</p>
+
+    <div class="mono-fact">
+      1 Bitcoin = 100,000,000 satoshis.<br>
+      Divisible to 8 decimal places at the base layer — no tools required.<br>
+      Lightning Network enables sub-satoshi precision for micropayments.<br>
+      Gold divisibility requires a metallurgist, a scale, and an acid test.
+    </div>
+
+    <p>Bitcoin's divisibility into 100 million satoshis per coin means that even if a single Bitcoin were worth $10 million, ordinary transactions would use denominations as small as fractions of a cent. The system scales from micropayments to sovereign-level wealth transfers without modification. No equivalent exists in the physical world of gold.</p>
+  </div>
+
+  <!-- SECTION 4: VERIFIABILITY -->
+  <div class="section">
+    <div class="chapter">Chapter 04 — Verifiability</div>
+    <h2>Don't Trust. Verify.</h2>
+    <p>Sound money must be verifiable. If you cannot confirm that the money you hold is genuine, you must trust intermediaries — and that trust creates counterparty risk. Gold has a verifiability problem that its proponents rarely acknowledge openly. Gold can be counterfeited at scale.</p>
+    <p>In 2012, nearly 80 fake gold bars were discovered in Manhattan — each a tungsten core plated with real gold. They had passed dealer inspections. In 2019, a Chinese company issued gold-backed loans collateralized by 83 tonnes of gold stored in a Wuhan vault. When auditors investigated, the gold turned out to be gilded copper. The fraud ran to over $2.8 billion. These are not edge cases — they are the predictable result of a system where verification requires physical proximity, expensive equipment, and significant expertise.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <span class="pillar-cross">GOLD: TRUST REQUIRED</span>
+        <h4>Acid Test</h4>
+        <p>Applies nitric acid to determine if gold dissolves. Damages the item. Does not test purity throughout a bar.</p>
+      </div>
+      <div class="pillar-item">
+        <span class="pillar-cross">GOLD: TRUST REQUIRED</span>
+        <h4>XRF Analysis</h4>
+        <p>X-ray fluorescence measures surface composition. Does not detect tungsten cores or internal adulteration.</p>
+      </div>
+      <div class="pillar-item">
+        <span class="pillar-check">BITCOIN: ZERO TRUST</span>
+        <h4>Full Node</h4>
+        <p>Any node verifies every transaction, every balance, and total supply in real time. No intermediary required.</p>
+      </div>
+      <div class="pillar-item">
+        <span class="pillar-check">BITCOIN: ZERO TRUST</span>
+        <h4>Cryptographic Proof</h4>
+        <p>Bitcoin ownership is proven with mathematics. Forgery is computationally impossible — not just difficult.</p>
+      </div>
+    </div>
+
+    <p>Bitcoin's verification model is the most powerful audit system ever created. Anyone with a laptop and an internet connection can run a Bitcoin node — downloading the complete history of every transaction ever made — and independently verify that the total supply has never exceeded the protocol limit, that no fraudulent transactions exist, and that their specific coins are genuine. This verification is not approximate. It is mathematical. It is the same certainty as 2+2=4.</p>
+    <p>The Bitcoin blockchain has been continuously audited, in real time, by tens of thousands of independent nodes, every 10 minutes, for 16 years. Not a single fraudulent coin has ever been successfully issued. Not a single confirmed transaction has ever been reversed. The protocol's security is not claimed — it is demonstrated by an unbroken 16-year operational record under adversarial conditions.</p>
+
+    <blockquote>
+      <p>"In Bitcoin, you have the most audited financial system in human history. Every 10 minutes, the entire world checks the ledger and agrees."</p>
+      <cite>— Andreas Antonopoulos, Author, The Internet of Money</cite>
+    </blockquote>
+  </div>
+
+  <!-- SECTION 5: CUSTODY & CONFISCATION -->
+  <div class="section">
+    <div class="chapter">Chapter 05 — Custody &amp; Confiscation</div>
+    <h2>The Day They Came for Your Gold</h2>
+    <p>The confiscation argument is not theoretical. It happened. On April 5, 1933, President Franklin D. Roosevelt signed Executive Order 6102, making it illegal for Americans to own more than $100 in gold coins, bullion, or gold certificates. American citizens were ordered to surrender their gold to Federal Reserve banks at the official price of $20.67 per ounce. Non-compliance was punishable by fines up to $10,000 and up to ten years in prison.</p>
+    <p>The government then revalued gold to $35 per ounce — a 69% increase — immediately after the confiscation was complete. The people who obeyed the law had their savings devalued. The government profited. Gold confiscation was not a wartime aberration — it was a deliberate policy tool, used in peacetime, to fund government spending at the expense of savers.</p>
+
+    <div class="stat-block-red">
+      <span class="stat-number-red">EO 6102</span>
+      <span class="stat-label-red">April 5, 1933 — FDR made private gold ownership illegal in America. Penalties: 10 years imprisonment, $10,000 fine ($230,000 in 2025 dollars). Gold held in bank vaults and safe-deposit boxes was seized.</span>
+    </div>
+
+    <p>Gold's seizability extends beyond historical confiscation orders. Today, governments can seize gold at borders through customs declarations. They can freeze access to gold stored in custodial vaults through court orders. They can shut down gold dealers and bullion banks. Physical gold requires a physical location — and any physical location can be accessed by a government with sufficient authority and willpower.</p>
+    <p>Bitcoin in self-custody is a different proposition entirely. A seed phrase held in a person's memory has no physical location to seize. A hardware wallet without a known owner cannot be compelled to surrender. Bitcoin held in proper self-custody — not on an exchange, not in a custodian's vault, but in a wallet whose private keys only the owner knows — cannot be seized by any government using conventional means. The cryptographic keys are the asset. You cannot confiscate mathematics.</p>
+
+    <div class="mono-fact">
+      12 words. Written on paper. Stored in a fireproof vault at home.<br>
+      This is complete, sovereign custody of any amount of Bitcoin.<br>
+      No bank. No custodian. No counterparty. No seizure vector.<br>
+      This is what gold tried to be — and couldn't.
+    </div>
+
+    <p>Governments can ban exchanges. They can regulate on-ramps. They can make Bitcoin illegal to spend domestically. All of these actions have costs — to adoption, to utility. But none of them confiscate properly stored Bitcoin from a committed holder. The worst outcome of a government crackdown for a prepared Bitcoin holder is temporary illiquidity. The worst outcome for a gold holder facing government confiscation is permanent loss. The asymmetry matters.</p>
+  </div>
+
+  <!-- SECTION 6: INSTITUTIONAL ADOPTION -->
+  <div class="section">
+    <div class="chapter">Chapter 06 — Institutional Adoption</div>
+    <h2>The Institutions Have Decided</h2>
+    <p>For decades, gold's advocates pointed to institutional legitimacy as its decisive advantage. Central banks held it. Sovereign wealth funds allocated to it. Pension funds treated it as the definitive safe haven. Bitcoin, the argument went, was for anarchists and speculators. The institutions would never touch it.</p>
+    <p>The institutions have now touched it. They have more than touched it — they have bought it in quantities that would have seemed fantastical five years ago.</p>
+
+    <div class="institution-row">
+      <div class="institution-box">
+        <span class="institution-box-num">800K+</span>
+        <span class="institution-box-label">BTC held by BlackRock's IBIT ETF — the fastest-growing ETF in Wall Street history</span>
+      </div>
+      <div class="institution-box">
+        <span class="institution-box-num">207,189</span>
+        <span class="institution-box-label">BTC in the US Strategic Bitcoin Reserve — established March 2025</span>
+      </div>
+      <div class="institution-box">
+        <span class="institution-box-num">21</span>
+        <span class="institution-box-label">Countries with official Bitcoin holdings — including El Salvador, Bhutan, and the United States</span>
+      </div>
+      <div class="institution-box">
+        <span class="institution-box-num">11 mo</span>
+        <span class="institution-box-label">Time for Bitcoin ETFs to reach $100B AUM — gold ETFs took 40+ years to reach the same milestone</span>
+      </div>
+    </div>
+
+    <p>The January 2024 approval of spot Bitcoin ETFs in the United States was a turning point that compressed decades of institutional adoption into months. BlackRock — the world's largest asset manager, with over $10 trillion under management — launched IBIT and watched it become the most successful ETF launch in Wall Street history. $100 billion in assets under management in 11 months. Gold ETFs, introduced in 2004, took over 40 years to reach comparable scale. The comparison is instructive not just in speed but in what it signals: institutional capital is not cautiously diversifying into Bitcoin. It is reallocating.</p>
+
+    <div class="collision">
+      <div>
+        <span class="collision-num silver">~$22T</span>
+        <div class="collision-desc">Gold market cap — 5,000 years of establishment, central bank holdings, and jewelry demand</div>
+      </div>
+      <div class="vs">VS</div>
+      <div>
+        <span class="collision-num gold">~$1.9T</span>
+        <div class="collision-desc">Bitcoin market cap — 16 years old, still in early institutional adoption phase</div>
+      </div>
+    </div>
+
+    <p>The United States Strategic Bitcoin Reserve, announced in March 2025, may prove to be the most consequential government financial decision since Nixon ended Bretton Woods. When the world's largest economy designates Bitcoin as a strategic reserve asset alongside — and potentially competing with — gold, it signals to every other central bank, sovereign wealth fund, and institutional investor that the asset class has arrived. Nation-state competition for Bitcoin allocation has begun. The 21 million cap does not expand to accommodate them.</p>
+
+    <blockquote>
+      <p>"Bitcoin is digital gold — harder, stronger, faster, and smarter than any money that has preceded it."</p>
+      <cite>— Michael Saylor, Executive Chairman, Strategy (formerly MicroStrategy)</cite>
+    </blockquote>
+  </div>
+
+  <!-- SECTION 7: PERFORMANCE -->
+  <div class="section">
+    <div class="chapter">Chapter 07 — The Performance Record</div>
+    <h2>Let the Numbers Speak</h2>
+    <p>Arguments about monetary properties and first principles matter. But the market — aggregated across millions of participants making decisions with real capital — has been rendering its verdict for 16 years. That verdict is unambiguous.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">10,000,000%</span>
+      <span class="stat-label">Bitcoin's appreciation from ~$0.01 in 2009 to ~$100,000 in 2025. No other asset in recorded financial history approaches this return over any comparable period.</span>
+    </div>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Gold: 2000 → 2025 (25 years)</span><span>+~500%</span></div>
+      <div class="bar-track"><div class="bar-fill silver" data-width="3"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Bitcoin: 2015 → 2025 (10 years)</span><span>+~50,000%</span></div>
+      <div class="bar-track"><div class="bar-fill gold" data-width="100"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>S&amp;P 500: 2015 → 2025 (10 years)</span><span>+~200%</span></div>
+      <div class="bar-track"><div class="bar-fill dim" data-width="10"></div></div>
+    </div>
+
+    <p>Gold's performance since 2000 has been genuinely impressive by traditional asset standards. From approximately $270 per ounce in January 2000 to $3,300+ in 2025, gold has delivered roughly 500% in 25 years. That beats inflation handily. It beats most bond portfolios. By the standards of a conservative store of value, gold has performed its role adequately.</p>
+    <p>But Bitcoin's record does not permit the word "adequate" in any comparison. Since 2015 — a period when Bitcoin was already a functioning asset with exchange pricing, institutional awareness, and significant media coverage — Bitcoin has returned approximately 50,000%. That is not 50,000 percentage points of outperformance over gold. It is 50,000% total return, while gold returned 90% over the same period. The difference is not a matter of degree. It is a different category of outcome.</p>
+
+    <div class="mono-fact">
+      Every 4-year holding period in Bitcoin history has produced a positive return.<br>
+      Every single one. Through the 2018 crash. Through the 2022 collapse. Through every panic.<br>
+      4-year HODL: the most reliable investment rule in modern finance.
+    </div>
+
+    <p>The volatility objection — Bitcoin is too volatile to be a store of value — deserves direct engagement. Bitcoin's short-term volatility is real. Its drawdowns of 50–80% from cycle peaks are documented and occasionally brutal. But volatility measures short-term price movement, not long-term value preservation. On any 4-year horizon, Bitcoin has never produced a negative return. On any 10-year horizon, the returns dwarf every competing asset class. The volatility is the price of early adoption in a genuinely new monetary paradigm. Gold was volatile too, during the decades it was establishing itself as the global monetary standard.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">0</span>
+      <span class="stat-label">Number of 4-year periods in Bitcoin history where a buy-and-hold strategy produced a loss. Zero. Including buys at the peak of every bubble.</span>
+    </div>
+  </div>
+
+  <!-- SECTION 8: THE COMPARISON TABLE -->
+  <div class="section">
+    <div class="chapter">Chapter 08 — Side by Side</div>
+    <h2>The Properties That Define Money</h2>
+    <p>Strip away narrative and preference. The monetary properties of an asset are not matters of opinion — they are measurable characteristics. Evaluate gold and Bitcoin on the criteria that economists and monetary theorists have used for centuries to assess what qualifies as sound money, and the comparison resolves clearly.</p>
+
+    <div class="comparison-table-wrap">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th class="th-gold">Gold</th>
+            <th class="th-btc">Bitcoin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Annual supply growth</td>
+            <td class="td-gold">~1.5–1.7%<br><span style="font-size:0.62rem;color:#4A4035;">unknown ceiling; new mines possible</span></td>
+            <td class="td-btc">~0.85% (post-2024)<br><span style="font-size:0.62rem;color:#4A4035;">halves every 4 years → 0% by 2140</span></td>
+          </tr>
+          <tr>
+            <td>Maximum supply</td>
+            <td class="td-gold">Unknown<br><span style="font-size:0.62rem;color:#4A4035;">constrained by geology, not math</span></td>
+            <td class="td-btc">21,000,000 BTC<br><span style="font-size:0.62rem;color:#4A4035;">hard-coded; enforced by global consensus</span></td>
+          </tr>
+          <tr>
+            <td>Portability</td>
+            <td class="td-gold">Heavy, slow, physical<br><span style="font-size:0.62rem;color:#4A4035;">armored transport; weeks to move internationally</span></td>
+            <td class="td-btc">Instant, weightless<br><span style="font-size:0.62rem;color:#4A4035;">$1B transferred in 10 min for ~$2 in fees</span></td>
+          </tr>
+          <tr>
+            <td>Divisibility</td>
+            <td class="td-gold">Requires tools<br><span style="font-size:0.62rem;color:#4A4035;">metallurgist + assay to verify sub-ounce amounts</span></td>
+            <td class="td-btc">100M satoshis per BTC<br><span style="font-size:0.62rem;color:#4A4035;">divisible to 8 decimal places, software-native</span></td>
+          </tr>
+          <tr>
+            <td>Verifiability</td>
+            <td class="td-gold">Trust required<br><span style="font-size:0.62rem;color:#4A4035;">XRF, acid tests; tungsten fakes documented</span></td>
+            <td class="td-btc">Mathematically certain<br><span style="font-size:0.62rem;color:#4A4035;">any node verifies full ledger in real time</span></td>
+          </tr>
+          <tr>
+            <td>Seizure resistance</td>
+            <td class="td-gold">Low<br><span style="font-size:0.62rem;color:#4A4035;">EO 6102 (1933); physical location required</span></td>
+            <td class="td-btc">Extremely high<br><span style="font-size:0.62rem;color:#4A4035;">seed phrase in memory; no physical seizure vector</span></td>
+          </tr>
+          <tr>
+            <td>Market cap (2025)</td>
+            <td class="td-gold">~$22 trillion<br><span style="font-size:0.62rem;color:#4A4035;">5,000 year establishment advantage</span></td>
+            <td class="td-btc">~$1.9 trillion<br><span style="font-size:0.62rem;color:#4A4035;">16 years old; early institutional adoption</span></td>
+          </tr>
+          <tr>
+            <td>10-year performance</td>
+            <td class="td-gold">~+90%<br><span style="font-size:0.62rem;color:#4A4035;">(2015–2025; respectable by traditional metrics)</span></td>
+            <td class="td-btc">~+50,000%<br><span style="font-size:0.62rem;color:#4A4035;">(2015–2025; no comparable asset in history)</span></td>
+          </tr>
+          <tr>
+            <td>Stock-to-flow ratio</td>
+            <td class="td-gold">~60–70x<br><span style="font-size:0.62rem;color:#4A4035;">historically highest of any commodity</span></td>
+            <td class="td-btc">&gt;120x post-2024 halving<br><span style="font-size:0.62rem;color:#4A4035;">now exceeds gold's; rises every 4 years</span></td>
+          </tr>
+          <tr>
+            <td>Self-custody</td>
+            <td class="td-gold">Physical storage<br><span style="font-size:0.62rem;color:#4A4035;">insurance, vaults, shipping costs, fire risk</span></td>
+            <td class="td-btc">12-word seed phrase<br><span style="font-size:0.62rem;color:#4A4035;">free; offline; memorizable; indestructible</span></td>
+          </tr>
+          <tr>
+            <td>Programmability</td>
+            <td class="td-gold">None<br><span style="font-size:0.62rem;color:#4A4035;">physical metal; cannot execute conditions</span></td>
+            <td class="td-btc">Full scripting<br><span style="font-size:0.62rem;color:#4A4035;">multi-sig, time locks, Lightning, smart contracts</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The table does not tell a story of a close race. In every dimension that matters for a monetary asset in the digital age — portability, divisibility, verifiability, seizure resistance, programmability, supply certainty — Bitcoin either matches gold or surpasses it decisively. Gold wins one category in this table: established market cap. That gap is narrowing at a rate that would have seemed impossible a decade ago.</p>
+  </div>
+
+  <!-- SECTION 9: THE VERDICT -->
+  <div class="section">
+    <div class="chapter">Chapter 09 — The Verdict</div>
+    <h2>Gold Is the Foundation. Bitcoin Is the Upgrade.</h2>
+    <p>This is not an argument that gold is worthless. Gold's 5,000-year monetary legacy is not an accident. The properties that made gold humanity's preferred store of value — scarcity, durability, recognizability — are real. Gold will not cease to exist. Central banks will continue to hold it. Jewelers will continue to work with it. Its intrinsic properties as a physical substance do not change.</p>
+    <p>But the question investors, institutions, and sovereigns are now asking is not whether gold has value. The question is: when the world needs to store value for the next century, which asset will capture the greatest share of new demand? And on that question, Bitcoin's structural advantages over gold compound with every halving, every institutional adoption, and every year of uninterrupted operation.</p>
+
+    <div class="shift">
+      <div class="shift-from">Physical gold in a vault, audited by trust</div>
+      <span class="shift-arrow">↓</span>
+      <div class="shift-to">Mathematical scarcity in code, verified by mathematics</div>
+    </div>
+
+    <p>The analogy that best captures the relationship is the internet and its predecessors. The fax machine was a remarkable technology — it transmitted documents across distances that would have seemed magical to previous generations. Email did not make fax machines useless overnight. But email was objectively superior in every dimension: faster, cheaper, more versatile, more scalable, and capable of evolving into capabilities the fax machine could never approach. Over time, email captured the overwhelming majority of document communication. The fax machine serves niche uses. Email serves the world.</p>
+    <p>Gold is the fax machine of store-of-value assets. Bitcoin is the email. Gold served its role with genuine distinction for millennia, and it retains a non-zero value. But Bitcoin is faster, cheaper to transfer, more divisible, more verifiable, more seizure-resistant, more transparent, more portable, and — critically — more scarce. It is every property of gold, digitized and improved, without the physical constraints that limited gold's function in the modern world.</p>
+
+    <blockquote>
+      <p>"Gold is a great store of value, but Bitcoin is a better store of value. It has better monetary properties — harder, faster, and more secure."</p>
+      <cite>— Larry Fink, CEO, BlackRock</cite>
+    </blockquote>
+
+    <p>The question is not gold or Bitcoin. Diversified investors may hold both. Central banks may allocate to both as the transition unfolds. The real question is: which asset captures the majority of the world's store-of-value demand over the next 30 years? The $900 trillion in global assets that must find a home in sound money is not going to stay in cash. It is looking for hard assets with the properties that protect wealth across generations. Bitcoin's market cap is $1.9 trillion. Gold's is $22 trillion. The world's store-of-value market is $900 trillion. The gap between where Bitcoin is today and where its monetary properties suggest it could go is the most significant asymmetric opportunity in modern financial history.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">$900T</span>
+      <span class="stat-label">Total global store-of-value assets (real estate, bonds, gold, equities used as wealth preservation). Bitcoin's current share: approximately 0.2%. Every basis point of reallocation toward Bitcoin is worth approximately $90 billion.</span>
+    </div>
+
+    <p>The people who understood what the internet was in 1995 made generational wealth. The people who understood email in 1995 and bet their careers on it built civilization-scale companies. The people who understood Bitcoin in 2013 and held through every panic are financially independent. The question you are answering today is not whether Bitcoin is better than gold. The data answers that question for you. The question is whether you act on what the data says.</p>
+  </div>
+
+  <!-- FINALE -->
+  <div class="section finale">
+    <div class="chapter">The Conclusion</div>
+    <h2 class="finale-question">Digital Gold. <span>Infinite Edge.</span></h2>
+    <p class="finale-sub">Gold built the foundation. Bitcoin is the structure. Every monetary property that made gold the king of stores of value exists in Bitcoin — harder, faster, and without the physical limitations that ultimately broke the gold standard. The upgrade is already running.</p>
+
+    <div class="divider"></div>
+
+    <p style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:#8A7D62;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.5rem;">Continue your Bitcoin education</p>
+
+    <div class="cta-row">
+      <a href="why-bitcoin-wins.html" class="cta-link">Why Bitcoin Wins →</a>
+      <a href="BitcoinSupplyShock.html" class="cta-link">The Supply Shock →</a>
+      <a href="Unstoppable.html" class="cta-link">Bitcoin: Unstoppable →</a>
+      <a href="Retireearlywithbitcoin.html" class="cta-link">Retire Early Calculator →</a>
+    </div>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">SATOLOGY</span>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="why-bitcoin-wins.html">Why Bitcoin Wins</a>
+    <a href="BitcoinSupplyShock.html">Supply Shock</a>
+    <a href="Unstoppable.html">Unstoppable</a>
+    <a href="Retireearlywithbitcoin.html">Retire Early</a>
+    <a href="bitcoin-vs-gold.html">Bitcoin vs Gold</a>
+  </div>
+  <div class="footer-copy">© 2026 SATOLOGY — Understanding Bitcoin. All rights reserved.</div>
+</footer>
+
+<script>
+// ── SCROLL-TRIGGERED SECTION ANIMATIONS + BAR FILLS ──
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      entry.target.querySelectorAll('.bar-fill[data-width]').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+      });
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+sections.forEach(s => observer.observe(s));
+
+// ── LIVE BTC PRICE ──
+async function fetchBTCPrice() {
+  try {
+    const res  = await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot');
+    const json = await res.json();
+    const price = parseFloat(json.data.amount);
+    if (!isNaN(price) && price > 1000) {
+      const formatted = '$' + Math.round(price).toLocaleString('en-US');
+      const el = document.getElementById('btcPriceNav');
+      if (el) el.textContent = formatted;
+    }
+  } catch (_) {
+    // Silently fail — price display is non-critical
+  }
+}
+
+fetchBTCPrice();
+setInterval(fetchBTCPrice, 30000); // refresh every 30s
+</script>
+
+</body>
+</html>
