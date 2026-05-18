@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>The Bitcoin Network — The Distributed Machine | SATOLOGY</title>
+<meta name="description" content="How thousands of independent computers with no headquarters, no CEO, and no single point of failure keep Bitcoin alive — and why nothing can kill it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background-color: #0A0805;
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0A0805;
+  color: #E8DEC8;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.5;
+}
+
+/* NAV */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 60px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10,8,5,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(240,165,0,0.1);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.nav-logo-symbol {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.3rem;
+  color: #F0A500;
+  line-height: 1;
+}
+
+.nav-logo-name {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.22em;
+  color: #E8DEC8;
+  text-transform: uppercase;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-back {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: #C0AD90;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: #F0A500; }
+
+.nav-price {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(240,165,0,0.08);
+  border: 1px solid rgba(240,165,0,0.2);
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #F0A500;
+}
+
+.nav-dot {
+  width: 6px;
+  height: 6px;
+  background: #4CAF50;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  position: relative;
+  background-color: #0A0805;
+  background-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(240,165,0,0.09) 0%, transparent 70%);
+  border-bottom: 1px solid rgba(240,165,0,0.12);
+}
+
+.hero-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
+  font-size: clamp(3.5rem, 14vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: #FAF5EB;
+  max-width: 900px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero h1 span {
+  color: #F0A500;
+  display: block;
+}
+
+.hero-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: #C0AD90;
+  margin-top: 1.5rem;
+  max-width: 640px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.65s forwards;
+}
+
+.hero-stat-row {
+  margin-top: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 0.9s forwards;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-stat-pill {
+  border: 1px solid rgba(240,165,0,0.25);
+  background-color: rgba(240,165,0,0.04);
+  padding: 1rem 1.6rem;
+  text-align: center;
+}
+
+.hero-stat-pill-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+}
+
+.hero-stat-pill-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+  display: block;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 1.4s forwards;
+}
+
+.scroll-hint span {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #C0AD90;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, #F0A500, transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ARTICLE */
+article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 5rem 2rem 8rem;
+  background-color: #0A0805;
+}
+
+.section {
+  margin-bottom: 5rem;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chapter {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chapter::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: rgba(240,165,0,0.15);
+}
+
+h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.2;
+  color: #FAF5EB;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+p {
+  margin-bottom: 1.2rem;
+  color: #E8DEC8;
+  font-size: 1.05rem;
+}
+
+/* STAT BLOCKS */
+.stat-block {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.2);
+  border-left: 3px solid #F0A500;
+  padding: 2.5rem 2rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-block::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(240,165,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-number {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* MONO FACT */
+.mono-fact {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #F0A500;
+  background-color: rgba(240,165,0,0.06);
+  border-left: 2px solid #F0A500;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  letter-spacing: 0.05em;
+  line-height: 1.7;
+}
+
+/* BLOCKQUOTE */
+blockquote {
+  padding: 2.5rem 0;
+  margin: 3rem 0;
+  border-top: 1px solid rgba(240,165,0,0.15);
+  border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+blockquote p {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #FAF5EB;
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+
+blockquote cite {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 1rem;
+}
+
+/* SUPPLY BARS */
+.supply-bar { margin: 1.6rem 0; }
+
+.supply-bar-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bar-track {
+  height: 10px;
+  background-color: #1A1610;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-fill.gold { background-color: #F0A500; }
+.bar-fill.dim  { background-color: rgba(240,165,0,0.35); }
+.bar-fill.green { background-color: #4CAF50; }
+.bar-fill.pale { background-color: rgba(240,165,0,0.18); }
+
+/* PILLARS GRID */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.pillar-item {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.6rem;
+}
+
+.pillar-item h4 {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.1rem;
+  color: #FAF5EB;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.pillar-item p {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  margin-bottom: 0;
+}
+
+/* DATA ROW */
+.data-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  margin: 2.5rem 0;
+}
+
+.data-box {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.4rem 1rem;
+  text-align: center;
+}
+
+.data-box-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.9rem;
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.data-box-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* DIVIDER */
+.divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #F0A500, transparent);
+  margin: 3rem auto;
+}
+
+/* NETWORK MAP VISUAL */
+.network-visual {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.15);
+  padding: 2.5rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.network-visual-title {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.node-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.node-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #F0A500;
+  opacity: 0.7;
+  animation: nodeFlicker 3s ease-in-out infinite;
+}
+
+.node-dot:nth-child(3n) { animation-delay: 0.5s; opacity: 0.4; background-color: rgba(240,165,0,0.6); }
+.node-dot:nth-child(5n) { animation-delay: 1.2s; opacity: 0.9; }
+.node-dot:nth-child(7n) { animation-delay: 0.8s; opacity: 0.5; }
+.node-dot:nth-child(2n) { animation-delay: 1.8s; }
+
+@keyframes nodeFlicker {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.25; }
+}
+
+.network-visual-caption {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* FORK COMPARISON */
+.fork-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.fork-card {
+  padding: 1.8rem;
+  border: 1px solid rgba(240,165,0,0.15);
+}
+
+.fork-card.soft {
+  background-color: rgba(76,175,80,0.04);
+  border-color: rgba(76,175,80,0.2);
+}
+
+.fork-card.hard {
+  background-color: rgba(255,77,28,0.04);
+  border-color: rgba(255,77,28,0.2);
+}
+
+.fork-card-title {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.8rem;
+}
+
+.fork-card.soft .fork-card-title { color: #4CAF50; }
+.fork-card.hard .fork-card-title { color: #FF4D1C; }
+
+.fork-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.fork-card ul li {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.fork-card ul li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: rgba(240,165,0,0.4);
+}
+
+/* SATELLITE CALLOUT */
+.satellite-callout {
+  background: linear-gradient(135deg, #110E08, #0D0B07);
+  border: 1px solid rgba(240,165,0,0.2);
+  padding: 2.5rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.satellite-callout::after {
+  content: '◉';
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  font-size: 2.5rem;
+  color: rgba(240,165,0,0.08);
+  pointer-events: none;
+}
+
+.satellite-callout-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.22em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.satellite-callout-title {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: #FAF5EB;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+  margin-bottom: 0.8rem;
+}
+
+.satellite-callout p {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  margin-bottom: 0;
+}
+
+/* FINALE */
+.finale {
+  text-align: center;
+  padding: 5rem 2rem;
+  background-image: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(240,165,0,0.06), transparent 70%);
+}
+
+.finale-question {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2rem, 7vw, 5rem);
+  line-height: 1;
+  color: #FAF5EB;
+  margin-bottom: 1.2rem;
+}
+
+.finale-question span { color: #F0A500; }
+
+.finale-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #C0AD90;
+  max-width: 520px;
+  margin: 0 auto 2rem;
+}
+
+.finale-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.finale-link {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C0AD90;
+  text-decoration: none;
+  border: 1px solid rgba(240,165,0,0.2);
+  padding: 0.8rem 1.4rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+.finale-link:hover {
+  color: #F0A500;
+  border-color: rgba(240,165,0,0.5);
+}
+
+/* FOOTER */
+.footer-wrap {
+  background-color: #070604;
+  border-top: 1px solid rgba(240,165,0,0.1);
+}
+
+footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.4rem;
+  color: #F0A500;
+  letter-spacing: 0.06em;
+}
+
+.footer-copy {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.footer-links a {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #C0AD90;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: #F0A500; }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 520px) {
+  .pillars-grid { grid-template-columns: 1fr; }
+  .fork-compare { grid-template-columns: 1fr; }
+  .node-grid { grid-template-columns: repeat(5, 1fr); }
+  nav { padding: 0 1rem; }
+  .nav-back { display: none; }
+  .hero-stat-row { gap: 0.8rem; }
+  .data-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-symbol">₿</span>
+    <span class="nav-logo-name">SATOLOGY</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Home</a>
+    <div class="nav-price">
+      <span class="nav-dot"></span>
+      <span id="btcPriceNav">$--</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-label">₿ The Distributed Machine</p>
+  <h1>THE BITCOIN<span>NETWORK</span></h1>
+  <p class="hero-sub">Thousands of independent computers. No headquarters. No CEO. No single point of failure. This is how Bitcoin stays alive — and why nothing can kill it.</p>
+
+  <div class="hero-stat-row">
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">1.020 ZH/S</span>
+      <span class="hero-stat-pill-label">Hash Rate</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">21,000+</span>
+      <span class="hero-stat-pill-label">Public Nodes</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">60,000+</span>
+      <span class="hero-stat-pill-label">Est. Total Nodes</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">136.61T</span>
+      <span class="hero-stat-pill-label">Difficulty</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article>
+
+  <!-- CHAPTER 1: The Swarm -->
+  <div class="section">
+    <div class="chapter">Chapter 01</div>
+    <h2>What Bitcoin Actually Is</h2>
+
+    <p>Most people imagine Bitcoin as an app, a website, or a company. They look for the headquarters. They look for the CEO. They expect there to be someone in charge — some institution that maintains the ledger, processes the transactions, and keeps the lights on. That institution does not exist.</p>
+
+    <p>Bitcoin is a peer-to-peer network. There is no central server. There is no main database. There is no Bitcoin Inc., no Bitcoin Foundation with server keys, no single point of authority. Instead, there are thousands of independent computers — running in homes, offices, server farms, and bunkers across every continent — each holding a complete copy of every Bitcoin transaction that has ever occurred, all the way back to block zero on January 3, 2009.</p>
+
+    <p>Every one of these computers is equal. None has authority over the others. They agree on a shared set of rules — the Bitcoin protocol — and anything that violates those rules is automatically rejected. No court order can change what the network accepts. No government can compel a server to alter its records, because there is no single server to compel. The rules are enforced by math, not by men.</p>
+
+    <p>This is not an accident. It is the most deliberate architectural choice in Bitcoin's design. Satoshi built a machine that cannot be captured because there is nothing to capture.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <h4>No CEO</h4>
+        <p>No individual controls the protocol. Proposed changes require broad consensus from developers, miners, and the node operators who actually run the network.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>No Headquarters</h4>
+        <p>Bitcoin has no office, no data center, no address. It lives in the aggregate of thousands of machines distributed across the planet.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>No Single Server</h4>
+        <p>Every full node holds the entire blockchain independently. Destroying one node changes nothing. Destroying a thousand changes nothing.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>No Permission Required</h4>
+        <p>Anyone can join. Anyone can run a node, mine, transact, or build on Bitcoin without asking anyone for access or approval. The network is open by design.</p>
+      </div>
+    </div>
+
+    <div class="mono-fact">
+      There is no Bitcoin Inc. There is no Bitcoin server to take down. There is no Bitcoin employee to arrest.
+    </div>
+
+    <p>When governments have tried to ban Bitcoin — China has done it multiple times — the network doesn't notice. The nodes in China go offline. The rest of the world carries on. The blockchain continues producing blocks every ten minutes. The rules don't change. The ledger doesn't change. The network routes around the damage as if it were simply absent.</p>
+  </div>
+
+  <!-- CHAPTER 2: Full Nodes -->
+  <div class="section">
+    <div class="chapter">Chapter 02</div>
+    <h2>Full Nodes: The Rule Enforcers</h2>
+
+    <p>A full node is a computer running Bitcoin software that has downloaded every single block in Bitcoin's history — all the way back to the Genesis Block in 2009 — and independently validated every transaction against the protocol's consensus rules. As of 2026, that means downloading and verifying approximately 500 gigabytes of blockchain data.</p>
+
+    <p>Full nodes do not trust anyone. When a new block arrives, a node doesn't check who sent it or how reputable the source is. It checks the block against the rules. Does the block hash meet the difficulty target? Are all the transactions valid? Does any transaction spend coins that don't exist or have already been spent? Is the block reward exactly right for this block height? If any answer is no, the block is rejected — immediately, automatically, and permanently.</p>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">~21,000</span>
+        <span class="data-box-label">Public Listening Nodes</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">60,000+</span>
+        <span class="data-box-label">Estimated Total Nodes</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~500GB</span>
+        <span class="data-box-label">Blockchain Size</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~10 sec</span>
+        <span class="data-box-label">Block Propagation</span>
+      </div>
+    </div>
+
+    <p>The ~21,000 publicly reachable nodes tracked by tools like bitnodes.io are only the visible layer. Thousands more nodes operate behind NAT routers, on Tor hidden services, or on private networks — connecting to peers and validating the chain without ever advertising their IP address. The true node count is estimated at 60,000 to 100,000 or more. No one knows exactly, because many nodes prefer not to be found.</p>
+
+    <p>Running a full node does not require a data center. A Raspberry Pi 4 — a credit-card sized computer that costs under $200 — can run Bitcoin Core with a modest external hard drive. Enthusiasts run nodes under their desks, in closets, in their garage, and even off solar power in remote locations. The barrier to entry is intentionally low. The more nodes, the more distributed the network, the harder to attack.</p>
+
+    <blockquote>
+      <p>"The network is robust in its unstructured simplicity. Nodes work all at once with little coordination."</p>
+      <cite>— Satoshi Nakamoto, Bitcoin Whitepaper, 2008</cite>
+    </blockquote>
+
+    <p>Here is the insight that most people miss: nodes don't trust miners. When a miner produces a new block and broadcasts it to the network, every full node independently verifies that block before accepting it. A miner who breaks the rules — who tries to claim more reward than they are entitled to, or tries to spend coins they don't own — gets their block rejected by every node on the network. Their work is wasted. The chain does not move.</p>
+
+    <div class="mono-fact">
+      Nodes enforce the rules. Miners just find valid blocks.<br><br>
+      A miner that breaks the rules gets their block rejected by every node on the network. All that electricity, all that hardware — returned as nothing.
+    </div>
+
+    <p>This is the genius of Bitcoin's architecture. The people doing the expensive computational work — the miners — are held accountable by the people doing the cheap validation work — the nodes. Power and verification are separated. The result is a system where the economic incentives only work if you follow the rules, and where no concentration of mining power can override what the nodes have agreed to accept.</p>
+
+    <div class="network-visual">
+      <div class="network-visual-title">Active Node Distribution — Illustrative</div>
+      <div class="node-grid" id="nodeGrid"></div>
+      <div class="network-visual-caption">Each dot represents approximately 400 active full nodes. The grid shows ~21,000 publicly reachable nodes.</div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3: The Mining Layer -->
+  <div class="section">
+    <div class="chapter">Chapter 03</div>
+    <h2>Miners: The Work Layer</h2>
+
+    <p>Mining is how new Bitcoin enters the world and how the transaction history gets locked in. Miners are not administrators of the network — they are participants competing for a reward. And the competition is brutal.</p>
+
+    <p>To mine a block, a miner must find a number — called a nonce — that, when combined with the block's transaction data and fed through the SHA-256 hashing algorithm twice, produces a result smaller than the current difficulty target. SHA-256 is essentially a mathematical meat grinder: you feed data in, and it spits out a unique 64-character fingerprint. Change one letter in the input and the output changes completely. There is no shortcut to finding the right nonce. The only method is to try billions of numbers per second until one works.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">1.020 ZH/S</span>
+      <span class="stat-label">1,000,000,000,000,000,000,000 hashes per second — the total global mining effort as of 2026</span>
+    </div>
+
+    <p>One zettahash per second. That means every second, the combined mining hardware on Earth is performing one sextillion SHA-256 operations. To visualize this: if every grain of sand on Earth were performing one million hashes per second, that total would still be a fraction of Bitcoin's current hash rate. The computation required to find a valid block is genuinely astronomical.</p>
+
+    <p>The hardware doing this work has evolved dramatically. The best machines available in 2026 are built on 5-nanometer chips — the same generation of semiconductor technology found in the latest smartphones — but optimized exclusively for SHA-256. The Antminer S21 XP achieves 270 terahashes per second while consuming only 13.5 joules per terahash. A single machine sitting on a shelf produces more hash power than the entire Bitcoin network did in its first two years.</p>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">270 TH/s</span>
+        <span class="data-box-label">Antminer S21 XP Speed</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">13.5 J/TH</span>
+        <span class="data-box-label">Efficiency Rating</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">5nm</span>
+        <span class="data-box-label">Chip Architecture</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~$3,000</span>
+        <span class="data-box-label">Unit Cost (2026)</span>
+      </div>
+    </div>
+
+    <p>Every 2,016 blocks — approximately two weeks at the target pace of one block every ten minutes — the network recalculates the difficulty target. If blocks have been coming in faster than ten minutes, difficulty rises. If slower, it falls. This adjustment is automatic, mechanical, and guaranteed to keep the average block time near ten minutes regardless of how much total hash power joins or leaves the network. It is one of Bitcoin's most elegant feedback loops.</p>
+
+    <p>Miners are compensated in two ways: the block reward (currently 3.125 BTC per block, following the April 2024 halving) and the transaction fees included in the block they mine. As the block reward continues to halve every four years, fees become an increasingly important part of miner revenue — a gradual, programmed transition built into Bitcoin's design from the beginning.</p>
+
+    <div class="mono-fact">
+      Mining difficulty adjusts every 2,016 blocks (~2 weeks) so blocks always average 10 minutes — regardless of whether one miner or one million miners are competing.
+    </div>
+  </div>
+
+  <!-- CHAPTER 4: How Nodes Talk -->
+  <div class="section">
+    <div class="chapter">Chapter 04</div>
+    <h2>The Gossip Protocol</h2>
+
+    <p>There is no Bitcoin master server that nodes check in with. There is no global address book. When you run Bitcoin Core for the first time, the software needs to find peers — other nodes to connect to. It does this through a small set of mechanisms that are elegantly simple and surprisingly robust.</p>
+
+    <p>First, the software queries DNS seed servers — trusted domain names that resolve to lists of active Bitcoin nodes. These seed servers are run by volunteers and Bitcoin Core developers. They are not a point of control; they are simply an on-ramp. Once you have your first few peers, you no longer need them.</p>
+
+    <p>Once connected, your node sends and receives the <code style="font-family:'IBM Plex Mono',monospace;font-size:0.85em;color:#F0A500;">addr</code> message — a list of other node addresses your peers know about. Within a few minutes of starting, you typically have eight or more connections to diverse nodes scattered across the world. You then share addresses you know. The network grows its own map through gossip, organically, with no central directory.</p>
+
+    <p>Transaction propagation works the same way. When you broadcast a Bitcoin transaction, your node announces it to its eight or so peers. Each of those peers announces it to their peers. Each of those does the same. Within two to four seconds, your transaction has reached virtually every node on the planet. The math of exponential spread is powerful: starting from one node, after just a few hops of eight-per-node propagation, you've reached thousands of machines.</p>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>Transaction propagation speed</span>
+        <span>~4 seconds to global reach</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill gold" data-width="97"></div></div>
+    </div>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>Block propagation (compact relay)</span>
+        <span>~10–15 seconds to 90% of nodes</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill dim" data-width="82"></div></div>
+    </div>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>Full block propagation (all nodes)</span>
+        <span>~60 seconds globally</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill pale" data-width="65"></div></div>
+    </div>
+
+    <p>Blocks propagate through a technique called compact block relay. Instead of sending the entire block to every peer — which would be hundreds of kilobytes to megabytes of data — a node first sends just the block header and a compact list of transaction IDs. Most nodes already have the transactions in their mempool from earlier gossip. They only need to request the few transactions they're missing. The result: a new block typically reaches 90% of the network in under 15 seconds.</p>
+
+    <div class="mono-fact">
+      A new Bitcoin transaction reaches every corner of the globe in under 4 seconds. A new block, with all its transactions locked in, reaches 90% of nodes in under 15 seconds.
+    </div>
+
+    <p>No email system, no financial network, no traditional database replication scheme achieves this kind of decentralized real-time consistency across tens of thousands of independent, untrusted nodes worldwide. It is one of the most sophisticated distributed systems ever built — and it runs largely unchanged from the version Satoshi published in 2009.</p>
+  </div>
+
+  <!-- CHAPTER 5: Forks -->
+  <div class="section">
+    <div class="chapter">Chapter 05</div>
+    <h2>When Rules Change: Forks</h2>
+
+    <p>Because Bitcoin has no central authority to issue updates, changing the protocol rules requires something more difficult: consensus. When developers and the broader community want to change how Bitcoin works, they must navigate a process that has no parallel in traditional software. You cannot simply push an update. You must convince thousands of independent operators to adopt it voluntarily.</p>
+
+    <p>There are two fundamentally different types of protocol change, and their mechanics are critically different.</p>
+
+    <div class="fork-compare">
+      <div class="fork-card soft">
+        <div class="fork-card-title">Soft Fork</div>
+        <ul>
+          <li>Tightens the rules — makes previously valid things invalid</li>
+          <li>Backwards compatible: old nodes accept soft fork blocks</li>
+          <li>Requires adoption by miners and nodes to be enforced</li>
+          <li>Examples: SegWit (2017), Taproot (2021)</li>
+          <li>Does not split the chain if properly deployed</li>
+        </ul>
+      </div>
+      <div class="fork-card hard">
+        <div class="fork-card-title">Hard Fork</div>
+        <ul>
+          <li>Loosens or fundamentally changes the rules</li>
+          <li>Breaks backwards compatibility — old nodes reject new blocks</li>
+          <li>Splits the chain if not everyone upgrades simultaneously</li>
+          <li>Creates two separate coins with diverging histories</li>
+          <li>Requires near-universal adoption to avoid permanent split</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>Bitcoin's history of contested hard forks is instructive. In 2017, a faction of the community wanted to increase Bitcoin's block size limit — a change requiring a hard fork. After months of fierce debate, they forked off and created Bitcoin Cash. In 2018, Bitcoin Cash itself split, producing Bitcoin SV. Both forks had vocal proponents, significant mining support at launch, and billions of dollars in claimed market cap.</p>
+
+    <p>Today, Bitcoin Cash trades at a tiny fraction of Bitcoin's price. Bitcoin SV has fared worse. The market voted, emphatically, for the original chain. The economic gravity of the longest chain, the most nodes, the most development activity, and the most user trust proved overwhelming. Hard forks do not kill Bitcoin. They create minor copies that gradually fade.</p>
+
+    <p>Soft forks have been far more successful. SegWit — Segregated Witness — activated in 2017 after a contentious deployment process, fixing transaction malleability and enabling the Lightning Network. Taproot activated in 2021, improving privacy and enabling more sophisticated smart contracts. These changes went live through careful coordination, without splitting the chain or creating alternative coins.</p>
+
+    <div class="mono-fact">
+      Rule changes in Bitcoin require buy-in from nodes. Miners cannot force a soft fork on the network — if nodes don't adopt the new rules, the old chain continues unchanged. The power is with the validators, not the producers.
+    </div>
+  </div>
+
+  <!-- CHAPTER 6: Unstoppable by Design -->
+  <div class="section">
+    <div class="chapter">Chapter 06</div>
+    <h2>Why You Cannot Kill This Network</h2>
+
+    <p>This is the question that governments, central banks, and financial institutions have spent years trying to answer: how do you stop Bitcoin? The honest answer — the one that keeps regulators up at night — is that you probably can't. Not really. Not permanently. Here is why.</p>
+
+    <div class="satellite-callout">
+      <div class="satellite-callout-label">Redundancy Layer One</div>
+      <div class="satellite-callout-title">Blockstream Satellite</div>
+      <p>Six satellites orbit Earth in geostationary positions, continuously broadcasting the entire Bitcoin blockchain 24 hours a day, 7 days a week, to every populated region on the planet. With a small satellite dish — the kind you can buy at an electronics store — and a receiver costing under $100, you can keep your node fully synchronized with the Bitcoin network without any internet connection whatsoever. If every undersea cable were cut tomorrow, Bitcoin would still propagate from space.</p>
+    </div>
+
+    <p>The satellite layer is just the most dramatic example of Bitcoin's deliberate redundancy. Consider the other layers:</p>
+
+    <p><strong style="color:#FAF5EB;">Tor and I2P:</strong> Thousands of Bitcoin nodes operate exclusively as hidden services on the Tor anonymity network. They have no visible IP address. They cannot be found, blocked, or targeted by any standard network-level censorship. A government that wants to shut down these nodes would need to compromise the Tor network itself — an effort that the world's intelligence agencies have failed to accomplish despite years of trying.</p>
+
+    <p><strong style="color:#FAF5EB;">Underground and Off-Grid:</strong> Bitcoin nodes have been documented running in nuclear bunkers, underground data centers, and remote off-grid locations powered entirely by solar panels or small hydroelectric installations. There are nodes in every inhabited continent. There are nodes in countries with radically different legal systems. The network's geographic distribution makes coordinated legal suppression a logistical impossibility.</p>
+
+    <p><strong style="color:#FAF5EB;">Ham Radio and Mesh Networks:</strong> The Bitcoin protocol has been demonstrated running over shortwave radio and satellite internet systems like Starlink. As long as two nodes can exchange data — by any means, over any medium — they can synchronize the blockchain.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">~$10 BILLION</span>
+      <span class="stat-label">Estimated cost to execute a 51% attack on Bitcoin for even one hour — buying or renting enough hardware to control the majority of the hash rate, outpacing the honest network</span>
+    </div>
+
+    <p>The math of attacking Bitcoin is brutal. To rewrite Bitcoin's transaction history, an attacker would need to redo all the proof-of-work computations from the target block forward while simultaneously outrunning the ongoing work of the live network — which is adding new blocks every ten minutes. With 1.020 ZH/s of total honest hash power, even a brief 51% attack would require accumulating and operating hardware worth tens of billions of dollars. And at the end of it, the best you can do is double-spend your own transactions. The coins themselves don't disappear from wallets you don't control.</p>
+
+    <p>But the most powerful argument against killing Bitcoin is this: even if 99% of all nodes went offline tomorrow — wiped out by some catastrophic event — the remaining 1% would rebuild the entire network from scratch. Anyone, anywhere in the world, can download the Bitcoin Core software, let it sync, and become a full participant in the network. The rules live in open-source code, not on any server. They can be downloaded, audited, and run by anyone. As long as one copy exists and one person wants to run it, Bitcoin exists.</p>
+
+    <div class="mono-fact">
+      Bitcoin has no off switch. The kill command would need to be executed on tens of thousands of machines simultaneously, in dozens of countries, under different legal jurisdictions, including nodes operating in space and on anonymized networks. No such kill command exists.
+    </div>
+  </div>
+
+  <!-- CHAPTER 7: The Numbers Right Now -->
+  <div class="section">
+    <div class="chapter">Chapter 07</div>
+    <h2>The State of the Network — 2026</h2>
+
+    <p>Numbers tell the story of Bitcoin's growth more honestly than almost any narrative. Here is where the network stands today.</p>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">1.020 ZH/s</span>
+        <span class="data-box-label">Total Hash Rate</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">136.61T</span>
+        <span class="data-box-label">Mining Difficulty</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~950,000</span>
+        <span class="data-box-label">Block Height</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">21,000+</span>
+        <span class="data-box-label">Public Full Nodes</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">3.125 BTC</span>
+        <span class="data-box-label">Block Reward</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">10 min</span>
+        <span class="data-box-label">Target Block Time</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">99.98%</span>
+        <span class="data-box-label">Uptime (since 2013)</span>
+      </div>
+    </div>
+
+    <p>That hash rate figure deserves special attention. One zettahash per second means the Bitcoin network is performing 10<sup>21</sup> SHA-256 computations every second. To put that into perspective: if you took every grain of sand on every beach on Earth — an estimated 7.5 quintillion grains — and gave each grain the ability to compute one million hashes per second, their combined output would still be less than Bitcoin's current global hash rate. The scale of this computation is genuinely unprecedented in human history.</p>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>Hash rate growth (2009 → 2026)</span>
+        <span>~1 ZH/s from ~1 MH/s</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill gold" data-width="100"></div></div>
+    </div>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>Bitcoin supply issued to date</span>
+        <span>~19.87M of 21M BTC (~94.6%)</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill dim" data-width="94.6"></div></div>
+    </div>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>Remaining supply to be mined</span>
+        <span>~1.13M BTC (~5.4%) — over 114 years</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill pale" data-width="5.4"></div></div>
+    </div>
+
+    <p>The 99.98% uptime figure is equally remarkable. Since 2013, the Bitcoin network has had exactly one unplanned outage of any significance — a brief chain fork in 2013 that was resolved within hours. In the years since, the network has processed transactions every ten minutes without interruption, through market crashes, regulatory crackdowns, exchange collapses, natural disasters, and global pandemics. No traditional financial institution can claim a comparable operational record.</p>
+  </div>
+
+  <!-- CHAPTER 8: The Layers Above -->
+  <div class="section">
+    <div class="chapter">Chapter 08</div>
+    <h2>Bitcoin's Growing Stack</h2>
+
+    <p>Bitcoin's base layer is deliberately conservative. It changes slowly. It prioritizes security, decentralization, and finality above all else. This is a feature, not a limitation. The base layer is where value settles. Everything else is built on top of it.</p>
+
+    <p>The Lightning Network is the most mature layer above Bitcoin. It works by opening payment channels between participants — locking funds into a multi-signature Bitcoin transaction — and then routing payments through a network of these channels without touching the main chain. A payment can hop through three or four channels and reach its destination in milliseconds for a fraction of a cent. Lightning is particularly valuable for micropayments: paying for a single article, tipping a content creator, paying per second for streaming media, or settling machine-to-machine payments in an IoT context.</p>
+
+    <p>Lightning today has thousands of active channels and hundreds of millions of dollars in locked liquidity. It is not a competitor to Bitcoin — it is Bitcoin, operating at a different time scale. Channel opens and closes settle to the base layer. The security model ultimately rests on the same proof-of-work foundation.</p>
+
+    <p>Beyond Lightning, several other second-layer and protocol-level innovations are advancing Bitcoin's capabilities:</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <h4>Fedimint</h4>
+        <p>A federated custody model for community Bitcoin banks. Groups of trusted members pool funds, enabling Lightning payments with reduced on-chain footprint and improved privacy for their members.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Ark</h4>
+        <p>A layer-2 protocol that allows off-chain Bitcoin transfers using virtual UTXOs, enabling near-zero fee payments and better scalability without requiring a direct Lightning channel to your counterparty.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>RGB Protocol</h4>
+        <p>Client-side validated smart contracts and token issuance on Bitcoin. Enables programmable assets without burdening the base layer — the chain only sees ordinary-looking transactions.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Silent Payments</h4>
+        <p>A privacy protocol that generates unique one-time addresses for each payment without requiring interaction with the recipient. Dramatically improves on-chain privacy while remaining fully compatible with existing wallets.</p>
+      </div>
+    </div>
+
+    <p>The pattern is consistent: Bitcoin's base layer stays conservative, and innovation happens in layers above it. This is the model that gave the internet its longevity — IP packets don't do video streaming, but the web and streaming services are built on top of IP. Bitcoin is doing the same thing: building a programmable financial layer on top of the most secure monetary settlement network ever created.</p>
+
+    <div class="mono-fact">
+      The base layer doesn't need to do everything. It needs to do one thing perfectly: settle final, irreversible, censorship-resistant transfers of value. Everything else can be built on top.
+    </div>
+  </div>
+
+  <!-- CHAPTER 9: Finale -->
+  <div class="section">
+    <div class="chapter">Chapter 09</div>
+    <h2>One Machine, No Master</h2>
+
+    <p>Step back and consider what you have just read. A network of sixty thousand or more computers, spread across every corner of the Earth, running on satellites and radio waves and anonymous Tor hidden services, constantly checking each other's work, enforcing an immutable rulebook that no government wrote and no government can change — processing billions of dollars of transactions every day without a CEO, without a board, without an office, without a phone number to call.</p>
+
+    <p>It has run continuously since January 2009. It has survived exchange hacks that erased billions of dollars in value. It survived China banning it — multiple times. It survived a global pandemic. It survived the collapse of major custodians, the arrest of major figures, the relentless proclamations of its death from every major financial institution. Every ten minutes, it produces another block. The chain grows longer. The rules hold.</p>
+
+    <p>The miners work tirelessly — spending real electricity, operating real hardware — because the protocol makes honest behavior more profitable than dishonest behavior. The nodes validate silently, accepting nothing on faith, rejecting anything that violates the rules. The developers propose and debate, but they cannot ship code that the nodes refuse to run. The users hold keys that no bank can freeze and no government can seize without physical access to the device.</p>
+
+    <p>This is not idealism. It is engineering. The architecture was designed from first principles to be precisely what it has become: a monetary network with no single point of failure, no single point of control, and no single point of shutdown. The machine runs because the incentives are aligned for it to run. It is the most robust financial infrastructure humanity has ever built.</p>
+
+    <p>The answer to the question of who controls Bitcoin is not a name, not an institution, not a country. It is the code, the consensus, and the thousands of machines running both — all at once, everywhere, right now.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FINALE SECTION -->
+  <div class="finale section">
+    <div class="finale-question">WHO CONTROLS<span>BITCOIN?</span></div>
+    <p class="finale-sub">Nobody. Everybody. The code is the law, and the law runs on ten thousand machines you'll never find.</p>
+
+    <div class="finale-links">
+      <a href="why-bitcoin-wins.html" class="finale-link">Why Bitcoin Wins</a>
+      <a href="bitcoin-halving.html" class="finale-link">The Halving</a>
+      <a href="Blockchain.html" class="finale-link">The Blockchain</a>
+      <a href="btc-step-01.html" class="finale-link">Start the Course</a>
+    </div>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<div class="footer-wrap">
+  <footer>
+    <div>
+      <div class="footer-logo">SATOLOGY</div>
+      <div class="footer-copy">© 2026 SATOLOGY · Bitcoin Education</div>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">← Home</a>
+      <a href="why-bitcoin-wins.html">Why Bitcoin Wins</a>
+      <a href="bitcoin-halving.html">The Halving</a>
+      <a href="Blockchain.html">The Blockchain</a>
+      <a href="btc-step-01.html">Bitcoin Course</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ── LIVE BTC PRICE ──
+async function fetchBTCPrice() {
+  try {
+    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd', {
+      cache: 'no-store'
+    });
+    const data = await response.json();
+    const price = data.bitcoin.usd;
+    const formatted = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(price);
+    document.getElementById('btcPriceNav').textContent = formatted;
+  } catch (e) {
+    // silently fail — price badge stays as $--
+  }
+}
+
+fetchBTCPrice();
+setInterval(fetchBTCPrice, 60000);
+
+// ── NODE GRID POPULATION ──
+(function buildNodeGrid() {
+  const grid = document.getElementById('nodeGrid');
+  if (!grid) return;
+  // 8 columns × 7 rows = 56 dots, each ~400 nodes = ~22,400 represented
+  const count = 56;
+  for (let i = 0; i < count; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'node-dot';
+    dot.style.animationDelay = (Math.random() * 3).toFixed(2) + 's';
+    dot.style.opacity = (0.3 + Math.random() * 0.7).toFixed(2);
+    grid.appendChild(dot);
+  }
+})();
+
+// ── INTERSECTION OBSERVER — SCROLL REVEAL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+
+      // Trigger bar fills within this section
+      const bars = entry.target.querySelectorAll('.bar-fill[data-width]');
+      bars.forEach(bar => {
+        const targetWidth = bar.getAttribute('data-width');
+        // Delay slightly so the section fade-in completes first
+        setTimeout(() => {
+          bar.style.width = targetWidth + '%';
+        }, 300);
+      });
+
+      observer.unobserve(entry.target);
+    }
+  });
+}, {
+  threshold: 0.1,
+  rootMargin: '0px 0px -60px 0px'
+});
+
+document.querySelectorAll('.section').forEach(section => {
+  observer.observe(section);
+});
+</script>
+
+</body>
+</html>

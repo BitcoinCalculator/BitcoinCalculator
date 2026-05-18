@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lump Sum vs DCA vs Hybrid — Rainbow Anchored Simulator — SATOLOGY</title>
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('satology-theme')||'dark')</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{--bg:#080808;--bg2:#0d0d0d;--card:#111114;--border:#1e1e24;--text:#e8e8e8;--muted:#aaa;--nav-bg:rgba(8,8,8,.96);--toggle-bg:#1e1e24;--prose:#c8c8c8;--input-bg:#0d0d10;--input-border:#2a2a32;--table-alt:#0d0d10;--table-head:#16161c}
+[data-theme="light"]{--bg:#f5f4f0;--bg2:#ece9e0;--card:#fff;--border:#e0ddd5;--text:#1a1a1a;--muted:#5A5A5A;--nav-bg:rgba(245,244,240,.97);--toggle-bg:#e0ddd5;--prose:#3a3a3a;--input-bg:#fff;--input-border:#d0cdc5;--table-alt:#f9f8f5;--table-head:#f0ede6}
+:root{--btc:#F7931A;--green:#22c55e;--gold:#FFD700;--red:#e63946}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* Scroll progress */
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;pointer-events:none}
+.scroll-fill{height:100%;background:linear-gradient(90deg,var(--btc),var(--gold),var(--green));width:0%}
+
+/* Ticker */
+.ticker{background:linear-gradient(90deg,#431407,#7c2d12,#431407);padding:8px 0;overflow:hidden;white-space:nowrap}
+.ticker-inner{display:inline-flex;gap:56px;animation:tick 40s linear infinite;font-size:14px;font-weight:700;color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* Nav */
+nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .35s,border-color .35s}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:var(--btc);border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:900;color:#fff}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:18px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.logo-sub{font-size:14px;font-weight:600;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-price{display:flex;align-items:center;gap:7px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.2);border-radius:100px;padding:6px 14px;font-size:14px;font-weight:800;color:var(--btc);cursor:pointer;transition:all .2s}
+.nav-price:hover{background:rgba(247,147,26,.18)}
+.nav-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--toggle-bg);border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--btc);transition:transform .3s}
+[data-theme="light"] .theme-toggle::after{transform:translateX(24px)}
+.t-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none}
+.t-icon.moon{right:7px}.t-icon.sun{left:7px;opacity:0}
+[data-theme="light"] .t-icon.moon{opacity:0}[data-theme="light"] .t-icon.sun{opacity:1}
+
+/* Hero */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero{padding:48px 48px 36px;max-width:960px;margin:0 auto}
+.hero-eyebrow{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;background:linear-gradient(90deg,var(--btc),var(--gold),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px;animation:fadeUp .5s ease both}
+.hero h1{font-size:clamp(26px,4.5vw,52px);font-weight:900;letter-spacing:-1.5px;line-height:1.05;margin-bottom:14px;animation:fadeUp .5s .06s ease both}
+.hero-sub{font-size:14px;color:var(--muted);line-height:1.75;max-width:660px;animation:fadeUp .5s .12s ease both}
+
+/* Main layout */
+main{max-width:960px;margin:0 auto;padding:0 48px 80px}
+
+/* Calculator card */
+.calculator{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:32px;animation:fadeUp .5s .18s ease both}
+
+/* Section headers */
+.sec-hdr{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin:28px 0 14px;display:flex;align-items:center;gap:10px;color:var(--btc)}
+.sec-hdr::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.sec-hdr:first-child{margin-top:0}
+
+/* Grid & forms */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+input[type="number"],input[type="text"],select{padding:10px 13px;border:1px solid var(--input-border);border-radius:10px;font-size:14px;font-weight:600;background:var(--input-bg);color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
+input[type="number"]:focus,input[type="text"]:focus,select:focus{border-color:var(--btc);box-shadow:0 0 0 3px rgba(247,147,26,.15)}
+input::placeholder{color:var(--muted);opacity:.6}
+select option{background:var(--card);color:var(--text)}
+
+/* Checkbox row */
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.switch{display:flex;align-items:center;gap:8px}
+input[type="checkbox"]{accent-color:var(--btc);width:16px;height:16px;cursor:pointer}
+
+/* Buttons */
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+button{font-family:'Inter',sans-serif;border:0;padding:12px 16px;border-radius:10px;cursor:pointer;font-size:15px;font-weight:800;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,var(--btc),#e07c12);color:#fff;width:100%;margin-top:8px;padding:15px 32px;border-radius:12px;box-shadow:0 6px 24px rgba(247,147,26,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(247,147,26,.4)}
+.btn-primary:active{transform:translateY(0)}
+.btn-muted{background:var(--bg2);color:var(--muted);border:1px solid var(--border)}
+.btn-muted:hover{border-color:var(--btc);color:var(--btc)}
+
+/* Info/hint text */
+.small{font-size:14px;color:var(--muted);line-height:1.6}
+.note{font-size:14px;color:var(--muted);line-height:1.75;padding:14px 16px;background:var(--bg2);border-radius:10px;border-left:3px solid var(--btc);margin-top:14px}
+.note strong{color:var(--text);font-weight:700}
+
+/* Tag / scenario description box */
+.muted-box{background:var(--bg2);padding:14px 16px;border-radius:10px;margin-top:10px;border:1px solid var(--border)}
+.tag{display:inline-block;padding:6px 10px;border-radius:8px;background:rgba(247,147,26,.12);color:var(--btc);margin-top:0;font-weight:700;font-size:14px;border:1px solid rgba(247,147,26,.2)}
+
+/* Error */
+#error{margin-top:14px;padding:12px 16px;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.3);border-radius:10px;color:var(--red);font-size:14px;display:none}
+#error:not(:empty){display:block}
+
+/* Result box */
+#result{display:none;margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 28px;animation:fadeUp .4s ease both}
+#result.show{display:block}
+
+/* Winner banner inside result */
+.winner-banner{background:linear-gradient(135deg,rgba(247,147,26,.15),rgba(255,215,0,.08));border:1px solid rgba(247,147,26,.35);border-radius:10px;padding:12px 16px;text-align:center;font-weight:900;font-size:15px;color:var(--btc);margin-top:14px}
+
+/* BTC price display */
+#btcPriceDisplay{font-size:14px;color:var(--muted);padding:8px 0}
+
+/* Chart container */
+#chartContainer{display:none;margin-top:24px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
+
+/* Table */
+#tableContainer{margin-top:24px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead{position:sticky;top:0;z-index:10}
+th{padding:10px 10px;text-align:right;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;background:var(--table-head);color:var(--muted);border-bottom:1px solid var(--border)}
+th:first-child{text-align:left}
+td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--prose)}
+td:first-child{text-align:left}
+tr:nth-child(even) td{background:var(--table-alt)}
+tr:hover td{background:rgba(247,147,26,.04)}
+
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:24px}
+.table-title{font-size:14px;font-weight:800;padding:16px 20px;border-bottom:1px solid var(--border);color:var(--text)}
+.table-inner{overflow-x:auto}
+
+canvas{max-width:100%}
+
+/* Footer */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;margin-top:80px}
+
+@media(max-width:760px){
+  nav{padding:0 18px}
+  .hero,main{padding-left:18px;padding-right:18px}
+  .grid{grid-template-columns:1fr}
+  .calculator{padding:20px}
+  footer{padding:28px 18px;flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Scroll progress bar -->
+<div class="scroll-progress"><div class="scroll-fill" id="scrollFill"></div></div>
+
+<!-- Ticker -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>₿ BITCOIN</span><span style="opacity:.4">·</span>
+    <span>21,000,000 MAX SUPPLY</span><span style="opacity:.4">·</span>
+    <span>📊 LUMP SUM VS DCA VS HYBRID</span><span style="opacity:.4">·</span>
+    <span>🔐 SOUND MONEY</span><span style="opacity:.4">·</span>
+    <span>📈 STACK SATS DAILY</span><span style="opacity:.4">·</span>
+    <span>₿ BITCOIN</span><span style="opacity:.4">·</span>
+    <span>21,000,000 MAX SUPPLY</span><span style="opacity:.4">·</span>
+    <span>📊 LUMP SUM VS DCA VS HYBRID</span><span style="opacity:.4">·</span>
+    <span>🔐 SOUND MONEY</span><span style="opacity:.4">·</span>
+    <span>📈 STACK SATS DAILY</span><span style="opacity:.4">·</span>
+  </div>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">₿</div>
+    <div class="logo-text">
+      <span class="logo-name">SATOLOGY</span>
+      <span class="logo-sub">THE STUDY OF SATS</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-price">
+      <span class="nav-dot"></span>
+      <span id="btcPriceNav">$--</span>
+      <span style="font-size:14px;color:var(--muted);margin-left:2px">BTC</span>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="t-icon sun">☀️</span>
+      <span class="t-icon moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">Bitcoin Investment Strategy Simulator</div>
+  <h1>Lump Sum vs DCA vs Hybrid</h1>
+  <p class="hero-sub">Simulation anchored to a clean rainbow (log-log / power-law) baseline + realistic cycles, decreasing volatility, and halving bumps. Compare all three strategies side-by-side with the same capital.</p>
+</div>
+
+<main>
+  <div class="calculator">
+    <div class="sec-hdr">Simulation Parameters</div>
+    <div class="grid">
+      <div class="form-group">
+        <label for="totalInvest">Total Money to Invest (USD)</label>
+        <input type="number" id="totalInvest" min="1" step="1" value="12000">
+        <div class="small">Same capital used for all 3 strategies for fair comparison.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="horizonYears">Investment Horizon (years)</label>
+        <input type="number" id="horizonYears" min="1" max="30" step="1" value="8">
+      </div>
+
+      <div class="form-group">
+        <label for="avgCagr">Average Long-Term CAGR (%)</label>
+        <input type="number" id="avgCagr" min="0" max="200" step="0.1" value="25">
+        <div class="small">Average trend to anchor the rainbow baseline (20–30% recommended).</div>
+      </div>
+
+      <div class="form-group">
+        <label for="cycleAmp">Bull/Bear Cycle Amplitude (%)</label>
+        <input type="number" id="cycleAmp" min="0" max="100" step="1" value="40">
+        <div class="small">How strong cyclical deviations are around baseline (±40% default).</div>
+      </div>
+
+      <div class="form-group">
+        <label for="volStart">Starting Annual Volatility (%)</label>
+        <input type="number" id="volStart" min="1" max="400" step="1" value="80">
+      </div>
+
+      <div class="form-group">
+        <label for="volEnd">Ending Annual Volatility (%)</label>
+        <input type="number" id="volEnd" min="0" max="200" step="1" value="20">
+      </div>
+
+      <div class="form-group">
+        <label for="startPriceOverride">Manual BTC Price Override (optional USD)</label>
+        <input type="number" id="startPriceOverride" min="0" step="0.01" placeholder="Leave blank to use CoinGecko">
+        <div class="small">If blank, current price is fetched from CoinGecko (fallback will be used if fetch fails).</div>
+      </div>
+
+      <div class="form-group">
+        <label>Current BTC Price (fetched)</label>
+        <div id="btcPriceDisplay" class="small">Fetching current price…</div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:16px;">
+      <div style="flex:1">
+        <div class="btn-row">
+          <button class="btn-primary" id="calcBtn">Run Simulation</button>
+          <button class="btn-muted" id="resetBtn">Reset</button>
+        </div>
+      </div>
+      <div style="min-width:220px;text-align:right;">
+        <div class="switch">
+          <label for="showRainbow" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--muted)">Show Rainbow Band</label>
+          <input type="checkbox" id="showRainbow" checked>
+        </div>
+      </div>
+    </div>
+
+    <div class="muted-box" style="margin-top:14px;">
+      <div class="tag" id="scenarioTag">Rainbow baseline (log-log) • cycles ±40% • decreasing vol</div>
+      <div class="small" style="margin-top:8px;">
+        Model: baseline price = C * (t + T0)^p (power-law/log-log). We set C so price at t=0 equals current BTC price, and choose p so the baseline approx achieves the requested avg CAGR over the horizon. Monthly simulated returns are baseline drift + cycle + halving bump + noise (decreasing volatility).
+      </div>
+    </div>
+
+    <div id="error"></div>
+    <div id="result"></div>
+
+    <div id="chartContainer">
+      <canvas id="strategyChart"></canvas>
+    </div>
+
+    <div id="tableContainer"></div>
+  </div>
+</main>
+
+<footer>
+  <div style="display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px">
+    <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:7px">₿</div>
+    SATOLOGY
+  </div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <a href="index.html" style="text-decoration:none;color:var(--muted);font-size:14px;font-weight:500">Home</a>
+    <a href="Retireearlywithbitcoin.html" style="text-decoration:none;color:var(--muted);font-size:14px;font-weight:500">Retire Early</a>
+    <a href="why-bitcoin-wins.html" style="text-decoration:none;color:var(--muted);font-size:14px;font-weight:500">Why Bitcoin Wins</a>
+    <a href="BitcoinSupplyShock.html" style="text-decoration:none;color:var(--muted);font-size:14px;font-weight:500">Supply Shock</a>
+    <a href="Unstoppable.html" style="text-decoration:none;color:var(--muted);font-size:14px;font-weight:500">Unstoppable</a>
+  </div>
+  <div style="font-size:14px;color:var(--muted)">© 2026 SATOLOGY — Understanding Bitcoin</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+// === utilities ===
+const el = id => document.getElementById(id);
+const money = v => '$' + Number(v).toLocaleString(undefined,{maximumFractionDigits:0});
+const COINGECKO = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd';
+const COINGECKO_TIMEOUT_MS = 3500; // short timeout to avoid long hangs
+const FALLBACK_PRICE = 50000; // used if fetch fails (inform user)
+
+// state
+let livePrice = null;
+let lastSim = null;
+let chart = null;
+
+// fetch current BTC price with timeout + fallback
+function fetchPrice() {
+  el('btcPriceDisplay').textContent = 'Fetching current price…';
+
+  const fetchPromise = fetch(COINGECKO).then(r => r.json());
+  const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), COINGECKO_TIMEOUT_MS));
+
+  Promise.race([fetchPromise, timeout])
+    .then(data => {
+      if (data && data.bitcoin && data.bitcoin.usd) {
+        livePrice = Number(data.bitcoin.usd);
+        el('btcPriceDisplay').textContent = money(livePrice) + ' per BTC (CoinGecko)';
+      } else {
+        throw new Error('unexpected response');
+      }
+    })
+    .catch(err => {
+      console.warn('CoinGecko fetch error:', err);
+      livePrice = FALLBACK_PRICE;
+      el('btcPriceDisplay').textContent = `Unable to fetch (CoinGecko). Using fallback ${money(FALLBACK_PRICE)} — or enter manual price.`;
+    });
+}
+
+// Gaussian random
+function randn() {
+  let u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*v);
+}
+
+// build baseline
+function buildBaselineParams(startPrice, months, avgCagr) {
+  const T0 = 1;
+  const M = Math.max(1, months);
+  const clamped = Math.max(-0.99, avgCagr);
+  const numerator = Math.log(Math.pow(1 + clamped, M / 12));
+  const denominator = Math.log((M + T0) / T0);
+  let p = denominator === 0 ? 0 : numerator / denominator;
+  p = Math.max(-5, Math.min(5, p));
+  const C = startPrice / Math.pow(T0, p);
+  return { C, p, T0 };
+}
+
+/*
+  simulatePath improvements:
+  - operate in log-space with mean reversion toward the baseline
+  - shocks are smoothed into multi-month ramps (rise + fall)
+  - decreasing volatility preserved
+  - halving bumps, cycles preserved
+*/
+function simulatePath({startPrice, months, avgCagr, cycleAmp, volStart, volEnd, cyclePeriodMonths = 48}) {
+  const params = buildBaselineParams(startPrice, months, avgCagr);
+  const { C, p, T0 } = params;
+  const baseline = m => C * Math.pow(m + T0, p);
+  const basePrices = [];
+  for (let m=0; m<=months; m++) basePrices.push(baseline(m));
+
+  const bandFactor = 3;
+  const bandUpper = basePrices.map(v => v * bandFactor);
+  const bandLower = basePrices.map(v => Math.max(0.01, v / bandFactor));
+  const ln = Math.log, exp = Math.exp;
+
+  const prices = new Array(months + 1);
+  prices[0] = Math.max(0.01, startPrice);
+  let X = ln(prices[0]);
+
+  // mean reversion base speed
+  const baseTheta = 0.05; // slower monthly pull (so moves take months)
+  const thetaBoost = 0.15; // stronger pull during ramp-down / recovery
+  const shockTheta = 0.25; // pull strength during shock
+  let activeRevertMonths = 0;
+
+  const phase = Math.random() * Math.PI * 2;
+  const halvingMonths = []; // compute halving months using years aligned to 2024,2028...
+  // assume current month = 0 corresponds to current year/month; halving years occur at Jan of 2024,2028...
+  // For simplicity we will mark halving every 48 months relative to month index 0 but ensure halving years align with calendar in rendering.
+  for (let k=1; k<=Math.ceil(months/48)+1; k++) halvingMonths.push(k*48);
+
+  // shock smoothing state
+  let shock = null; // {startMonth, peakMonth, endMonth, up, rampUp, rampDown}
+  const monthlyShockBaseProb = 0.02; // lower chance to create a shock
+  const minRamp = 6; // months to reach peak (min)
+  const maxRamp = 14; // months to reach peak (max)
+  const avgFall = 9;   // months to fall back on average
+
+  // helper: clamp to band
+  function clampToBand(logPrice, m) {
+    const up = ln(bandUpper[m]);
+    const lo = ln(bandLower[m]);
+    if (logPrice > up) return up;
+    if (logPrice < lo) return lo;
+    return logPrice;
+  }
+
+  // smoothstep helper
+  function smoothstep(frac) {
+    frac = Math.max(0, Math.min(1, frac));
+    return 3 * frac * frac - 2 * frac * frac * frac;
+  }
+
+  // For each month, produce log-return composed of
+  // baseline drift + cycleMonthly + halvingBonus + OU mean-reversion component + noise + optional shock ramp
+  for (let m=1; m<=months; m++) {
+    const lnBase_m = ln(Math.max(1e-9, basePrices[m]));
+    const lnBase_m1 = ln(Math.max(1e-9, basePrices[m-1]));
+    const baselineDrift = lnBase_m - lnBase_m1;
+
+    // cyclical component (smoothed)
+    const cycleAnnual = cycleAmp * Math.sin(2 * Math.PI * (m / cyclePeriodMonths) + phase);
+    const cycleMonthly = Math.log(Math.max(1e-9, 1 + cycleAnnual)) / 12;
+
+    // halving soft bump
+    let halvingBonus = 0;
+    for (const hm of halvingMonths) {
+      const dist = Math.abs(m - hm);
+      if (dist <= 10) { // widen halving influence a bit for smoother rise/fall
+        const peak = 0.08;
+        const bump = peak * Math.exp(-(dist*dist)/(2 * 5 * 5));
+        halvingBonus += Math.log(1 + bump) / 12;
+      }
+    }
+
+    // decreasing volatility (annual -> monthly)
+    const tFrac = m / Math.max(1, months);
+    const annVol = volStart * (1 - tFrac) + volEnd * tFrac;
+    const monthlySigma = annVol / Math.sqrt(12);
+
+    // noise
+    const eps = randn() * monthlySigma;
+
+    // Possibly start a new shock if none active (rare)
+    if (!shock && Math.random() < monthlyShockBaseProb) {
+      // choose upward or downward shock
+      const up = Math.random() < 0.5;
+      const rampUp = Math.floor(minRamp + Math.random() * (maxRamp - minRamp)); // months to peak
+      const rampDown = Math.floor(Math.max(4, avgFall + (Math.random() * 6 - 3))); // months to fall
+      const peakMonth = m + rampUp;
+      const endMonth = peakMonth + rampDown;
+      shock = { startMonth: m, peakMonth, endMonth, up, rampUp, rampDown };
+    }
+
+    // mean reversion speed (we will bias toward ln(baseline))
+    let theta = activeRevertMonths > 0 ? thetaBoost : baseTheta;
+    let revertTarget = lnBase_m;
+
+    // If shock active, adjust revertTarget to time-varying extreme
+    if (shock) {
+      if (m > shock.endMonth) {
+        shock = null;
+        activeRevertMonths = Math.max(activeRevertMonths, 2);
+      } else {
+        let amp;
+        if (m <= shock.peakMonth) {
+          const frac = (m - shock.startMonth) / Math.max(1, shock.rampUp);
+          amp = smoothstep(frac);
+        } else {
+          const frac = (m - shock.peakMonth) / Math.max(1, shock.rampDown);
+          amp = 1 - smoothstep(frac);
+        }
+        const dev = shock.up ? Math.log(bandFactor) : -Math.log(bandFactor);
+        revertTarget = lnBase_m + amp * dev;
+        theta = shockTheta;
+      }
+    }
+
+    // base OU-like update preserving baseline drift
+    let Xnext = X + theta * (revertTarget - X) + baselineDrift + cycleMonthly + halvingBonus + eps;
+
+    // clamp and update active revert months
+    const clamped = clampToBand(Xnext, Math.min(m, bandUpper.length-1));
+    if (clamped !== Xnext) {
+      Xnext = clamped;
+      activeRevertMonths = Math.max(activeRevertMonths, 2);
+    }
+
+    // step forward and decay active revert
+    X = Xnext;
+    if (activeRevertMonths > 0) activeRevertMonths--;
+
+    prices[m] = Math.max(0.01, exp(X));
+  }
+
+  // final safety clamp
+  for (let m=0; m<=months; m++) {
+    prices[m] = Math.min(Math.max(prices[m], bandLower[m]), bandUpper[m]);
+  }
+
+  return { prices, basePrices, params, halvingMonths, bandLower, bandUpper };
+}
+ // strategies
+function calcStrategies(prices, totalInvest, months) {
+  const monthlyInstall = totalInvest / months;
+  const btcLump = totalInvest / prices[0];
+  let btcDca = 0; for (let m=0; m<months; m++) btcDca += (monthlyInstall / prices[m]);
+  const half = totalInvest / 2;
+  let btcHybrid = half / prices[0];
+  const hybridMonthly = (totalInvest - half) / months;
+  for (let m=0; m<months; m++) btcHybrid += (hybridMonthly / prices[m]);
+  const lumpSeries = prices.map(p => btcLump * p);
+  const dcaSeries = prices.map(p => btcDca * p);
+  const hybridSeries = prices.map(p => btcHybrid * p);
+  return { btcLump, btcDca, btcHybrid, lumpSeries, dcaSeries, hybridSeries };
+}
+
+// render chart helper
+function renderChart(sim, showRainbow=true) {
+  const ctx = document.getElementById('strategyChart').getContext('2d');
+  if (chart) chart.destroy();
+
+  // Build labels: every month has an entry, but we only display year labels for months that are multiples of 12.
+  const currentYear = sim.currentYear || new Date().getFullYear();
+  const totalMonths = sim.months;
+  const labels = [];
+  for (let m=0; m<=totalMonths; m++) {
+    if (m % 12 === 0) labels.push(String(currentYear + (m/12)));
+    else labels.push('');
+  }
+
+  // datasets
+  const datasets = [
+    {
+      label: 'Lump Sum — Portfolio Value',
+      data: sim.lumpSeries,
+      borderWidth: 2,
+      borderColor: '#2b7cff',
+      backgroundColor: 'transparent',
+      tension: 0.25,
+      yAxisID: 'y'
+    },
+    {
+      label: 'DCA — Portfolio Value',
+      data: sim.dcaSeries,
+      borderWidth: 2,
+      borderColor: '#f7931a',
+      backgroundColor: 'transparent',
+      tension: 0.25,
+      yAxisID: 'y'
+    },
+    {
+      label: 'Hybrid — Portfolio Value',
+      data: sim.hybridSeries,
+      borderWidth: 2,
+      borderColor: '#28a745',
+      backgroundColor: 'transparent',
+      tension: 0.25,
+      yAxisID: 'y'
+    },
+    {
+      label: 'BTC Price (simulation)',
+      data: sim.prices,
+      borderWidth: 1,
+      borderColor: '#6c757d',
+      backgroundColor: 'transparent',
+      tension: 0.2,
+      yAxisID: 'y1'
+    }
+  ];
+
+  if (showRainbow) {
+    const baseline = sim.basePrices;
+    const bandFactor = 3;
+    const upper = baseline.map(v => v * bandFactor);
+    const lower = baseline.map(v => v / bandFactor);
+
+    datasets.push({
+      label: 'Rainbow Upper',
+      data: upper,
+      borderWidth: 0,
+      borderColor: 'rgba(0,0,0,0)',
+      backgroundColor: 'rgba(247,147,26,0.08)',
+      fill: '+1', // fill downward toward the baseline dataset (ordering matters)
+      yAxisID: 'y1'
+    });
+    datasets.push({
+      label: 'Rainbow Baseline',
+      data: baseline,
+      borderWidth: 1,
+      borderColor: 'rgba(247,147,26,0.35)',
+      backgroundColor: 'transparent',
+      tension: 0.1,
+      yAxisID: 'y1'
+    });
+    datasets.push({
+      label: 'Rainbow Lower',
+      data: lower,
+      borderWidth: 0,
+      borderColor: 'rgba(0,0,0,0)',
+      backgroundColor: 'rgba(43,124,255,0.04)',
+      fill: '-1',
+      yAxisID: 'y1'
+    });
+  }
+
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y: {
+          type: 'linear',
+          position: 'left',
+          ticks: { callback: v => '$' + Number(v).toLocaleString(), color: '#555' },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { callback: v => '$' + Number(v).toLocaleString(), color: '#555' }
+        },
+        x: {
+          ticks: {
+            callback: function(val, index) {
+              // only show the tick label if it's a non-empty label (we prepared '' for intermediate months)
+              const label = this.getLabelForValue(index);
+              return label ? label : '';
+            },
+            maxRotation: 0,
+            autoSkip: false,
+            color: '#555'
+          },
+          grid: { color: 'rgba(255,255,255,0.03)' }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#888', font: { family: 'Inter', size: 12 } }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(17,17,20,0.95)',
+          borderColor: '#1e1e24',
+          borderWidth: 1,
+          titleColor: '#e8e8e8',
+          bodyColor: '#888',
+          callbacks: {
+            label: (ctx) => {
+              const v = ctx.parsed.y;
+              return `${ctx.dataset.label}: $${Number(v).toLocaleString()}`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// render summary/table
+function renderSummary(sim) {
+  const end = sim.months;
+  const lumpFinal = Math.round(sim.lumpSeries[end]);
+  const dcaFinal = Math.round(sim.dcaSeries[end]);
+  const hybridFinal = Math.round(sim.hybridSeries[end]);
+  const html = `
+    <div style="font-size:14px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Simulation Results</div>
+    <div style="margin-bottom:8px;font-size:14px;color:var(--prose)"><strong style="color:var(--text)">Total Invested (each strategy):</strong> <strong style="color:var(--btc)">${money(Math.round(sim.inputs.totalInvest))}</strong></div>
+    <div style="margin-bottom:6px;font-size:14px;color:var(--prose)"><strong style="color:var(--text)">Final Value — Lump Sum:</strong> <strong style="color:#2b7cff">${money(lumpFinal)}</strong> <span style="color:var(--muted);font-size:14px">(${sim.btcLump.toFixed(8)} BTC)</span></div>
+    <div style="margin-bottom:6px;font-size:14px;color:var(--prose)"><strong style="color:var(--text)">Final Value — DCA:</strong> <strong style="color:var(--btc)">${money(dcaFinal)}</strong> <span style="color:var(--muted);font-size:14px">(${sim.btcDca.toFixed(8)} BTC)</span></div>
+    <div style="margin-bottom:12px;font-size:14px;color:var(--prose)"><strong style="color:var(--text)">Final Value — Hybrid:</strong> <strong style="color:var(--green)">${money(hybridFinal)}</strong> <span style="color:var(--muted);font-size:14px">(${sim.btcHybrid.toFixed(8)} BTC)</span></div>
+    <div class="winner-banner">
+      Winner: ${determineWinner(sim)}
+    </div>
+    <div class="small" style="margin-top:12px;">Note: baseline is a power-law / log-log fit anchored to the current price and average CAGR. The simulated path follows that baseline with cycles and reducing volatility. This is an educational model, not financial advice.</div>
+  `;
+  el('result').innerHTML = html;
+  el('result').style.display = 'block';
+  el('result').classList.add('show');
+}
+
+function determineWinner(sim) {
+  const end = sim.months;
+  const arr = [
+    { name:'Lump Sum', val: sim.lumpSeries[end] },
+    { name:'DCA', val: sim.dcaSeries[end] },
+    { name:'Hybrid', val: sim.hybridSeries[end] }
+  ];
+  arr.sort((a,b)=>b.val-a.val);
+  const diff = Math.abs(arr[0].val - arr[1].val);
+  return `${arr[0].name} by ${money(Math.round(diff))}`;
+}
+
+function renderTable(sim) {
+  let html = `<div class="table-wrap"><div class="table-title">Year-by-Year Breakdown</div><div class="table-inner"><table><thead><tr><th>Year</th><th>Lump Value ($)</th><th>DCA Value ($)</th><th>Hybrid Value ($)</th><th>Total Invested by Year ($)</th></tr></thead><tbody>`;
+  for (let i=0; i<sim.years.length; i++) {
+    html += `<tr><td>${sim.years[i]}</td><td>${money(sim.yearLump[i])}</td><td>${money(sim.yearDca[i])}</td><td>${money(sim.yearHybrid[i])}</td><td>${money(sim.investedYear[i])}</td></tr>`;
+  }
+  html += `</tbody></table></div></div>`;
+  el('tableContainer').innerHTML = html;
+}
+
+// run simulation (UI entry)
+function runSimulation() {
+  el('error').textContent = '';
+  el('result').style.display = 'none';
+  el('result').classList.remove('show');
+  el('tableContainer').innerHTML = '';
+  if (chart) { chart.destroy(); chart = null; }
+
+  const totalInvest = Math.max(0, Number(el('totalInvest').value || 0));
+  const horizonYears = Math.max(1, Math.round(Number(el('horizonYears').value || 1)));
+  const avgCagr = Math.max(-0.99, Number(el('avgCagr').value || 25) / 100);
+  const cycleAmp = Math.max(0, Number(el('cycleAmp').value || 40) / 100);
+  const volStart = Math.max(0.001, Number(el('volStart').value || 80) / 100);
+  const volEnd = Math.max(0, Number(el('volEnd').value || 20) / 100);
+  const manual = Number(el('startPriceOverride').value || 0);
+
+  if (totalInvest <= 0) { el('error').textContent = 'Total investment must be > 0.'; return; }
+  const months = horizonYears * 12;
+
+  // ensure we have a start price
+  if (!livePrice && !manual) { el('error').textContent = 'No current BTC price — allow CoinGecko or enter a manual price.'; return; }
+  const startPrice = (manual > 0) ? manual : livePrice;
+
+  const { prices, basePrices, params } = simulatePath({
+    startPrice,
+    months,
+    avgCagr,
+    cycleAmp,
+    volStart,
+    volEnd,
+    cyclePeriodMonths: 48
+  });
+
+  const strat = calcStrategies(prices, totalInvest, months);
+
+  // build year snapshots and year labels starting from current year at runtime
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  const yearLump = [];
+  const yearDca = [];
+  const yearHybrid = [];
+  const investedYear = [];
+  for (let y=0; y<=horizonYears; y++) {
+    const m = Math.min(months, y*12);
+    years.push(String(currentYear + y));
+    yearLump.push(Math.round(strat.lumpSeries[m]));
+    yearDca.push(Math.round(strat.dcaSeries[m]));
+    yearHybrid.push(Math.round(strat.hybridSeries[m]));
+    const investedSoFar = (y===0) ? 0 : Math.round((totalInvest / months) * Math.min(months, y*12));
+    investedYear.push(investedSoFar);
+  }
+
+  lastSim = {
+    inputs: { totalInvest, horizonYears, avgCagr, cycleAmp, volStart, volEnd, startPrice },
+    months,
+    prices, basePrices, params,
+    btcLump: strat.btcLump, btcDca: strat.btcDca, btcHybrid: strat.btcHybrid,
+    lumpSeries: strat.lumpSeries, dcaSeries: strat.dcaSeries, hybridSeries: strat.hybridSeries,
+    years, yearLump, yearDca, yearHybrid, investedYear,
+    currentYear
+  };
+
+  renderSummary(lastSim);
+  renderTable(lastSim);
+  renderChart(lastSim, document.getElementById('showRainbow').checked);
+  el('chartContainer').style.display = 'block';
+}
+
+// wire events
+el('calcBtn').addEventListener('click', (e) => { e.preventDefault(); runSimulation(); });
+el('resetBtn').addEventListener('click', (e) => { e.preventDefault(); resetAll(); });
+el('showRainbow').addEventListener('change', () => {
+  if (lastSim) renderChart(lastSim, el('showRainbow').checked);
+});
+
+// reset defaults
+function resetAll() {
+  el('totalInvest').value = 12000;
+  el('horizonYears').value = 8;
+  el('avgCagr').value = 25;
+  el('cycleAmp').value = 40;
+  el('volStart').value = 80;
+  el('volEnd').value = 20;
+  el('startPriceOverride').value = '';
+  el('result').style.display = 'none';
+  el('result').classList.remove('show');
+  el('tableContainer').innerHTML = '';
+  el('chartContainer').style.display = 'none';
+  el('error').textContent = '';
+  if (chart) { chart.destroy(); chart = null; }
+  lastSim = null;
+}
+
+// initial fetch + reset
+fetchPrice();
+resetAll();
+
+// ── SATOLOGY theme toggle ──────────────────────────────────────
+const _html = document.documentElement;
+_html.setAttribute('data-theme', localStorage.getItem('satology-theme') || 'dark');
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = _html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  _html.setAttribute('data-theme', next);
+  localStorage.setItem('satology-theme', next);
+});
+
+// ── Live BTC price (nav badge) ─────────────────────────────────
+(function fetchBTC() {
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    .then(r => r.json()).then(d => {
+      const fmt = '$' + d.bitcoin.usd.toLocaleString();
+      const navEl = document.getElementById('btcPriceNav');
+      if (navEl) navEl.textContent = fmt;
+    }).catch(() => {});
+  setTimeout(fetchBTC, 30000);
+})();
+
+// ── Scroll progress ────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  const fill = document.getElementById('scrollFill');
+  if (!fill) return;
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  fill.style.width = Math.min(pct, 100) + '%';
+});
+</script>
+</body>
+</html>

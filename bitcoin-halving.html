@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>The Bitcoin Halving — Why Every 4 Years Changes Everything | SATOLOGY</title>
+<meta name="description" content="A definitive guide to Bitcoin's halving mechanism — the programmed supply shock that happens every four years and has preceded every major bull market in Bitcoin's history.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background-color: #0A0805;
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0A0805;
+  color: #E8DEC8;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.5;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 60px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10,8,5,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(240,165,0,0.1);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.nav-logo-symbol {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.3rem;
+  color: #F0A500;
+  line-height: 1;
+}
+
+.nav-logo-name {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.22em;
+  color: #E8DEC8;
+  text-transform: uppercase;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-back {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: #C0AD90;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: #F0A500; }
+
+.nav-price {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(240,165,0,0.08);
+  border: 1px solid rgba(240,165,0,0.2);
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #F0A500;
+}
+
+.nav-dot {
+  width: 6px;
+  height: 6px;
+  background: #4CAF50;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  position: relative;
+  background-color: #0A0805;
+  background-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(240,165,0,0.09) 0%, transparent 70%);
+  border-bottom: 1px solid rgba(240,165,0,0.12);
+}
+
+.hero-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
+  font-size: clamp(3.5rem, 14vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: #FAF5EB;
+  max-width: 900px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero h1 span {
+  color: #F0A500;
+  display: block;
+}
+
+.hero-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: #C0AD90;
+  margin-top: 1.5rem;
+  max-width: 600px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.65s forwards;
+}
+
+.hero-stat-row {
+  margin-top: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 0.9s forwards;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-stat-pill {
+  border: 1px solid rgba(240,165,0,0.25);
+  background-color: rgba(240,165,0,0.04);
+  padding: 1rem 1.6rem;
+  text-align: center;
+}
+
+.hero-stat-pill-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+}
+
+.hero-stat-pill-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+  display: block;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 1.4s forwards;
+}
+
+.scroll-hint span {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #C0AD90;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, #F0A500, transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── ARTICLE ── */
+article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 5rem 2rem 8rem;
+  background-color: #0A0805;
+}
+
+.section {
+  margin-bottom: 5rem;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chapter {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chapter::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: rgba(240,165,0,0.15);
+}
+
+h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.2;
+  color: #FAF5EB;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+p {
+  margin-bottom: 1.2rem;
+  color: #E8DEC8;
+  font-size: 1.05rem;
+}
+
+/* ── STAT BLOCKS ── */
+.stat-block {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.2);
+  border-left: 3px solid #F0A500;
+  padding: 2.5rem 2rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-block::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(240,165,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-number {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── MONO FACT ── */
+.mono-fact {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #F0A500;
+  background-color: rgba(240,165,0,0.06);
+  border-left: 2px solid #F0A500;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  letter-spacing: 0.05em;
+  line-height: 1.7;
+}
+
+/* ── BLOCKQUOTE ── */
+blockquote {
+  padding: 2.5rem 0;
+  margin: 3rem 0;
+  border-top: 1px solid rgba(240,165,0,0.15);
+  border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+blockquote p {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #FAF5EB;
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+
+blockquote cite {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 1rem;
+}
+
+/* ── SUPPLY BARS ── */
+.supply-bar { margin: 1.6rem 0; }
+
+.supply-bar-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bar-track {
+  height: 10px;
+  background-color: #1A1610;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-fill.gold { background-color: #F0A500; }
+.bar-fill.dim  { background-color: rgba(240,165,0,0.35); }
+.bar-fill.red  { background-color: #FF4D1C; }
+.bar-fill.pale { background-color: rgba(240,165,0,0.18); }
+
+/* ── COLLISION / COMPARISON ── */
+.collision {
+  background-color: #1A1610;
+  border: 1px solid rgba(240,165,0,0.15);
+  padding: 2.5rem;
+  margin: 2.5rem 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.collision-num {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1;
+  display: block;
+}
+.collision-num.red  { color: #FF4D1C; }
+.collision-num.gold { color: #F0A500; }
+
+.collision-desc {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+
+.vs {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 2rem;
+  color: #FF4D1C;
+  border: 1px solid rgba(255,77,28,0.3);
+  width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+
+/* ── PILLARS GRID ── */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.pillar-item {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.6rem;
+}
+
+.pillar-item h4 {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.1rem;
+  color: #FAF5EB;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.pillar-item p {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  margin-bottom: 0;
+}
+
+/* ── DATA ROW ── */
+.data-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  margin: 2.5rem 0;
+}
+
+.data-box {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.4rem 1rem;
+  text-align: center;
+}
+
+.data-box-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.9rem;
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.data-box-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* ── SHIFT ── */
+.shift {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.12);
+  margin: 2.5rem 0;
+}
+
+.shift-from {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  text-decoration: line-through;
+  margin-bottom: 0.8rem;
+}
+
+.shift-arrow {
+  font-size: 1.5rem;
+  color: #F0A500;
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.shift-to {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  color: #FAF5EB;
+}
+
+/* ── HALVING TIMELINE ── */
+.halving-timeline {
+  margin: 3rem 0;
+  position: relative;
+}
+
+.halving-timeline-line {
+  position: absolute;
+  left: 22px;
+  top: 24px;
+  bottom: 24px;
+  width: 2px;
+  background: linear-gradient(to bottom, #F0A500, rgba(240,165,0,0.15));
+}
+
+.halving-event {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  align-items: flex-start;
+}
+
+.halving-dot {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: #110E08;
+  border: 2px solid #F0A500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 0.9rem;
+  color: #F0A500;
+  position: relative;
+  z-index: 1;
+}
+
+.halving-dot.next {
+  border-color: rgba(240,165,0,0.4);
+  color: rgba(240,165,0,0.5);
+  border-style: dashed;
+}
+
+.halving-card {
+  flex: 1;
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.15);
+  padding: 1.4rem 1.6rem;
+}
+
+.halving-card.next {
+  border-color: rgba(240,165,0,0.08);
+  opacity: 0.75;
+}
+
+.halving-card-date {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.halving-card-date.next {
+  color: rgba(240,165,0,0.5);
+}
+
+.halving-card-title {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.4rem;
+  color: #FAF5EB;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.6rem;
+}
+
+.halving-card-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.halving-card-stat {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+.halving-card-stat strong {
+  color: #E8DEC8;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.halving-card-return {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.3rem;
+  color: #4CAF50;
+  margin-left: auto;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.halving-card-return.pending {
+  color: #C0AD90;
+  font-size: 1rem;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #F0A500, transparent);
+  margin: 3rem auto;
+}
+
+/* ── FINALE ── */
+.finale {
+  text-align: center;
+  padding: 5rem 2rem;
+  background-image: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(240,165,0,0.06), transparent 70%);
+}
+
+.finale-question {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2rem, 7vw, 5rem);
+  line-height: 1;
+  color: #FAF5EB;
+  margin-bottom: 1.2rem;
+}
+
+.finale-question span { color: #F0A500; }
+
+.finale-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #C0AD90;
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+
+.finale-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.finale-link {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C0AD90;
+  text-decoration: none;
+  border: 1px solid rgba(240,165,0,0.2);
+  padding: 0.8rem 1.4rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+.finale-link:hover {
+  color: #F0A500;
+  border-color: rgba(240,165,0,0.5);
+}
+
+/* ── FOOTER ── */
+.footer-wrap {
+  background-color: #070604;
+  border-top: 1px solid rgba(240,165,0,0.1);
+}
+
+footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.4rem;
+  color: #F0A500;
+  letter-spacing: 0.06em;
+}
+
+.footer-copy {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.footer-links a {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #C0AD90;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: #F0A500; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+@media (max-width: 520px) {
+  .collision { grid-template-columns: 1fr; }
+  .vs { margin: 0 auto; }
+  .pillars-grid { grid-template-columns: 1fr; }
+  .halving-card-stats { flex-direction: column; gap: 0.8rem; }
+  .halving-card-return { margin-left: 0; margin-top: 0.5rem; }
+  nav { padding: 0 1rem; }
+  .nav-back { display: none; }
+  .hero-stat-row { gap: 0.8rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-symbol">₿</span>
+    <span class="nav-logo-name">SATOLOGY</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Home</a>
+    <div class="nav-price">
+      <span class="nav-dot"></span>
+      <span id="btcPriceNav">$--</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-label">₿ The Mechanism That Changes Everything</p>
+  <h1>The Bitcoin<span>Halving</span></h1>
+  <p class="hero-sub">Every four years, Bitcoin's new supply is cut in half. Permanently. Automatically. Without the permission of any government, bank, or committee. Here is why that matters more than almost anything in finance.</p>
+
+  <div class="hero-stat-row">
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">4</span>
+      <span class="hero-stat-pill-label">Halvings completed</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">450</span>
+      <span class="hero-stat-pill-label">New BTC per day (post-2024)</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">2140</span>
+      <span class="hero-stat-pill-label">Year last satoshi is mined</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">21M</span>
+      <span class="hero-stat-pill-label">Hard cap — forever</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article>
+
+  <!-- CHAPTER 1 -->
+  <div class="section">
+    <div class="chapter">Chapter 01</div>
+    <h2>What Is the Halving? The Rule Carved Into Bitcoin's Core</h2>
+
+    <p>On January 3, 2009, a person or group of people known only as Satoshi Nakamoto mined Bitcoin's very first block — the Genesis Block. The reward for solving that block was 50 Bitcoin. That's how new Bitcoin enters the world: miners compete to solve a cryptographic puzzle roughly every 10 minutes, and whoever succeeds receives freshly created Bitcoin. This is called the block reward.</p>
+
+    <p>But Satoshi built a twist into the protocol. Every 210,000 blocks — which works out to approximately four years at the target pace of one block per 10 minutes — the block reward is cut in half. Automatically. Irreversibly. Without any human decision-making required. This event is called the halving.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">210,000</span>
+      <span class="stat-label">Blocks between each halving — roughly 4 years at Bitcoin's target pace of one block per 10 minutes</span>
+    </div>
+
+    <p>It has already happened four times. On November 28, 2012, the reward dropped from 50 BTC to 25 BTC. On July 9, 2016, it dropped from 25 to 12.5. On May 11, 2020, from 12.5 to 6.25. On April 20, 2024 — the most recent halving — it dropped from 6.25 to 3.125 BTC per block. The next halving is expected around 2028, when the reward will drop to 1.5625 BTC.</p>
+
+    <p>This is not a corporate policy. It is not a government mandate. It is not a decision made by any committee. It is mathematics, encoded in software, validated by thousands of computers running simultaneously around the world. No president can halt it. No central bank can override it. No emergency provision exists to change it. The halving happens because Bitcoin's code says it happens, and the global network enforces that code every ten minutes.</p>
+
+    <div class="mono-fact">
+      Genesis Block (Jan 3, 2009): 50 BTC reward per block<br>
+      Halving 1 (Nov 28, 2012): 25 BTC per block<br>
+      Halving 2 (Jul 9, 2016): 12.5 BTC per block<br>
+      Halving 3 (May 11, 2020): 6.25 BTC per block<br>
+      Halving 4 (Apr 20, 2024): 3.125 BTC per block<br>
+      Halving 5 (~2028): 1.5625 BTC per block
+    </div>
+
+    <p>The final halving will occur sometime around the year 2140, when the last fraction of a Bitcoin — the final satoshi — is mined. After that, no new Bitcoin will ever be created. The supply is capped at 21,000,000 BTC. Forever. This is the core design. And the halving is the mechanism that enforces it.</p>
+  </div>
+
+  <!-- CHAPTER 2 -->
+  <div class="section">
+    <div class="chapter">Chapter 02</div>
+    <h2>Why Satoshi Designed It This Way — The Philosophy of Scarcity</h2>
+
+    <p>The halving is not an accident. It is the most deliberate and consequential design decision in Bitcoin's architecture. To understand why Satoshi built it this way, you have to understand what problem Bitcoin was trying to solve.</p>
+
+    <p>Every government-issued currency in history — every fiat currency — has been subject to the same fundamental vulnerability: the people who control the money supply can always create more. Sometimes this is done for legitimate economic reasons. Often it is done for political convenience. Always, the cost is borne by the people holding the currency as its purchasing power erodes. The halving is Bitcoin's answer to this problem.</p>
+
+    <blockquote>
+      <p>"The root problem with conventional currency is all the trust that's required to make it work. The central bank must be trusted not to debase the currency, but the history of fiat currencies is full of that trust being violated."</p>
+      <cite>— Satoshi Nakamoto, February 2009</cite>
+    </blockquote>
+
+    <p>Satoshi modeled Bitcoin's supply on gold — not by accident, but by analogy. In gold mining, the easiest ore is extracted first. As time passes, miners must go deeper, work harder, and spend more energy to extract each new ounce. The rate of new gold entering the world naturally declines over time, even as demand grows. This is why gold has held value across civilizations for 5,000 years.</p>
+
+    <p>Bitcoin replicates this dynamic digitally. In the early years, the reward was high because Bitcoin needed to distribute coins widely and incentivize the infrastructure to grow. As the network matured, the reward halved, then halved again. The inflation rate dropped from roughly 50% in Bitcoin's first year to less than 1% today. By 2028, it will be below 0.4%.</p>
+
+    <div class="collision">
+      <div>
+        <span class="collision-num red">~7–8%</span>
+        <div class="collision-desc">USD annual inflation in peak years — created by decision</div>
+      </div>
+      <div class="vs">VS</div>
+      <div>
+        <span class="collision-num gold">0.85%</span>
+        <div class="collision-desc">Bitcoin annual inflation today — determined by code</div>
+      </div>
+    </div>
+
+    <p>The crucial difference between Bitcoin's supply and gold's supply is predictability. We do not know exactly how much gold will be mined next year — new mines are discovered, old ones are exhausted. But we know — to the exact satoshi — how many Bitcoin will be created on any given day, in any given year, for the next century. This predictability is not a minor feature. It is a revolutionary one. For the first time in human history, a monetary asset has a supply schedule that can be audited, verified, and trusted by anyone on Earth without relying on the word of any institution or government.</p>
+  </div>
+
+  <!-- CHAPTER 3 -->
+  <div class="section">
+    <div class="chapter">Chapter 03</div>
+    <h2>The Historical Record — Four Halvings, Four Supply Shocks, One Pattern</h2>
+
+    <p>Theory is useful. History is more compelling. Bitcoin has now undergone four halvings, and the market reaction to each one has been studied exhaustively by analysts across the financial spectrum. The pattern is consistent enough to be remarkable — and different enough in character to require careful reading.</p>
+
+    <!-- TIMELINE VISUALIZATION -->
+    <div class="halving-timeline">
+      <div class="halving-timeline-line"></div>
+
+      <div class="halving-event">
+        <div class="halving-dot">H1</div>
+        <div class="halving-card">
+          <div class="halving-card-date">November 28, 2012 — Block 210,000</div>
+          <div class="halving-card-title">First Halving — 50 BTC to 25 BTC</div>
+          <div class="halving-card-stats">
+            <div class="halving-card-stat">
+              <strong>~$12</strong>
+              Price at halving
+            </div>
+            <div class="halving-card-stat">
+              <strong>~$1,000</strong>
+              Price 12 months later
+            </div>
+            <div class="halving-card-stat">
+              <strong>$12 → $1,163</strong>
+              Peak within 13 months
+            </div>
+            <div class="halving-card-return">+8,233%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="halving-event">
+        <div class="halving-dot">H2</div>
+        <div class="halving-card">
+          <div class="halving-card-date">July 9, 2016 — Block 420,000</div>
+          <div class="halving-card-title">Second Halving — 25 BTC to 12.5 BTC</div>
+          <div class="halving-card-stats">
+            <div class="halving-card-stat">
+              <strong>~$650</strong>
+              Price at halving
+            </div>
+            <div class="halving-card-stat">
+              <strong>~$2,500</strong>
+              Price 12 months later
+            </div>
+            <div class="halving-card-stat">
+              <strong>$650 → $19,783</strong>
+              Peak within 18 months
+            </div>
+            <div class="halving-card-return">+2,943%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="halving-event">
+        <div class="halving-dot">H3</div>
+        <div class="halving-card">
+          <div class="halving-card-date">May 11, 2020 — Block 630,000</div>
+          <div class="halving-card-title">Third Halving — 12.5 BTC to 6.25 BTC</div>
+          <div class="halving-card-stats">
+            <div class="halving-card-stat">
+              <strong>~$8,600</strong>
+              Price at halving
+            </div>
+            <div class="halving-card-stat">
+              <strong>~$57,000</strong>
+              Price 12 months later
+            </div>
+            <div class="halving-card-stat">
+              <strong>$8,600 → $68,789</strong>
+              Peak within 18 months
+            </div>
+            <div class="halving-card-return">+700%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="halving-event">
+        <div class="halving-dot">H4</div>
+        <div class="halving-card">
+          <div class="halving-card-date">April 20, 2024 — Block 840,000</div>
+          <div class="halving-card-title">Fourth Halving — 6.25 BTC to 3.125 BTC</div>
+          <div class="halving-card-stats">
+            <div class="halving-card-stat">
+              <strong>~$63,000</strong>
+              Price at halving
+            </div>
+            <div class="halving-card-stat">
+              <strong>~$103,000</strong>
+              Price May 2026
+            </div>
+            <div class="halving-card-stat">
+              <strong>First institutional ETF cycle</strong>
+              Unprecedented demand structure
+            </div>
+            <div class="halving-card-return">+64% so far</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="halving-event">
+        <div class="halving-dot next">H5</div>
+        <div class="halving-card next">
+          <div class="halving-card-date next">~2028 — Block 1,050,000 (Projected)</div>
+          <div class="halving-card-title">Fifth Halving — 3.125 BTC to 1.5625 BTC</div>
+          <div class="halving-card-stats">
+            <div class="halving-card-stat">
+              <strong>~225 BTC/day</strong>
+              New supply after this halving
+            </div>
+            <div class="halving-card-stat">
+              <strong>~82,125 BTC/year</strong>
+              Total annual new issuance
+            </div>
+            <div class="halving-card-stat">
+              <strong>Sovereign + institutional demand</strong>
+              Already exceeds projected supply
+            </div>
+            <div class="halving-card-return pending">Scheduled</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>The data tells a clear story. Each halving has preceded a substantial increase in Bitcoin's price. The percentage gains have diminished with each cycle — from 8,000% to 3,000% to 700% — because that is the mathematical reality of a large numbers law. An asset moving from $12 to $1,000 requires the same absolute gain as the first halving cycle; the same gain in percentage terms would now put a single Bitcoin at over $8 million. The percentage returns compress. The absolute dollar gains grow.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">$0 → $103K+</span>
+      <span class="stat-label">Bitcoin's price journey across four halving cycles — every major bull market began within 12–18 months of a halving</span>
+    </div>
+
+    <p>The fourth halving cycle — still in progress as of 2026 — operates in a fundamentally different demand environment than any previous cycle. The presence of regulated spot ETFs, institutional allocators, and government strategic reserves has changed the character of demand in ways that the percentage-return comparisons do not fully capture. We will explore this in Chapter 6.</p>
+  </div>
+
+  <!-- CHAPTER 4 -->
+  <div class="section">
+    <div class="chapter">Chapter 04</div>
+    <h2>Supply Shock Mechanics — The Simple Math That Cannot Be Argued With</h2>
+
+    <p>The emotional power of the halving narrative can obscure something far more important: the cold, mechanical logic of supply and demand. You do not need to believe in Bitcoin's ideology to understand why the halving matters. You need only be able to count.</p>
+
+    <p>Before the April 2024 halving, Bitcoin miners collectively produced approximately 900 new Bitcoin every single day. These coins entered the market through exchanges, OTC desks, and miner selling to cover operating costs. 900 BTC per day was the daily new supply available to meet demand.</p>
+
+    <p>After the halving, that number dropped to approximately 450 BTC per day — roughly 164,250 BTC per year. The demand, by contrast, had not halved. In fact, demand had accelerated dramatically in the months before and after the halving, as institutional buyers entered the market in force through the newly approved spot ETFs.</p>
+
+    <div class="collision">
+      <div>
+        <span class="collision-num gold">450 BTC</span>
+        <div class="collision-desc">New Bitcoin mined per day after the 2024 halving</div>
+      </div>
+      <div class="vs">VS</div>
+      <div>
+        <span class="collision-num red">1,000–5,000+</span>
+        <div class="collision-desc">BTC purchased daily by ETFs alone in peak inflow periods of 2024</div>
+      </div>
+    </div>
+
+    <p>Let that comparison sit for a moment. At peak inflow periods, BlackRock's IBIT and the other US spot Bitcoin ETFs were purchasing 2 to 10 times more Bitcoin per day than the entire global mining industry was producing. When demand for an asset systemically exceeds the rate at which new supply can enter the market, there is only one direction prices can go.</p>
+
+    <div class="mono-fact">
+      Daily new Bitcoin supply (post-2024 halving): ~450 BTC/day<br>
+      BlackRock IBIT peak inflows (early 2024): ~5,000–10,000 BTC/day<br>
+      US Strategic Bitcoin Reserve: 207,000 BTC (and growing)<br>
+      Strategy (MicroStrategy): 568,840+ BTC accumulated to date
+    </div>
+
+    <p>This is the supply shock in its simplest form. But there is another dimension to Bitcoin's scarcity that the halving reinforces: the Stock-to-Flow ratio. Stock-to-Flow is a model used to measure scarcity by dividing the existing above-ground supply (stock) by the annual new production (flow). The higher the ratio, the scarcer the asset.</p>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">~67</span>
+        <span class="data-box-label">Gold Stock-to-Flow ratio — the historical benchmark for hard money</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~114</span>
+        <span class="data-box-label">Bitcoin Stock-to-Flow after 2024 halving — exceeds gold</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~200+</span>
+        <span class="data-box-label">Bitcoin projected S2F after 2028 halving</span>
+      </div>
+    </div>
+
+    <p>Bitcoin's Stock-to-Flow ratio now exceeds gold's for the first time in history. This does not guarantee any particular price. But it does mean that by the fundamental metric used to measure the scarcity of hard monetary assets, Bitcoin is now harder than gold — and getting harder with every passing halving cycle.</p>
+  </div>
+
+  <!-- CHAPTER 5 -->
+  <div class="section">
+    <div class="chapter">Chapter 05</div>
+    <h2>Miner Economics — The Darwinian Filter That Strengthens the Network</h2>
+
+    <p>Every halving is a stress test for Bitcoin's mining industry. When the block reward drops by 50% overnight, every miner operating at the margins of profitability faces an immediate crisis: their revenue just halved while their electricity costs did not. This is not a flaw in Bitcoin's design. It is a feature.</p>
+
+    <p>In the weeks and months following a halving, inefficient miners — those running older hardware, paying higher electricity rates, or operating in expensive jurisdictions — begin shutting down. The total computing power dedicated to the network, measured as the hash rate, typically dips temporarily as these marginal operators exit. But Bitcoin's difficulty adjustment algorithm — which recalibrates every 2,016 blocks (approximately two weeks) — responds automatically by lowering the computational difficulty required to mine a block, making mining more profitable for the survivors.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <h4>Before Halving</h4>
+        <p>All miners profitable. Marginal operators with old hardware survive on thin margins. Hash rate near all-time highs.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Halving Day</h4>
+        <p>Revenue per block drops 50% overnight. Marginal miners immediately unprofitable. Cost structure unchanged.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Short Term (weeks)</h4>
+        <p>Inefficient miners shut down. Hash rate dips 10–30%. Difficulty adjustment lowers mining threshold to compensate.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Long Term (months)</h4>
+        <p>Efficient miners capture larger share. Hardware upgrades accelerate. Hash rate recovers and typically reaches new highs within 6–12 months.</p>
+      </div>
+    </div>
+
+    <p>This Darwinian process has repeated four times. After each halving, the network emerged stronger — more efficient miners, more powerful hardware, a more distributed and geographically diverse infrastructure. The hash rate, which stood at roughly 1 exahash per second in 2012, now exceeds 1 zettahash — a one-trillion-fold increase in the computing power defending the network.</p>
+
+    <p>There is also a longer-term architectural implication in the halving schedule that even many Bitcoin enthusiasts overlook. Satoshi designed Bitcoin to transition, over time, from a block-reward security model to a fee-based security model. As block rewards approach zero — which they asymptotically do over the 32 remaining halvings until 2140 — the Bitcoin network must sustain miner security through transaction fees alone. This is intentional. By 2140, when the last satoshi is mined and block rewards reach zero, miners will earn their revenue entirely from the fees that users pay to have their transactions included in blocks. If Bitcoin has become a global settlement layer by then, those fees will more than suffice.</p>
+
+    <div class="mono-fact">
+      2009: ~1 exahash/second<br>
+      2016: ~1.5 exahashes/second<br>
+      2020: ~120 exahashes/second<br>
+      2024: ~600+ exahashes/second<br>
+      2026: ~1 zettahash/second (1,000 exahashes) — all-time record
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 -->
+  <div class="section">
+    <div class="chapter">Chapter 06</div>
+    <h2>Why This Time Is Different — The 2024 Halving and the Institutional Era</h2>
+
+    <p>Every halving is unique. The 2012 halving occurred when Bitcoin was known only to cryptography enthusiasts and early adopters. The 2016 halving came as venture capital was discovering blockchain technology. The 2020 halving happened during a global pandemic that exposed the fragility of every supply chain — including monetary ones — and accelerated institutional curiosity. The 2024 halving was categorically different from all three.</p>
+
+    <p>On January 10, 2024 — ninety-nine days before the fourth halving — the US Securities and Exchange Commission approved the first spot Bitcoin exchange-traded funds in American history. This was not a minor regulatory event. It was the opening of the world's deepest capital markets to direct Bitcoin exposure for the first time.</p>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">$10B</span>
+        <span class="data-box-label">Assets BlackRock IBIT reached faster than any ETF in history — weeks, not years</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">800K+</span>
+        <span class="data-box-label">BTC held in BlackRock IBIT alone as of 2026</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">1.5M</span>
+        <span class="data-box-label">BTC held across all US spot Bitcoin ETFs combined</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">40+</span>
+        <span class="data-box-label">Publicly traded companies now holding Bitcoin on their balance sheets</span>
+      </div>
+    </div>
+
+    <p>The combination of ETF approval and the halving created a demand-supply dynamic with no historical precedent. In the first months of 2024, US spot ETFs were collectively purchasing 2,000 to 10,000 BTC per day. The entire global Bitcoin mining industry, at that point, was producing approximately 900 BTC per day. The structural daily demand exceeded the structural daily supply by a factor of 2x to 10x — before accounting for any organic retail demand, corporate treasury purchases, or international demand.</p>
+
+    <p>Then, in March 2025, the United States formalized a Strategic Bitcoin Reserve by executive order, directing the Treasury to hold Bitcoin seized through government actions and authorizing future legislative authority to accumulate on the open market. The US government now holds over 207,000 BTC. Brazil has proposed accumulating 1 million BTC as a national reserve. Multiple other nations are at various stages of exploring similar frameworks.</p>
+
+    <blockquote>
+      <p>"We're witnessing the first time in history that a sovereign government has formally adopted Bitcoin as a reserve asset. The halving that preceded it set the conditions. The institutions did the rest."</p>
+      <cite>— Market Commentary, Bitcoin 2025 Conference</cite>
+    </blockquote>
+
+    <p>This is the 2024 halving's defining characteristic: it was the first halving for which institutional-grade infrastructure — custody, compliance, reporting, ETF wrappers, regulatory clarity — was fully in place before the supply shock occurred. The previous three halvings were supply events looking for demand. The 2024 halving was a supply event that found demand already waiting.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CHAPTER 7 -->
+  <div class="section">
+    <div class="chapter">Chapter 07</div>
+    <h2>Looking Forward — What the Math Says About the Next Century</h2>
+
+    <p>The halving does not stop at four. It continues — every 210,000 blocks, roughly every four years — until approximately the year 2140. The supply implications of this schedule are staggering when you trace them forward.</p>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Bitcoin already mined (of 21M total)</span><span>~19.7M BTC — 93.8%</span></div>
+      <div class="bar-track"><div class="bar-fill gold" data-width="93.8"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Estimated permanently lost forever</span><span>~3.7M BTC (~17.6%)</span></div>
+      <div class="bar-track"><div class="bar-fill red" data-width="17.6"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Remaining to be mined (over 114 years)</span><span>~1.3M BTC — 6.2%</span></div>
+      <div class="bar-track"><div class="bar-fill dim" data-width="6.2"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Held in ETFs, corporate treasuries, government reserves</span><span>~3M+ BTC — 14%+</span></div>
+      <div class="bar-track"><div class="bar-fill pale" data-width="14"></div></div>
+    </div>
+
+    <p>Consider what the supply schedule looks like going forward:</p>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">~450</span>
+        <span class="data-box-label">New BTC per day today (2024–2028)</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~225</span>
+        <span class="data-box-label">New BTC per day after 2028 halving</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~112</span>
+        <span class="data-box-label">New BTC per day after 2032 halving</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~56</span>
+        <span class="data-box-label">New BTC per day after 2036 halving</span>
+      </div>
+    </div>
+
+    <p>By 2032, the entire global Bitcoin mining industry will produce only about 112 Bitcoin per day — roughly 40,880 per year. At Bitcoin's current price of approximately $103,000, that represents about $4.2 billion of new supply entering the market per year. The daily flow of institutional money — pension funds, hedge funds, sovereign wealth funds, retail investors combined — dwarfs this number by orders of magnitude.</p>
+
+    <p>The lost coins statistic deserves particular attention. Approximately 3.7 million Bitcoin are estimated to be permanently inaccessible — coins sent to addresses where the private keys are lost forever, including the roughly 1 million Bitcoin attributed to Satoshi Nakamoto that have never moved. These coins will never be sold. They will never re-enter circulation. The effective supply available for purchase is not 21 million Bitcoin — it is closer to 15 million, and decreasing every year as more coins are lost to the passage of time and the fallibility of human record-keeping.</p>
+
+    <div class="mono-fact">
+      21,000,000 theoretical maximum supply<br>
+      - 3,700,000 estimated permanently lost<br>
+      - 1,500,000+ held in US spot ETFs (rarely sold)<br>
+      - 1,300,000 yet to be mined (spread over 114 years)<br>
+      ≈ 4–5,000,000 BTC effectively liquid and available today
+    </div>
+
+    <p>The scarcity that the halving creates is not merely about the future. It is acute today. The liquid supply of Bitcoin is already profoundly constrained relative to the demand that institutional infrastructure has now made possible. The halvings, every four years, do not create scarcity from abundance. They deepen scarcity that already exists.</p>
+  </div>
+
+  <!-- CHAPTER 8 -->
+  <div class="section">
+    <div class="chapter">Chapter 08</div>
+    <h2>The Big Picture — A Predictable Revolution Written in Code</h2>
+
+    <p>We live in an age of opacity — where monetary decisions are made in closed-door committee meetings, where the true supply of any government currency is not published in real time, where rules change without warning and exceptions are granted without accountability. Against this backdrop, the Bitcoin halving represents something so unusual that it requires deliberate thought to fully appreciate.</p>
+
+    <p>Every four years, the entire world can observe — in real time, block by block — the precise moment at which Bitcoin's new supply is cut in half. There is no press release announcing the decision. There is no committee vote. There is no political negotiation. There is only the protocol, operating exactly as it was designed to operate, in the same way it has operated for sixteen consecutive years.</p>
+
+    <div class="shift">
+      <div class="shift-from">Supply schedules set by governments that can change them whenever convenient</div>
+      <span class="shift-arrow">↓</span>
+      <div class="shift-to">A supply schedule set by mathematics, known to the day, for the next 114 years</div>
+    </div>
+
+    <p>No other asset in human history has offered this. Gold supply depends on exploration, extraction technology, geological luck, and the decisions of mining executives. The dollar's supply depends on the political calculations of the Federal Reserve. Even oil, the commodity that underlies industrial civilization, has its price set partly by a cartel of sovereign states. Bitcoin's supply schedule was fixed in 2009 and cannot be changed without the consensus of the entire network — consensus that has never formed to alter the fundamental protocol in sixteen years of attempts.</p>
+
+    <p>The halving is not just a supply event. It is a philosophical statement, renewed every four years: this money belongs to no one in particular. No one controls it. No one can debase it. No emergency provisions, no wartime exceptions, no "temporary" measures that become permanent. The rules are the same for everyone, everywhere, always — enforced not by the goodwill of any institution, but by mathematics.</p>
+
+    <p>For 5,000 years, humanity searched for a form of money that was genuinely, permanently scarce — that could not be inflated away, could not be frozen, could not be expropriated by the powerful from the less powerful. Gold came closest, but even gold can be confiscated (as it was by executive order in the United States in 1933), and even gold's supply is not fully predictable. Bitcoin is the first monetary asset in history where the supply schedule is mathematically fixed, publicly auditable in real time, and enforced by a distributed global network rather than any human institution.</p>
+
+    <blockquote>
+      <p>"The halving is not a technical event. It is a reminder, every four years, that someone built something the world has never seen before — money that cannot be manipulated."</p>
+      <cite>— SATOLOGY Editorial</cite>
+    </blockquote>
+
+    <p>The next halving is already scheduled. The block count ticks upward, publicly, in real time — anyone on Earth can watch it at any moment. When block 1,050,000 is mined — around 2028 — the reward will drop from 3.125 to 1.5625 BTC, and roughly 225 new Bitcoin per day will enter an economy where tens of millions of people, hundreds of institutions, and multiple sovereign nations are competing to acquire them. The math does not care about sentiment. The math does not negotiate. The math does not lie.</p>
+
+    <p>Every four years, the world gets a reminder. Every four years, the supply shrinks and demand tends to grow. Every four years, Bitcoin demonstrates that a monetary system without a central authority can be more trustworthy, more transparent, and more predictable than any system that came before it. Four halvings have occurred. The pattern is clear. The question is not whether it will happen again.</p>
+
+    <p>The question is how much you hold when it does.</p>
+  </div>
+
+  <!-- FINALE -->
+  <div class="section finale">
+    <div class="chapter">The Conclusion</div>
+    <h2 class="finale-question">The Math<span> Doesn't Lie.</span></h2>
+    <p class="finale-sub">Four halvings. Four supply shocks. Sixteen years. One direction. The next halving is already scheduled. The only remaining question is whether you understand what you're holding.</p>
+
+    <div class="finale-links">
+      <a href="BitcoinSupplyShock.html" class="finale-link">Supply Shock Analysis</a>
+      <a href="why-bitcoin-wins.html" class="finale-link">Why Bitcoin Wins</a>
+      <a href="Unstoppable.html" class="finale-link">Why It's Unstoppable</a>
+      <a href="Retireearlywithbitcoin.html" class="finale-link">Retire Early with Bitcoin</a>
+      <a href="index.html" class="finale-link">← All Articles</a>
+    </div>
+  </div>
+
+</article>
+
+<div class="footer-wrap">
+  <footer>
+    <div>
+      <div class="footer-logo">₿ SATOLOGY</div>
+      <div class="footer-copy">© 2026 SATOLOGY — Understanding Bitcoin. All rights reserved.</div>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="BitcoinSupplyShock.html">Supply Shock</a>
+      <a href="why-bitcoin-wins.html">Why Bitcoin Wins</a>
+      <a href="Unstoppable.html">Unstoppable</a>
+      <a href="Retireearlywithbitcoin.html">Retire Early</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+// Scroll-triggered section animations + supply bar fills
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      entry.target.querySelectorAll('.bar-fill[data-width]').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+      });
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+sections.forEach(s => observer.observe(s));
+
+// Live BTC price in nav
+async function loadBtcPrice() {
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    const data = await res.json();
+    const price = data?.bitcoin?.usd;
+    if (price) {
+      document.getElementById('btcPriceNav').textContent =
+        '$' + price.toLocaleString('en-US', { maximumFractionDigits: 0 });
+    }
+  } catch (_) {}
+}
+loadBtcPrice();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>Why Bitcoin Wins</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background-color: #0A0805;
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0A0805;
+  color: #E8DEC8;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.5;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  position: relative;
+  background-color: #0A0805;
+  background-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(240,165,0,0.09) 0%, transparent 70%);
+  border-bottom: 1px solid rgba(240,165,0,0.12);
+}
+
+.hero-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
+  font-size: clamp(3.5rem, 14vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: #FAF5EB;
+  max-width: 900px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero h1 span {
+  color: #F0A500;
+  display: block;
+}
+
+.hero-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: #C0AD90;
+  margin-top: 1.5rem;
+  max-width: 600px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.65s forwards;
+}
+
+/* Live debt ticker */
+.hero-ticker {
+  margin-top: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 0.9s forwards;
+  border: 1px solid rgba(255,77,28,0.25);
+  background-color: rgba(255,77,28,0.04);
+  padding: 1.4rem 2.2rem;
+  min-width: 320px;
+}
+
+.hero-ticker-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.22em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.hero-ticker-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  color: #FF4D1C;
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(255,77,28,0.25);
+  letter-spacing: 0.02em;
+}
+
+.hero-ticker-sub {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  margin-top: 0.4rem;
+  text-transform: uppercase;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 1.4s forwards;
+}
+
+.scroll-hint span {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #C0AD90;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, #F0A500, transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── ARTICLE ── */
+article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 5rem 2rem 8rem;
+  background-color: #0A0805;
+}
+
+.section {
+  margin-bottom: 5rem;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chapter {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chapter::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: rgba(240,165,0,0.15);
+}
+
+h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.2;
+  color: #FAF5EB;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+p {
+  margin-bottom: 1.2rem;
+  color: #E8DEC8;
+  font-size: 1.05rem;
+}
+
+/* ── STAT BLOCKS ── */
+.stat-block {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.2);
+  border-left: 3px solid #F0A500;
+  padding: 2.5rem 2rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-block::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(240,165,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-number {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Red variant for fiat / bad numbers */
+.stat-block-red {
+  background-color: #110808;
+  border: 1px solid rgba(255,77,28,0.2);
+  border-left: 3px solid #FF4D1C;
+  padding: 2.5rem 2rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-block-red::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,77,28,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-number-red {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #FF4D1C;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label-red {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── SUPPLY BARS ── */
+.supply-bar { margin: 1.6rem 0; }
+
+.supply-bar-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bar-track {
+  height: 10px;
+  background-color: #1A1610;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-fill.gold { background-color: #F0A500; }
+.bar-fill.dim  { background-color: rgba(240,165,0,0.35); }
+.bar-fill.red  { background-color: #FF4D1C; }
+
+/* ── COLLISION ── */
+.collision {
+  background-color: #1A1610;
+  border: 1px solid rgba(240,165,0,0.15);
+  padding: 2.5rem;
+  margin: 2.5rem 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.collision-num {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1;
+  display: block;
+}
+.collision-num.red  { color: #FF4D1C; }
+.collision-num.gold { color: #F0A500; }
+
+.collision-desc {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+
+.vs {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 2rem;
+  color: #FF4D1C;
+  border: 1px solid rgba(255,77,28,0.3);
+  width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+
+/* ── BLOCKQUOTE ── */
+blockquote {
+  padding: 2.5rem 0;
+  margin: 3rem 0;
+  border-top: 1px solid rgba(240,165,0,0.15);
+  border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+blockquote p {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #FAF5EB;
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+
+blockquote cite {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 1rem;
+}
+
+/* ── SHIFT ── */
+.shift {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.12);
+  margin: 2.5rem 0;
+}
+
+.shift-from {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  text-decoration: line-through;
+  margin-bottom: 0.8rem;
+}
+
+.shift-arrow {
+  font-size: 1.5rem;
+  color: #F0A500;
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.shift-to {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  color: #FAF5EB;
+}
+
+/* ── MONO FACT ── */
+.mono-fact {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #F0A500;
+  background-color: rgba(240,165,0,0.06);
+  border-left: 2px solid #F0A500;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  letter-spacing: 0.05em;
+  line-height: 1.7;
+}
+
+/* ── PILLARS GRID ── */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.pillar-item {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.6rem;
+}
+
+.pillar-item-icon {
+  font-size: 1.3rem;
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+.pillar-item h4 {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.1rem;
+  color: #FAF5EB;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.pillar-item p {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  margin-bottom: 0;
+}
+
+/* ── INSTITUTION ROW ── */
+.institution-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+  margin: 2.5rem 0;
+}
+
+.institution-box {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.4rem 1rem;
+  text-align: center;
+}
+
+.institution-box-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.9rem;
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.institution-box-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #F0A500, transparent);
+  margin: 3rem auto;
+}
+
+/* ── FINALE ── */
+.finale {
+  text-align: center;
+  padding: 5rem 2rem;
+  background-image: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(240,165,0,0.06), transparent 70%);
+}
+
+.finale-question {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2rem, 7vw, 5rem);
+  line-height: 1;
+  color: #FAF5EB;
+  margin-bottom: 1.2rem;
+}
+
+.finale-question span { color: #F0A500; }
+
+.finale-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #C0AD90;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+@media (max-width: 520px) {
+  .collision { grid-template-columns: 1fr; }
+  .vs { margin: 0 auto; }
+  .pillars-grid { grid-template-columns: 1fr; }
+}
+
+/* ── SITE NAV OVERRIDE ── */
+.satology-sitenav {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(10,8,5,.97); backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(240,165,0,.14);
+  padding: 0 48px; height: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.satology-sitenav a {
+  font-family: 'IBM Plex Mono','Courier New',monospace;
+  font-size:14px; letter-spacing: .18em; text-transform: uppercase;
+  color: #C0AD90; text-decoration: none; transition: color .2s;
+}
+.satology-sitenav a:hover { color: #F0A500; }
+.satology-sitenav-home { font-size:14px !important; }
+.satology-sitenav-links { display: flex; gap: 28px; }
+.satology-site-footer {
+  background: #080603; border-top: 1px solid rgba(240,165,0,.12);
+  padding: 44px 48px; margin-top: 80px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 20px;
+}
+.satology-site-footer .sf-logo {
+  font-family: 'Bebas Neue',Impact,sans-serif;
+  font-size: 22px; letter-spacing: 3px; color: #FAF5EB;
+}
+.satology-site-footer .sf-links {
+  display: flex; gap: 18px; flex-wrap: wrap;
+}
+.satology-site-footer .sf-links a {
+  font-family: 'IBM Plex Mono',monospace;
+  font-size:14px; color: #C0AD90; text-decoration: none;
+  letter-spacing: .14em; text-transform: uppercase; transition: color .2s;
+}
+.satology-site-footer .sf-links a:hover { color: #F0A500; }
+.satology-site-footer .sf-copy {
+  font-family: 'IBM Plex Mono',monospace;
+  font-size:14px; color: #554D42; letter-spacing: .08em;
+}
+@media(max-width:700px){
+  .satology-sitenav { padding: 0 18px; }
+  .satology-sitenav-links { display: none; }
+  .satology-site-footer { padding: 32px 20px; flex-direction: column; text-align: center; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- SATOLOGY Site Navigation -->
+<div class="satology-sitenav">
+  <a class="satology-sitenav-home" href="index.html">← SATOLOGY</a>
+  <div class="satology-sitenav-links">
+    <a href="BitcoinSupplyShock.html">Supply Shock</a>
+    <a href="Unstoppable.html">Unstoppable</a>
+    <a href="bitcoin-vs-gold.html">BTC vs Gold</a>
+    <a href="bitcoin-halving.html">The Halving</a>
+    <a href="Retireearlywithbitcoin.html">Retire Early</a>
+  </div>
+</div>
+
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-label">₿ The Case That Ends the Debate</p>
+  <h1>Why Bitcoin<span>Wins</span></h1>
+  <p class="hero-sub">Every empire in history trusted a money it couldn't control. Every empire fell. This time, the money fights back.</p>
+
+  <div class="hero-ticker">
+    <div class="hero-ticker-label">US National Debt — Live</div>
+    <div class="hero-ticker-num" id="debt-ticker">$36,400,000,000,000</div>
+    <div class="hero-ticker-sub">Growing ~$3.8 million every minute · Unlimited · Forever</div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article>
+
+  <!-- SECTION 1: THE BROKEN FOUNDATION -->
+  <div class="section">
+    <div class="chapter">The Foundation</div>
+    <h2>The Money You Were Given Is Broken by Design</h2>
+    <p>In 1971, the United States severed the dollar's last tie to gold. What followed was not a new system of stability — it was the quiet beginning of the largest monetary experiment in human history. A global arrangement where governments could create money from nothing, indefinitely, with no hard limit and no accountability to the people holding it.</p>
+    <p>The consequences have compounded across every generation since.</p>
+
+    <div class="stat-block-red">
+      <span class="stat-number-red">96%</span>
+      <span class="stat-label-red">Purchasing power lost by the US dollar since 1913 — what $1 bought then requires $30+ today</span>
+    </div>
+
+    <p>Inflation is not a bug in the fiat system. It is the feature. Central banks openly target 2% annual inflation. That sounds harmless — until you compound it over decades. At 2%, the value of your savings halves every 35 years. Quietly. Legally. Without your vote. And when crises hit, the number is never 2%.</p>
+
+    <blockquote>
+      <p>"Inflation is taxation without legislation."</p>
+      <cite>— Milton Friedman, Nobel Laureate in Economics</cite>
+    </blockquote>
+
+    <p>In 2020 alone, the US money supply expanded by 40% in a single year. The dollar's share of global reserves has fallen from 71% to 58.4% in two decades. The Dollar Index dropped from 109 to 98 in a single year. The system that was supposed to be the bedrock of modern civilization is showing cracks that institutional investors, sovereign funds, and ordinary savers are noticing simultaneously.</p>
+    <p>They are all looking at the same exit.</p>
+  </div>
+
+  <!-- SECTION 2: THE 21 MILLION ANSWER -->
+  <div class="section">
+    <div class="chapter">The Answer</div>
+    <h2>The Only Money With a Hard Ceiling — Forever</h2>
+    <p>Bitcoin does not ask for trust. It does not require faith in a central bank governor, a treasury secretary, or a political majority. It offers something no government has ever offered with its money: a mathematically enforced promise.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">21,000,000</span>
+      <span class="stat-label">Maximum Bitcoin that will ever exist — written in code, enforced by global consensus, immune to override</span>
+    </div>
+
+    <p>There is no committee that can vote to change this. No emergency that justifies an exception. No central bank that can "quantitative ease" Bitcoin into existence. The supply schedule is immutable. The cap is permanent. In 16 years of operation — through wars, pandemics, regulatory attacks, exchange collapses, and multiple market cycles — not a single satoshi beyond the protocol's schedule has ever been created.</p>
+    <p>Following the April 2024 halving, Bitcoin's annual inflation rate dropped to approximately 0.85% — already lower than gold, already lower than every major fiat currency. In 2028, it halves again. By 2140, the last satoshi is mined. The inflation rate drops to exactly zero. Permanently.</p>
+
+    <div class="mono-fact">
+      Gold supply grows ~1.5–2% per year (new mines keep appearing).<br>
+      Dollar supply grew 40% in a single year (2020–2021).<br>
+      Bitcoin annual inflation: 0.85% — and falling toward 0.
+    </div>
+
+    <p>This is not speculation about what Bitcoin might do. This is the protocol operating exactly as designed, validated by 16 years of uninterrupted history, in the face of every conceivable pressure to change it.</p>
+  </div>
+
+  <!-- SECTION 3: THE SUPPLY COLLISION -->
+  <div class="section">
+    <div class="chapter">The Arithmetic</div>
+    <h2>Numbers That Cannot Be Argued With</h2>
+    <p>Strip away the ideology. Ignore the arguments about technology. Focus only on the math — and the math is unambiguous.</p>
+
+    <div class="collision">
+      <div class="collision-side">
+        <span class="collision-num red">60M+</span>
+        <div class="collision-desc">Millionaires worldwide — and growing</div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="collision-side">
+        <span class="collision-num gold">21M</span>
+        <div class="collision-desc">Bitcoin that will ever exist — never changes</div>
+      </div>
+    </div>
+
+    <p>There are more millionaires on Earth than there are Bitcoin. If every millionaire wanted just one whole coin, more than half could never have it. That is before accounting for the millions of coins already permanently lost to forgotten passwords and dead hard drives — before accounting for the long-term holders who will never sell — before accounting for the billions of ordinary people who also want exposure.</p>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Already mined (of 21M total)</span><span>~19.8M BTC — 94%</span></div>
+      <div class="bar-track"><div class="bar-fill gold" data-width="94"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Estimated permanently lost forever</span><span>~3–4M BTC</span></div>
+      <div class="bar-track"><div class="bar-fill red" data-width="19"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Long-term holders — rarely sell</span><span>~6–7M BTC</span></div>
+      <div class="bar-track"><div class="bar-fill dim" data-width="33"></div></div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label"><span>Actively liquid on exchanges</span><span>~4–5M BTC</span></div>
+      <div class="bar-track"><div class="bar-fill gold" data-width="22"></div></div>
+    </div>
+
+    <div class="mono-fact">
+      Effective liquid supply: ~4–5 million Bitcoin.<br>
+      Demand: every nation, institution, and individual on Earth.<br>
+      New supply per day: ~450 BTC — declining every four years.
+    </div>
+
+    <p>When finite supply collides with expanding demand, price discovery has only one direction. This is not a prediction. It is a supply curve.</p>
+  </div>
+
+  <!-- SECTION 4: INSTITUTIONAL RECKONING -->
+  <div class="section">
+    <div class="chapter">Chapter IV</div>
+    <h2>The Institutions Aren't Coming. They're Already Here.</h2>
+    <p>The narrative that Bitcoin is fringe speculation for anonymous internet users died in January 2024 — the day the SEC approved spot Bitcoin ETFs and Wall Street's largest firms began buying every available coin. The accumulation has not stopped since.</p>
+
+    <div class="institution-row">
+      <div class="institution-box">
+        <span class="institution-box-num">818K</span>
+        <span class="institution-box-label">BTC held by Strategy — $64B position</span>
+      </div>
+      <div class="institution-box">
+        <span class="institution-box-num">800K+</span>
+        <span class="institution-box-label">BTC in BlackRock IBIT alone — $66.9B AUM</span>
+      </div>
+      <div class="institution-box">
+        <span class="institution-box-num">1.5M</span>
+        <span class="institution-box-label">BTC in US spot ETFs combined — $124B</span>
+      </div>
+      <div class="institution-box">
+        <span class="institution-box-num">328K</span>
+        <span class="institution-box-label">BTC in US Strategic Bitcoin Reserve</span>
+      </div>
+    </div>
+
+    <p>BlackRock — the world's largest asset manager, with over $10 trillion under management — does not make speculative bets. It makes long-term structural positions. IBIT became the fastest ETF in history to reach $10 billion in assets, doing in weeks what gold ETFs took years to accomplish. This is not retail enthusiasm. This is the most sophisticated capital on Earth placing a generational conviction trade.</p>
+    <p>Strategy, led by Michael Saylor, holds 818,869 BTC — a position now worth over $64 billion. They have added to this position through every bear market, every crash, every newspaper obituary. Their thesis is not about trading. It is about holding the only genuinely scarce monetary asset ever created.</p>
+
+    <blockquote>
+      <p>"Bitcoin is not a company or a currency. It's a monetary network — the most secure, the most liquid, and the most durable that has ever existed."</p>
+      <cite>— Michael Saylor, Executive Chairman, Strategy</cite>
+    </blockquote>
+
+    <p>And now sovereign nations are moving. The United States holds 328,372 BTC in a strategic reserve, established by executive order in March 2025 — with legislation pending that would authorize the Treasury to actively accumulate on the open market for the first time in history. Brazil has proposed a 1 million BTC national reserve. At least 13 countries are mining Bitcoin at the central government level. El Salvador, which made Bitcoin legal tender in 2021, continues accumulating.</p>
+    <p>The question is no longer whether Bitcoin is legitimate. The question is whether there will be enough left to buy.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 5: THE NETWORK -->
+  <div class="section">
+    <div class="chapter">The Fortress</div>
+    <h2>Sixteen Years. Zero Successful Attacks. Zero Downtime.</h2>
+    <p>Bitcoin has been declared dead more than 400 times. Banned by governments, dismissed by central banks, outcompeted by thousands of imitators, hacked at the edges, and buried in every market crash. And yet the network has never stopped producing blocks. It has never been successfully modified without consensus. It has never reversed a single confirmed transaction.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">1.020 ZH/s</span>
+      <span class="stat-label">Bitcoin network hash rate — exceeding 1 Zettahash per second, an all-time record in 2026</span>
+    </div>
+
+    <p>A zettahash is one billion trillion hashes per second. To reverse a single confirmed Bitcoin transaction, an attacker would need to control more computing power than the entire rest of the network combined — an investment that would currently cost more than the GDP of most nations, consuming energy that doesn't exist at that concentration. The security of the network has grown continuously since its first block in January 2009.</p>
+    <p>The Lightning Network — Bitcoin's payment layer — surpassed $1 billion in monthly transaction volume in late 2025, growing 400% in a single year. Real merchants, real payments, real settlements in seconds with fees measured in fractions of a cent. The infrastructure of a global monetary system is being built.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <span class="pillar-item-icon">⛓️</span>
+        <h4>Immutable Ledger</h4>
+        <p>16+ years of continuous operation. Not one block reversed. Not one legitimate transaction censored. Ever.</p>
+      </div>
+      <div class="pillar-item">
+        <span class="pillar-item-icon">🌐</span>
+        <h4>100+ Countries</h4>
+        <p>Nodes operating simultaneously worldwide. No single government or coalition can shut it down.</p>
+      </div>
+      <div class="pillar-item">
+        <span class="pillar-item-icon">⚡</span>
+        <h4>Lightning Network</h4>
+        <p>$1B+ monthly volume. Instant finality. Near-zero fees. Growing 400% per year.</p>
+      </div>
+      <div class="pillar-item">
+        <span class="pillar-item-icon">🔓</span>
+        <h4>Open Protocol</h4>
+        <p>No CEO to bribe. No headquarters to raid. No single point of failure. No one in charge.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: THE PRICE MODELS -->
+  <div class="section">
+    <div class="chapter">The Models</div>
+    <h2>What Happens When the World's Best Analysts Run the Numbers</h2>
+    <p>Price predictions are not certainties. But when the most rigorous financial institutions independently build models from first principles, they consistently arrive at numbers that share a common theme: the current price dramatically undervalues what this asset becomes at full adoption.</p>
+
+    <div class="institution-row">
+      <div class="institution-box">
+        <span class="institution-box-num">$300K</span>
+        <span class="institution-box-label">ARK Invest bear case by 2030</span>
+      </div>
+      <div class="institution-box">
+        <span class="institution-box-num">$710K</span>
+        <span class="institution-box-label">ARK Invest base case by 2030</span>
+      </div>
+      <div class="institution-box">
+        <span class="institution-box-num">$1.5M</span>
+        <span class="institution-box-label">ARK Invest bull case by 2030</span>
+      </div>
+      <div class="institution-box">
+        <span class="institution-box-num">$16T</span>
+        <span class="institution-box-label">ARK projected Bitcoin market cap by 2030</span>
+      </div>
+    </div>
+
+    <p>ARK Invest's 2026 Big Ideas report projects Bitcoin's market capitalization reaching $16 trillion by 2030 — more than a 10x increase from today's $1.5 trillion. Their model accounts for institutional allocation, corporate treasury adoption, emerging market currency substitution, and nation-state reserve accumulation. These are not projections of something that might happen. They are extrapolations of trends already underway.</p>
+
+    <div class="mono-fact">
+      87% correlation between global M2 money supply and Bitcoin price — 15 years of data.<br>
+      Global M2 has never permanently contracted. Bitcoin supply never accelerates.<br>
+      Gold market cap today: ~$18T. Bitcoin today: ~$1.5T. Same scarcity argument. 12x gap.
+    </div>
+
+    <p>Paul Tudor Jones — one of the most respected macro investors of his generation — called Bitcoin "unequivocally the best inflation hedge" available today. He is not alone. The convergence of macro legends, institutional treasurers, sovereign reserve managers, and ordinary savers on the same asset is not coincidence. It is a market processing a fundamental truth about scarcity that cannot be repealed by legislation or diluted by a committee vote.</p>
+  </div>
+
+  <!-- SECTION 7: THE MORAL CASE -->
+  <div class="section">
+    <div class="chapter">The Deeper Case</div>
+    <h2>This Isn't Just Finance. It's the Right Side of History.</h2>
+    <p>Fiat money is not neutral. Every dollar printed by a government is a tax levied without your consent — silently extracted from the purchasing power of everything you've saved. Every bailout, every stimulus package, every round of quantitative easing transfers wealth from savers to debtors, from the poor to the asset-rich, from the present generation to the future ones who will inherit the debt.</p>
+    <p>In Venezuela, hyperinflation wiped out a generation of lifetime savings in months. In Argentina, bank accounts were frozen and redenominated without warning. In Turkey, the lira lost 80% of its value against the dollar in five years. In Lebanon, bank withdrawals were capped at a few hundred dollars a month while inflation consumed the rest. In every case, ordinary people bore the full cost. The architects of the system were not among them.</p>
+
+    <div class="shift">
+      <div class="shift-from">A system where governments decide who has money, how much, and for how long</div>
+      <span class="shift-arrow">↓</span>
+      <div class="shift-to">A system where the rules are identical for everyone — written in mathematics, enforced by physics</div>
+    </div>
+
+    <p>Bitcoin offers 2 billion unbanked people their first access to a monetary network that cannot refuse them service, freeze their account, or inflate away their savings. The Lightning Network is already cutting U.S.-to-Mexico remittance fees by 50%, serving populations that have been extractively priced by legacy financial intermediaries for decades.</p>
+    <p>When an authoritarian government freezes bank accounts of political dissidents — and they do, repeatedly, in documented cases across dozens of countries — Bitcoin exists as the only monetary instrument that cannot be confiscated without the holder's cryptographic key. That is not a technical footnote. That is a human rights breakthrough without historical precedent.</p>
+
+    <blockquote>
+      <p>"Bitcoin is an exit. It is the most elegant solution to the most important problem our civilization has ever faced."</p>
+      <cite>— Jeff Booth, Author of <em>The Price of Tomorrow</em></cite>
+    </blockquote>
+  </div>
+
+  <!-- SECTION 8: THE ASYMMETRIC BET -->
+  <div class="section">
+    <div class="chapter">The Position</div>
+    <h2>The Most Asymmetric Opportunity in Living Memory</h2>
+    <p>Consider the scenarios honestly.</p>
+    <p>If Bitcoin fails — if governments somehow coordinate globally to ban it simultaneously, if the cryptography is catastrophically broken, if every institution and nation reverses course at once — then the downside is a known, finite loss of your allocation. A bad trade, nothing more.</p>
+    <p>If Bitcoin succeeds — if it captures even a fraction of global monetary energy, if institutional and sovereign adoption continues on its current trajectory, if it becomes the reserve layer of the next financial era — the upside is not measured in percentages. It is measured in multiples of everything you understood money to mean.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">$900T+</span>
+      <span class="stat-label">Estimated total global store-of-value assets — real estate, gold, bonds, equities. Bitcoin currently holds ~0.2% of this.</span>
+    </div>
+
+    <p>Gold alone carries an $18 trillion market cap. Bitcoin — with superior portability, divisibility, verifiability, absolute scarcity, and a 24/7 globally accessible ledger — currently sits at $1.5 trillion. If Bitcoin merely reached gold's market cap, the per-coin price would be approximately $860,000. That is the conservative case. Based on one comparable. Ignoring every other use case.</p>
+
+    <div class="mono-fact">
+      Bitcoin market cap today: ~$1.5 trillion.<br>
+      Gold market cap today: ~$18 trillion.<br>
+      Global store-of-value assets: $900+ trillion.<br>
+      Bitcoin's current share: less than 0.2% — and every institution in the world just started buying.
+    </div>
+
+    <p>The asymmetry of this bet is unlike anything in living memory. The downside is bounded. The upside is not. And the window in which this asset can be acquired at fractions of its potential value is not permanent — because every day that passes, another institution files, another nation reserves, and another million coins get locked away by long-term holders who have no intention of selling.</p>
+  </div>
+
+  <!-- FINALE -->
+  <div class="section finale">
+    <div class="chapter">The Conclusion</div>
+    <h2 class="finale-question">The Money That<span> Cannot Be Stopped.</span></h2>
+    <p class="finale-sub">Governments have printed. Institutions have bought. Nations have reserved it. The math has always pointed here. The only remaining question is how much you hold when the world finally understands what the numbers already knew.</p>
+  </div>
+
+</article>
+
+<script>
+// Scroll-triggered section animations + supply bar fills
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      entry.target.querySelectorAll('.bar-fill[data-width]').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+      });
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+sections.forEach(s => observer.observe(s));
+
+// National debt ticker — seeds from US Treasury Fiscal Data API (official, updated daily)
+// Source: fiscaldata.treasury.gov  |  Growth rate: ~$3.8M/min (~$2T/yr)
+const RATE_PER_MS = 3800000 / 60000;
+const tickerEl    = document.getElementById('debt-ticker');
+const tickerWrap  = tickerEl ? tickerEl.closest('.hero-ticker') : null;
+
+function formatDebt(n) {
+  return '$' + Math.floor(n).toLocaleString('en-US');
+}
+
+function startDebtTicker(base) {
+  const t0 = Date.now();
+  function tick() {
+    tickerEl.textContent = formatDebt(base + (Date.now() - t0) * RATE_PER_MS);
+  }
+  tick();
+  setInterval(tick, 100);
+}
+
+(async function loadDebt() {
+  try {
+    const res  = await fetch(
+      'https://api.fiscaldata.treasury.gov/services/api/v1/debt/tod/DebtToThePenny' +
+      '?fields=record_date,tot_pub_debt_out_amt&sort=-record_date&limit=1'
+    );
+    const json = await res.json();
+    const amount = parseFloat(json.data[0].tot_pub_debt_out_amt);
+    if (!isNaN(amount) && amount > 1e12) {
+      // Update label to show source
+      const lbl = tickerWrap && tickerWrap.querySelector('.hero-ticker-label');
+      if (lbl) lbl.textContent = 'US National Debt — Source: US Treasury (fiscaldata.treasury.gov)';
+      startDebtTicker(amount);
+      return;
+    }
+  } catch (_) {}
+  // API unavailable — remove ticker entirely rather than show a wrong number
+  if (tickerWrap) tickerWrap.remove();
+})();
+</script>
+
+</body>
+</html>

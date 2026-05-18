@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0805">
+<title>The Bitcoin Timechain — How the Blockchain Actually Works | SATOLOGY</title>
+<meta name="description" content="A definitive guide to Bitcoin's timechain — blocks, UTXOs, SHA-256, Merkle trees, the mempool, and how transactions become permanent history. Not just a blockchain. A chain of time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background-color: #0A0805;
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0A0805;
+  color: #E8DEC8;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.5;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 60px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10,8,5,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(240,165,0,0.1);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.nav-logo-symbol {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.3rem;
+  color: #F0A500;
+  line-height: 1;
+}
+
+.nav-logo-name {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.22em;
+  color: #E8DEC8;
+  text-transform: uppercase;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-back {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: #C0AD90;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: #F0A500; }
+
+.nav-price {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(240,165,0,0.08);
+  border: 1px solid rgba(240,165,0,0.2);
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #F0A500;
+}
+
+.nav-dot {
+  width: 6px;
+  height: 6px;
+  background: #4CAF50;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  position: relative;
+  background-color: #0A0805;
+  background-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(240,165,0,0.09) 0%, transparent 70%);
+  border-bottom: 1px solid rgba(240,165,0,0.12);
+}
+
+.hero-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #F0A500;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
+  font-size: clamp(3.5rem, 14vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: #FAF5EB;
+  max-width: 900px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero h1 span {
+  color: #F0A500;
+  display: block;
+}
+
+.hero-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: #C0AD90;
+  margin-top: 1.5rem;
+  max-width: 640px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.65s forwards;
+}
+
+.hero-stat-row {
+  margin-top: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 0.9s forwards;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-stat-pill {
+  border: 1px solid rgba(240,165,0,0.25);
+  background-color: rgba(240,165,0,0.04);
+  padding: 1rem 1.6rem;
+  text-align: center;
+}
+
+.hero-stat-pill-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+}
+
+.hero-stat-pill-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+  display: block;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 1s 1.4s forwards;
+}
+
+.scroll-hint span {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #C0AD90;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, #F0A500, transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── ARTICLE ── */
+article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 5rem 2rem 8rem;
+  background-color: #0A0805;
+}
+
+.section {
+  margin-bottom: 5rem;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chapter {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chapter::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: rgba(240,165,0,0.15);
+}
+
+h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.2;
+  color: #FAF5EB;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+p {
+  margin-bottom: 1.2rem;
+  color: #E8DEC8;
+  font-size: 1.05rem;
+}
+
+/* ── STAT BLOCKS ── */
+.stat-block {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.2);
+  border-left: 3px solid #F0A500;
+  padding: 2.5rem 2rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-block::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(240,165,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-number {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── MONO FACT ── */
+.mono-fact {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #F0A500;
+  background-color: rgba(240,165,0,0.06);
+  border-left: 2px solid #F0A500;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  letter-spacing: 0.05em;
+  line-height: 1.7;
+}
+
+/* ── BLOCKQUOTE ── */
+blockquote {
+  padding: 2.5rem 0;
+  margin: 3rem 0;
+  border-top: 1px solid rgba(240,165,0,0.15);
+  border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+blockquote p {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #FAF5EB;
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+
+blockquote cite {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 1rem;
+}
+
+/* ── PILLARS GRID ── */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.pillar-item {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.6rem;
+}
+
+.pillar-item h4 {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.1rem;
+  color: #FAF5EB;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.pillar-item p {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  margin-bottom: 0;
+}
+
+/* ── DATA ROW ── */
+.data-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  margin: 2.5rem 0;
+}
+
+.data-box {
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.13);
+  padding: 1.4rem 1rem;
+  text-align: center;
+}
+
+.data-box-num {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.9rem;
+  color: #F0A500;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.data-box-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* ── BLOCK ANATOMY VISUAL ── */
+.block-anatomy {
+  margin: 2.5rem 0;
+  border: 1px solid rgba(240,165,0,0.3);
+  background-color: #0D0B07;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  overflow: hidden;
+}
+
+.block-anatomy-title {
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #F0A500;
+  text-transform: uppercase;
+  padding: 0.8rem 1.4rem;
+  border-bottom: 1px solid rgba(240,165,0,0.2);
+  background-color: rgba(240,165,0,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.block-anatomy-title span {
+  color: #C0AD90;
+  font-size: 0.9rem;
+}
+
+.block-header-section {
+  padding: 1.2rem 1.4rem;
+  border-bottom: 1px solid rgba(240,165,0,0.15);
+}
+
+.block-section-label {
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: #C47F00;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.block-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(240,165,0,0.12);
+}
+
+.block-field {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(240,165,0,0.06);
+  gap: 1rem;
+}
+
+.block-field:last-child { border-bottom: none; }
+
+.block-field-name {
+  font-size: 0.9rem;
+  color: #E8DEC8;
+  letter-spacing: 0.04em;
+  flex: 1;
+}
+
+.block-field-desc {
+  font-size: 0.9rem;
+  color: #C0AD90;
+  flex: 2;
+  letter-spacing: 0.02em;
+}
+
+.block-field-bytes {
+  font-size: 0.9rem;
+  color: #F0A500;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.block-tx-section {
+  padding: 1rem 1.4rem;
+}
+
+.block-tx-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.block-tx-pill {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(240,165,0,0.2);
+  color: #C0AD90;
+  letter-spacing: 0.05em;
+}
+
+.block-tx-pill.coinbase {
+  border-color: rgba(240,165,0,0.5);
+  color: #F0A500;
+  background: rgba(240,165,0,0.06);
+}
+
+/* ── MERKLE VISUAL ── */
+.merkle-visual {
+  margin: 2.5rem 0;
+  background-color: #0D0B07;
+  border: 1px solid rgba(240,165,0,0.18);
+  padding: 2rem 1.5rem;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  text-align: center;
+}
+
+.merkle-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.merkle-node {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(240,165,0,0.25);
+  color: #E8DEC8;
+  letter-spacing: 0.04em;
+  background: rgba(240,165,0,0.03);
+  white-space: nowrap;
+}
+
+.merkle-node.root {
+  border-color: #F0A500;
+  color: #F0A500;
+  background: rgba(240,165,0,0.08);
+  font-weight: 600;
+}
+
+.merkle-node.hash {
+  border-color: rgba(240,165,0,0.15);
+  color: #C0AD90;
+  font-size: 0.9rem;
+}
+
+.merkle-arrow {
+  font-size: 0.9rem;
+  color: rgba(240,165,0,0.4);
+  margin-bottom: 0.3rem;
+  text-align: center;
+}
+
+.merkle-label {
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+/* ── JOURNEY STEPS ── */
+.journey {
+  margin: 2.5rem 0;
+}
+
+.journey-step {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 0.8rem;
+  align-items: flex-start;
+}
+
+.journey-num {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(240,165,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 0.9rem;
+  color: #F0A500;
+  background: rgba(240,165,0,0.04);
+}
+
+.journey-content {
+  flex: 1;
+  background-color: #110E08;
+  border: 1px solid rgba(240,165,0,0.1);
+  padding: 1rem 1.2rem;
+}
+
+.journey-content h5 {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: #FAF5EB;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+
+.journey-content p {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  line-height: 1.55;
+  margin-bottom: 0;
+  letter-spacing: 0.02em;
+}
+
+/* ── SUPPLY BAR ── */
+.supply-bar { margin: 1.6rem 0; }
+
+.supply-bar-label {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: #C0AD90;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bar-track {
+  height: 10px;
+  background-color: #1A1610;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-fill.gold { background-color: #F0A500; }
+.bar-fill.dim  { background-color: rgba(240,165,0,0.35); }
+
+/* ── DIVIDER ── */
+.divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #F0A500, transparent);
+  margin: 3rem auto;
+}
+
+/* ── FINALE ── */
+.finale {
+  text-align: center;
+  padding: 5rem 2rem;
+  background-image: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(240,165,0,0.06), transparent 70%);
+}
+
+.finale-question {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2rem, 7vw, 5rem);
+  line-height: 1;
+  color: #FAF5EB;
+  margin-bottom: 1.2rem;
+}
+
+.finale-question span { color: #F0A500; }
+
+.finale-sub {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #C0AD90;
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+
+.finale-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.finale-link {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C0AD90;
+  text-decoration: none;
+  border: 1px solid rgba(240,165,0,0.2);
+  padding: 0.8rem 1.4rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+.finale-link:hover {
+  color: #F0A500;
+  border-color: rgba(240,165,0,0.5);
+}
+
+/* ── FOOTER ── */
+.footer-wrap {
+  background-color: #070604;
+  border-top: 1px solid rgba(240,165,0,0.1);
+}
+
+footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.4rem;
+  color: #F0A500;
+  letter-spacing: 0.06em;
+}
+
+.footer-copy {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #C0AD90;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.footer-links a {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #C0AD90;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: #F0A500; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 520px) {
+  .pillars-grid { grid-template-columns: 1fr; }
+  nav { padding: 0 1rem; }
+  .nav-back { display: none; }
+  .hero-stat-row { gap: 0.8rem; }
+  .block-field { flex-direction: column; gap: 0.2rem; }
+  .merkle-row { gap: 0.4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-symbol">₿</span>
+    <span class="nav-logo-name">SATOLOGY</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Home</a>
+    <div class="nav-price">
+      <span class="nav-dot"></span>
+      <span id="btcPriceNav">$--</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-label">₿ The Immutable Record</p>
+  <h1>THE BITCOIN<span>TIMECHAIN</span></h1>
+  <p class="hero-sub">Not just a blockchain. A chain of time — every ten minutes, the world timestamps itself in math. No one can rewrite what has already been proven.</p>
+
+  <div class="hero-stat-row">
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">949,000+</span>
+      <span class="hero-stat-pill-label">Blocks</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">~173M</span>
+      <span class="hero-stat-pill-label">UTXOs</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">~1B+</span>
+      <span class="hero-stat-pill-label">Total Transactions</span>
+    </div>
+    <div class="hero-stat-pill">
+      <span class="hero-stat-pill-num">99.98%</span>
+      <span class="hero-stat-pill-label">Uptime Since 2013</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article>
+
+  <!-- CHAPTER 1 -->
+  <div class="section">
+    <div class="chapter">Chapter 01</div>
+    <h2>This Is Not Your Bank's Database</h2>
+
+    <p>Every database you have ever used — your bank's ledger, a hospital's records, a government registry — can be edited. A row can be changed. A record can be deleted. A balance can be quietly revised. The people who control the servers control the truth. This is the fundamental assumption behind every centralized information system ever built.</p>
+
+    <p>Bitcoin's timechain is built on the opposite assumption: that history should be permanently and verifiably unalterable. Every block committed to the chain encodes not just transactions, but a cryptographic commitment to every block that came before it. To change a single transaction in block 500,000, you would need to recalculate that block's proof of work — and then every one of the 449,000 blocks that came after it — faster than the entire honest network keeps adding new blocks. It is not just difficult. It is economically irrational.</p>
+
+    <p>And it is worth noting what Satoshi actually called this thing. In the original Bitcoin whitepaper, the word "blockchain" does not appear. Satoshi described a chain of "timestamp server" outputs — a sequence of cryptographic proofs, each one stamping the moment in time when a set of transactions became permanent. Some call it the timechain. It is the more accurate name.</p>
+
+    <blockquote>
+      <p>"The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work."</p>
+      <cite>— Satoshi Nakamoto, Bitcoin Whitepaper (2008)</cite>
+    </blockquote>
+
+    <p>Each block contains a Unix timestamp — the number of seconds elapsed since January 1, 1970. This timestamp is not just metadata. It is part of the block header, and therefore part of the hash, and therefore part of the chain. The chain is not merely a sequence of data. It is a sequence of mathematically proven moments in time. Every ten minutes, the entire world's network of Bitcoin nodes collectively agrees: <em>this happened, at this time, and no one can say otherwise.</em></p>
+
+    <div class="mono-fact">
+      Bitcoin's timechain is the world's first cryptographically guaranteed history. Every block is a permanent, timestamped entry that cannot be erased — not by any government, bank, or attacker with less energy than the entire honest network.
+    </div>
+  </div>
+
+  <!-- CHAPTER 2 -->
+  <div class="section">
+    <div class="chapter">Chapter 02</div>
+    <h2>Inside a Bitcoin Block</h2>
+
+    <p>Every Bitcoin block has two parts: a compact 80-byte header that summarizes everything, and the transaction data that follows. The header is what gets hashed by miners. The transactions are what actually move value. Understanding both is understanding Bitcoin.</p>
+
+    <p>The block header contains exactly six fields. Each one is load-bearing. Remove or alter any one, and the entire block becomes invalid, and every block built on top of it becomes invalid too. This is the chain.</p>
+
+    <div class="block-anatomy">
+      <div class="block-anatomy-title">
+        Block Structure
+        <span>~Block #949,000</span>
+      </div>
+
+      <div class="block-header-section">
+        <div class="block-section-label">Block Header — 80 bytes total</div>
+
+        <div class="block-field">
+          <span class="block-field-name">Version</span>
+          <span class="block-field-desc">Which consensus rules this block follows</span>
+          <span class="block-field-bytes">4 bytes</span>
+        </div>
+        <div class="block-field">
+          <span class="block-field-name">Previous Block Hash</span>
+          <span class="block-field-desc">SHA256d(last block header) — the chain link</span>
+          <span class="block-field-bytes">32 bytes</span>
+        </div>
+        <div class="block-field">
+          <span class="block-field-name">Merkle Root</span>
+          <span class="block-field-desc">Fingerprint of all transactions in this block</span>
+          <span class="block-field-bytes">32 bytes</span>
+        </div>
+        <div class="block-field">
+          <span class="block-field-name">Timestamp</span>
+          <span class="block-field-desc">Unix time when miner started hashing</span>
+          <span class="block-field-bytes">4 bytes</span>
+        </div>
+        <div class="block-field">
+          <span class="block-field-name">Bits (Target)</span>
+          <span class="block-field-desc">Compact encoding of current difficulty target</span>
+          <span class="block-field-bytes">4 bytes</span>
+        </div>
+        <div class="block-field">
+          <span class="block-field-name">Nonce</span>
+          <span class="block-field-desc">The number miners keep incrementing — 0 to ~4 billion</span>
+          <span class="block-field-bytes">4 bytes</span>
+        </div>
+      </div>
+
+      <div class="block-tx-section">
+        <div class="block-section-label">Transactions — 1 to ~4,000</div>
+        <div class="block-tx-pills">
+          <span class="block-tx-pill coinbase">[Coinbase Tx] — creates 3.125 BTC + fees</span>
+          <span class="block-tx-pill">[Tx #1]</span>
+          <span class="block-tx-pill">[Tx #2]</span>
+          <span class="block-tx-pill">[Tx #3]</span>
+          <span class="block-tx-pill">...</span>
+          <span class="block-tx-pill">[Tx #N]</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">80</span>
+        <span class="data-box-label">Bytes<br>Header Size</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">6</span>
+        <span class="data-box-label">Header<br>Fields</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">32B</span>
+        <span class="data-box-label">Bytes<br>Hash Output</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">4B</span>
+        <span class="data-box-label">Nonce<br>Space</span>
+      </div>
+    </div>
+
+    <p>The coinbase transaction is the first transaction in every block and the only one with no inputs. It creates fresh Bitcoin out of nothing — currently 3.125 BTC per block, set by the protocol — plus collects all transaction fees from the other transactions in the block. This is how miners get paid, and how new Bitcoin enters circulation.</p>
+
+    <p>The previous block hash is the link in the chain. To build a valid block, you must include the exact hash of the most recent accepted block. This creates the chain structure: each block cryptographically references the one before it, going all the way back to the Genesis Block of January 3, 2009.</p>
+
+    <div class="mono-fact">
+      000000000000000000029a2e4b6f3c9d... — every valid block hash must start with enough leading zeros to satisfy the current difficulty target. This is proof of work. The zeros represent energy spent.
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 -->
+  <div class="section">
+    <div class="chapter">Chapter 03</div>
+    <h2>The Merkle Root: A Fingerprint of Everything</h2>
+
+    <p>A block might contain 2,000 transactions. The block header is only 80 bytes. How does the header prove that all 2,000 transactions are exactly what they claim to be? Through a structure called the Merkle tree — one of the most elegant ideas in Bitcoin's architecture.</p>
+
+    <p>Every transaction in a block is hashed. Then those hashes are paired up and hashed together. The resulting hashes are paired and hashed again. This continues — layer by layer — until a single hash remains. That final hash is the Merkle root, and it goes in the block header. Change even one byte in any transaction and the Merkle root changes completely, making the block invalid.</p>
+
+    <div class="merkle-visual">
+      <div class="merkle-label">Merkle Tree Construction</div>
+
+      <div class="merkle-row">
+        <div class="merkle-node root">MERKLE ROOT</div>
+      </div>
+      <div class="merkle-arrow">↑</div>
+      <div class="merkle-row">
+        <div class="merkle-node hash">Hash(AB)</div>
+        <div class="merkle-node hash">Hash(CD)</div>
+      </div>
+      <div class="merkle-arrow">↑</div>
+      <div class="merkle-row">
+        <div class="merkle-node">Hash(TxA)</div>
+        <div class="merkle-node">Hash(TxB)</div>
+        <div class="merkle-node">Hash(TxC)</div>
+        <div class="merkle-node">Hash(TxD)</div>
+      </div>
+      <div class="merkle-arrow">↑</div>
+      <div class="merkle-row">
+        <div class="merkle-node" style="color: #C0AD90; font-size: 0.9rem;">TxA</div>
+        <div class="merkle-node" style="color: #C0AD90; font-size: 0.9rem;">TxB</div>
+        <div class="merkle-node" style="color: #C0AD90; font-size: 0.9rem;">TxC</div>
+        <div class="merkle-node" style="color: #C0AD90; font-size: 0.9rem;">TxD</div>
+      </div>
+    </div>
+
+    <p>This structure enables a powerful capability called a Merkle proof. To prove that TxA is in a block, you don't need to download all 2,000 transactions. You only need Hash(TxB) and Hash(CD) — a logarithmic number of hashes. You can reconstruct the path from TxA to the Merkle root yourself and verify it matches the header. This is how lightweight wallets (SPV — Simple Payment Verification) work: they trust the headers and use Merkle proofs to verify individual transactions without storing the full blockchain.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <h4>Efficient</h4>
+        <p>Verify a specific transaction is in a block using only a handful of hashes — not the full block data.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Tamper-Evident</h4>
+        <p>Change any single transaction in the block and the Merkle root changes. The block becomes instantly invalid.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Compact</h4>
+        <p>Just 32 bytes in the block header represent a complete, unforgeable fingerprint of thousands of transactions.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Provable</h4>
+        <p>Merkle proofs let lightweight wallets verify transactions cryptographically without trusting any third party.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 4 -->
+  <div class="section">
+    <div class="chapter">Chapter 04</div>
+    <h2>SHA-256: The Cryptographic Backbone</h2>
+
+    <p>Every hash in Bitcoin — every block hash, every transaction ID, every Merkle computation — is produced by a function called SHA-256 (Secure Hash Algorithm, 256-bit). It was designed by the NSA, published as a federal standard, and is one of the most analyzed cryptographic functions in history. Satoshi chose well.</p>
+
+    <p>SHA-256 is a one-way function. You can feed it anything — a single character, a full novel, an image — and it always produces exactly 64 hexadecimal characters (256 bits, 32 bytes). Same input always gives the same output. But even a one-character change to the input produces a completely unpredictable, entirely different output. This is called the avalanche effect.</p>
+
+    <div class="mono-fact">
+      SHA-256("SATOSHI") → 3e6c1a6e9d2f...<br>
+      SHA-256("SATOSHJ") → a91f4b3c8d70...<br><br>
+      One letter changed. Half the output bits flipped. No pattern. No prediction. No reverse.
+    </div>
+
+    <p>Bitcoin uses double SHA-256 (SHA256d): the output of one SHA-256 computation is fed into a second SHA-256 computation. This provides extra security against a class of attacks called length extension attacks, where knowing H(message) could otherwise help an attacker compute H(message + extension) without knowing the message itself. Double hashing closes this vulnerability.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">2²⁵⁶</span>
+      <span class="stat-label">Possible SHA-256 outputs — roughly 10⁷⁷. More than the number of atoms in the observable universe. This is why you cannot reverse-engineer a private key from a public address.</span>
+    </div>
+
+    <p>Proof of work is built on SHA-256. Miners take the 80-byte block header, change the nonce field by one, and hash it again. They are looking for a hash that starts with enough leading zeros to satisfy the current difficulty target. With a 32-bit nonce (~4 billion possible values), modern miners exhaust the nonce space in milliseconds and must change other fields to keep searching. At the current network hash rate of approximately 1.020 zettahashes per second, the global network performs over one quintillion hash computations per second in this search.</p>
+
+    <p>The difficulty target adjusts every 2,016 blocks (~2 weeks) to keep the average block time near 10 minutes. If blocks come faster than expected, difficulty increases. If slower, it decreases. The system is self-calibrating, requiring no administrator.</p>
+  </div>
+
+  <!-- CHAPTER 5 -->
+  <div class="section">
+    <div class="chapter">Chapter 05</div>
+    <h2>The Mempool: Where Transactions Wait</h2>
+
+    <p>When you send Bitcoin, your transaction does not go directly into a block. It goes into the mempool — the memory pool — a holding area maintained independently by every full node on the network. The mempool is not a single database. Every node has its own version, though they are largely similar because they all receive the same broadcast transactions.</p>
+
+    <p>The mempool is a waiting room. Transactions sit there until a miner decides to include them in the next block. Miners are economically rational: they select transactions that pay the highest fees first, measured in satoshis per virtual byte (sat/vbyte). A virtual byte accounts for the weight of witness data introduced by SegWit. The higher your fee rate, the faster your transaction gets picked up.</p>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">~500MB</span>
+        <span class="data-box-label">Typical<br>Mempool Size</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">1-2</span>
+        <span class="data-box-label">sat/vB<br>Low Priority</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">sat/vB</span>
+        <span class="data-box-label">Fee<br>Unit</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~10m</span>
+        <span class="data-box-label">Expected Wait<br>(1 Block)</span>
+      </div>
+    </div>
+
+    <p>During congestion events — when usage spikes and more transactions are broadcast than can fit in a block — fees can rise dramatically. During quiet periods, you can often move Bitcoin globally in under 10 minutes for less than a cent in fees. The fee market is self-regulating: high fees cause users to wait or batch transactions, reducing demand, which brings fees back down.</p>
+
+    <p>Replace-By-Fee (RBF) is a mechanism that lets you replace an unconfirmed transaction with a new version paying higher fees. If you sent a transaction with a fee that's too low and the mempool is congested, RBF lets you bump the fee without your original transaction ever confirming. It is opt-in and clearly signaled in the transaction data.</p>
+
+    <div class="mono-fact">
+      Your transaction isn't confirmed until it's in a block. Until then, it's just a promise — a valid promise, cryptographically signed, that any miner can pick up and include. It is real. It is just not yet permanent.
+    </div>
+  </div>
+
+  <!-- CHAPTER 6 -->
+  <div class="section">
+    <div class="chapter">Chapter 06</div>
+    <h2>UTXOs: How Bitcoin Tracks Ownership</h2>
+
+    <p>This is the most important and most commonly misunderstood concept in Bitcoin. Most people assume Bitcoin works like a bank account: you have a balance, and transactions add or subtract from it. Bitcoin does not work this way at all.</p>
+
+    <p>Bitcoin has no accounts. It has no balances. It has Unspent Transaction Outputs — UTXOs. Each UTXO is a discrete, specific amount of Bitcoin sitting at a specific address, created by a specific previous transaction. Think of each UTXO as a physical coin or banknote. It exists as a complete unit. You cannot spend part of it. You must spend the whole thing, and if you spend more than you want to send, you create change.</p>
+
+    <div class="stat-block">
+      <span class="stat-number">~173M</span>
+      <span class="stat-label">UTXOs currently exist in the global UTXO set — every full node maintains this set in memory for instant validation</span>
+    </div>
+
+    <p>Your Bitcoin "balance" in any wallet is simply the sum of all UTXOs that your private keys can unlock. The wallet scans the blockchain for UTXOs assigned to your addresses and adds them up. There is no account balance stored anywhere. There is only the UTXO set — a shared record of every unspent output in Bitcoin's history.</p>
+
+    <p>When you send Bitcoin, here is what actually happens at the transaction level: your wallet selects one or more UTXOs as inputs, creates new UTXOs as outputs (one going to the recipient, usually one returning change to you), and the difference between inputs and outputs becomes the miner fee. The old UTXOs are consumed and cease to exist. The new UTXOs are created.</p>
+
+    <div class="mono-fact">
+      Example: You have a 0.5 BTC UTXO. You want to send 0.3 BTC.<br><br>
+      Input:    0.5 BTC UTXO (consumed — gone forever)<br>
+      Output 1: 0.3 BTC → recipient's address (new UTXO created)<br>
+      Output 2: 0.195 BTC → your change address (new UTXO created)<br>
+      Fee:      0.005 BTC → absorbed by miner (not a UTXO)
+    </div>
+
+    <p>Imagine your wallet as a pocket of physical coins. You cannot break a coin in half at the register — you hand over coins totaling more than the price and receive change. UTXOs work exactly the same way. This model is more complex than account balances, but it is more private (fresh addresses every transaction), more parallelizable (UTXOs are independent of each other), and more auditable (every satoshi in existence can be traced to its origin).</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-item">
+        <h4>No Double-Spend</h4>
+        <p>Each UTXO can only be referenced once as an input. The moment a transaction is confirmed, that UTXO is consumed. Attempting to spend it again fails validation on every node.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Privacy</h4>
+        <p>You can generate a fresh receiving address for every transaction. Each payment creates new UTXOs, making it harder to link transactions to a single owner.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Parallelism</h4>
+        <p>UTXOs are independent. Multiple transactions spending different UTXOs can be validated simultaneously, enabling efficient processing.</p>
+      </div>
+      <div class="pillar-item">
+        <h4>Simplicity</h4>
+        <p>There are no accounts, no complex state. Only a set of coins and the cryptographic conditions needed to spend them. Elegant and auditable.</p>
+      </div>
+    </div>
+
+    <p>The UTXO set is stored in RAM by full nodes for rapid validation. Every incoming transaction is checked against it: do these inputs exist? Are they unspent? Are the signatures valid? If yes, the transaction is valid. If no, it is rejected. No historical lookup required.</p>
+  </div>
+
+  <!-- CHAPTER 7 -->
+  <div class="section">
+    <div class="chapter">Chapter 07</div>
+    <h2>How You Prove You Own Your Bitcoin</h2>
+
+    <p>Every UTXO has a locking script — a set of conditions encoded in the output that must be satisfied before anyone can spend it. This script is called the scriptPubKey. To spend a UTXO, you provide an unlocking script (scriptSig, or for SegWit transactions, witness data) that satisfies those conditions. The Bitcoin scripting system evaluates the combination and determines whether the spend is valid.</p>
+
+    <p>The most common condition is straightforward: provide a valid digital signature using the private key that corresponds to the public key (or address) specified in the locking script. This is how Bitcoin proves ownership without passwords, without databases, without any authority.</p>
+
+    <p>Bitcoin originally used ECDSA — Elliptic Curve Digital Signature Algorithm. Your 256-bit private key, through elliptic curve mathematics, produces a public key. The public key, through hashing, produces your address. This is a one-way process: you can derive the address from the private key, but not the private key from the address. The private key signs the transaction data, producing a unique signature that proves you authorized the spend. Anyone on Earth can verify the signature is valid using only your public key — no private key required, ever.</p>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">P2PKH</span>
+        <span class="data-box-label">Legacy<br>1xxx addresses</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">P2SH</span>
+        <span class="data-box-label">Script Hash<br>3xxx addresses</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">P2WPKH</span>
+        <span class="data-box-label">SegWit<br>bc1q... addresses</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">P2TR</span>
+        <span class="data-box-label">Taproot/Schnorr<br>bc1p... addresses</span>
+      </div>
+    </div>
+
+    <p>In November 2021, the Taproot upgrade activated Schnorr signatures as an alternative to ECDSA. Schnorr signatures are more efficient and enable key aggregation: multiple parties can combine their public keys and produce a single signature that looks identical to a single-party signature. A multisig transaction involving 5 people becomes indistinguishable from a standard single-key spend, improving both privacy and efficiency. This is the foundation of advanced Bitcoin protocols like Lightning, multisig wallets, and complex smart contracts that hide their complexity on-chain.</p>
+
+    <div class="mono-fact">
+      Your private key never leaves your device. Bitcoin transactions prove ownership through mathematics, not passwords. No server stores your credentials. No company can reset your access. The math either checks out or it doesn't.
+    </div>
+  </div>
+
+  <!-- CHAPTER 8 -->
+  <div class="section">
+    <div class="chapter">Chapter 08</div>
+    <h2>From Wallet to Block: A Transaction's Journey</h2>
+
+    <p>Every confirmed Bitcoin transaction followed the same path: from a wallet decision, through the peer-to-peer network, into the mempool, through a miner's selection process, and finally into a block that becomes permanent history. Here is that journey, step by step.</p>
+
+    <div class="journey">
+      <div class="journey-step">
+        <div class="journey-num">1</div>
+        <div class="journey-content">
+          <h5>UTXO Selection</h5>
+          <p>You decide to send 0.1 BTC. Your wallet scans for UTXOs you can unlock, selects those with sufficient total value, and determines a fee rate based on current mempool conditions.</p>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="journey-num">2</div>
+        <div class="journey-content">
+          <h5>Transaction Construction</h5>
+          <p>The wallet builds the transaction: inputs (references to UTXOs being spent), outputs (recipient address + amount, and your change address), and the fee embedded in the difference.</p>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="journey-num">3</div>
+        <div class="journey-content">
+          <h5>Signing</h5>
+          <p>Your private key signs the transaction data using ECDSA or Schnorr. The signature proves authorization without revealing the key. The wallet encodes everything into a serialized transaction.</p>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="journey-num">4</div>
+        <div class="journey-content">
+          <h5>Broadcast</h5>
+          <p>The transaction is sent to 1–8 peer nodes your wallet connects to. Each peer validates the transaction and forwards it to their peers. This gossip propagation is fast and redundant.</p>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="journey-num">5</div>
+        <div class="journey-content">
+          <h5>Validation at Every Node</h5>
+          <p>Each receiving node independently verifies: do the inputs exist in the UTXO set? Are the signatures valid? Are the inputs unspent? Does the math add up? Bad transactions are dropped.</p>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="journey-num">6</div>
+        <div class="journey-content">
+          <h5>Mempool Entry</h5>
+          <p>Within 2–4 seconds, the transaction lives in the mempools of thousands of nodes worldwide. It is visible, valid, and waiting. It is not yet confirmed.</p>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="journey-num">7</div>
+        <div class="journey-content">
+          <h5>Miner Selection</h5>
+          <p>A miner building the next block candidate selects your transaction based on its fee rate. It is added to their block template alongside the coinbase transaction and other high-fee transactions.</p>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="journey-num">8</div>
+        <div class="journey-content">
+          <h5>Block Found — Confirmed</h5>
+          <p>The miner solves proof of work and broadcasts the block. Every node validates and accepts it. Your transaction is removed from mempools and recorded permanently in the timechain. The UTXOs are spent. New UTXOs exist.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-row">
+      <div class="data-box">
+        <span class="data-box-num">2–4s</span>
+        <span class="data-box-label">Mempool<br>Propagation</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~10m</span>
+        <span class="data-box-label">First<br>Confirmation</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">~60m</span>
+        <span class="data-box-label">6<br>Confirmations</span>
+      </div>
+      <div class="data-box">
+        <span class="data-box-num">∞</span>
+        <span class="data-box-label">Irreversible<br>After</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 9 -->
+  <div class="section">
+    <div class="chapter">Chapter 09</div>
+    <h2>What "Confirmed" Actually Means</h2>
+
+    <p>When a transaction enters a block, it has 1 confirmation. When the next block is mined on top of that block, it has 2 confirmations. Each new block adds another confirmation, another layer of proof of work that would need to be undone to reverse the transaction.</p>
+
+    <p>Confirmations are votes. Each one represents another 10 minutes of global hash power saying: this transaction is valid, it happened, the history including it is the correct history. The more confirmations, the more work required to rewrite them.</p>
+
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>1 Confirmation</span>
+        <span style="color: #F0A500;">Safe for small amounts</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill gold" data-width="16"></div>
+      </div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>3 Confirmations</span>
+        <span style="color: #F0A500;">Safe for most transactions</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill gold" data-width="50"></div>
+      </div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>6 Confirmations</span>
+        <span style="color: #F0A500;">Industry standard — exchange deposits, large amounts</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill gold" data-width="100"></div>
+      </div>
+    </div>
+    <div class="supply-bar">
+      <div class="supply-bar-label">
+        <span>100 Confirmations</span>
+        <span style="color: #C0AD90;">Required before coinbase outputs are spendable</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill dim" data-width="100"></div>
+      </div>
+    </div>
+
+    <p>To reverse a transaction buried under 6 confirmations, an attacker would need to secretly build an alternative chain of 6 blocks faster than the honest network builds its own chain — and then release that alternative chain at the right moment to trigger a reorganization. At Bitcoin's current hash rate of approximately 1.020 zettahashes per second, performing this attack even once would require an enormous fraction of the world's ASIC manufacturing capacity running for hours. Economists estimate the cost of a successful 6-block reorg at over $500 million per attempt — and even then, the attacker cannot steal coins. They can only double-spend their own previously sent transactions.</p>
+
+    <p>The 100-confirmation rule for coinbase outputs exists as extra protection. A mined block could theoretically be orphaned if a longer chain emerges, which would make the coinbase reward disappear. Waiting 100 blocks before spending ensures the block — and its reward — is so deeply buried it is effectively permanent.</p>
+
+    <div class="mono-fact">
+      Every confirmation is a new vote from the entire network's hash power. At 6 confirmations, reversing your transaction would require more electricity than most countries generate in a day — for a single attempt that still cannot steal anyone else's coins.
+    </div>
+  </div>
+
+  <!-- CHAPTER 10 -->
+  <div class="section">
+    <div class="chapter">Chapter 10</div>
+    <h2>The Bitcoin Timechain Is Genuinely Immutable</h2>
+
+    <p>Not because a law protects it. Not because a company promises it. Not because regulators mandate it. The Bitcoin timechain is immutable because the economics of attack have been designed to be prohibitive — and they grow more prohibitive with every block.</p>
+
+    <p>Every 10 minutes, the chain grows. Every new block adds to the cumulative work required to rewrite history. The honest network keeps building, keeps hashing, keeps extending the chain. An attacker who wants to rewrite a transaction from last year would need to redo not just that block, but every one of the tens of thousands of blocks mined since then — in real time, faster than the honest network keeps adding new ones. It cannot be done without controlling more than half the global hash rate. And even that would not let you steal coins. It would only let you spend your own coins twice.</p>
+
+    <p>This is the key insight that Satoshi encoded in the whitepaper's title: <em>Bitcoin: A Peer-to-Peer Electronic Cash System.</em> The "peer-to-peer" is not just about the network topology. It means the trust lives in the math between peers — not in any authority, institution, or promise. The timechain is the world's first object in recorded history that is genuinely immutable at scale.</p>
+
+    <blockquote>
+      <p>"Once the CPU effort has been expended to make it satisfy the proof-of-work, the block cannot be changed without redoing the work. As later blocks are chained after it, the work to change the block would include redoing all the blocks after it."</p>
+      <cite>— Satoshi Nakamoto, Bitcoin Whitepaper (2008)</cite>
+    </blockquote>
+
+    <p>Every ten minutes, a new block is found somewhere on Earth. Every ten minutes, the history of every transaction ever made becomes slightly harder to erase. Every ten minutes, the timechain grows, accumulating proof of work like sedimentary rock — layer upon layer — until the depth of history makes revision not just difficult but effectively impossible.</p>
+
+    <p>The chain began on January 3, 2009. The Genesis Block's coinbase message read: "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks." Satoshi was making a point. The old system runs on trust that can be violated. The new system runs on math that cannot.</p>
+
+    <div class="divider"></div>
+
+    <div class="finale">
+      <div class="finale-question">CAN HISTORY<span>BE REWRITTEN?</span></div>
+      <div class="finale-sub">Mathematically? Yes. Practically? Never. The timechain grows stronger with every block.</div>
+
+      <div class="finale-links">
+        <a href="why-bitcoin-wins.html" class="finale-link">Why Bitcoin Wins</a>
+        <a href="Network.html" class="finale-link">The Network</a>
+        <a href="bitcoin-halving.html" class="finale-link">The Halving</a>
+        <a href="btc-step-01.html" class="finale-link">Start the Course</a>
+      </div>
+    </div>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<div class="footer-wrap">
+  <footer>
+    <div>
+      <div class="footer-logo">SATOLOGY</div>
+      <div class="footer-copy">The Bitcoin Education Standard &copy; 2024</div>
+    </div>
+    <nav class="footer-links">
+      <a href="index.html">← Home</a>
+      <a href="Network.html">The Network</a>
+      <a href="why-bitcoin-wins.html">Why Bitcoin Wins</a>
+      <a href="bitcoin-halving.html">The Halving</a>
+      <a href="btc-step-01.html">Bitcoin Course</a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+// ── COINGECKO PRICE ──
+async function fetchBTCPrice() {
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd', {
+      signal: AbortSignal.timeout(6000)
+    });
+    const data = await res.json();
+    const price = data.bitcoin.usd;
+    const formatted = '$' + price.toLocaleString('en-US', { maximumFractionDigits: 0 });
+    document.getElementById('btcPriceNav').textContent = formatted;
+  } catch (e) {
+    document.getElementById('btcPriceNav').textContent = 'BTC';
+  }
+}
+fetchBTCPrice();
+setInterval(fetchBTCPrice, 60000);
+
+// ── INTERSECTION OBSERVER — section reveals ──
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+sections.forEach(s => observer.observe(s));
+
+// ── SUPPLY BAR ANIMATION ──
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const fills = entry.target.querySelectorAll('.bar-fill[data-width]');
+      fills.forEach(fill => {
+        const w = fill.getAttribute('data-width');
+        setTimeout(() => { fill.style.width = w + '%'; }, 120);
+      });
+      barObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+// Observe the section containing supply bars (chapter 9)
+sections.forEach(s => {
+  if (s.querySelector('.bar-fill')) barObserver.observe(s);
+});
+</script>
+
+</body>
+</html>
