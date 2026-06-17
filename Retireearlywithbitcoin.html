@@ -73,6 +73,7 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;al
 .sec-hdr{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin:28px 0 14px;display:flex;align-items:center;gap:10px}
 .sec-hdr::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
 .sec-hdr.btc-sec{color:var(--btc)}.sec-hdr.inv-sec{color:var(--teal)}.sec-hdr.gen-sec{color:var(--muted)}
+.sec-hdr.ss-sec{color:var(--green)}
 .sec-hdr:first-child{margin-top:0}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
@@ -101,8 +102,31 @@ select option{background:var(--card);color:var(--text)}
 
 .note{font-size:14px;color:var(--muted);line-height:1.75;padding:14px 16px;background:var(--bg2);border-radius:10px;border-left:3px solid var(--btc);margin-top:18px}
 .note strong{color:var(--text);font-weight:700}
+.note.ss-note{border-left-color:var(--green);margin-top:14px;display:none}
+.note.ss-note.show{display:block}
+.sec-hdr.mc-sec{color:var(--soul)}
+.note.mc-note{border-left-color:var(--soul);margin-top:14px;display:none}
+.note.mc-note.show{display:block}
+.mc-field{display:flex}
+.mc-section{max-width:960px;margin:22px auto 0;padding:0 48px;display:none}
+.mc-section.show{display:block;animation:fadeUp .5s ease both}
+.mc-card{background:var(--card);border:1px solid var(--soul);border-radius:18px;padding:24px}
+.mc-card-title{font-size:16px;font-weight:900;margin-bottom:4px;color:var(--soul)}
+.mc-card-sub{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.65}
+.mc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.mc-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:15px 16px;text-align:center}
+.mcs-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:7px}
+.mcs-val{font-size:27px;font-weight:900;letter-spacing:-1px;line-height:1}
+.mcs-sub{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4}
+.mcs-val.good{color:var(--green)}.mcs-val.mid{color:var(--btc)}.mcs-val.bad{color:var(--red)}
+.mc-crash{border-radius:12px;padding:15px 18px;font-size:13.5px;line-height:1.75;border:1px solid}
+.mc-crash.survive{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.35)}
+.mc-crash.fail{background:rgba(230,57,70,.08);border-color:rgba(230,57,70,.35)}
+.mc-crash strong{color:var(--text)}
 
 .calc-btn-wrap{margin-top:22px}
+.auto-pdf-row{display:flex;align-items:center;gap:9px;margin-bottom:13px;font-size:13px;color:var(--muted);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:600;line-height:1.4}
+.auto-pdf-row input{width:17px;height:17px;accent-color:var(--btc);cursor:pointer;flex-shrink:0}
 .calc-btn{width:100%;padding:16px;border-radius:13px;border:none;font-size:17px;font-weight:900;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:-.3px;transition:all .3s;position:relative;overflow:hidden}
 .calc-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transform:translateX(-100%);transition:transform .6s}
 .calc-btn:hover::before{transform:translateX(100%)}
@@ -162,6 +186,8 @@ select option{background:var(--card);color:var(--text)}
 .table-title{font-size:15px;font-weight:800}
 .tbl-btn{padding:8px 16px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
 .tbl-btn:hover{border-color:var(--btc);color:var(--btc)}
+.tbl-btn.primary{background:linear-gradient(135deg,var(--btc),#e07c12);color:#fff;border-color:transparent}
+.tbl-btn.primary:hover{color:#fff;transform:translateY(-1px)}
 .table-wrap{overflow-x:auto;max-height:520px;overflow-y:auto}
 table{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed}
 thead{position:sticky;top:0;z-index:10}
@@ -174,6 +200,7 @@ tr:hover td{background:rgba(247,147,26,.04)}
 th.btc-col,td.btc-col{color:var(--btc);font-weight:800}
 th.nw-col{background:linear-gradient(135deg,rgba(247,147,26,.25),rgba(255,215,0,.15)) !important;color:var(--btc) !important}
 td.nw-col{font-weight:800;color:var(--btc)}
+th.ss-col,td.ss-col{color:var(--green);font-weight:800}
 .retire-banner-row td{background:linear-gradient(90deg,rgba(34,197,94,.15),rgba(247,147,26,.08),rgba(34,197,94,.15)) !important;text-align:center !important;font-weight:900 !important;font-size:14px !important;color:var(--green) !important;letter-spacing:1px !important;padding:8px !important;border-top:2px solid var(--green) !important;border-bottom:1px solid rgba(34,197,94,.3) !important}
 
 footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:14px;border-top:1px solid var(--border);margin-top:48px}
@@ -181,7 +208,7 @@ footer a{color:var(--btc);text-decoration:none}
 footer a:hover{color:var(--gold)}
 
 @media(max-width:760px){
-  nav,.hero,.scenario-wrap,.calc-outer,.chart-section,.table-section{padding-left:18px;padding-right:18px}
+  nav,.hero,.scenario-wrap,.calc-outer,.chart-section,.table-section,.mc-section{padding-left:18px;padding-right:18px}
   .compare-row{grid-template-columns:1fr 1fr;padding:0 18px}
   .grid{grid-template-columns:1fr}
   .s-tab{padding:7px 11px;font-size:14px}
@@ -297,6 +324,35 @@ footer a:hover{color:var(--gold)}
     </div>
   </div>
 
+  <div class="sec-hdr ss-sec">🏛️ Social Security</div>
+  <div class="grid">
+    <div class="form-group">
+      <label for="ssEnabled">Include Social Security?</label>
+      <select id="ssEnabled" onchange="toggleSS()">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+    </div>
+    <div class="form-group ss-field" style="display:none">
+      <label for="ssMonthly">Benefit ($ / month, today's $)</label>
+      <input type="number" id="ssMonthly" min="0" step="50" placeholder="e.g. 2500">
+    </div>
+    <div class="form-group ss-field" style="display:none">
+      <label for="ssStartAge">Benefits Start At Age</label>
+      <input type="number" id="ssStartAge" min="50" max="80" step="1" value="67">
+    </div>
+    <div class="form-group ss-field" style="display:none">
+      <label for="ssCola">Adjust For Inflation?</label>
+      <select id="ssCola">
+        <option value="yes">Yes — grows with inflation (COLA)</option>
+        <option value="no">No — stays flat (nominal $)</option>
+      </select>
+    </div>
+  </div>
+  <div class="note ss-note" id="ssNote">
+    <strong>How Social Security helps:</strong> Each year you're eligible, your benefit is <strong>subtracted from your retirement spending first</strong>, so your portfolio only has to cover the remaining gap. That means fewer withdrawals from your investments — and often an earlier possible retirement.
+  </div>
+
   <div class="sec-hdr btc-sec">₿ Bitcoin Holdings</div>
   <div class="grid">
     <div class="form-group">
@@ -363,11 +419,57 @@ footer a:hover{color:var(--gold)}
     </div>
   </div>
 
+  <div class="sec-hdr mc-sec">📉 Volatility &amp; Risk — Monte Carlo</div>
+  <div class="grid">
+    <div class="form-group">
+      <label for="runMC">Run Monte Carlo &amp; Crash Test?</label>
+      <select id="runMC" onchange="toggleMC()">
+        <option value="yes">Yes — model real market swings</option>
+        <option value="no">No — smooth projection only</option>
+      </select>
+    </div>
+    <div class="form-group mc-field">
+      <label for="mcTrials">Simulation Runs</label>
+      <select id="mcTrials">
+        <option value="1000">1,000 (fast)</option>
+        <option value="2000" selected>2,000 (balanced)</option>
+        <option value="5000">5,000 (precise)</option>
+      </select>
+    </div>
+    <div class="form-group mc-field">
+      <label for="btcVol">Bitcoin Volatility (% / yr)</label>
+      <input type="number" id="btcVol" min="0" max="200" step="1" value="65">
+    </div>
+    <div class="form-group mc-field">
+      <label for="invVol">Investments Volatility (% / yr)</label>
+      <input type="number" id="invVol" min="0" max="100" step="1" value="16">
+    </div>
+    <div class="form-group mc-field">
+      <label for="othVol">Other Assets Volatility (% / yr)</label>
+      <input type="number" id="othVol" min="0" max="100" step="1" value="12">
+    </div>
+    <div class="form-group mc-field">
+      <label for="k401Vol">401k Volatility (% / yr)</label>
+      <input type="number" id="k401Vol" min="0" max="100" step="1" value="15">
+    </div>
+    <div class="form-group mc-field">
+      <label for="reVol">Real Estate Volatility (% / yr)</label>
+      <input type="number" id="reVol" min="0" max="100" step="1" value="10">
+    </div>
+  </div>
+  <div class="note mc-note">
+    <strong>Why this matters:</strong> The smooth projection assumes steady yearly growth. Real markets — <strong>especially Bitcoin</strong> — swing wildly, and the <em>order</em> of good and bad years matters enormously once you're withdrawing. Monte Carlo runs thousands of randomized return paths to estimate your <strong>true odds of success</strong>, and the crash test asks: <em>what if a severe bear market hits the very year you retire?</em>
+  </div>
+
   <div class="note">
     <strong>How it works:</strong> Contributions go to your selected bucket until retirement. Retirement spending inflates from today's dollars. Withdrawals taken <strong>lowest growth rate first → highest last</strong> to protect your best assets longest. 401k available at <strong>age 59.5</strong>. Real estate tracked but not liquidated. Bitcoin (BTC) column shows actual coin count each year.
   </div>
 
   <div class="calc-btn-wrap">
+    <label class="auto-pdf-row" for="autoPdf">
+      <input type="checkbox" id="autoPdf" checked>
+      Automatically open a full PDF report in a new tab when I calculate
+    </label>
     <button class="calc-btn mid-btn" id="calcBtn" onclick="runFinder()">
       🧮 Calculate My Retirement
     </button>
@@ -416,6 +518,15 @@ footer a:hover{color:var(--gold)}
   </div>
 </div>
 
+<div class="mc-section" id="mcSection">
+  <div class="mc-card">
+    <div class="mc-card-title">🎲 Monte Carlo Reality Check</div>
+    <div class="mc-card-sub" id="mcSub"></div>
+    <div class="mc-grid" id="mcStats"></div>
+    <div class="mc-crash" id="mcCrash"></div>
+  </div>
+</div>
+
 <div class="chart-section" id="chartSection">
   <div class="chart-card">
     <div class="chart-tabs">
@@ -423,6 +534,7 @@ footer a:hover{color:var(--gold)}
       <button class="ct-btn" onclick="switchChart('assets')">Asset Breakdown</button>
       <button class="ct-btn" onclick="switchChart('btc')">Bitcoin</button>
       <button class="ct-btn" onclick="switchChart('spending')">Spending vs Liquid</button>
+      <button class="ct-btn" id="mcChartTab" onclick="switchChart('montecarlo')" style="display:none">🎲 Monte Carlo Range</button>
     </div>
     <div class="chart-title" id="chartTitle">Net Worth Over Time</div>
     <div class="chart-sub" id="chartSub">Total portfolio value by age</div>
@@ -436,7 +548,7 @@ footer a:hover{color:var(--gold)}
       <div class="table-title">📋 Year-by-Year Projection</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="tbl-btn" onclick="exportCSV()">⬇️ Export CSV</button>
-        <button class="tbl-btn" id="pdfBtn" onclick="exportPDF()">📄 Export PDF</button>
+        <button class="tbl-btn primary" id="pdfBtn" onclick="generateReport('download')">📄 Download Full Report</button>
       </div>
     </div>
     <div class="table-wrap" id="tableWrap"></div>
@@ -466,6 +578,10 @@ let currentScenario = 'mid';
 let chartInstance = null;
 let currentChartType = 'networth';
 let lastPath = [];
+let lastInputs = null;
+let lastStartIn = 0;
+let lastMC = null;
+let lastCrash = null;
 const scenarioResults = { bear: null, mid: null, bull: null, hyper: null };
 
 const SCENARIOS = {
@@ -532,6 +648,19 @@ async function refreshPrice() {
 }
 refreshPrice(); setInterval(refreshPrice, 30000);
 
+// ===== SOCIAL SECURITY TOGGLE =====
+function toggleSS() {
+  const on = document.getElementById('ssEnabled').value === 'yes';
+  document.querySelectorAll('.ss-field').forEach(el => el.style.display = on ? 'flex' : 'none');
+  document.getElementById('ssNote').classList.toggle('show', on);
+}
+
+function toggleMC() {
+  const on = document.getElementById('runMC').value === 'yes';
+  document.querySelectorAll('.mc-field').forEach(el => el.style.display = on ? 'flex' : 'none');
+  document.querySelector('.mc-note').classList.toggle('show', on);
+}
+
 // ===== SCENARIO SWITCH =====
 function switchScenario(s) {
   currentScenario = s;
@@ -559,12 +688,27 @@ function switchScenario(s) {
     showResult(saved.retireAge, saved.startIn, s);
     document.getElementById('resultBox').classList.add('show');
     lastPath = saved.path;
+    lastInputs = saved.inputs;
+    lastStartIn = saved.startIn;
+    lastMC = saved.mc || null;
+    lastCrash = saved.crash || null;
+    if (lastMC) {
+      renderMC(lastMC, lastCrash);
+      document.getElementById('mcSection').classList.add('show');
+      document.getElementById('mcChartTab').style.display = '';
+    } else {
+      document.getElementById('mcSection').classList.remove('show');
+      document.getElementById('mcChartTab').style.display = 'none';
+      if (currentChartType === 'montecarlo') currentChartType = 'networth';
+    }
     drawChart(lastPath, currentChartType);
     renderTable(lastPath);
     document.getElementById('chartSection').classList.add('show');
     document.getElementById('tableSection').classList.add('show');
   } else {
     document.getElementById('resultBox').classList.remove('show');
+    document.getElementById('mcSection').classList.remove('show');
+    document.getElementById('mcChartTab').style.display = 'none';
   }
 }
 
@@ -594,7 +738,18 @@ function getInputs() {
     realEstate: parseFloat(v('realEstate')) || 0,
     realEstateCagr: parseFloat(v('realEstateCagr')) / 100,
     inflationRate: parseFloat(v('inflationRate')) / 100,
-    retirementSpending: parseFloat(v('retirementSpending'))
+    retirementSpending: parseFloat(v('retirementSpending')),
+    ssEnabled: v('ssEnabled') === 'yes',
+    ssMonthly: parseFloat(v('ssMonthly')) || 0,
+    ssStartAge: parseFloat(v('ssStartAge')) || 67,
+    ssCola: v('ssCola') === 'yes',
+    btcVol: (parseFloat(v('btcVol')) || 0) / 100,
+    invVol: (parseFloat(v('invVol')) || 0) / 100,
+    othVol: (parseFloat(v('othVol')) || 0) / 100,
+    k401Vol: (parseFloat(v('k401Vol')) || 0) / 100,
+    reVol: (parseFloat(v('reVol')) || 0) / 100,
+    runMC: v('runMC') === 'yes',
+    mcTrials: parseInt(v('mcTrials')) || 2000
   };
 }
 
@@ -607,6 +762,10 @@ function validate(i) {
   if (isNaN(i.retirementSpending) || i.retirementSpending <= 0) e.push('Annual retirement spending is required.');
   if (isNaN(i.btcCagr)) e.push('Bitcoin growth rate is required.');
   if (isNaN(i.inflationRate)) e.push('Inflation rate is required.');
+  if (i.ssEnabled) {
+    if (isNaN(i.ssMonthly) || i.ssMonthly < 0) e.push('Social Security monthly benefit must be ≥ 0.');
+    if (isNaN(i.ssStartAge) || i.ssStartAge < 50 || i.ssStartAge > 80) e.push('Social Security start age must be 50–80.');
+  }
   return e;
 }
 
@@ -614,9 +773,16 @@ function validate(i) {
 function runFinder() {
   const eb = document.getElementById('errorBox');
   eb.classList.remove('show');
+
+  // Open a blank tab synchronously (within the click gesture) so the PDF can load into it.
+  const auto = document.getElementById('autoPdf');
+  let pdfWin = null;
+  if (auto && auto.checked) { try { pdfWin = window.open('', '_blank'); } catch (e) { pdfWin = null; } }
+  const closeWin = () => { if (pdfWin) { try { pdfWin.close(); } catch (e) {} } };
+
   const i = getInputs();
   const errs = validate(i);
-  if (errs.length) { eb.textContent = errs.join(' '); eb.classList.add('show'); return; }
+  if (errs.length) { eb.textContent = errs.join(' '); eb.classList.add('show'); closeWin(); return; }
 
   let found = null;
   for (let n = 0; n <= 65; n++) {
@@ -630,27 +796,52 @@ function runFinder() {
   if (!found) {
     document.getElementById('resultLabel').textContent = SCENARIOS[currentScenario].label + ' — No Retirement Found';
     document.getElementById('resultAge').textContent = '∞';
-    document.getElementById('resultDetail').innerHTML = '❌ No feasible retirement within 65 years. Try reducing spending, increasing savings, or switching to a higher growth scenario.';
+    document.getElementById('resultDetail').innerHTML = '❌ No feasible retirement within 65 years. Try reducing spending, increasing savings, adding Social Security, or switching to a higher growth scenario.';
     scenarioResults[currentScenario] = null;
     updateCmp(currentScenario, null, null);
     document.getElementById('compareRow').classList.add('show');
+    closeWin();
     return;
   }
 
   const retireAge = (i.age + found.startIn).toFixed(1);
   lastPath = found.sim.path;
-  scenarioResults[currentScenario] = { retireAge, startIn: found.startIn, path: lastPath };
+  lastInputs = i;
+  lastStartIn = found.startIn;
+  scenarioResults[currentScenario] = { retireAge, startIn: found.startIn, path: lastPath, inputs: i };
 
   showResult(retireAge, found.startIn, currentScenario);
   updateCmp(currentScenario, retireAge, found.startIn);
 
   document.getElementById('compareRow').classList.add('show');
+  // Monte Carlo + sequence-of-returns crash test
+  lastMC = null; lastCrash = null;
+  if (i.runMC) {
+    const trials = i.mcTrials;
+    const mc = runMonteCarlo(i, found.startIn, trials, true);
+    const confAge = mcConfidenceAge(i, found.startIn, 90, Math.min(trials, 500));
+    lastCrash = crashTest(i, found.startIn);
+    lastMC = { atAge: +retireAge, successPct: mc.successPct, trials, confAge: confAge != null ? +(i.age + confAge).toFixed(1) : null, endPct: mc.endPct, bands: mc.bands };
+    renderMC(lastMC, lastCrash);
+    document.getElementById('mcSection').classList.add('show');
+    document.getElementById('mcChartTab').style.display = '';
+  } else {
+    document.getElementById('mcSection').classList.remove('show');
+    document.getElementById('mcChartTab').style.display = 'none';
+    if (currentChartType === 'montecarlo') currentChartType = 'networth';
+  }
+  scenarioResults[currentScenario].mc = lastMC;
+  scenarioResults[currentScenario].crash = lastCrash;
+
   drawChart(lastPath, currentChartType);
   renderTable(lastPath);
   document.getElementById('chartSection').classList.add('show');
   document.getElementById('tableSection').classList.add('show');
 
   setTimeout(() => rb.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+
+  // Build and open the full PDF report.
+  if (auto && auto.checked) generateReport('open', pdfWin);
 }
 
 function showResult(retireAge, startIn, s) {
@@ -659,8 +850,22 @@ function showResult(retireAge, startIn, s) {
   const rateDisplay = isNaN(actualRate) ? sc.rate : actualRate;
   document.getElementById('resultLabel').textContent = sc.label + ' — Earliest Retirement Age';
   document.getElementById('resultAge').textContent = retireAge;
+  let ssLine = '';
+  const inp = (scenarioResults[s] && scenarioResults[s].inputs) || lastInputs;
+  if (inp && inp.ssEnabled && inp.ssMonthly > 0) {
+    ssLine = ` Social Security of <strong>$${fmt(Math.round(inp.ssMonthly * 12))}/yr</strong> from age <strong>${inp.ssStartAge}</strong> is offsetting your spending.`;
+  }
+  let endLine = '';
+  const res = scenarioResults[s];
+  if (res && res.path && res.path.length) {
+    const last = res.path[res.path.length - 1];
+    endLine = ` By age <strong>${last.age}</strong>, projected <strong>liquid</strong> net worth is <strong>$${fmt(Math.round(last.liquidNetWorth))}</strong>` +
+      (Math.round(last.netWorth) > Math.round(last.liquidNetWorth)
+        ? ` (total incl. non-liquid property: <strong>$${fmt(Math.round(last.netWorth))}</strong>).`
+        : `.`);
+  }
   document.getElementById('resultDetail').innerHTML =
-    `Retire in <strong>${startIn} year${startIn !== 1 ? 's' : ''}</strong> at age <strong>${retireAge}</strong> assuming <strong>${rateDisplay}% annual Bitcoin growth</strong>. ${sc.desc}`;
+    `Retire in <strong>${startIn} year${startIn !== 1 ? 's' : ''}</strong> at age <strong>${retireAge}</strong> assuming <strong>${rateDisplay}% annual Bitcoin growth</strong>. ${sc.desc}${ssLine}${endLine}`;
 }
 
 function updateCmp(s, retireAge, startIn) {
@@ -693,10 +898,14 @@ function simulate(i, startInYears) {
       else inv += annualSavings;
     }
 
-    let required = 0, wInv = 0, wOth = 0, w401g = 0, wBtc = 0;
+    let required = 0, wInv = 0, wOth = 0, w401g = 0, wBtc = 0, ssAmt = 0;
     if (isRetired) {
       required = i.retirementSpending * Math.pow(1 + i.inflationRate, yr);
-      let need = required;
+      if (i.ssEnabled && age >= i.ssStartAge) {
+        const annualSS = i.ssMonthly * 12;
+        ssAmt = i.ssCola ? annualSS * Math.pow(1 + i.inflationRate, yr) : annualSS;
+      }
+      let need = Math.max(0, required - ssAmt);
       const can401 = age >= 59.5;
       const buckets = [
         { cagr: i.investmentCagr, take: n => { const a = Math.min(inv, n); inv -= a; wInv += a; return a; } },
@@ -718,6 +927,8 @@ function simulate(i, startInYears) {
       btcCoins: +(btcUsd / btcPriceNow).toFixed(8),
       bitcoin: btcUsd, realEstate: re,
       requiredSpending: +required.toFixed(2),
+      ssIncome: +ssAmt.toFixed(2),
+      netSpending: +Math.max(0, required - ssAmt).toFixed(2),
       withdrawnInv: +wInv.toFixed(2), withdrawnOther: +wOth.toFixed(2),
       withdrawn401k: +w401g.toFixed(2), withdrawnBitcoin: +wBtc.toFixed(2),
       retired: isRetired
@@ -734,7 +945,7 @@ function simulate(i, startInYears) {
 function switchChart(type) {
   currentChartType = type;
   document.querySelectorAll('.ct-btn').forEach((b, i) => {
-    b.classList.toggle('active', ['networth', 'assets', 'btc', 'spending'][i] === type);
+    b.classList.toggle('active', ['networth', 'assets', 'btc', 'spending', 'montecarlo'][i] === type);
   });
   if (lastPath.length) drawChart(lastPath, type);
 }
@@ -769,10 +980,16 @@ function drawChart(path, type) {
     networth: ['Net Worth Over Time',       'Total and liquid portfolio value by age'],
     assets:   ['Asset Breakdown',           'How each asset class grows and depletes through your life'],
     btc:      ['Bitcoin Stack Performance', 'USD value, BTC price, and coin count across your lifetime'],
-    spending: ['Spending vs Liquid Portfolio','Does your liquid portfolio outlast your inflation-adjusted spending?']
+    spending: ['Spending vs Liquid Portfolio','Does your liquid portfolio outlast your inflation-adjusted spending?'],
+    montecarlo: ['Monte Carlo Outcome Range','Median and 10th–90th percentile net worth across thousands of randomized market paths']
   };
   document.getElementById('chartTitle').textContent = TITLES[type][0];
   document.getElementById('chartSub').textContent   = TITLES[type][1];
+
+  if (type === 'montecarlo' && (!lastMC || !lastMC.bands)) {
+    document.getElementById('chartSub').textContent = 'Enable Monte Carlo and recalculate to see the outcome range.';
+    return;
+  }
 
   let datasets = [], scales = {}, extraPlugins = {};
 
@@ -828,9 +1045,31 @@ function drawChart(path, type) {
         borderColor:'#e63946', tension:.4, borderWidth:2, pointRadius:0, pointHoverRadius:5,
         fill:false, borderDash:[7,4] }
     ];
+    if (lastInputs && lastInputs.ssEnabled && lastInputs.ssMonthly > 0) {
+      datasets.push({ label:'Net Spending (after SS)', data:path.map(p=>({x:p.age,y:Math.round(p.netSpending)})),
+        borderColor:'#06b6d4', tension:.4, borderWidth:1.8, pointRadius:0, pointHoverRadius:4,
+        fill:false, borderDash:[3,3] });
+    }
     scales = {
       x: { type:'linear', title:{display:true,text:'Age',color:tc,font:{weight:'700'}}, grid:{color:gc}, ticks:{color:tc} },
       y: { title:{display:true,text:'USD ($)',color:tc,font:{weight:'700'}}, grid:{color:gc}, ticks:{color:tc, callback: v=>'$'+fmt(v)} }
+    };
+  }
+
+  if (type === 'montecarlo') {
+    const b = lastMC.bands;
+    datasets = [
+      { label:'90th percentile (lucky)', data:b.map(p=>({x:p.age,y:Math.round(p.p90)})),
+        borderColor:'#22c55e', backgroundColor:'rgba(124,58,237,.12)',
+        fill:'+1', tension:.4, borderWidth:1.6, pointRadius:0, pointHoverRadius:4, borderDash:[5,3] },
+      { label:'10th percentile (unlucky)', data:b.map(p=>({x:p.age,y:Math.round(p.p10)})),
+        borderColor:'#e63946', fill:false, tension:.4, borderWidth:1.6, pointRadius:0, pointHoverRadius:4, borderDash:[5,3] },
+      { label:'Median outcome', data:b.map(p=>({x:p.age,y:Math.round(p.p50)})),
+        borderColor:'#7c3aed', fill:false, tension:.4, borderWidth:2.6, pointRadius:0, pointHoverRadius:5 }
+    ];
+    scales = {
+      x: { type:'linear', title:{display:true,text:'Age',color:tc,font:{weight:'700'}}, grid:{color:gc}, ticks:{color:tc} },
+      y: { title:{display:true,text:'Net Worth ($)',color:tc,font:{weight:'700'}}, grid:{color:gc}, ticks:{color:tc, callback: v=>'$'+fmt(v)} }
     };
   }
 
@@ -891,6 +1130,7 @@ function drawChart(path, type) {
 // ===== TABLE =====
 function renderTable(path) {
   if (!path?.length) return;
+  const ssOn = lastInputs && lastInputs.ssEnabled && lastInputs.ssMonthly > 0;
   const cols = [
     { l: 'Year', k: 'year' }, { l: 'Age', k: 'age' },
     { l: 'Net Worth', k: 'netWorth', f: 'usd', c: 'nw-col' },
@@ -903,6 +1143,7 @@ function renderTable(path) {
     { l: 'Bitcoin ₿', k: 'btcCoins', f: 'btc', c: 'btc-col' },
     { l: 'Real Estate', k: 'realEstate', f: 'usd' },
     { l: 'Req. Spending', k: 'requiredSpending', f: 'usd' },
+    ...(ssOn ? [{ l: 'Soc. Sec.', k: 'ssIncome', f: 'usd', c: 'ss-col' }, { l: 'Net Draw', k: 'netSpending', f: 'usd' }] : []),
     { l: 'From Inv', k: 'withdrawnInv', f: 'usd' },
     { l: 'From Other', k: 'withdrawnOther', f: 'usd' },
     { l: 'From 401k', k: 'withdrawn401k', f: 'usd' },
@@ -936,131 +1177,551 @@ function renderTable(path) {
   document.getElementById('tableWrap').innerHTML = h;
 }
 
-// ===== EXPORT =====
+// ===== EXPORT CSV =====
 function exportCSV() {
   if (!lastPath.length) return;
-  const hdr = ['Year','Age','NetWorth','LiquidNW','Investments','Other','401k','BTCPrice','Bitcoin_USD','Bitcoin_BTC','RealEstate','ReqSpending','WithdrawnInv','WithdrawnOther','Withdrawn401k','WithdrawnBTC','Retired'];
+  const ssOn = lastInputs && lastInputs.ssEnabled && lastInputs.ssMonthly > 0;
+  const hdr = ['Year','Age','NetWorth','LiquidNW','Investments','Other','401k','BTCPrice','Bitcoin_USD','Bitcoin_BTC','RealEstate','ReqSpending']
+    .concat(ssOn ? ['SocialSecurity','NetDraw'] : [])
+    .concat(['WithdrawnInv','WithdrawnOther','Withdrawn401k','WithdrawnBTC','Retired']);
   const rows = lastPath.map(p => [
     p.year, p.age, Math.round(p.netWorth), Math.round(p.liquidNetWorth),
     Math.round(p.invested), Math.round(p.other), Math.round(p.k401),
     Math.round(p.btcPrice), Math.round(p.bitcoin), p.btcCoins,
-    Math.round(p.realEstate), p.requiredSpending,
-    p.withdrawnInv, p.withdrawnOther, p.withdrawn401k, p.withdrawnBitcoin,
-    p.retired ? 'Yes' : 'No'
-  ].join(','));
+    Math.round(p.realEstate), p.requiredSpending
+  ].concat(ssOn ? [Math.round(p.ssIncome), Math.round(p.netSpending)] : [])
+   .concat([p.withdrawnInv, p.withdrawnOther, p.withdrawn401k, p.withdrawnBitcoin, p.retired ? 'Yes' : 'No'])
+   .join(','));
   const blob = new Blob([[hdr.join(','), ...rows].join('\n')], { type: 'text/csv' });
   const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `satology_retirement_${currentScenario}_${new Date().toISOString().split('T')[0]}.csv` });
   a.click(); URL.revokeObjectURL(a.href);
 }
 
-function exportPDF() {
-  if (!lastPath.length) return;
-  const btn = document.getElementById('pdfBtn');
-  btn.textContent = '⏳ Building…';
-  btn.disabled = true;
+// ===== STRESS HELPERS =====
+function shiftCagrs(base, delta) {
+  return Object.assign({}, base, {
+    btcCagr: base.btcCagr + delta,
+    investmentCagr: base.investmentCagr + delta,
+    otherAssetsCagr: base.otherAssetsCagr + delta,
+    k401Cagr: base.k401Cagr + delta,
+    realEstateCagr: base.realEstateCagr + delta
+  });
+}
+function earliestRetireYears(inp) {
+  for (let n = 0; n <= 65; n++) { if (simulate(inp, n).success) return n; }
+  return null;
+}
 
-  setTimeout(() => {
-    try {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-      const sc   = SCENARIOS[currentScenario];
-      const actualRate = parseFloat(document.getElementById('btcCagr').value) || sc.rate;
-      const retireRow  = lastPath.find(p => p.retired);
-      const lastRow    = lastPath[lastPath.length - 1];
-      const W = doc.internal.pageSize.getWidth();
-      let y = 14;
+// ===== MONTE CARLO ENGINE =====
+// Standard-normal sample (Box-Muller).
+function gaussRand() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
 
-      // ── Header bar ──
-      doc.setFillColor(247, 147, 26);
-      doc.rect(0, 0, W, 22, 'F');
-      doc.setFontSize(16); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
-      doc.text('SATOLOGY  ·  Retire Early with Bitcoin', 14, 14);
-      doc.setFontSize(9); doc.setFont('helvetica', 'normal');
-      doc.text('satology.io  ·  Not financial advice', W - 14, 14, { align: 'right' });
-      y = 30;
-
-      // ── Scenario badge ──
-      const BADGE_COLORS = { bear:[230,57,70], mid:[247,147,26], bull:[34,197,94], hyper:[168,85,247] };
-      const bc = BADGE_COLORS[currentScenario];
-      doc.setFillColor(...bc);
-      doc.roundedRect(14, y - 5, 60, 9, 2, 2, 'F');
-      doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(255,255,255);
-      doc.text(`${sc.label}  ·  ${actualRate}% Bitcoin CAGR`, 44, y + 1, { align:'center' });
-      y += 12;
-
-      // ── Summary boxes ──
-      doc.setTextColor(40, 40, 40);
-      const summaries = [
-        ['Retirement Age', retireRow ? retireRow.age : 'N/A'],
-        ['Final Net Worth', retireRow ? '$' + fmt(Math.round(lastRow.netWorth)) : '—'],
-        ['Bitcoin at Retire', retireRow ? '$' + fmt(Math.round(retireRow.bitcoin)) : '—'],
-        ['BTC Coins at Retire', retireRow ? retireRow.btcCoins.toFixed(4) + ' ₿' : '—'],
-        ['BTC Price at Retire', retireRow ? '$' + fmt(Math.round(retireRow.btcPrice)) : '—']
-      ];
-      const boxW = (W - 28) / summaries.length;
-      summaries.forEach(([label, val], i) => {
-        const bx = 14 + i * boxW;
-        doc.setFillColor(245, 244, 240);
-        doc.roundedRect(bx, y, boxW - 3, 16, 2, 2, 'F');
-        doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(120,120,120);
-        doc.text(label.toUpperCase(), bx + (boxW - 3) / 2, y + 5.5, { align: 'center' });
-        doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(40,40,40);
-        doc.text(String(val), bx + (boxW - 3) / 2, y + 12.5, { align: 'center' });
-      });
-      y += 22;
-
-      // ── Year-by-year table ──
-      const headers = ['Year','Age','Net Worth','Liquid NW','Investments','Other','401k','BTC Price','Bitcoin $','Bitcoin ₿','Real Estate','Req. Spend','W/D Inv','W/D Other','W/D 401k','W/D BTC','Retired'];
-      const rows = lastPath.map(p => [
-        p.year, p.age,
-        '$'+fmt(Math.round(p.netWorth)), '$'+fmt(Math.round(p.liquidNetWorth)),
-        '$'+fmt(Math.round(p.invested)), '$'+fmt(Math.round(p.other)), '$'+fmt(Math.round(p.k401)),
-        '$'+fmt(Math.round(p.btcPrice)), '$'+fmt(Math.round(p.bitcoin)), (+p.btcCoins).toFixed(4)+'₿',
-        '$'+fmt(Math.round(p.realEstate)), '$'+fmt(Math.round(p.requiredSpending)),
-        '$'+fmt(Math.round(p.withdrawnInv)), '$'+fmt(Math.round(p.withdrawnOther)),
-        '$'+fmt(Math.round(p.withdrawn401k)), '$'+fmt(Math.round(p.withdrawnBitcoin)),
-        p.retired ? '✓' : '—'
-      ]);
-
-      doc.autoTable({
-        head: [headers],
-        body: rows,
-        startY: y,
-        styles: { fontSize: 7, cellPadding: 2.2, overflow: 'linebreak', halign: 'right' },
-        headStyles: { fillColor: [20,20,26], textColor: [200,200,200], fontStyle: 'bold', halign: 'center' },
-        columnStyles: { 0:{halign:'left'}, 1:{halign:'left'} },
-        alternateRowStyles: { fillColor: [248, 247, 244] },
-        didParseCell: data => {
-          const row = lastPath[data.row.index];
-          if (row && row.retired && data.section === 'body') {
-            if (data.column.index === 8) { data.cell.styles.textColor = [247,147,26]; data.cell.styles.fontStyle = 'bold'; }
-            if (data.column.index === 16) { data.cell.styles.textColor = [34,197,94]; data.cell.styles.fontStyle = 'bold'; }
-          }
-          // Green band at retirement row start
-          if (row && row.retired && data.row.index > 0) {
-            const prev = lastPath[data.row.index - 1];
-            if (prev && !prev.retired) data.cell.styles.fillColor = [220, 252, 231];
-          }
-        },
-        margin: { left: 14, right: 14 }
-      });
-
-      // ── Footer ──
-      const pages = doc.getNumberOfPages();
-      for (let i = 1; i <= pages; i++) {
-        doc.setPage(i);
-        doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(160,160,160);
-        doc.text(`SATOLOGY Retirement Model  ·  ${sc.label}  ·  ${actualRate}% BTC CAGR  ·  Not financial advice`, 14, doc.internal.pageSize.getHeight() - 6);
-        doc.text(`Page ${i} / ${pages}`, W - 14, doc.internal.pageSize.getHeight() - 6, { align:'right' });
-      }
-
-      doc.save(`satology_retirement_${currentScenario}_${actualRate}pct_${new Date().toISOString().split('T')[0]}.pdf`);
-    } catch(err) {
-      alert('PDF export failed: ' + err.message);
+// Generalized projection. growthFn(assetKey, yr) returns that asset's annual return for year yr.
+// Keys: 'btc','inv','oth','k401','re'. Withdrawal ORDER always uses the expected CAGRs (you plan
+// by expectation). If rec is provided, net worth at each age is recorded (0 after depletion).
+function projectPath(i, startInYears, growthFn, rec) {
+  let inv = i.investments, oth = i.otherAssets, k401 = i.k401Balance, re = i.realEstate;
+  const startBtcPrice = i.btcPrice || 1;
+  let btcUsd = i.bitcoinBTC * startBtcPrice;
+  const annualSavings = i.income * i.savingsRate;
+  const retireAge = i.age + startInYears;
+  const totalYears = i.lifeExpectancy - i.age;
+  for (let yr = 0; yr <= totalYears; yr++) {
+    const age = i.age + yr;
+    const isRetired = age >= retireAge;
+    if (!isRetired && annualSavings > 0) {
+      if (i.savingsDestination === 'bitcoin') btcUsd += annualSavings;
+      else if (i.savingsDestination === 'otherAssets') oth += annualSavings;
+      else inv += annualSavings;
     }
-    btn.textContent = '📄 Export PDF';
-    btn.disabled = false;
-  }, 60);
+    if (isRetired) {
+      const required = i.retirementSpending * Math.pow(1 + i.inflationRate, yr);
+      let ssAmt = 0;
+      if (i.ssEnabled && age >= i.ssStartAge) { const a = i.ssMonthly * 12; ssAmt = i.ssCola ? a * Math.pow(1 + i.inflationRate, yr) : a; }
+      let need = Math.max(0, required - ssAmt);
+      const can401 = age >= 59.5;
+      const buckets = [
+        { cagr: i.investmentCagr, take: n => { const a = Math.min(inv, n); inv -= a; return a; } },
+        { cagr: i.otherAssetsCagr, take: n => { const a = Math.min(oth, n); oth -= a; return a; } },
+        ...(can401 ? [{ cagr: i.k401Cagr, take: n => { const mx = k401 * (1 - i.k401TaxRate); const net = Math.min(mx, n); k401 -= net / (1 - i.k401TaxRate); return net; } }] : []),
+        { cagr: i.btcCagr, take: n => { const a = Math.min(btcUsd, n); btcUsd -= a; return a; } }
+      ].sort((a, b) => a.cagr - b.cagr);
+      for (const b of buckets) { if (need <= 0) break; need -= b.take(need); }
+      if (need > 0.01) { if (rec) { for (let z = yr; z <= totalYears; z++) rec.push(0); } return { success: false }; }
+    }
+    if (rec) rec.push(inv + oth + k401 + re + btcUsd);
+    if (inv < -1 || oth < -1 || k401 < -1 || btcUsd < -1) { if (rec) { for (let z = yr + 1; z <= totalYears; z++) rec.push(0); } return { success: false }; }
+    inv *= (1 + growthFn('inv', yr)); oth *= (1 + growthFn('oth', yr));
+    k401 *= (1 + growthFn('k401', yr)); re *= (1 + growthFn('re', yr)); btcUsd *= (1 + growthFn('btc', yr));
+  }
+  return { success: true, endNetWorth: inv + oth + k401 + re + btcUsd };
+}
+
+// Lognormal sampler: median annual growth = the entered CAGR, dispersion = entered volatility.
+// Returns can never fall below -100% (gross stays positive), and the arithmetic mean sits above
+// the median by the volatility tax (exp(s^2/2)) - exactly the realism we want to surface.
+function mcSampler(i) {
+  const med = { btc: i.btcCagr, inv: i.investmentCagr, oth: i.otherAssetsCagr, k401: i.k401Cagr, re: i.realEstateCagr };
+  const vol = { btc: i.btcVol, inv: i.invVol, oth: i.othVol, k401: i.k401Vol, re: i.reVol };
+  return (key, yr) => {
+    const s = vol[key] || 0, m = med[key] || 0;
+    if (s <= 0) return m;
+    return (1 + m) * Math.exp(s * gaussRand()) - 1;
+  };
+}
+
+function pctile(arr, p) {
+  if (!arr.length) return 0;
+  const s = arr.slice().sort((a, b) => a - b);
+  return s[Math.min(s.length - 1, Math.max(0, Math.round(p / 100 * (s.length - 1))))];
+}
+
+function runMonteCarlo(i, startInYears, trials, collect) {
+  let succ = 0; const totalYears = i.lifeExpectancy - i.age; const ends = [];
+  const sampler = mcSampler(i);
+  let byYear = null;
+  if (collect) { byYear = []; for (let y = 0; y <= totalYears; y++) byYear.push([]); }
+  for (let t = 0; t < trials; t++) {
+    const rec = collect ? [] : null;
+    const r = projectPath(i, startInYears, sampler, rec);
+    if (r.success) { succ++; ends.push(r.endNetWorth); } else ends.push(0);
+    if (collect) { for (let y = 0; y <= totalYears && y < rec.length; y++) byYear[y].push(rec[y]); }
+  }
+  const successPct = Math.round(100 * succ / trials);
+  const endPct = { p10: pctile(ends, 10), p50: pctile(ends, 50), p90: pctile(ends, 90) };
+  let bands = null;
+  if (collect) bands = byYear.map((arr, y) => ({ age: +(i.age + y).toFixed(1), p10: pctile(arr, 10), p50: pctile(arr, 50), p90: pctile(arr, 90) }));
+  return { successPct, trials, endPct, bands };
+}
+
+function mcConfidenceAge(i, startFrom, target, trials) {
+  const cap = Math.min(startFrom + 25, i.lifeExpectancy - i.age);
+  for (let n = startFrom; n <= cap; n++) { if (runMonteCarlo(i, n, trials, false).successPct >= target) return n; }
+  return null;
+}
+
+// Sequence-of-returns crash: a severe 2-year bear market striking the very year of retirement,
+// then a return to the expected CAGRs. This is the most dangerous timing for a downturn.
+const CRASH = {
+  yr1: { btc: -0.65, inv: -0.35, oth: -0.18, k401: -0.35, re: -0.12 },
+  yr2: { btc: -0.25, inv: -0.10, oth: -0.05, k401: -0.10, re: -0.03 }
+};
+const CAGR_KEY = { btc: 'btcCagr', inv: 'investmentCagr', oth: 'otherAssetsCagr', k401: 'k401Cagr', re: 'realEstateCagr' };
+function crashGrowthFn(i, startInYears) {
+  return (key, yr) => {
+    const rel = yr - startInYears;
+    if (rel === 0) return CRASH.yr1[key];
+    if (rel === 1) return CRASH.yr2[key];
+    return i[CAGR_KEY[key]];
+  };
+}
+function crashTest(i, startInYears) {
+  const survives = projectPath(i, startInYears, crashGrowthFn(i, startInYears)).success;
+  let safeAge = null;
+  if (!survives) {
+    const cap = Math.min(startInYears + 25, i.lifeExpectancy - i.age);
+    for (let n = startInYears + 1; n <= cap; n++) { if (projectPath(i, n, crashGrowthFn(i, n)).success) { safeAge = +(i.age + n).toFixed(1); break; } }
+  }
+  return { survives, safeAge };
+}
+
+function renderMC(mc, crash) {
+  document.getElementById('mcSub').innerHTML =
+    `Across <strong>${mc.trials.toLocaleString()}</strong> randomized market simulations using your volatility assumptions, here is how your plan to retire at age <strong>${mc.atAge}</strong> actually holds up — capturing the market swings and sequence-of-returns risk the smooth projection can't see.`;
+  const cls = mc.successPct >= 80 ? 'good' : mc.successPct >= 60 ? 'mid' : 'bad';
+  const confTxt = mc.confAge != null ? mc.confAge : '—';
+  const confSub = mc.confAge != null ? (mc.confAge <= mc.atAge ? 'Your earliest age already qualifies' : `≈ ${(mc.confAge - mc.atAge).toFixed(1)} yr longer to work`) : 'Relies on above-average markets';
+  document.getElementById('mcStats').innerHTML =
+    `<div class="mc-stat"><div class="mcs-label">Success at Age ${mc.atAge}</div><div class="mcs-val ${cls}">${mc.successPct}%</div><div class="mcs-sub">of ${mc.trials.toLocaleString()} simulations lasted to plan-end</div></div>` +
+    `<div class="mc-stat"><div class="mcs-label">Age for 90% Confidence</div><div class="mcs-val">${confTxt}</div><div class="mcs-sub">${confSub}</div></div>` +
+    `<div class="mc-stat"><div class="mcs-label">Median Ending Net Worth</div><div class="mcs-val">$${fmt(Math.round(mc.endPct.p50))}</div><div class="mcs-sub">10th–90th pct: $${fmt(Math.round(mc.endPct.p10))} – $${fmt(Math.round(mc.endPct.p90))}</div></div>`;
+  const cb = document.getElementById('mcCrash');
+  if (crash.survives) {
+    cb.className = 'mc-crash survive';
+    cb.innerHTML = `🛡️ <strong>Sequence-risk crash test: PASSED.</strong> Even if a severe bear market (Bitcoin −65% then −25%, stocks −35% then −10%) struck the very year you retired at ${mc.atAge}, your plan would still last to plan-end. That is strong resilience against the most dangerous timing for a downturn.`;
+  } else {
+    cb.className = 'mc-crash fail';
+    cb.innerHTML = `⚠️ <strong>Sequence-risk crash test: FAILED.</strong> A severe bear market in your first two retirement years would break the plan if you retire at ${mc.atAge}. ` +
+      (crash.safeAge != null ? `To survive that timing you'd need to wait until about age <strong>${crash.safeAge}</strong>, or hold a cash buffer so you're not forced to sell into the crash.` : `Consider a larger cash buffer, lower spending, or delaying retirement.`);
+  }
+}
+
+// ===== FULL PDF REPORT =====
+function generateReport(deliver, targetWin) {
+  if (!lastPath.length || !lastInputs) { if (targetWin) { try { targetWin.close(); } catch (e) {} } return; }
+  const btn = document.getElementById('pdfBtn');
+  const prevLabel = btn ? btn.textContent : '';
+  if (btn && deliver === 'download') { btn.textContent = '⏳ Building…'; btn.disabled = true; }
+
+  try {
+    const i = lastInputs;
+    const sc = SCENARIOS[currentScenario];
+    const cleanLabel = sc.label.replace(/[^\x00-\x7F]/g, '').trim();
+    const path = lastPath;
+    const btcRate = +(i.btcCagr * 100).toFixed(1);
+    const inflPct = +(i.inflationRate * 100).toFixed(1);
+    const retireRow = path.find(p => p.retired);
+    const firstRow = path[0];
+    const lastRow = path[path.length - 1];
+    const retireAge = retireRow ? retireRow.age : +(i.age + lastStartIn).toFixed(1);
+    const retireYear = retireRow ? retireRow.year : (firstRow.year + lastStartIn);
+    const yearsToRetire = lastStartIn;
+    const planToAge = i.lifeExpectancy;
+
+    // ---- Stress scenarios ----
+    const bearInp = shiftCagrs(i, -0.03);
+    const bullInp = shiftCagrs(i, +0.02);
+    const bearSurviveSame = simulate(bearInp, lastStartIn).success;
+    const bullSurviveSame = simulate(bullInp, lastStartIn).success;
+    const bearEarliest = earliestRetireYears(bearInp);
+    const bullEarliest = earliestRetireYears(bullInp);
+    const bearAge = bearEarliest != null ? +(i.age + bearEarliest).toFixed(1) : null;
+    const bullAge = bullEarliest != null ? +(i.age + bullEarliest).toFixed(1) : null;
+
+    // ---- Success likelihood sweep (probability-weighted) ----
+    // Shock every asset's CAGR from -6% to +3%, but weight milder, more-likely
+    // shocks far more heavily than extreme ones (Gaussian, sigma = 2.5 points),
+    // so a plan isn't branded fragile only because it breaks under a severe -6% world.
+    const shockPts = [-6,-5,-4,-3,-2,-1,0,1,2,3];
+    let wSum = 0, wSurv = 0, survCount = 0;
+    shockPts.forEach(pt => {
+      const w = Math.exp(-(pt * pt) / 12.5);
+      const ok = simulate(shiftCagrs(i, pt / 100), lastStartIn).success;
+      wSum += w; if (ok) { wSurv += w; survCount++; }
+    });
+    const shockCount = shockPts.length;
+    const successPct = Math.round(100 * wSurv / wSum);
+    const band = successPct >= 90 ? ['Excellent', [34,197,94]]
+               : successPct >= 75 ? ['Strong', [34,197,94]]
+               : successPct >= 60 ? ['Moderate', [247,147,26]]
+               : successPct >= 40 ? ['Fragile', [230,57,70]]
+               : ['At Risk', [230,57,70]];
+
+    // ---- Withdrawal sequencing analysis ----
+    const wbDefs = [
+      { key:'invested', wkey:'withdrawnInv',   name:'Investments / Brokerage' },
+      { key:'other',    wkey:'withdrawnOther',  name:'Other Liquid Assets' },
+      { key:'k401',     wkey:'withdrawn401k',   name:'401(k)' },
+      { key:'bitcoin',  wkey:'withdrawnBitcoin', name:'Bitcoin' }
+    ];
+    const retiredRows = path.filter(p => p.retired);
+    const seq = wbDefs.map(b => {
+      const firstDraw = retiredRows.find(p => p[b.wkey] > 1);
+      let depleted = null;
+      if (firstDraw) {
+        const after = path.filter(p => p.year >= firstDraw.year);
+        const d = after.find(p => p[b.key] < 1);
+        if (d && d.year < lastRow.year) depleted = d;
+      }
+      const startVal = retireRow ? retireRow[b.key] : firstRow[b.key];
+      return Object.assign({}, b, { firstDraw, depleted, startVal, used: !!firstDraw });
+    });
+    const usedSorted = seq.filter(s => s.used).sort((a, b) => (a.firstDraw.year - b.firstDraw.year) || (a.startVal - b.startVal));
+
+    // ---- Peak / trough ----
+    let peak = path[0], trough = retiredRows[0] || path[0];
+    path.forEach(p => { if (p.netWorth > peak.netWorth) peak = p; });
+    retiredRows.forEach(p => { if (p.liquidNetWorth < trough.liquidNetWorth) trough = p; });
+
+    const endingNW = lastRow.netWorth;
+    const finalSpend = lastRow.requiredSpending || (i.retirementSpending * Math.pow(1 + i.inflationRate, path.length - 1));
+    const cushionYears = finalSpend > 0 ? endingNW / finalSpend : Infinity;
+
+    // SS coverage
+    let ssAnnual0 = 0, ssCoverPct = null;
+    if (i.ssEnabled && i.ssMonthly > 0) {
+      ssAnnual0 = i.ssMonthly * 12;
+      const ssRow = retiredRows.find(p => p.ssIncome > 0) || retireRow;
+      if (ssRow) {
+        const r = ssRow.requiredSpending || 0;
+        ssCoverPct = r > 0 ? Math.round(100 * (ssRow.ssIncome || 0) / r) : 0;
+      }
+    }
+
+    // ============ BUILD PDF ============
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const PW = doc.internal.pageSize.getWidth();
+    const PH = doc.internal.pageSize.getHeight();
+    const ML = 16, MR = 16, CW = PW - ML - MR;
+    const ORANGE=[247,147,26], DARK=[24,24,30], GREEN=[34,197,94], RED=[230,57,70], PURPLE=[168,85,247], GRAY=[120,120,128], LIGHT=[245,244,240], INK=[34,34,40];
+    const SCEN_COLOR = { bear:RED, mid:ORANGE, bull:GREEN, hyper:PURPLE }[currentScenario];
+    let y = 0;
+
+    const dollars = n => '$' + fmt(Math.round(n));
+    const setInk = () => doc.setTextColor.apply(doc, INK);
+    const needSpace = hgt => { if (y + hgt > PH - 18) { doc.addPage(); y = 20; } };
+
+    function sectionHeader(txt, color) {
+      const col = color || SCEN_COLOR;
+      needSpace(16); y += 3;
+      doc.setDrawColor.apply(doc, col); doc.setLineWidth(1.1);
+      doc.line(ML, y, ML + 9, y);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor.apply(doc, col);
+      doc.text(txt.toUpperCase(), ML + 12, y + 1.4);
+      y += 8; setInk();
+    }
+    function para(txt, opts) {
+      opts = opts || {}; const size = opts.size || 10, lh = opts.lh || 5;
+      doc.setFont('helvetica', opts.bold ? 'bold' : 'normal'); doc.setFontSize(size);
+      doc.setTextColor.apply(doc, opts.color || INK);
+      const lines = doc.splitTextToSize(txt, opts.w || CW);
+      lines.forEach(ln => { needSpace(lh); doc.text(ln, opts.x || ML, y); y += lh; });
+      setInk();
+    }
+    function bullet(txt, opts) {
+      opts = opts || {}; const dotc = opts.color || SCEN_COLOR; const indent = 6, size = opts.size || 10, lh = 5;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(size); doc.setTextColor.apply(doc, INK);
+      const lines = doc.splitTextToSize(txt, CW - indent);
+      needSpace(lh);
+      doc.setFillColor.apply(doc, dotc); doc.circle(ML + 1.4, y - 1.3, 1.1, 'F');
+      lines.forEach((ln, idx) => { if (idx > 0) needSpace(lh); doc.text(ln, ML + indent, y); y += lh; });
+      y += 1.4; setInk();
+    }
+
+    // ── Page 1 header band ──
+    doc.setFillColor.apply(doc, ORANGE); doc.rect(0, 0, PW, 30, 'F');
+    doc.setFillColor.apply(doc, DARK); doc.rect(0, 30, PW, 2.5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text('SATOLOGY', ML, 12);
+    doc.setFontSize(21); doc.text('Retirement Projection Report', ML, 24);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+    doc.text('Confidential financial projection', PW - MR, 12, { align: 'right' });
+    const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    doc.text('Prepared ' + today, PW - MR, 24, { align: 'right' });
+    y = 42;
+
+    // scenario chip
+    doc.setFillColor.apply(doc, SCEN_COLOR); doc.roundedRect(ML, y - 5.5, 80, 8, 1.5, 1.5, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+    doc.text(cleanLabel + '  -  ' + btcRate + '% BTC CAGR', ML + 40, y - 0.2, { align: 'center' });
+    y += 11;
+
+    // ── Executive summary ──
+    sectionHeader('Executive Summary');
+    para('Based on the assumptions you provided, your portfolio is projected to sustain your inflation-adjusted lifestyle through age ' + planToAge + '. The earliest age at which you could stop working and not run out of money is:');
+    y += 3;
+    needSpace(20);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(40); doc.setTextColor.apply(doc, SCEN_COLOR);
+    const ageStr = String(retireAge);
+    const bw = doc.getTextWidth(ageStr);
+    doc.text(ageStr, ML, y + 12);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor.apply(doc, GRAY);
+    const inPhrase = yearsToRetire <= 0 ? 'this year' : 'in ' + yearsToRetire + ' year' + (yearsToRetire !== 1 ? 's' : '');
+    doc.text('years old   (retire in ' + retireYear + ', ' + inPhrase + ')', ML + bw + 5, y + 12);
+    y += 20;
+
+    // metric cards (liquid vs total kept distinct so non-liquid real estate never overstates plan health)
+    const cards = [
+      ['EARLIEST RETIREMENT', retireAge + ' yrs', false],
+      ['RETIREMENT YEAR', String(retireYear), false],
+      ['LIQUID NW AT ' + planToAge, dollars(lastRow.liquidNetWorth), false],
+      ['TOTAL NW AT ' + planToAge, dollars(endingNW), false],
+      ['SUCCESS LIKELIHOOD', successPct + '%', true]
+    ];
+    const cgap = 3.5, cwid = (CW - cgap * 4) / 5;
+    needSpace(22);
+    cards.forEach((c, idx) => {
+      const cx = ML + idx * (cwid + cgap);
+      const accent = c[2] ? band[1] : SCEN_COLOR;
+      doc.setFillColor.apply(doc, LIGHT); doc.roundedRect(cx, y, cwid, 18, 2, 2, 'F');
+      doc.setFillColor.apply(doc, accent); doc.rect(cx, y, cwid, 1.4, 'F');
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(5.9); doc.setTextColor.apply(doc, GRAY);
+      doc.text(c[0], cx + cwid / 2, y + 7, { align: 'center' });
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(11.5); doc.setTextColor.apply(doc, c[2] ? band[1] : INK);
+      doc.text(String(c[1]), cx + cwid / 2, y + 14, { align: 'center' });
+    });
+    y += 25;
+
+    // ── Success likelihood ──
+    sectionHeader('Projected Success Likelihood', band[1]);
+    para('We stress-tested your chosen retirement age (' + retireAge + ') across ' + shockCount + ' sustained market paths, shifting every asset growth rate from -6% to +3% per year. Your plan stayed solvent through age ' + planToAge + ' in ' + survCount + ' of ' + shockCount + ' paths. The score below weights milder, more-likely shocks more heavily than extreme ones.');
+    y += 2;
+    needSpace(18);
+    const barW = CW, barH = 9;
+    doc.setFillColor(228, 228, 226); doc.roundedRect(ML, y, barW, barH, 2, 2, 'F');
+    doc.setFillColor.apply(doc, band[1]); doc.roundedRect(ML, y, Math.max(barW * successPct / 100, 6), barH, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(255, 255, 255);
+    doc.text(successPct + '%', ML + 4, y + 6.2);
+    doc.setTextColor.apply(doc, band[1]);
+    doc.text('Rating: ' + band[0], ML + barW, y + 6.2, { align: 'right' });
+    y += barH + 6;
+    para('Note: This is a deterministic, probability-weighted scenario stress test across sustained growth-rate shocks - not a Monte Carlo simulation. Because the model targets your earliest feasible retirement age, that plan sits close to the edge of feasibility, so it is naturally sensitive to downside shocks. It measures resilience to sustained higher or lower long-run returns, not the sequence-of-returns risk of any single volatile year.', { size: 8, color: GRAY });
+
+    // ── Monte Carlo reality check ──
+    if (lastMC) {
+      const PURPLE_MC = [124, 58, 237];
+      sectionHeader('Monte Carlo Reality Check', PURPLE_MC);
+      para('Beyond the smooth projection, we ran ' + lastMC.trials.toLocaleString() + ' randomized market simulations using your volatility assumptions - the realistic test that captures market swings and sequence-of-returns risk, which a constant-growth projection cannot.');
+      y += 1;
+      bullet('Retiring at age ' + lastMC.atAge + ' succeeded in ' + lastMC.successPct + '% of ' + lastMC.trials.toLocaleString() + ' simulated market paths.', { color: lastMC.successPct >= 80 ? GREEN : (lastMC.successPct >= 60 ? ORANGE : RED) });
+      bullet('For 90% Monte Carlo confidence, ' + (lastMC.confAge != null ? (lastMC.confAge <= lastMC.atAge ? 'your earliest age already qualifies.' : 'you would retire at about age ' + lastMC.confAge + ' (roughly ' + (lastMC.confAge - lastMC.atAge).toFixed(1) + ' years later).') : 'the plan does not reach 90% confidence within the modeled horizon - it leans on above-average markets.'));
+      bullet('Projected ending net worth spans a wide range - 10th percentile ' + dollars(lastMC.endPct.p10) + ', median ' + dollars(lastMC.endPct.p50) + ', 90th percentile ' + dollars(lastMC.endPct.p90) + ' - a spread driven mostly by Bitcoin volatility.');
+      if (lastCrash) {
+        if (lastCrash.survives) bullet('Sequence-risk crash test PASSED: a severe bear market (Bitcoin -65% then -25%, stocks -35% then -10%) in your first two retirement years would not break the plan.', { color: GREEN });
+        else bullet('Sequence-risk crash test FAILED: a severe early-retirement crash would break the plan at age ' + lastMC.atAge + (lastCrash.safeAge != null ? '; surviving it would require waiting to about age ' + lastCrash.safeAge + ', or holding a cash buffer to avoid selling into the downturn.' : '; consider a cash buffer or lower spending.'), { color: RED });
+      }
+      para('Why this can differ sharply from the smooth projection: constant-growth math never makes Bitcoin fall during a withdrawal year, so it understates real risk. Letting returns vary - and accounting for the order in which good and bad years arrive - is what separates a durable early retirement from a fragile one.', { size: 8, color: GRAY });
+    }
+
+    // ── Page 2: Key findings ──
+    doc.addPage(); y = 20;
+    sectionHeader('Key Findings');
+    bullet('You can retire at age ' + retireAge + ' in ' + retireYear + ' - ' + (yearsToRetire <= 0 ? 'effectively now' : yearsToRetire + ' year' + (yearsToRetire !== 1 ? 's' : '') + ' from today') + '. The plan is funded through age ' + planToAge + '.');
+    bullet('Your retirement spending of ' + dollars(i.retirementSpending) + ' per year (today\'s dollars) grows with inflation at ' + inflPct + '% annually, reaching about ' + dollars(finalSpend) + ' per year by age ' + planToAge + '.');
+    if (i.ssEnabled && i.ssMonthly > 0) {
+      bullet('Social Security of ' + dollars(ssAnnual0) + ' per year (' + dollars(i.ssMonthly) + '/month) begins at age ' + i.ssStartAge + ', ' + (i.ssCola ? 'rising with inflation each year (COLA)' : 'fixed in nominal dollars') + '. When it starts it offsets roughly ' + (ssCoverPct != null ? ssCoverPct + '%' : 'a portion') + ' of your spending, so your portfolio is only drawn for the remainder.', { color: GREEN });
+    } else {
+      bullet('Social Security was not included in this projection. Adding an expected benefit would lower the amount drawn from your investments and could move your retirement age earlier.', { color: GRAY });
+    }
+    bullet('Withdrawals follow a lowest-growth-first strategy: your slowest-growing assets are spent first and your highest-growth asset (Bitcoin) is preserved for last, so it compounds as long as possible.');
+    if (usedSorted.length) {
+      bullet('Drawdown begins in ' + retireYear + ' (age ' + retireAge + '), starting with your ' + usedSorted[0].name + '.');
+      usedSorted.forEach((s, idx) => {
+        if (s.depleted) {
+          const next = usedSorted[idx + 1];
+          bullet('Your ' + s.name + ' (about ' + dollars(s.startVal) + ' at retirement) is exhausted around ' + s.depleted.year + ' (age ' + s.depleted.age + ')' + (next ? ', at which point withdrawals shift to your ' + next.name : '') + '.');
+        }
+      });
+    }
+    const btcSeq = seq.find(s => s.key === 'bitcoin');
+    if (btcSeq) {
+      if (btcSeq.firstDraw) bullet('Your Bitcoin is preserved until ' + btcSeq.firstDraw.year + ' (age ' + btcSeq.firstDraw.age + '), then drawn down last - giving it the longest possible runway to compound.', { color: ORANGE });
+      else bullet('Your Bitcoin is never touched across the entire plan - it compounds untouched and drives your ending net worth.', { color: ORANGE });
+    }
+    if (i.k401Balance > 0) {
+      const k401Year = firstRow.year + Math.max(0, Math.ceil(59.5 - i.age));
+      if (i.age < 59.5) bullet('Your 401(k) unlocks at age 59.5 (around ' + k401Year + '). Before then, spending is covered by taxable and Bitcoin holdings; a ' + (+(i.k401TaxRate * 100).toFixed(0)) + '% tax is applied to 401(k) withdrawals.');
+      else bullet('Your 401(k) is already accessible (age 59.5+); a ' + (+(i.k401TaxRate * 100).toFixed(0)) + '% withdrawal tax is applied to amounts taken from it.');
+    }
+    bullet('Peak net worth of ' + dollars(peak.netWorth) + ' is reached at age ' + peak.age + '.');
+    if (retiredRows.length) bullet('Your liquid net worth bottoms at ' + dollars(trough.liquidNetWorth) + ' (age ' + trough.age + '), ' + (trough.liquidNetWorth > 0 ? 'and never reaches zero - the plan stays solvent throughout retirement.' : 'meaning liquid funds run thin at that point.'));
+    bullet('You finish at age ' + planToAge + ' with a projected net worth of ' + dollars(endingNW) + (isFinite(cushionYears) ? ' - roughly ' + cushionYears.toFixed(1) + ' years of cushion at your final spending level.' : '.'));
+    if (i.realEstate > 0) bullet('Real estate (' + dollars(i.realEstate) + ' today, growing ' + (+(i.realEstateCagr * 100).toFixed(1)) + '%/yr) is tracked as part of net worth but never liquidated to fund spending - a conservative assumption that leaves an inheritance buffer.', { color: GRAY });
+
+    // assumptions block
+    sectionHeader('Your Assumptions', GRAY);
+    const assumeRows = [
+      ['Current age', String(i.age), 'Plan to age', String(planToAge)],
+      ['Annual income', dollars(i.income), 'Savings rate', (+(i.savingsRate * 100).toFixed(1)) + '%'],
+      ['New savings go to', i.savingsDestination === 'bitcoin' ? 'Bitcoin' : (i.savingsDestination === 'otherAssets' ? 'Other Assets' : 'Investments'), 'Inflation rate', inflPct + '%'],
+      ['Bitcoin holdings', (+i.bitcoinBTC).toFixed(4) + ' BTC', 'BTC price', dollars(i.btcPrice)],
+      ['Bitcoin CAGR', btcRate + '%', 'Investments CAGR', (+(i.investmentCagr * 100).toFixed(1)) + '%'],
+      ['Other assets CAGR', (+(i.otherAssetsCagr * 100).toFixed(1)) + '%', '401(k) CAGR', (+(i.k401Cagr * 100).toFixed(1)) + '%'],
+      ['Real estate CAGR', (+(i.realEstateCagr * 100).toFixed(1)) + '%', 'Social Security', i.ssEnabled && i.ssMonthly > 0 ? dollars(i.ssMonthly) + '/mo @ ' + i.ssStartAge : 'Not included']
+    ];
+    doc.autoTable({
+      body: assumeRows, startY: y, theme: 'plain',
+      styles: { fontSize: 9, cellPadding: 1.6 },
+      columnStyles: { 0: { fontStyle: 'bold', textColor: GRAY, cellWidth: 42 }, 1: { cellWidth: 46 }, 2: { fontStyle: 'bold', textColor: GRAY, cellWidth: 42 }, 3: {} },
+      margin: { left: ML, right: MR }
+    });
+    y = doc.lastAutoTable.finalY + 4;
+
+    // ── Page 3: Stress test ──
+    doc.addPage(); y = 20;
+    sectionHeader('Stress Test - Market Scenarios');
+    para('Your plan was re-run under three market regimes. The bear case subtracts 3 percentage points from every asset\'s annual growth rate; the bull case adds 2 points. "At age ' + retireAge + '?" asks whether retiring at your base age still lasts to age ' + planToAge + ' under that regime.');
+    y += 3;
+    const fmtDelta = (yrs) => {
+      if (yrs == null) return 'Not feasible';
+      if (yrs === 0) return 'Same age';
+      return yrs > 0 ? ('Retire ' + yrs + ' yr' + (yrs !== 1 ? 's' : '') + ' later') : ('Retire ' + Math.abs(yrs) + ' yr' + (Math.abs(yrs) !== 1 ? 's' : '') + ' earlier');
+    };
+    const scenRows = [
+      ['Bear (all CAGRs -3%)', bearAge != null ? bearAge + ' yrs' : 'Not feasible', bearSurviveSame ? 'Survives' : 'Fails', fmtDelta(bearEarliest != null ? bearEarliest - yearsToRetire : null)],
+      ['Base case (your settings)', retireAge + ' yrs', 'Survives', 'Your plan'],
+      ['Bull (all CAGRs +2%)', bullAge != null ? bullAge + ' yrs' : 'Not feasible', bullSurviveSame ? 'Survives' : 'Fails', fmtDelta(bullEarliest != null ? bullEarliest - yearsToRetire : null)]
+    ];
+    doc.autoTable({
+      head: [['Market Scenario', 'Earliest Retirement', 'At Age ' + retireAge, 'vs Your Base Plan']],
+      body: scenRows, startY: y, theme: 'grid',
+      styles: { fontSize: 9.5, cellPadding: 3.4, halign: 'left' },
+      headStyles: { fillColor: DARK, textColor: [235, 235, 235], fontStyle: 'bold', halign: 'center' },
+      columnStyles: { 1: { halign: 'center' }, 2: { halign: 'center' }, 3: { halign: 'center' } },
+      didParseCell: d => {
+        if (d.section === 'body') {
+          if (d.row.index === 1) d.cell.styles.fillColor = [252, 243, 224];
+          if (d.column.index === 2) {
+            if (d.cell.raw === 'Survives') { d.cell.styles.textColor = GREEN; d.cell.styles.fontStyle = 'bold'; }
+            if (d.cell.raw === 'Fails') { d.cell.styles.textColor = RED; d.cell.styles.fontStyle = 'bold'; }
+          }
+        }
+      },
+      margin: { left: ML, right: MR }
+    });
+    y = doc.lastAutoTable.finalY + 8;
+
+    sectionHeader('What This Means For You', SCEN_COLOR);
+    if (bearSurviveSame) bullet('Resilient: even in a prolonged bear market (returns 3% lower every year), retiring at age ' + retireAge + ' still carries you through age ' + planToAge + '. Your plan has real downside protection.', { color: GREEN });
+    else bullet('Caution: in a prolonged bear market, retiring at age ' + retireAge + ' would run short of money. To stay safe under those conditions you would need to work until about age ' + (bearAge != null ? bearAge : 'a later age') + (bearAge != null ? ' - roughly ' + (bearEarliest - yearsToRetire) + ' year' + ((bearEarliest - yearsToRetire) !== 1 ? 's' : '') + ' longer.' : '.'), { color: RED });
+    if (bullAge != null && bullEarliest < yearsToRetire) bullet('Upside: in a sustained bull market (returns 2% higher), you could retire as early as age ' + bullAge + ' - about ' + (yearsToRetire - bullEarliest) + ' year' + ((yearsToRetire - bullEarliest) !== 1 ? 's' : '') + ' sooner than your base plan.', { color: GREEN });
+    else if (bullAge != null) bullet('In a bull market your earliest retirement age stays near ' + bullAge + ' - your plan is already well-positioned at these settings.', { color: GREEN });
+    bullet('Across all ' + shockCount + ' stress paths tested, your plan stayed solvent in ' + survCount + ' of them; on a probability-weighted basis that is a ' + successPct + '% success likelihood, earning a "' + band[0] + '" resilience rating.');
+    bullet('A practical safeguard: if markets clearly enter a prolonged downturn early in retirement, trimming discretionary spending or deferring large withdrawals materially improves survival odds beyond what these fixed-rate scenarios show.', { color: GRAY });
+
+    // ── Year-by-year landscape table ──
+    doc.addPage('a4', 'landscape');
+    const LW = doc.internal.pageSize.getWidth();
+    doc.setFillColor.apply(doc, ORANGE); doc.rect(0, 0, LW, 12, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text('Year-by-Year Projection  -  ' + cleanLabel + '  (' + btcRate + '% BTC CAGR)', 10, 8);
+    const useSS = i.ssEnabled && i.ssMonthly > 0;
+    const headers = ['Year', 'Age', 'Net Worth', 'Liquid NW', 'Investments', 'Other', '401k', 'BTC Price', 'Bitcoin $', 'BTC', 'Real Estate', 'Spending']
+      .concat(useSS ? ['Soc Sec', 'Net Draw'] : [])
+      .concat(['W/D Inv', 'W/D Other', 'W/D 401k', 'W/D BTC', 'Ret.']);
+    const rows = path.map(p => {
+      const base = [p.year, p.age, dollars(p.netWorth), dollars(p.liquidNetWorth), dollars(p.invested), dollars(p.other), dollars(p.k401), dollars(p.btcPrice), dollars(p.bitcoin), (+p.btcCoins).toFixed(3), dollars(p.realEstate), dollars(p.requiredSpending)];
+      const ss = useSS ? [dollars(p.ssIncome), dollars(p.netSpending)] : [];
+      const wd = [dollars(p.withdrawnInv), dollars(p.withdrawnOther), dollars(p.withdrawn401k), dollars(p.withdrawnBitcoin), p.retired ? 'Yes' : '-'];
+      return base.concat(ss, wd);
+    });
+    doc.autoTable({
+      head: [headers], body: rows, startY: 16,
+      styles: { fontSize: 6.6, cellPadding: 1.5, overflow: 'linebreak', halign: 'right' },
+      headStyles: { fillColor: DARK, textColor: [205, 205, 205], fontStyle: 'bold', halign: 'center', fontSize: 6.3 },
+      columnStyles: { 0: { halign: 'left' }, 1: { halign: 'left' } },
+      alternateRowStyles: { fillColor: [248, 247, 244] },
+      didParseCell: d => {
+        const row = path[d.row.index];
+        if (row && row.retired && d.section === 'body' && d.row.index > 0 && !path[d.row.index - 1].retired) {
+          d.cell.styles.fillColor = [220, 252, 231];
+        }
+      },
+      margin: { left: 10, right: 10 }
+    });
+
+    // ── Footers on every page ──
+    const pages = doc.getNumberOfPages();
+    for (let p = 1; p <= pages; p++) {
+      doc.setPage(p);
+      const w = doc.internal.pageSize.getWidth();
+      const hh = doc.internal.pageSize.getHeight();
+      doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(150, 150, 150);
+      doc.text('SATOLOGY Retirement Model  -  ' + cleanLabel + '  -  ' + btcRate + '% BTC CAGR  -  For modeling only; not financial advice.', 10, hh - 6);
+      doc.text('Page ' + p + ' / ' + pages, w - 10, hh - 6, { align: 'right' });
+    }
+
+    const fname = 'SATOLOGY_Retirement_Report_' + currentScenario + '_' + btcRate + 'pct_' + new Date().toISOString().split('T')[0] + '.pdf';
+    if (deliver === 'download') {
+      doc.save(fname);
+    } else {
+      const url = doc.output('bloburl');
+      if (targetWin) targetWin.location.href = url;
+      else window.open(url, '_blank');
+    }
+  } catch (err) {
+    if (targetWin) { try { targetWin.close(); } catch (e) {} }
+    alert('Report generation failed: ' + err.message);
+  } finally {
+    if (btn && deliver === 'download') { btn.textContent = prevLabel || '📄 Download Full Report'; btn.disabled = false; }
+  }
 }
 
 function fmt(n) {
@@ -1071,6 +1732,8 @@ function fmt(n) {
 
 // Init
 switchScenario('mid');
+toggleSS();
+toggleMC();
 </script>
 </body>
 </html>
