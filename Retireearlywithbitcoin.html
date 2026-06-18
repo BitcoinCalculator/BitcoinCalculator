@@ -79,8 +79,8 @@ nav{position:sticky;top:0;z-index:200;height:64px;padding:0 40px;display:flex;al
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
 .form-group{display:flex;flex-direction:column;gap:6px}
 label{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
-input[type="number"],select{padding:11px 13px;border:1px solid var(--input-border);border-radius:10px;font-size:14px;font-weight:600;background:var(--input-bg);color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
-input[type="number"]:focus,select:focus{border-color:var(--btc);box-shadow:0 0 0 3px rgba(247,147,26,.15)}
+input[type="number"],input[type="text"],select{padding:11px 13px;border:1px solid var(--input-border);border-radius:10px;font-size:14px;font-weight:600;background:var(--input-bg);color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
+input[type="number"]:focus,input[type="text"]:focus,select:focus{border-color:var(--btc);box-shadow:0 0 0 3px rgba(247,147,26,.15)}
 select option{background:var(--card);color:var(--text)}
 
 .growth-presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;align-items:center}
@@ -104,6 +104,8 @@ select option{background:var(--card);color:var(--text)}
 .note strong{color:var(--text);font-weight:700}
 .note.ss-note{border-left-color:var(--green);margin-top:14px;display:none}
 .note.ss-note.show{display:block}
+.sec-hdr.inc-sec{color:var(--teal)}
+.note.income-note{border-left-color:var(--teal);margin-top:14px}
 .sec-hdr.mc-sec{color:var(--soul)}
 .note.mc-note{border-left-color:var(--soul);margin-top:14px;display:none}
 .note.mc-note.show{display:block}
@@ -299,7 +301,7 @@ footer a:hover{color:var(--gold)}
       <input type="number" id="lifeExpectancy" min="60" max="120" step="1" value="95">
     </div>
     <div class="form-group">
-      <label for="income">Yearly Income ($)</label>
+      <label for="income">Work Income ($ / yr) — stops at retirement</label>
       <input type="number" id="income" min="0" step="100" placeholder="e.g. 100000">
     </div>
     <div class="form-group">
@@ -321,6 +323,10 @@ footer a:hover{color:var(--gold)}
     <div class="form-group">
       <label for="inflationRate">Expected Inflation Rate (%)</label>
       <input type="number" id="inflationRate" min="0" max="20" step="0.1" placeholder="e.g. 3" value="3">
+    </div>
+    <div class="form-group">
+      <label for="retireLocation">Retirement Location (optional)</label>
+      <input type="text" id="retireLocation" maxlength="60" placeholder="e.g. Austin, TX or Portugal">
     </div>
   </div>
 
@@ -351,6 +357,39 @@ footer a:hover{color:var(--gold)}
   </div>
   <div class="note ss-note" id="ssNote">
     <strong>How Social Security helps:</strong> Each year you're eligible, your benefit is <strong>subtracted from your retirement spending first</strong>, so your portfolio only has to cover the remaining gap. That means fewer withdrawals from your investments — and often an earlier possible retirement.
+  </div>
+
+  <div class="sec-hdr inc-sec">💼 Other Retirement Income</div>
+  <div class="grid">
+    <div class="form-group">
+      <label for="rentalIncome">Rental / Business Income ($ / yr)</label>
+      <input type="number" id="rentalIncome" min="0" step="100" value="0">
+    </div>
+    <div class="form-group">
+      <label for="pensionEnabled">Include a Pension?</label>
+      <select id="pensionEnabled" onchange="togglePension()">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+    </div>
+    <div class="form-group pension-field" style="display:none">
+      <label for="pensionMonthly">Pension ($ / month, today's $)</label>
+      <input type="number" id="pensionMonthly" min="0" step="50" placeholder="e.g. 2000">
+    </div>
+    <div class="form-group pension-field" style="display:none">
+      <label for="pensionStartAge">Pension Starts At Age</label>
+      <input type="number" id="pensionStartAge" min="40" max="80" step="1" value="65">
+    </div>
+    <div class="form-group pension-field" style="display:none">
+      <label for="pensionCola">Pension Adjusts For Inflation?</label>
+      <select id="pensionCola">
+        <option value="no">No — stays flat (nominal $)</option>
+        <option value="yes">Yes — grows with inflation (COLA)</option>
+      </select>
+    </div>
+  </div>
+  <div class="note income-note">
+    <strong>How retirement income helps:</strong> <strong>Rental or business income</strong> continues right through retirement (from the year you retire) and is subtracted from your annual spending, rising with inflation — so your portfolio is tapped for less. A <strong>pension</strong> works like Social Security but on its own start age and inflation terms. Every dollar of ongoing income is a dollar you don't have to withdraw.
   </div>
 
   <div class="sec-hdr btc-sec">₿ Bitcoin Holdings</div>
@@ -417,6 +456,17 @@ footer a:hover{color:var(--gold)}
       <label for="realEstateCagr">Expected Annual Growth — Real Estate (%)</label>
       <input type="number" id="realEstateCagr" min="-100" max="100" step="0.1" value="3">
     </div>
+    <div class="form-group">
+      <label for="reSellEnabled">Sell Real Estate At Retirement?</label>
+      <select id="reSellEnabled" onchange="toggleRESell()">
+        <option value="no">No — keep it (e.g. rental income)</option>
+        <option value="yes">Yes — sell some to fund lifestyle</option>
+      </select>
+    </div>
+    <div class="form-group re-sell-field" style="display:none">
+      <label for="reSellAmount">Amount To Sell ($) → adds to Investments</label>
+      <input type="number" id="reSellAmount" min="0" step="1000" value="0">
+    </div>
   </div>
 
   <div class="sec-hdr mc-sec">📉 Volatility &amp; Risk — Monte Carlo</div>
@@ -438,7 +488,7 @@ footer a:hover{color:var(--gold)}
     </div>
     <div class="form-group mc-field">
       <label for="btcVol">Bitcoin Volatility (% / yr)</label>
-      <input type="number" id="btcVol" min="0" max="200" step="1" value="65">
+      <input type="number" id="btcVol" min="0" max="200" step="1" value="40">
     </div>
     <div class="form-group mc-field">
       <label for="invVol">Investments Volatility (% / yr)</label>
@@ -458,7 +508,7 @@ footer a:hover{color:var(--gold)}
     </div>
   </div>
   <div class="note mc-note">
-    <strong>Why this matters:</strong> The smooth projection assumes steady yearly growth. Real markets — <strong>especially Bitcoin</strong> — swing wildly, and the <em>order</em> of good and bad years matters enormously once you're withdrawing. Monte Carlo runs thousands of randomized return paths to estimate your <strong>true odds of success</strong>, and the crash test asks: <em>what if a severe bear market hits the very year you retire?</em>
+    <strong>Why this matters:</strong> The smooth projection assumes steady yearly growth. Real markets — <strong>especially Bitcoin</strong> — swing wildly, and the <em>order</em> of good and bad years matters enormously once you're withdrawing. Monte Carlo runs thousands of randomized return paths to estimate your <strong>true odds of success</strong>, and the crash test asks: <em>what if a severe bear market hits the very year you retire?</em><br><br><strong>Not sure what to enter?</strong> Leave these fields at their defaults — they reflect realistic long-run volatility for each asset class, and you can refine them later.
   </div>
 
   <div class="note">
@@ -661,6 +711,16 @@ function toggleMC() {
   document.querySelector('.mc-note').classList.toggle('show', on);
 }
 
+function togglePension() {
+  const on = document.getElementById('pensionEnabled').value === 'yes';
+  document.querySelectorAll('.pension-field').forEach(el => el.style.display = on ? 'flex' : 'none');
+}
+
+function toggleRESell() {
+  const on = document.getElementById('reSellEnabled').value === 'yes';
+  document.querySelectorAll('.re-sell-field').forEach(el => el.style.display = on ? 'flex' : 'none');
+}
+
 // ===== SCENARIO SWITCH =====
 function switchScenario(s) {
   currentScenario = s;
@@ -739,10 +799,18 @@ function getInputs() {
     realEstateCagr: parseFloat(v('realEstateCagr')) / 100,
     inflationRate: parseFloat(v('inflationRate')) / 100,
     retirementSpending: parseFloat(v('retirementSpending')),
+    retireLocation: (document.getElementById('retireLocation').value || '').trim(),
     ssEnabled: v('ssEnabled') === 'yes',
     ssMonthly: parseFloat(v('ssMonthly')) || 0,
     ssStartAge: parseFloat(v('ssStartAge')) || 67,
     ssCola: v('ssCola') === 'yes',
+    rentalIncome: parseFloat(v('rentalIncome')) || 0,
+    pensionEnabled: v('pensionEnabled') === 'yes',
+    pensionMonthly: parseFloat(v('pensionMonthly')) || 0,
+    pensionStartAge: parseFloat(v('pensionStartAge')) || 65,
+    pensionCola: v('pensionCola') === 'yes',
+    reSellEnabled: v('reSellEnabled') === 'yes',
+    reSellAmount: parseFloat(v('reSellAmount')) || 0,
     btcVol: (parseFloat(v('btcVol')) || 0) / 100,
     invVol: (parseFloat(v('invVol')) || 0) / 100,
     othVol: (parseFloat(v('othVol')) || 0) / 100,
@@ -766,6 +834,12 @@ function validate(i) {
     if (isNaN(i.ssMonthly) || i.ssMonthly < 0) e.push('Social Security monthly benefit must be ≥ 0.');
     if (isNaN(i.ssStartAge) || i.ssStartAge < 50 || i.ssStartAge > 80) e.push('Social Security start age must be 50–80.');
   }
+  if (i.pensionEnabled) {
+    if (isNaN(i.pensionMonthly) || i.pensionMonthly < 0) e.push('Pension monthly amount must be ≥ 0.');
+    if (isNaN(i.pensionStartAge) || i.pensionStartAge < 40 || i.pensionStartAge > 80) e.push('Pension start age must be 40–80.');
+  }
+  if (i.rentalIncome < 0) e.push('Rental / business income must be ≥ 0.');
+  if (i.reSellEnabled && i.reSellAmount < 0) e.push('Real estate sale amount must be ≥ 0.');
   return e;
 }
 
@@ -821,7 +895,7 @@ function runFinder() {
     const mc = runMonteCarlo(i, found.startIn, trials, true);
     const confAge = mcConfidenceAge(i, found.startIn, 90, Math.min(trials, 500));
     lastCrash = crashTest(i, found.startIn);
-    lastMC = { atAge: +retireAge, successPct: mc.successPct, trials, confAge: confAge != null ? +(i.age + confAge).toFixed(1) : null, endPct: mc.endPct, bands: mc.bands };
+    lastMC = { atAge: +retireAge, successPct: mc.successPct, trials, confAge: confAge != null ? +(i.age + confAge).toFixed(1) : null, endPct: mc.endPct, bands: mc.bands, four: fourPctCheck(lastPath.find(p => p.retired)) };
     renderMC(lastMC, lastCrash);
     document.getElementById('mcSection').classList.add('show');
     document.getElementById('mcChartTab').style.display = '';
@@ -886,6 +960,7 @@ function simulate(i, startInYears) {
   const retireAge = i.age + startInYears;
   const startYear = new Date().getFullYear();
   const path = [];
+  let soldRE = false;
 
   for (let yr = 0; yr <= (i.lifeExpectancy - i.age); yr++) {
     const age = i.age + yr;
@@ -898,14 +973,18 @@ function simulate(i, startInYears) {
       else inv += annualSavings;
     }
 
-    let required = 0, wInv = 0, wOth = 0, w401g = 0, wBtc = 0, ssAmt = 0;
+    let required = 0, wInv = 0, wOth = 0, w401g = 0, wBtc = 0, ssAmt = 0, penAmt = 0, rentAmt = 0;
     if (isRetired) {
-      required = i.retirementSpending * Math.pow(1 + i.inflationRate, yr);
-      if (i.ssEnabled && age >= i.ssStartAge) {
-        const annualSS = i.ssMonthly * 12;
-        ssAmt = i.ssCola ? annualSS * Math.pow(1 + i.inflationRate, yr) : annualSS;
+      // One-time real-estate sale at the start of retirement; proceeds move into investments.
+      if (i.reSellEnabled && !soldRE && i.reSellAmount > 0) {
+        const amt = Math.min(i.reSellAmount, re); re -= amt; inv += amt; soldRE = true;
       }
-      let need = Math.max(0, required - ssAmt);
+      required = i.retirementSpending * Math.pow(1 + i.inflationRate, yr);
+      if (i.ssEnabled && age >= i.ssStartAge) { const a = i.ssMonthly * 12; ssAmt = i.ssCola ? a * Math.pow(1 + i.inflationRate, yr) : a; }
+      if (i.pensionEnabled && age >= i.pensionStartAge) { const a = i.pensionMonthly * 12; penAmt = i.pensionCola ? a * Math.pow(1 + i.inflationRate, yr) : a; }
+      if (i.rentalIncome > 0) rentAmt = i.rentalIncome * Math.pow(1 + i.inflationRate, yr);
+      const incomeOffset = ssAmt + penAmt + rentAmt;
+      let need = Math.max(0, required - incomeOffset);
       const can401 = age >= 59.5;
       const buckets = [
         { cagr: i.investmentCagr, take: n => { const a = Math.min(inv, n); inv -= a; wInv += a; return a; } },
@@ -917,18 +996,23 @@ function simulate(i, startInYears) {
       if (need > 0.01) return { success: false };
     }
 
+    const incomeTot = ssAmt + penAmt + rentAmt;
     const nw = inv + oth + k401 + re + btcUsd;
     const lnw = inv + oth + (age >= 59.5 ? k401 * (1 - i.k401TaxRate) : 0) + btcUsd;
+    const investable = inv + oth + k401 + btcUsd;   // full drawdown portfolio (incl 401k), excludes real estate
     path.push({
       year: startYear + yr, age: +age.toFixed(1),
-      netWorth: nw, liquidNetWorth: lnw,
+      netWorth: nw, liquidNetWorth: lnw, investable: +investable.toFixed(2),
       invested: inv, other: oth, k401,
       btcPrice: +btcPriceNow.toFixed(2),
       btcCoins: +(btcUsd / btcPriceNow).toFixed(8),
       bitcoin: btcUsd, realEstate: re,
       requiredSpending: +required.toFixed(2),
       ssIncome: +ssAmt.toFixed(2),
-      netSpending: +Math.max(0, required - ssAmt).toFixed(2),
+      pensionIncome: +penAmt.toFixed(2),
+      rentalIncome: +rentAmt.toFixed(2),
+      otherIncome: +incomeTot.toFixed(2),
+      netSpending: +Math.max(0, required - incomeTot).toFixed(2),
       withdrawnInv: +wInv.toFixed(2), withdrawnOther: +wOth.toFixed(2),
       withdrawn401k: +w401g.toFixed(2), withdrawnBitcoin: +wBtc.toFixed(2),
       retired: isRetired
@@ -1130,7 +1214,7 @@ function drawChart(path, type) {
 // ===== TABLE =====
 function renderTable(path) {
   if (!path?.length) return;
-  const ssOn = lastInputs && lastInputs.ssEnabled && lastInputs.ssMonthly > 0;
+  const incomeOn = lastInputs && ((lastInputs.ssEnabled && lastInputs.ssMonthly > 0) || (lastInputs.pensionEnabled && lastInputs.pensionMonthly > 0) || lastInputs.rentalIncome > 0);
   const cols = [
     { l: 'Year', k: 'year' }, { l: 'Age', k: 'age' },
     { l: 'Net Worth', k: 'netWorth', f: 'usd', c: 'nw-col' },
@@ -1143,7 +1227,7 @@ function renderTable(path) {
     { l: 'Bitcoin ₿', k: 'btcCoins', f: 'btc', c: 'btc-col' },
     { l: 'Real Estate', k: 'realEstate', f: 'usd' },
     { l: 'Req. Spending', k: 'requiredSpending', f: 'usd' },
-    ...(ssOn ? [{ l: 'Soc. Sec.', k: 'ssIncome', f: 'usd', c: 'ss-col' }, { l: 'Net Draw', k: 'netSpending', f: 'usd' }] : []),
+    ...(incomeOn ? [{ l: 'Other Income', k: 'otherIncome', f: 'usd', c: 'ss-col' }, { l: 'Net Draw', k: 'netSpending', f: 'usd' }] : []),
     { l: 'From Inv', k: 'withdrawnInv', f: 'usd' },
     { l: 'From Other', k: 'withdrawnOther', f: 'usd' },
     { l: 'From 401k', k: 'withdrawn401k', f: 'usd' },
@@ -1180,16 +1264,16 @@ function renderTable(path) {
 // ===== EXPORT CSV =====
 function exportCSV() {
   if (!lastPath.length) return;
-  const ssOn = lastInputs && lastInputs.ssEnabled && lastInputs.ssMonthly > 0;
+  const incomeOn = lastInputs && ((lastInputs.ssEnabled && lastInputs.ssMonthly > 0) || (lastInputs.pensionEnabled && lastInputs.pensionMonthly > 0) || lastInputs.rentalIncome > 0);
   const hdr = ['Year','Age','NetWorth','LiquidNW','Investments','Other','401k','BTCPrice','Bitcoin_USD','Bitcoin_BTC','RealEstate','ReqSpending']
-    .concat(ssOn ? ['SocialSecurity','NetDraw'] : [])
+    .concat(incomeOn ? ['OtherIncome','NetDraw'] : [])
     .concat(['WithdrawnInv','WithdrawnOther','Withdrawn401k','WithdrawnBTC','Retired']);
   const rows = lastPath.map(p => [
     p.year, p.age, Math.round(p.netWorth), Math.round(p.liquidNetWorth),
     Math.round(p.invested), Math.round(p.other), Math.round(p.k401),
     Math.round(p.btcPrice), Math.round(p.bitcoin), p.btcCoins,
     Math.round(p.realEstate), p.requiredSpending
-  ].concat(ssOn ? [Math.round(p.ssIncome), Math.round(p.netSpending)] : [])
+  ].concat(incomeOn ? [Math.round(p.otherIncome), Math.round(p.netSpending)] : [])
    .concat([p.withdrawnInv, p.withdrawnOther, p.withdrawn401k, p.withdrawnBitcoin, p.retired ? 'Yes' : 'No'])
    .join(','));
   const blob = new Blob([[hdr.join(','), ...rows].join('\n')], { type: 'text/csv' });
@@ -1231,6 +1315,7 @@ function projectPath(i, startInYears, growthFn, rec) {
   const annualSavings = i.income * i.savingsRate;
   const retireAge = i.age + startInYears;
   const totalYears = i.lifeExpectancy - i.age;
+  let soldRE = false;
   for (let yr = 0; yr <= totalYears; yr++) {
     const age = i.age + yr;
     const isRetired = age >= retireAge;
@@ -1240,10 +1325,15 @@ function projectPath(i, startInYears, growthFn, rec) {
       else inv += annualSavings;
     }
     if (isRetired) {
+      if (i.reSellEnabled && !soldRE && i.reSellAmount > 0) {
+        const amt = Math.min(i.reSellAmount, re); re -= amt; inv += amt; soldRE = true;
+      }
       const required = i.retirementSpending * Math.pow(1 + i.inflationRate, yr);
-      let ssAmt = 0;
+      let ssAmt = 0, penAmt = 0, rentAmt = 0;
       if (i.ssEnabled && age >= i.ssStartAge) { const a = i.ssMonthly * 12; ssAmt = i.ssCola ? a * Math.pow(1 + i.inflationRate, yr) : a; }
-      let need = Math.max(0, required - ssAmt);
+      if (i.pensionEnabled && age >= i.pensionStartAge) { const a = i.pensionMonthly * 12; penAmt = i.pensionCola ? a * Math.pow(1 + i.inflationRate, yr) : a; }
+      if (i.rentalIncome > 0) rentAmt = i.rentalIncome * Math.pow(1 + i.inflationRate, yr);
+      let need = Math.max(0, required - (ssAmt + penAmt + rentAmt));
       const can401 = age >= 59.5;
       const buckets = [
         { cagr: i.investmentCagr, take: n => { const a = Math.min(inv, n); inv -= a; return a; } },
@@ -1330,15 +1420,83 @@ function crashTest(i, startInYears) {
   return { survives, safeAge };
 }
 
+// Classic 4% rule: initial withdrawal rate = first-year net portfolio draw / investable assets at retirement.
+// Investable = brokerage + other liquid + 401(k)/403(b) (full balance) + Bitcoin. Excludes kept real estate.
+function fourPctCheck(retireRow) {
+  if (!retireRow) return null;
+  const draw = retireRow.netSpending;                 // net cash the portfolio must provide in year one
+  const grossDraw = retireRow.withdrawnInv + retireRow.withdrawnOther + retireRow.withdrawnBitcoin + retireRow.withdrawn401k;
+  const base = (retireRow.investable != null ? retireRow.investable : retireRow.liquidNetWorth);
+  const portfolio = base + grossDraw;                 // investable portfolio before the first withdrawal
+  const rate = portfolio > 0 ? (draw / portfolio * 100) : 0;
+  const target = draw * 25;                            // the classic 25x net-spend nest egg
+  const verdict = draw <= 0 ? 'covered' : rate <= 4.0 ? 'safe' : rate <= 5.0 ? 'moderate' : 'aggressive';
+  return { rate, draw, portfolio, target, verdict };
+}
+
+// FIRE-movement milestones. Uses an accumulation projection (keep saving, never withdraw) and the
+// 25x (4%) rule on the investable portfolio. Tiers use widely-cited US spending figures; "your plan"
+// uses your own spending. Coast = enough now that growth alone reaches your number by 65.
+function computeFIRE(i) {
+  const acc = simulate(i, 999).path;            // startIn=999 -> never retires within horizon = pure accumulation
+  if (!acc || !acc.length) return null;
+  const baseYear = acc[0].year;
+  const infl = i.inflationRate;
+  const cross = (nestEggToday) => {
+    for (const r of acc) {
+      const yr = r.year - baseYear;
+      if (r.investable >= nestEggToday * Math.pow(1 + infl, yr)) return { age: r.age, year: r.year };
+    }
+    return null;
+  };
+  const spendTiers = [
+    { name: 'Lean FIRE', desc: 'Frugal, minimalist lifestyle', spend: 40000 },
+    { name: 'FIRE (Your Plan)', desc: 'Your own target spending', spend: i.retirementSpending },
+    { name: 'Chubby FIRE', desc: 'Comfortable, some luxuries', spend: 125000 },
+    { name: 'Fat FIRE', desc: 'Affluent, no compromises', spend: 200000 }
+  ].map(t => { const target = t.spend * 25; const c = cross(target); return { ...t, target, age: c ? c.age : null, year: c ? c.year : null }; });
+  // Barista FIRE: part-time work covers roughly half of spending, portfolio covers the rest.
+  const baristaSpend = i.retirementSpending * 0.5;
+  const bTarget = baristaSpend * 25;
+  const bc = cross(bTarget);
+  const barista = { spend: baristaSpend, target: bTarget, age: bc ? bc.age : null, year: bc ? bc.year : null };
+  // Coast FIRE: enough invested that, with NO further contributions, real growth reaches your FIRE number by 65.
+  const realR = (1 + i.investmentCagr) / (1 + infl) - 1;
+  const fireToday = i.retirementSpending * 25;
+  let coast = null, coastNum = null;
+  if (realR > 0.001 && i.age < 65) {
+    coastNum = fireToday / Math.pow(1 + realR, Math.max(0, 65 - i.age));
+    for (const r of acc) {
+      const yr = r.year - baseYear, a = r.age, yrs = Math.max(0, 65 - a);
+      const need = fireToday / Math.pow(1 + realR, yrs);
+      const realInvest = r.investable / Math.pow(1 + infl, yr);
+      if (realInvest >= need) { coast = { age: a, year: r.year }; break; }
+    }
+  }
+  return { spendTiers, barista, coast, coastNum, realR, baseYear };
+}
+
 function renderMC(mc, crash) {
   document.getElementById('mcSub').innerHTML =
     `Across <strong>${mc.trials.toLocaleString()}</strong> randomized market simulations using your volatility assumptions, here is how your plan to retire at age <strong>${mc.atAge}</strong> actually holds up — capturing the market swings and sequence-of-returns risk the smooth projection can't see.`;
   const cls = mc.successPct >= 80 ? 'good' : mc.successPct >= 60 ? 'mid' : 'bad';
   const confTxt = mc.confAge != null ? mc.confAge : '—';
   const confSub = mc.confAge != null ? (mc.confAge <= mc.atAge ? 'Your earliest age already qualifies' : `≈ ${(mc.confAge - mc.atAge).toFixed(1)} yr longer to work`) : 'Relies on above-average markets';
+  let fourCard = '';
+  const f = mc.four;
+  if (f) {
+    const fcls = (f.verdict === 'safe' || f.verdict === 'covered') ? 'good' : f.verdict === 'moderate' ? 'mid' : 'bad';
+    const fval = f.draw <= 0 ? '0%' : f.rate.toFixed(1) + '%';
+    const fsub = f.verdict === 'covered' ? 'Income covers spending — no withdrawal year one'
+      : f.verdict === 'safe' ? 'At or below the 4% safe rate ✓'
+      : f.verdict === 'moderate' ? 'Slightly above 4% — watch sequence risk'
+      : 'Above 4% — leans on strong growth';
+    fourCard = `<div class="mc-stat"><div class="mcs-label">4% Rule — Initial Draw</div><div class="mcs-val ${fcls}">${fval}</div><div class="mcs-sub">${fsub}</div></div>`;
+  }
   document.getElementById('mcStats').innerHTML =
     `<div class="mc-stat"><div class="mcs-label">Success at Age ${mc.atAge}</div><div class="mcs-val ${cls}">${mc.successPct}%</div><div class="mcs-sub">of ${mc.trials.toLocaleString()} simulations lasted to plan-end</div></div>` +
     `<div class="mc-stat"><div class="mcs-label">Age for 90% Confidence</div><div class="mcs-val">${confTxt}</div><div class="mcs-sub">${confSub}</div></div>` +
+    fourCard +
     `<div class="mc-stat"><div class="mcs-label">Median Ending Net Worth</div><div class="mcs-val">$${fmt(Math.round(mc.endPct.p50))}</div><div class="mcs-sub">10th–90th pct: $${fmt(Math.round(mc.endPct.p10))} – $${fmt(Math.round(mc.endPct.p90))}</div></div>`;
   const cb = document.getElementById('mcCrash');
   if (crash.survives) {
@@ -1502,9 +1660,42 @@ function generateReport(deliver, targetWin) {
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
     doc.text(cleanLabel + '  -  ' + btcRate + '% BTC CAGR', ML + 40, y - 0.2, { align: 'center' });
     y += 11;
+    if (i.retireLocation) {
+      doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor.apply(doc, GRAY);
+      doc.text('Planned retirement location: ' + i.retireLocation, ML, y - 3);
+      y += 4; setInk();
+    }
 
     // ── Executive summary ──
     sectionHeader('Executive Summary');
+
+    // Starting position (today's figures) — shown above the projections.
+    const startBtcUsd = i.bitcoinBTC * i.btcPrice;
+    const curTotalNW = i.investments + i.otherAssets + i.k401Balance + i.realEstate + startBtcUsd;
+    const curLiquidNW = i.investments + i.otherAssets + startBtcUsd + (i.age >= 59.5 ? i.k401Balance * (1 - i.k401TaxRate) : 0);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor.apply(doc, GRAY);
+    doc.text('YOUR STARTING POSITION  ·  TODAY', ML, y);
+    y += 4;
+    const startCards = [
+      ['CURRENT NET WORTH', dollars(curTotalNW)],
+      ['LIQUID NET WORTH', dollars(curLiquidNW)],
+      ['REAL ESTATE OWNED', dollars(i.realEstate)],
+      ['ANNUAL SPENDING (TODAY)', dollars(i.retirementSpending)]
+    ];
+    const sgap = 3.5, swid = (CW - sgap * 3) / 4;
+    needSpace(18);
+    startCards.forEach((c, idx) => {
+      const cx = ML + idx * (swid + sgap);
+      doc.setFillColor.apply(doc, LIGHT); doc.roundedRect(cx, y, swid, 16, 2, 2, 'F');
+      doc.setFillColor(170, 170, 176); doc.rect(cx, y, swid, 1.2, 'F');
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(5.7); doc.setTextColor.apply(doc, GRAY);
+      doc.text(c[0], cx + swid / 2, y + 6, { align: 'center' });
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor.apply(doc, INK);
+      doc.text(String(c[1]), cx + swid / 2, y + 12.5, { align: 'center' });
+    });
+    y += 21;
+    setInk();
+
     para('Based on the assumptions you provided, your portfolio is projected to sustain your inflation-adjusted lifestyle through age ' + planToAge + '. The earliest age at which you could stop working and not run out of money is:');
     y += 3;
     needSpace(20);
@@ -1563,6 +1754,14 @@ function generateReport(deliver, targetWin) {
       bullet('Retiring at age ' + lastMC.atAge + ' succeeded in ' + lastMC.successPct + '% of ' + lastMC.trials.toLocaleString() + ' simulated market paths.', { color: lastMC.successPct >= 80 ? GREEN : (lastMC.successPct >= 60 ? ORANGE : RED) });
       bullet('For 90% Monte Carlo confidence, ' + (lastMC.confAge != null ? (lastMC.confAge <= lastMC.atAge ? 'your earliest age already qualifies.' : 'you would retire at about age ' + lastMC.confAge + ' (roughly ' + (lastMC.confAge - lastMC.atAge).toFixed(1) + ' years later).') : 'the plan does not reach 90% confidence within the modeled horizon - it leans on above-average markets.'));
       bullet('Projected ending net worth spans a wide range - 10th percentile ' + dollars(lastMC.endPct.p10) + ', median ' + dollars(lastMC.endPct.p50) + ', 90th percentile ' + dollars(lastMC.endPct.p90) + ' - a spread driven mostly by Bitcoin volatility.');
+      const f4 = fourPctCheck(retireRow);
+      if (f4) {
+        const v4 = f4.verdict === 'covered' ? 'your guaranteed income covers all first-year spending, so no portfolio withdrawal is required'
+          : f4.verdict === 'safe' ? 'at or below the classic 4% safe withdrawal rate - an independent confirmation the plan is conservatively funded'
+          : f4.verdict === 'moderate' ? 'slightly above the 4% rule - workable, but sensitive to a poor start'
+          : 'above the 4% rule, meaning the plan leans on strong asset growth rather than a conservative draw';
+        bullet('4% Rule cross-check: your initial withdrawal rate is ' + (f4.draw <= 0 ? '0%' : f4.rate.toFixed(1) + '%') + ' of your investable portfolio (brokerage + 401(k)/IRA + crypto; kept real estate excluded) - ' + v4 + '. (The classic safe benchmark is 4%; a fully safe nest egg at your spending would be about ' + dollars(f4.target) + '.)', { color: (f4.verdict === 'safe' || f4.verdict === 'covered') ? GREEN : f4.verdict === 'moderate' ? ORANGE : RED });
+      }
       if (lastCrash) {
         if (lastCrash.survives) bullet('Sequence-risk crash test PASSED: a severe bear market (Bitcoin -65% then -25%, stocks -35% then -10%) in your first two retirement years would not break the plan.', { color: GREEN });
         else bullet('Sequence-risk crash test FAILED: a severe early-retirement crash would break the plan at age ' + lastMC.atAge + (lastCrash.safeAge != null ? '; surviving it would require waiting to about age ' + lastCrash.safeAge + ', or holding a cash buffer to avoid selling into the downturn.' : '; consider a cash buffer or lower spending.'), { color: RED });
@@ -1580,6 +1779,9 @@ function generateReport(deliver, targetWin) {
     } else {
       bullet('Social Security was not included in this projection. Adding an expected benefit would lower the amount drawn from your investments and could move your retirement age earlier.', { color: GRAY });
     }
+    if (i.rentalIncome > 0) bullet('Rental / business income of ' + dollars(i.rentalIncome) + ' per year (today\'s dollars) continues through retirement and rises with inflation, directly reducing what your portfolio must provide each year.', { color: [6, 182, 212] });
+    if (i.pensionEnabled && i.pensionMonthly > 0) bullet('A pension of ' + dollars(i.pensionMonthly) + ' per month begins at age ' + i.pensionStartAge + ' (' + (i.pensionCola ? 'inflation-adjusted' : 'flat nominal') + '), further lowering portfolio withdrawals once it starts.', { color: [6, 182, 212] });
+    if (i.reSellEnabled && i.reSellAmount > 0) bullet('At retirement you plan to sell ' + dollars(i.reSellAmount) + ' of real estate, moving the proceeds into your investment bucket to strengthen liquid, spendable assets.', { color: ORANGE });
     bullet('Withdrawals follow a lowest-growth-first strategy: your slowest-growing assets are spent first and your highest-growth asset (Bitcoin) is preserved for last, so it compounds as long as possible.');
     if (usedSorted.length) {
       bullet('Drawdown begins in ' + retireYear + ' (age ' + retireAge + '), starting with your ' + usedSorted[0].name + '.');
@@ -1609,12 +1811,16 @@ function generateReport(deliver, targetWin) {
     sectionHeader('Your Assumptions', GRAY);
     const assumeRows = [
       ['Current age', String(i.age), 'Plan to age', String(planToAge)],
-      ['Annual income', dollars(i.income), 'Savings rate', (+(i.savingsRate * 100).toFixed(1)) + '%'],
+      ['Current net worth', dollars(curTotalNW), 'Liquid net worth', dollars(curLiquidNW)],
+      ['Real estate owned', dollars(i.realEstate), 'Annual spending (today)', dollars(i.retirementSpending)],
+      ['Work income', dollars(i.income), 'Savings rate', (+(i.savingsRate * 100).toFixed(1)) + '%'],
       ['New savings go to', i.savingsDestination === 'bitcoin' ? 'Bitcoin' : (i.savingsDestination === 'otherAssets' ? 'Other Assets' : 'Investments'), 'Inflation rate', inflPct + '%'],
       ['Bitcoin holdings', (+i.bitcoinBTC).toFixed(4) + ' BTC', 'BTC price', dollars(i.btcPrice)],
       ['Bitcoin CAGR', btcRate + '%', 'Investments CAGR', (+(i.investmentCagr * 100).toFixed(1)) + '%'],
       ['Other assets CAGR', (+(i.otherAssetsCagr * 100).toFixed(1)) + '%', '401(k) CAGR', (+(i.k401Cagr * 100).toFixed(1)) + '%'],
-      ['Real estate CAGR', (+(i.realEstateCagr * 100).toFixed(1)) + '%', 'Social Security', i.ssEnabled && i.ssMonthly > 0 ? dollars(i.ssMonthly) + '/mo @ ' + i.ssStartAge : 'Not included']
+      ['Real estate CAGR', (+(i.realEstateCagr * 100).toFixed(1)) + '%', 'Social Security', i.ssEnabled && i.ssMonthly > 0 ? dollars(i.ssMonthly) + '/mo @ ' + i.ssStartAge : 'Not included'],
+      ['Rental / business', i.rentalIncome > 0 ? dollars(i.rentalIncome) + '/yr' : 'None', 'Pension', i.pensionEnabled && i.pensionMonthly > 0 ? dollars(i.pensionMonthly) + '/mo @ ' + i.pensionStartAge + (i.pensionCola ? ' (COLA)' : ' (flat)') : 'Not included'],
+      ['Real estate sale', i.reSellEnabled && i.reSellAmount > 0 ? dollars(i.reSellAmount) + ' at retirement' : 'None', 'Monte Carlo', i.runMC ? i.mcTrials.toLocaleString() + ' trials @ ' + (+(i.btcVol * 100).toFixed(0)) + '% BTC vol' : 'Off']
     ];
     doc.autoTable({
       body: assumeRows, startY: y, theme: 'plain',
@@ -1666,19 +1872,45 @@ function generateReport(deliver, targetWin) {
     bullet('Across all ' + shockCount + ' stress paths tested, your plan stayed solvent in ' + survCount + ' of them; on a probability-weighted basis that is a ' + successPct + '% success likelihood, earning a "' + band[0] + '" resilience rating.');
     bullet('A practical safeguard: if markets clearly enter a prolonged downturn early in retirement, trimming discretionary spending or deferring large withdrawals materially improves survival odds beyond what these fixed-rate scenarios show.', { color: GRAY });
 
+    // ── FIRE movement milestones ──
+    const fire = computeFIRE(i);
+    if (fire) {
+      doc.addPage(); y = 20;
+      sectionHeader('FIRE Movement Milestones', [124, 58, 237]);
+      para('The FIRE (Financial Independence, Retire Early) movement sizes a portfolio with the 25x / 4% rule applied to investable assets (retirement accounts + taxable + crypto; kept real estate excluded). Below is the age and calendar year your projected portfolio reaches each milestone, assuming you keep saving at your current rate. Tiers use widely-cited US spending figures; "Your Plan" uses your own spending.');
+      y += 2;
+      const fmtAge = m => (m && m.age != null) ? String(m.age) : '—';
+      const fmtYr = m => (m && m.year != null) ? String(m.year) : 'Beyond horizon';
+      const fireRows = [];
+      fireRows.push(['Coast FIRE', 'Stop saving; growth alone coasts you to your number by 65', fire.coastNum != null ? dollars(fire.coastNum) + ' today' : 'n/a', fmtAge(fire.coast), fmtYr(fire.coast)]);
+      fireRows.push(['Barista FIRE', 'Part-time work covers about half your spending', dollars(fire.barista.target), fmtAge(fire.barista), fmtYr(fire.barista)]);
+      fire.spendTiers.forEach(t => fireRows.push([t.name, t.desc + ' (' + dollars(t.spend) + '/yr)', dollars(t.target), fmtAge(t), fmtYr(t)]));
+      doc.autoTable({
+        head: [['FIRE Tier', 'What It Means', 'Nest Egg (4% rule)', 'Age You Qualify', 'Year']],
+        body: fireRows, startY: y, theme: 'grid',
+        styles: { fontSize: 9, cellPadding: 3, halign: 'left' },
+        headStyles: { fillColor: DARK, textColor: [235, 235, 235], fontStyle: 'bold', halign: 'center' },
+        columnStyles: { 2: { halign: 'right' }, 3: { halign: 'center' }, 4: { halign: 'center' } },
+        didParseCell: d => { if (d.section === 'body' && d.row.index === 3) d.cell.styles.fillColor = [237, 231, 246]; },
+        margin: { left: ML, right: MR }
+      });
+      y = doc.lastAutoTable.finalY + 6;
+      para('Note: these milestones apply the classic gross 25x rule. Guaranteed income (Social Security, a pension, rental or business income) lowers the portfolio you actually need - which your main projection and Monte Carlo results already reflect, so your real "retire" age can be earlier than the tiers below. Spending figures are common US benchmarks; adjust them to your own cost of living' + (i.retireLocation ? ' in ' + i.retireLocation : '') + '. Coast FIRE assumes a ' + (+(fire.realR * 100).toFixed(1)) + '% real return with no further contributions.', { size: 8, color: GRAY });
+    }
+
     // ── Year-by-year landscape table ──
     doc.addPage('a4', 'landscape');
     const LW = doc.internal.pageSize.getWidth();
     doc.setFillColor.apply(doc, ORANGE); doc.rect(0, 0, LW, 12, 'F');
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
     doc.text('Year-by-Year Projection  -  ' + cleanLabel + '  (' + btcRate + '% BTC CAGR)', 10, 8);
-    const useSS = i.ssEnabled && i.ssMonthly > 0;
+    const useIncome = (i.ssEnabled && i.ssMonthly > 0) || (i.pensionEnabled && i.pensionMonthly > 0) || i.rentalIncome > 0;
     const headers = ['Year', 'Age', 'Net Worth', 'Liquid NW', 'Investments', 'Other', '401k', 'BTC Price', 'Bitcoin $', 'BTC', 'Real Estate', 'Spending']
-      .concat(useSS ? ['Soc Sec', 'Net Draw'] : [])
+      .concat(useIncome ? ['Income', 'Net Draw'] : [])
       .concat(['W/D Inv', 'W/D Other', 'W/D 401k', 'W/D BTC', 'Ret.']);
     const rows = path.map(p => {
       const base = [p.year, p.age, dollars(p.netWorth), dollars(p.liquidNetWorth), dollars(p.invested), dollars(p.other), dollars(p.k401), dollars(p.btcPrice), dollars(p.bitcoin), (+p.btcCoins).toFixed(3), dollars(p.realEstate), dollars(p.requiredSpending)];
-      const ss = useSS ? [dollars(p.ssIncome), dollars(p.netSpending)] : [];
+      const ss = useIncome ? [dollars(p.otherIncome), dollars(p.netSpending)] : [];
       const wd = [dollars(p.withdrawnInv), dollars(p.withdrawnOther), dollars(p.withdrawn401k), dollars(p.withdrawnBitcoin), p.retired ? 'Yes' : '-'];
       return base.concat(ss, wd);
     });
@@ -1709,10 +1941,12 @@ function generateReport(deliver, targetWin) {
     }
 
     const fname = 'SATOLOGY_Retirement_Report_' + currentScenario + '_' + btcRate + 'pct_' + new Date().toISOString().split('T')[0] + '.pdf';
+    // Open fitted to the whole first page, from the top — embedded in the PDF so viewers honour it.
+    try { doc.setDisplayMode('fullpage', 'continuous'); } catch (e) {}
     if (deliver === 'download') {
       doc.save(fname);
     } else {
-      const url = doc.output('bloburl');
+      const url = doc.output('bloburl') + '#page=1&view=Fit&toolbar=1';
       if (targetWin) targetWin.location.href = url;
       else window.open(url, '_blank');
     }
@@ -1733,6 +1967,8 @@ function fmt(n) {
 // Init
 switchScenario('mid');
 toggleSS();
+togglePension();
+toggleRESell();
 toggleMC();
 </script>
 </body>
