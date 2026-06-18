@@ -1617,15 +1617,15 @@ function generateReport(deliver, targetWin) {
 
     function sectionHeader(txt, color) {
       const col = color || SCEN_COLOR;
-      needSpace(16); y += 3;
+      needSpace(15); y += 2;
       doc.setDrawColor.apply(doc, col); doc.setLineWidth(1.1);
       doc.line(ML, y, ML + 9, y);
       doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor.apply(doc, col);
       doc.text(txt.toUpperCase(), ML + 12, y + 1.4);
-      y += 8; setInk();
+      y += 6.8; setInk();
     }
     function para(txt, opts) {
-      opts = opts || {}; const size = opts.size || 10, lh = opts.lh || 5;
+      opts = opts || {}; const size = opts.size || 10, lh = opts.lh || 4.7;
       doc.setFont('helvetica', opts.bold ? 'bold' : 'normal'); doc.setFontSize(size);
       doc.setTextColor.apply(doc, opts.color || INK);
       const lines = doc.splitTextToSize(txt, opts.w || CW);
@@ -1633,13 +1633,13 @@ function generateReport(deliver, targetWin) {
       setInk();
     }
     function bullet(txt, opts) {
-      opts = opts || {}; const dotc = opts.color || SCEN_COLOR; const indent = 6, size = opts.size || 10, lh = 5;
+      opts = opts || {}; const dotc = opts.color || SCEN_COLOR; const indent = 6, size = opts.size || 10, lh = 4.7;
       doc.setFont('helvetica', 'normal'); doc.setFontSize(size); doc.setTextColor.apply(doc, INK);
       const lines = doc.splitTextToSize(txt, CW - indent);
       needSpace(lh);
-      doc.setFillColor.apply(doc, dotc); doc.circle(ML + 1.4, y - 1.3, 1.1, 'F');
+      doc.setFillColor.apply(doc, dotc); doc.circle(ML + 1.4, y - 1.3, 1.05, 'F');
       lines.forEach((ln, idx) => { if (idx > 0) needSpace(lh); doc.text(ln, ML + indent, y); y += lh; });
-      y += 1.4; setInk();
+      y += 1.2; setInk();
     }
 
     // ── Page 1 header band ──
@@ -1675,7 +1675,7 @@ function generateReport(deliver, targetWin) {
     const curLiquidNW = i.investments + i.otherAssets + startBtcUsd + (i.age >= 59.5 ? i.k401Balance * (1 - i.k401TaxRate) : 0);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor.apply(doc, GRAY);
     doc.text('YOUR STARTING POSITION  ·  TODAY', ML, y);
-    y += 4;
+    y += 3.5;
     const startCards = [
       ['CURRENT NET WORTH', dollars(curTotalNW)],
       ['LIQUID NET WORTH', dollars(curLiquidNW)],
@@ -1683,30 +1683,30 @@ function generateReport(deliver, targetWin) {
       ['ANNUAL SPENDING (TODAY)', dollars(i.retirementSpending)]
     ];
     const sgap = 3.5, swid = (CW - sgap * 3) / 4;
-    needSpace(18);
+    needSpace(15);
     startCards.forEach((c, idx) => {
       const cx = ML + idx * (swid + sgap);
-      doc.setFillColor.apply(doc, LIGHT); doc.roundedRect(cx, y, swid, 16, 2, 2, 'F');
-      doc.setFillColor(170, 170, 176); doc.rect(cx, y, swid, 1.2, 'F');
+      doc.setFillColor.apply(doc, LIGHT); doc.roundedRect(cx, y, swid, 14, 2, 2, 'F');
+      doc.setFillColor(170, 170, 176); doc.rect(cx, y, swid, 1.1, 'F');
       doc.setFont('helvetica', 'normal'); doc.setFontSize(5.7); doc.setTextColor.apply(doc, GRAY);
-      doc.text(c[0], cx + swid / 2, y + 6, { align: 'center' });
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor.apply(doc, INK);
-      doc.text(String(c[1]), cx + swid / 2, y + 12.5, { align: 'center' });
+      doc.text(c[0], cx + swid / 2, y + 5.5, { align: 'center' });
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.setTextColor.apply(doc, INK);
+      doc.text(String(c[1]), cx + swid / 2, y + 11, { align: 'center' });
     });
-    y += 21;
+    y += 17.5;
     setInk();
 
-    para('Based on the assumptions you provided, your portfolio is projected to sustain your inflation-adjusted lifestyle through age ' + planToAge + '. The earliest age at which you could stop working and not run out of money is:');
-    y += 3;
-    needSpace(20);
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(40); doc.setTextColor.apply(doc, SCEN_COLOR);
+    para('Based on your assumptions, your portfolio is projected to sustain your inflation-adjusted lifestyle through age ' + planToAge + '. The earliest age you could stop working and not run out of money is:');
+    y += 2;
+    needSpace(16);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(30); doc.setTextColor.apply(doc, SCEN_COLOR);
     const ageStr = String(retireAge);
     const bw = doc.getTextWidth(ageStr);
-    doc.text(ageStr, ML, y + 12);
+    doc.text(ageStr, ML, y + 9.5);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor.apply(doc, GRAY);
     const inPhrase = yearsToRetire <= 0 ? 'this year' : 'in ' + yearsToRetire + ' year' + (yearsToRetire !== 1 ? 's' : '');
-    doc.text('years old   (retire in ' + retireYear + ', ' + inPhrase + ')', ML + bw + 5, y + 12);
-    y += 20;
+    doc.text('years old   (retire in ' + retireYear + ', ' + inPhrase + ')', ML + bw + 5, y + 9.5);
+    y += 15;
 
     // metric cards (liquid vs total kept distinct so non-liquid real estate never overstates plan health)
     const cards = [
@@ -1717,33 +1717,33 @@ function generateReport(deliver, targetWin) {
       ['SUCCESS LIKELIHOOD', successPct + '%', true]
     ];
     const cgap = 3.5, cwid = (CW - cgap * 4) / 5;
-    needSpace(22);
+    needSpace(19);
     cards.forEach((c, idx) => {
       const cx = ML + idx * (cwid + cgap);
       const accent = c[2] ? band[1] : SCEN_COLOR;
-      doc.setFillColor.apply(doc, LIGHT); doc.roundedRect(cx, y, cwid, 18, 2, 2, 'F');
-      doc.setFillColor.apply(doc, accent); doc.rect(cx, y, cwid, 1.4, 'F');
+      doc.setFillColor.apply(doc, LIGHT); doc.roundedRect(cx, y, cwid, 15.5, 2, 2, 'F');
+      doc.setFillColor.apply(doc, accent); doc.rect(cx, y, cwid, 1.3, 'F');
       doc.setFont('helvetica', 'normal'); doc.setFontSize(5.9); doc.setTextColor.apply(doc, GRAY);
-      doc.text(c[0], cx + cwid / 2, y + 7, { align: 'center' });
+      doc.text(c[0], cx + cwid / 2, y + 6, { align: 'center' });
       doc.setFont('helvetica', 'bold'); doc.setFontSize(11.5); doc.setTextColor.apply(doc, c[2] ? band[1] : INK);
-      doc.text(String(c[1]), cx + cwid / 2, y + 14, { align: 'center' });
+      doc.text(String(c[1]), cx + cwid / 2, y + 12, { align: 'center' });
     });
-    y += 25;
+    y += 20;
 
     // ── Success likelihood ──
     sectionHeader('Projected Success Likelihood', band[1]);
     para('We stress-tested your chosen retirement age (' + retireAge + ') across ' + shockCount + ' sustained market paths, shifting every asset growth rate from -6% to +3% per year. Your plan stayed solvent through age ' + planToAge + ' in ' + survCount + ' of ' + shockCount + ' paths. The score below weights milder, more-likely shocks more heavily than extreme ones.');
-    y += 2;
-    needSpace(18);
-    const barW = CW, barH = 9;
+    y += 1.5;
+    needSpace(16);
+    const barW = CW, barH = 8;
     doc.setFillColor(228, 228, 226); doc.roundedRect(ML, y, barW, barH, 2, 2, 'F');
     doc.setFillColor.apply(doc, band[1]); doc.roundedRect(ML, y, Math.max(barW * successPct / 100, 6), barH, 2, 2, 'F');
     doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(255, 255, 255);
-    doc.text(successPct + '%', ML + 4, y + 6.2);
+    doc.text(successPct + '%', ML + 4, y + 5.6);
     doc.setTextColor.apply(doc, band[1]);
-    doc.text('Rating: ' + band[0], ML + barW, y + 6.2, { align: 'right' });
-    y += barH + 6;
-    para('Note: This is a deterministic, probability-weighted scenario stress test across sustained growth-rate shocks - not a Monte Carlo simulation. Because the model targets your earliest feasible retirement age, that plan sits close to the edge of feasibility, so it is naturally sensitive to downside shocks. It measures resilience to sustained higher or lower long-run returns, not the sequence-of-returns risk of any single volatile year.', { size: 8, color: GRAY });
+    doc.text('Rating: ' + band[0], ML + barW, y + 5.6, { align: 'right' });
+    y += barH + 3.5;
+    para('Note: a deterministic, probability-weighted stress test across sustained return shocks (not Monte Carlo). Because the model targets your earliest feasible age, that plan sits near the edge of feasibility and is naturally sensitive to downside shocks - it measures resilience to sustained higher or lower long-run returns, not single-year volatility.', { size: 8, color: GRAY });
 
     // ── Monte Carlo reality check ──
     if (lastMC) {
